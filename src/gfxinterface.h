@@ -1,8 +1,9 @@
 #ifndef GFXINTERFACE_H
 #define GFXINTERFACE_H
 
+#include <SFML/Graphics.hpp>
+
 class CBEmu;
-#include <SFML\Graphics.hpp>
 
 class GfxInterface {
 	public:

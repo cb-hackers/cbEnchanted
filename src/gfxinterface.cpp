@@ -1,11 +1,12 @@
 #include "precomp.h"
 #include "cbemu.h"
 #include "gfxinterface.h"
+
 #ifdef WIN32
 #include <Windows.h>
 #endif
-#include <gl\GL.h>
-#include <SFML\Graphics\Shape.hpp>
+#include <GL/gl.h>
+#include <SFML/Graphics/Shape.hpp>
 
 GfxInterface::GfxInterface() : 
 cb(static_cast <CBEmu *> (this)),

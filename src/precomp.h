@@ -1,8 +1,8 @@
 #ifndef PRECOMP_H
 #define PRECOMP_H
 
-#include <SFML\Graphics.hpp>
-#include <SFML\OpenGL.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #ifdef WIN32
 #include <Windows.h>
 #endif
