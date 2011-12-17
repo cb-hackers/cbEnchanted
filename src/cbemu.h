@@ -18,35 +18,35 @@
 #include "mapinterface.h"
 #include "effectinterface.h"
 
-#define LOG_DEBUG    0b00000001
-#define LOG_INFO     0b00000010
-#define LOG_FIXME    0b00000100
-#define LOG_HCDEBUG 0b00001000
+#define LOG_DEBUG    0x01
+#define LOG_INFO     0x02
+#define LOG_FIXME    0x04
+#define LOG_HCDEBUG 0x08
 
 #define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME | LOG_HCDEBUG)
 
 #if LOG_LEVEL & 1
-	#define DEBUG(str, args...) cl_log_event("DEBUG", str, ##args);
+	#define DEBUG(str, ...) cl_log_event("DEBUG", str, __VA_ARGS__);
 #else
-	#define DEBUG(str, args...)
+	#define DEBUG(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 1) & 1
-	#define INFO(str, args...) cl_log_event("INFO", str, ##args);
+	#define INFO(str, ...) cl_log_event("INFO", str, __VA_ARGS__);
 #else
-	#define INFO(str, args...)
+	#define INFO(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 2) & 1
-	#define FIXME(str, args...) cl_log_event("FIXME", str, ##args);
+	#define FIXME(str, ...) cl_log_event("FIXME", str, __VA_ARGS__);
 #else
-	#define FIXME(str, args...)
+	#define FIXME(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 3) & 1
-	#define HCDEBUG(str, args...) cl_log_event("HCDEBUG", str, ##args);
+	#define HCDEBUG(str, ...) cl_log_event("HCDEBUG", __VA_ARGS__);
 #else
-	#define HCDEBUG(str, args...)
+	#define HCDEBUG(str, ...)
 #endif
 
 
