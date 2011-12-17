@@ -358,7 +358,7 @@ CBEmu::CBEmu() {
  */
 void CBEmu::run() {
 	// Make sure that we are initialized properly to avoid crashing
-	assert(initialized = true);
+	assert(initialized == true);
 
 	// Run until told to quit
 	running = true;
@@ -366,35 +366,21 @@ void CBEmu::run() {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
 		HCDEBUG("OpCode: %1", opCode);
-		switch (opCode)
-		{
-		case 65:
-			handleSetInt();break;
-		case 66:
-			handleSetFloat();break;
-		case 67:
-			handleCommand();break;
-		case 73:
-			handlePushInt();break;
-		case 74:
-			handlePushSomething();break;
-		case 78:
-			handleJump();break;
-		case 79:
-			handleMathOperation();break;
-		case 80:
-			handleIncVar();break;
-		case 86:
-			handlePushVariable();break;
-		case 90:
-			handleFunction();break;
-		case 97:
-		case 98:
-		case 99:
-			uselessShitHandler();break;
-		default:
-			FIXME("Unimplemented handler: %1", opCode);
-			throw int();
+		switch (opCode) {
+			case 65: handleSetInt(); break;
+			case 66: handleSetFloat(); break;
+			case 67: handleCommand(); break;
+			case 73: handlePushInt(); break;
+			case 74: handlePushSomething(); break;
+			case 78: handleJump(); break;
+			case 79: handleMathOperation(); break;
+			case 80: handleIncVar(); break;
+			case 86: handlePushVariable(); break;
+			case 90: handleFunction(); break;
+			case 97:
+			case 98:
+			case 99: uselessShitHandler(); break;
+			default: FIXME("Unimplemented handler: %1", opCode);
 		}
 	}
 }
@@ -468,15 +454,12 @@ void CBEmu::init(string file) {
 			case 86:
 			case 90: i += 4; break;
 			case 79: i ++; break;
-			default:
-				FIXME("Unhandled preparsing: %1", (uint32_t) cmd);
+			default: FIXME("Unhandled preparsing: %1", (uint32_t) cmd);
 		}
 		
 	}
 
 	assert(i == size);
-
-	
 
 	initialized = true;
 	INFO("Initialized");
@@ -519,39 +502,23 @@ void CBEmu::handleCommand(void) {
 	
 	HCDEBUG("Command: %1", command);
 
-	switch (command)
-	{
-	case 12:
-		commandGoto();break;
-	case 42:
-		commandDim();break;
-	case 69:
-		commandEnd();break;
-	case 78:
-		commandArrayAssign();break;
-	case 97:
-	case 98:
-		command97_98();break;
-	case 99:
-		command99();break;
-	case 207:
-		commandPrint();break;
-	case 224:
-		commandWaitKey();break;
-	case 425:
-		commandSetWindow();break;
-	case 481:
-		commandScreen();break;
-	case 491:
-		commandColor();break;
-	case 492:
-		commandClsColor();break;
-	case 498:
-		commandCircle();break;
-	case 513:
-		commandDrawScreen();break;
-	default:
-		FIXME("Unimplemented command: %1", command);
+	switch (command) {
+		case 12: commandGoto(); break;
+		case 42: commandDim(); break;
+		case 69: commandEnd(); break;
+		case 78: commandArrayAssign(); break;
+		case 97:
+		case 98: command97_98(); break;
+		case 99: command99(); break;
+		case 207: commandPrint(); break;
+		case 224: commandWaitKey(); break;
+		case 425: commandSetWindow(); break;
+		case 481: commandScreen(); break;
+		case 491: commandColor(); break;
+		case 492: commandClsColor(); break;
+		case 498: commandCircle(); break;
+		case 513: commandDrawScreen(); break;
+		default: FIXME("Unimplemented command: %1", command);
 	}
 }
 
@@ -563,28 +530,14 @@ void CBEmu::handleFunction(void) {
 	cpos += 4;
 	HCDEBUG("Function: %1", func);
 
-	switch(func)
-	{
-	case 106:
-		functionSin();break;
-	case 107:
-		functionCos();break;
-	case 122:
-		functionWrapAngle();break;
-	case 150:
-		functionStr();break;
-	case 442:
-		functionTimer();break;
-	default:
-		FIXME("Unimplemented function: %1", func);
+	switch(func) {
+		case 106: functionSin(); break;
+		case 107: functionCos(); break;
+		case 122: functionWrapAngle(); break;
+		case 150: functionStr(); break;
+		case 442: functionTimer(); break;
+		default: FIXME("Unimplemented function: %1", func);
 	}
-	/*
-	if (functions.find(func) == functions.end()) {
-		FIXME("Unimplemented function: %1", func);
-	}
-	else {
-		functions[func]();
-	}*/
 }
 
 /*
