@@ -353,11 +353,15 @@ CBEmu::CBEmu() {
 	cpos = 0;
 }
 
+/*
+ * CBEmu::run - Interpret CoolBasic bytecode
+ */
 void CBEmu::run() {
+	// Make sure that we are initialized properly to avoid crashing
 	assert(initialized = true);
 
+	// Run until told to quit
 	running = true;
-	
 	while (running) {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
@@ -372,13 +376,18 @@ void CBEmu::run() {
 	}
 }
 
+/* 
+ * CBEmu::init - Initialize the interpreter 
+ */
 void CBEmu::init(string file) {
 	INFO("Initializing");
-	int32_t startPos;
-	int32_t endPos;
-	int32_t nStrings;
-	int32_t size;
+	int32_t startPos; // Beginning of the CoolBasic data
+	int32_t endPos; // End of the executable
 	
+	int32_t nStrings; // Number of strings
+	int32_t size; // Length of CoolBasic data
+	
+	// Open file for reading
 	ifstream input(file.c_str(), ios::binary);
 	input.seekg(-4, ios::end);
 	endPos = input.tellg();
@@ -386,6 +395,7 @@ void CBEmu::init(string file) {
 	input.seekg(24 - startPos, ios::end);
 	input.read((char *)(&nStrings), 4);
 	
+	// Read and decrypt strings
 	string key = "Mark Sibly is my idol!";
 	for (uint32_t i = 1; i <= nStrings; i++) {
 		uint32_t len;
@@ -399,14 +409,19 @@ void CBEmu::init(string file) {
 		setString(i, s);
 	}
 	
+	// Skip useless data and directly to beginning of the bytecode
 	input.seekg(32, ios::cur);
 	startPos = input.tellg();
 	
+	// Read code to memory and close the file
 	size = endPos - startPos;
 	code = new char [size];
 	input.read(code, size);
 	input.close();
 	
+	// Precalculation
+	// ToDo:	JIT-optimization?
+	// 			Handle functions and types
 	uint32_t ncmd = 0;
 	uint32_t i = 0;
 	while (i < size) {
@@ -432,8 +447,10 @@ void CBEmu::init(string file) {
 		}
 		
 	}
+
 	assert(i == size);
 	
+	// Setup handlers for main bytecode commands
 	handlers[65] = bind(&CBEmu::handleSetInt, this);
 	handlers[66] = bind(&CBEmu::handleSetFloat, this);
 	handlers[67] = bind(&CBEmu::handleCommand, this);
@@ -444,9 +461,9 @@ void CBEmu::init(string file) {
 	handlers[80] = bind(&CBEmu::handleIncVar, this);
 	handlers[86] = bind(&CBEmu::handlePushVariable, this);
 	handlers[90] = bind(&CBEmu::handleFunction, this);
-	
 	handlers[97] = handlers[98] = handlers[99] = bind(&CBEmu::uselessShitHandler, this);
 	
+	// Setup handlers for commands (No return value)
 	commands[97] = commands[98] = bind(&CBEmu::command97_98, this);
 	commands[99] = bind(&CBEmu::command99, this);
 	commands[12] = bind(&CBEmu::commandGoto, this);
@@ -462,6 +479,7 @@ void CBEmu::init(string file) {
 	commands[498] = bind(&GfxInterface::commandCircle, this);
 	commands[513] = bind(&GfxInterface::commandDrawScreen, this);
 	
+	// Setup handlers for functions (Return value)
 	functions[106] = bind(&MathInterface::functionSin, this);
 	functions[107] = bind(&MathInterface::functionCos, this);
 	functions[122] = bind(&MathInterface::functionWrapAngle, this);
@@ -480,6 +498,9 @@ void CBEmu::cleanup() {
 	
 }
 
+/*
+ * CBEmu::handleSetInt - Set value of integer
+ */
 void CBEmu::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -487,6 +508,9 @@ void CBEmu::handleSetInt(void) {
 	setIntegerVariable(var, popValue<int32_t>());
 }
 
+/*
+ * CBEmu::handleSetFloat - Set value of float
+ */
 void CBEmu::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -494,6 +518,9 @@ void CBEmu::handleSetFloat(void) {
 	setFloatVariable(var, popValue<float>());
 }
 
+/*
+ * CBEmu::handleCommand - Run command
+ */
 void CBEmu::handleCommand(void) {
 	uint32_t command = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -507,6 +534,9 @@ void CBEmu::handleCommand(void) {
 	}
 }
 
+/*
+ * CBEmu::handleFunction - Run function
+ */
 void CBEmu::handleFunction(void) {
 	uint32_t func = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -519,36 +549,51 @@ void CBEmu::handleFunction(void) {
 	}
 }
 
+/*
+ * CBEmu::handlePushInt - Push integer to stack
+ */
 void CBEmu::handlePushInt(void) {
 	pushValue(*(int32_t *)(code + cpos));
 	cpos += 4;
 }
 
+/*
+ * CBEmu::uselessShitHandler - Do nothing
+ */ 
 void CBEmu::uselessShitHandler(void) {
 	
 }
 
+/*
+ * CBEmu::command97_98 - Pop 5 values from stack
+ */
 void CBEmu::command97_98(void) {
 	for (uint32_t i = 0; i < 5; i++) {
 		popValue();
 	}
 }
 
+/*
+ * CBEmu::command99 - Pop 6 values from stack
+ */
 void CBEmu::command99(void) {
 	for (uint32_t i = 0; i < 6; i++) {
 		popValue();
 	}
 }
 
+/*
+ * CBEmu::commandDim - Create array
+ */
 void CBEmu::commandDim(void) {
 	cpos ++;
-	uint32_t n = *(uint32_t *)(code + cpos);
+	uint32_t n = *(uint32_t *)(code + cpos); // Number of dimensions
 	cpos += 4;
 	
 	uint32_t size = 1;
 	Array a;
 	for (int32_t i = n - 1; i >= 0; --i) {
-		int32_t dim = popValue<int32_t>() + 1;
+		int32_t dim = popValue<int32_t>() + 1; // Size of dimension
 		a.dimensions[i] = dim;
 		size *= dim;
 	}
@@ -557,13 +602,16 @@ void CBEmu::commandDim(void) {
 	uint32_t type = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	cpos += 1;
-	uint32_t arrId = *(uint32_t *)(code + cpos);
+	uint32_t arrId = *(uint32_t *)(code + cpos); // Array ID
 	cpos += 4;
 	a.type = type;
 	a.data = new boost::any [size];
 	setArray(arrId, a);
 }
 
+/*
+ * CBEmu::commandArrayAssing - Assing value of array element
+ */
 void CBEmu::commandArrayAssign(void) {
 	uint32_t type = popValue<int32_t>();
 	cpos ++;
@@ -585,6 +633,9 @@ void CBEmu::commandArrayAssign(void) {
 	getArray(id).data[pos] = popValue();
 }
 
+/*
+ * CBEmu::handlePushVariable - Push value of variable to stack
+ */
 void CBEmu::handlePushVariable(void) {
 	uint32_t type = popValue<int32_t>();
 	
@@ -602,17 +653,20 @@ void CBEmu::handlePushVariable(void) {
 	}
 }
 
+/*
+ * CBEmu::handlePushSomething - Push float, string or something else to stack
+ */
 void CBEmu::handlePushSomething(void) {
 	uint32_t type = popValue<int32_t>();
 	switch (type) {
-		case 2: {
+		case 2: { // Float
 			float value = *(float *)(code + cpos);
 			cpos += 4;
 			
 			pushValue(value);
 			break;
 		}
-		case 5: {
+		case 5: { // String
 			uint32_t strId = *(uint32_t *)(code + cpos);
 			cpos += 4;
 			
@@ -630,6 +684,9 @@ void CBEmu::handlePushSomething(void) {
 	}
 }
 
+/*
+ * CBEmu::handleMathOperation - Handle mathematical operation
+ */
 void CBEmu::handleMathOperation(void) {
 	uint8_t op = *(uint8_t *)(code + cpos);
 	cpos++;
@@ -784,6 +841,9 @@ void CBEmu::handleMathOperation(void) {
 	}
 }
 
+/*
+ * CBEmu::handleJump - Jump if last operation was true
+ */
 void CBEmu::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -793,11 +853,17 @@ void CBEmu::handleJump(void) {
 	}
 }
 
+/*
+ * CBEmu::handleIncVar - Increase integer variable
+ */
 void CBEmu::handleIncVar(void) {
 	setIntegerVariable(*(uint32_t *)(code + cpos), getIntegerVariable(*(uint32_t *)(code + cpos)) + 1);
 	cpos += 4;
 }
 
+/*
+ * CBEmu::commandGoto - Jump to different location
+ */
 void CBEmu::commandGoto(void) {
 	cpos ++;
 	cpos = offsets[*(uint32_t *)(code + cpos)];

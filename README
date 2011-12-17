@@ -16,6 +16,9 @@ The project is going to be semi open source offering
 most of the code for everyone but limiting access
 to top-secret parts of CoolBasic bytecode.
 
+This repository holds code for secret bytecode info so
+sharing any parts of the code is strictly forbidden.
+
 2)
 Linux: "make"
 

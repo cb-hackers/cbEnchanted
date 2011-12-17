@@ -1,0 +1,6 @@
+# Ignore binary
+CBEmu
+
+# Ignore object files
+*.o
+
