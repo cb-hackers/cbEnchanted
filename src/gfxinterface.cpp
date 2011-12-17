@@ -1,12 +1,24 @@
 #include "precomp.h"
 #include "cbemu.h"
 #include "gfxinterface.h"
+#ifdef WIN32
+#include <Windows.h>
+#endif
+#include <gl\GL.h>
+#include <SFML\Graphics\Shape.hpp>
 
-GfxInterface::GfxInterface() : cb(static_cast <CBEmu *> (this)) {
-	window = new CL_DisplayWindow("CBEmu", 400, 300);
-	slotInputDown = (window->get_ic().get_keyboard()).sig_key_down().connect((InputInterface *) static_cast<CBEmu *> (this), &InputInterface::onKeyDown);
-	
-	graphicContexts.push_back(&window->get_gc());
+GfxInterface::GfxInterface() : 
+cb(static_cast <CBEmu *> (this)),
+	windowTitle(""),
+	clearColor(0,0,0,255),
+	drawColor(255,255,255,255),
+	window(sf::VideoMode(400,300,32),"",sf::Style::Default)
+{
+	window.SetActive(true);
+}
+
+GfxInterface::~GfxInterface()
+{
 }
 
 void GfxInterface::commandScreen(void) {
@@ -14,11 +26,18 @@ void GfxInterface::commandScreen(void) {
 	uint32_t depth = cb->popValue <int32_t>();
 	uint32_t height = cb->popValue <int32_t>();
 	uint32_t width = cb->popValue <int32_t>();
-
-	delete window;
-	window = new CL_DisplayWindow("CBEmu", width, height, state == 0, state == 2);
-	slotInputDown.destroy();
-	slotInputDown = (window->get_ic().get_keyboard()).sig_key_down().connect((InputInterface *) static_cast<CBEmu *> (this), &InputInterface::onKeyDown);
+	uint32_t style;
+	switch (state)
+	{
+	case 0: //cbFullscreen
+		style = sf::Style::Fullscreen;
+	case 1: // default
+		style = sf::Style::Close;
+	case 2: //cbSizable
+		style = sf::Style::Close | sf::Style::Resize;
+	}
+	
+	window.Create(sf::VideoMode(width,height,depth),windowTitle,style);
 	
 }
 
@@ -30,25 +49,57 @@ void GfxInterface::commandClsColor(void) {
 	float b = cb->popValue<float>();
 	float g = cb->popValue<float>();
 	float r = cb->popValue<float>();
-	
-	cb->setClsColor(CL_Colorf((uint8_t)r, (uint8_t)g, (uint8_t)b));
+	clearColor.r = (uint8_t)r;
+	clearColor.g = (uint8_t)g;
+	clearColor.b = (uint8_t)b;
 }
 
 void GfxInterface::commandColor(void) {
 	float b = cb->popValue<float>();
 	float g = cb->popValue<float>();
 	float r = cb->popValue<float>();
-	
-	cb->setDrawColor(CL_Colorf((uint8_t)r, (uint8_t)g, (uint8_t)b));
+	drawColor.r = (uint8_t)r;
+	drawColor.g = (uint8_t)g;
+	drawColor.b = (uint8_t)b;
 }
 
+#define CIRCLE_SEGMENT_COUNT 100
 void GfxInterface::commandCircle(void) {
 	bool fill = cb->popValue<int32_t>();
 	int32_t rad = cb->popValue<int32_t>();
-	float y = cb->popValue<float>() + rad / 2;
-	float x = cb->popValue<float>() + rad / 2;
+	float cy = cb->popValue<float>() + (float)rad *0.5;
+	float cx = cb->popValue<float>() + (float)rad *0.5;
 
-	CL_Draw::circle(window->get_gc(), x, y, rad / 2, cb->getDrawColor());
+	sf::Shape circle(sf::Shape::Circle(cx,cy,rad,drawColor));
+	circle.EnableFill(fill);
+	window.Draw(circle);
+
+
+	/*Doesn't work...
+	float theta = 2 * 3.1415926 / float(CIRCLE_SEGMENT_COUNT); 
+	float c = cosf(theta);
+	float s = sinf(theta);
+	float t;
+
+	float x = rad;
+	float y = 0; 
+	renderer->SetColor(drawColor);
+	if (fill)
+	{
+		renderer->Begin(GL_TRIANGLE_FAN);
+		glVertex2f(cx,cy);
+	}
+	else
+		glBegin(GL_LINE_LOOP); 
+	for(int ii = 0; ii != CIRCLE_SEGMENT_COUNT; ii++) 
+	{ 
+		glVertex2f(x + cx, y + cy);
+
+		t = x;
+		x = c * x - s * y;
+		y = s * t + c * y;
+	} 
+	glEnd();*/
 }
 
 void GfxInterface::commandLine(void){
@@ -56,14 +107,31 @@ void GfxInterface::commandLine(void){
 	float x2 = cb->popValue<float>();
 	float y1 = cb->popValue<float>();
 	float x1 = cb->popValue<float>();
-
-	CL_Draw::line(window->get_gc(),x1,y1,x2,y2,cb->getDrawColor());
+	glColor3i(drawColor.r,drawColor.g,drawColor.b);
+	glBegin(GL_LINE);
+	glVertex2f(x1,y1);
+	glVertex2f(x2,y2);
+	glEnd();
 }
 
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue<int32_t>();
 	bool cls = cb->popValue<int32_t>();
-	CL_KeepAlive::process();
-	window->flip(1);
-	if (cls) window->get_gc().clear(cb->getClsColor());
+	sf::Event e;
+	while (window.PollEvent(e))
+	{
+		switch (e.Type)
+		{
+		case sf::Event::Closed:
+			window.Close();break;
+		
+			//TODO: Inputs
+		default:
+			break;
+		}
+	}
+	window.Display();
+
+
+	if (cls) window.Clear(clearColor);
 }

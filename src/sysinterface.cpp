@@ -2,6 +2,7 @@
 #include "cbemu.h"
 #include "gfxinterface.h"
 #include "sysinterface.h"
+#include <time.h>
 
 SysInterface::SysInterface() {
 	cb = static_cast <CBEmu *> (this);
@@ -16,7 +17,7 @@ void SysInterface::commandSetWindow(void) {
 		cout << "FIXME: setWindow quitmsg" << endl;
 	}
 	
-	static_cast<CBEmu *>(this)->getWindow()->set_title(caption);
+	static_cast<CBEmu *>(this)->getWindow()->SetTitle(caption);
 }
 
 void SysInterface::commandEnd(void) {
@@ -24,5 +25,5 @@ void SysInterface::commandEnd(void) {
 }
 
 void SysInterface::functionTimer(void) {
-	cb->pushValue((int32_t)CL_System::get_time());
+	cb->pushValue((int32_t)clock());
 }

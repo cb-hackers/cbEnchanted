@@ -1,11 +1,11 @@
 #ifndef PRECOMP_H
 #define PRECOMP_H
 
-#include <ClanLib/core.h>
-#include <ClanLib/application.h>
-#include <ClanLib/display.h>
-#include <ClanLib/gl.h>
-#include <ClanLib/gui.h>
+#include <SFML\Graphics.hpp>
+#include <SFML\OpenGL.hpp>
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 #include <stdint.h>
 #include <vector>

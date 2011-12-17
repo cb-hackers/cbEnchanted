@@ -2,10 +2,12 @@
 #define GFXINTERFACE_H
 
 class CBEmu;
+#include <SFML\Graphics.hpp>
 
 class GfxInterface {
 	public:
 		GfxInterface();
+		~GfxInterface();
 		
 		void functionScreen(void);
 		void commandScreen(void);
@@ -15,14 +17,14 @@ class GfxInterface {
 		void commandDrawScreen(void);
 		void commandLine(void);
 		
-		CL_DisplayWindow *getWindow(void) { return this->window; }
+		sf::RenderWindow *getWindow(void) { return &this->window; }
 	private:
 		CBEmu *cb;
 		
-		CL_Slot slotInputDown;
-		
-		vector <CL_GraphicContext *> graphicContexts;
-		CL_DisplayWindow *window;
+		string windowTitle;
+		sf::RenderWindow window;
+		sf::Color clearColor;
+		sf::Color drawColor;
 };
 
 #endif

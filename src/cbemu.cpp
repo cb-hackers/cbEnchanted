@@ -362,7 +362,7 @@ void CBEmu::run() {
 
 	// Run until told to quit
 	running = true;
-	while (running) {
+	while (getWindow()->IsOpened()) {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
 		HCDEBUG("OpCode: %1", opCode);
@@ -396,14 +396,6 @@ void CBEmu::run() {
 			FIXME("Unimplemented handler: %1", opCode);
 			throw int();
 		}
-		/*
-		if (handlers.find(opCode) == handlers.end()) {
-			FIXME("Unimplemented handler: %1", opCode);
-			throw int();
-		}
-		else {
-			handlers[opCode]();
-		}*/
 	}
 }
 
@@ -561,14 +553,6 @@ void CBEmu::handleCommand(void) {
 	default:
 		FIXME("Unimplemented command: %1", command);
 	}
-
-	/*
-	if (commands.find(command) == commands.end()) {
-		FIXME("Unimplemented command: %1", command);
-	}
-	else {
-		commands[command]();
-	}*/
 }
 
 /*

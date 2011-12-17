@@ -78,8 +78,6 @@ class CBVariableHolder {
 		
 		string getString(uint32_t id) { return strings.get(id); }
 		
-		CL_Colorf getDrawColor(void) const { return drawColor; }
-		CL_Colorf getClsColor(void) const { return clsColor; }
 		
 		void setByteVariable(uint32_t id, uint8_t value) { byteVariables.set(id, value); }
 		void setShortVariable(uint32_t id, uint16_t value) { shortVariables.set(id, value); }
@@ -96,12 +94,8 @@ class CBVariableHolder {
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }
 		
-		void setDrawColor(CL_Colorf color) { this->drawColor = color; }
-		void setClsColor(CL_Colorf color) { this->clsColor = color; }
 	private:
 		stack <boost::any> internalStack;
-		
-		CL_DisplayWindow *window;
 		
 		VariableCollection <uint8_t> byteVariables;
 		VariableCollection <uint16_t> shortVariables;
@@ -118,10 +112,8 @@ class CBVariableHolder {
 		VariableCollection <Array> arrays;
 		
 		VariableCollection <string> strings;
-		CL_Colorf drawColor;
-		CL_Colorf clsColor;
 		
-		vector <CL_Texture> images;
+		vector <sf::Texture> images;
 };
 
 #endif

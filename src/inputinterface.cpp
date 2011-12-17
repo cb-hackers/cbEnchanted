@@ -2,29 +2,46 @@
 #include "cbemu.h"
 #include "inputinterface.h"
 
-InputInterface::InputInterface() : keyWait(1) {
+InputInterface::InputInterface() {
 	cb = static_cast <CBEmu *> (this);
 }
 
 void InputInterface::commandWaitKey(void) {
-	while (keyWait) {
-		CL_KeepAlive::process(0);
-		CL_System::sleep(10);
+	sf::Event e;
+	bool stayIn = true;
+	while(stayIn)
+	{
+		cb->getWindow()->WaitEvent(e);
+		switch (e.Type)
+		{
+		case sf::Event::KeyPressed:
+			stayIn = false;
+			break;
+		case sf::Event::Closed:
+			cb->getWindow()->Close();
+			stayIn = false;
+			break;
+		}
 	}
-
-	keyWait = 0;
 }
 
 void InputInterface::functionWaitKey(void) {
-	while (!keyWait) {
-		CL_KeepAlive::process();
-		CL_System::sleep(10);
+	sf::Event e;
+	bool stayIn = true;
+	while(stayIn)
+	{
+		cb->getWindow()->WaitEvent(e);
+		switch (e.Type)
+		{
+		case sf::Event::KeyPressed:
+			stayIn = false;
+			cb->pushValue((int32_t)e.Key.Code);
+			break;
+		case sf::Event::Closed:
+			cb->getWindow()->Close();
+			stayIn = false;
+			break;
+		}
 	}
-	cb->pushValue(keyWait);
-
-	keyWait = 0;
 }
 
-void InputInterface::onKeyDown(const CL_InputEvent &key, const CL_InputState &state) {
-	keyWait = false;
-}
