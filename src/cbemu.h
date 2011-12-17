@@ -26,25 +26,25 @@
 #define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME | LOG_HCDEBUG)
 
 #if LOG_LEVEL & 1
-	#define DEBUG(str, ...) cl_log_event("DEBUG", str, __VA_ARGS__);
+#define DEBUG(str, ...) cl_log_event("DEBUG", str, ##__VA_ARGS__);
 #else
 	#define DEBUG(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 1) & 1
-	#define INFO(str, ...) cl_log_event("INFO", str, __VA_ARGS__);
+#define INFO(str, ...) cl_log_event("INFO", str, ##__VA_ARGS__);
 #else
 	#define INFO(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 2) & 1
-	#define FIXME(str, ...) cl_log_event("FIXME", str, __VA_ARGS__);
+#define FIXME(str, ...) cl_log_event("FIXME", str, ##__VA_ARGS__);
 #else
 	#define FIXME(str, ...)
 #endif
 
 #if (LOG_LEVEL >> 3) & 1
-	#define HCDEBUG(str, ...) cl_log_event("HCDEBUG", __VA_ARGS__);
+#define HCDEBUG(str, ...) cl_log_event("HCDEBUG",str, ##__VA_ARGS__);
 #else
 	#define HCDEBUG(str, ...)
 #endif
