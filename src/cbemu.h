@@ -23,7 +23,7 @@
 #define LOG_FIXME    0x04
 #define LOG_HCDEBUG 0x08
 
-#define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME | LOG_HCDEBUG)
+#define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME/* | LOG_HCDEBUG*/)
 
 #if LOG_LEVEL & 1
 #define DEBUG(str, ...) cl_log_event("DEBUG", str, ##__VA_ARGS__);
@@ -59,9 +59,9 @@ class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface
 		void stop();
 		void cleanup();
 	private:
-		map <uint32_t, boost::function<void()> > functions;
-		map <uint32_t, boost::function<void()> > commands;
-		map <uint32_t, boost::function<void()> > handlers;
+		//map <uint32_t, boost::function<void()> > functions;
+		//map <uint32_t, boost::function<void()> > commands;
+		//map <uint32_t, boost::function<void()> > handlers;
 		
 		char *code;
 		uint32_t cpos;

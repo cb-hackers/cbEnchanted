@@ -51,10 +51,19 @@ void GfxInterface::commandCircle(void) {
 	CL_Draw::circle(window->get_gc(), x, y, rad / 2, cb->getDrawColor());
 }
 
+void GfxInterface::commandLine(void){
+	float y2 = cb->popValue<float>();
+	float x2 = cb->popValue<float>();
+	float y1 = cb->popValue<float>();
+	float x1 = cb->popValue<float>();
+
+	CL_Draw::line(window->get_gc(),x1,y1,x2,y2,cb->getDrawColor());
+}
+
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue<int32_t>();
 	bool cls = cb->popValue<int32_t>();
-	
+	CL_KeepAlive::process();
 	window->flip(1);
-	window->get_gc().clear(cb->getClsColor());
+	if (cls) window->get_gc().clear(cb->getClsColor());
 }

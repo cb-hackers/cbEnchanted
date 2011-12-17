@@ -13,6 +13,7 @@ class GfxInterface {
 		void commandColor(void);
 		void commandCircle(void);
 		void commandDrawScreen(void);
+		void commandLine(void);
 		
 		CL_DisplayWindow *getWindow(void) { return this->window; }
 	private:

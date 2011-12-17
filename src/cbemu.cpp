@@ -170,7 +170,7 @@ boost::any operator ^ (boost::any &l, boost::any &r) {
 			return (int)pow(boost::any_cast<int32_t>(l), boost::any_cast<float>(r));
 		}
 		if (r.type() == typeid(int32_t)) {
-			return (int)pow(boost::any_cast<int32_t>(l), boost::any_cast<int32_t>(r));
+			return (int)powl(boost::any_cast<int32_t>(l), boost::any_cast<int32_t>(r));//L: muutin pow:n powl:ksi että toimisi VC++...
 		}
 	}
 	FIXME("Unsupported operation %1 ^ %2", l.type().name(), r.type().name());
@@ -366,13 +366,44 @@ void CBEmu::run() {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
 		HCDEBUG("OpCode: %1", opCode);
+		switch (opCode)
+		{
+		case 65:
+			handleSetInt();break;
+		case 66:
+			handleSetFloat();break;
+		case 67:
+			handleCommand();break;
+		case 73:
+			handlePushInt();break;
+		case 74:
+			handlePushSomething();break;
+		case 78:
+			handleJump();break;
+		case 79:
+			handleMathOperation();break;
+		case 80:
+			handleIncVar();break;
+		case 86:
+			handlePushVariable();break;
+		case 90:
+			handleFunction();break;
+		case 97:
+		case 98:
+		case 99:
+			uselessShitHandler();break;
+		default:
+			FIXME("Unimplemented handler: %1", opCode);
+			throw int();
+		}
+		/*
 		if (handlers.find(opCode) == handlers.end()) {
 			FIXME("Unimplemented handler: %1", opCode);
 			throw int();
 		}
 		else {
 			handlers[opCode]();
-		}
+		}*/
 	}
 }
 
@@ -389,6 +420,9 @@ void CBEmu::init(string file) {
 	
 	// Open file for reading
 	ifstream input(file.c_str(), ios::binary);
+
+	assert(input.is_open());
+
 	input.seekg(-4, ios::end);
 	endPos = input.tellg();
 	input.read((char *)(&startPos), 4);
@@ -449,43 +483,9 @@ void CBEmu::init(string file) {
 	}
 
 	assert(i == size);
+
 	
-	// Setup handlers for main bytecode commands
-	handlers[65] = bind(&CBEmu::handleSetInt, this);
-	handlers[66] = bind(&CBEmu::handleSetFloat, this);
-	handlers[67] = bind(&CBEmu::handleCommand, this);
-	handlers[73] = bind(&CBEmu::handlePushInt, this);
-	handlers[74] = bind(&CBEmu::handlePushSomething, this);
-	handlers[78] = bind(&CBEmu::handleJump, this);
-	handlers[79] = bind(&CBEmu::handleMathOperation, this);
-	handlers[80] = bind(&CBEmu::handleIncVar, this);
-	handlers[86] = bind(&CBEmu::handlePushVariable, this);
-	handlers[90] = bind(&CBEmu::handleFunction, this);
-	handlers[97] = handlers[98] = handlers[99] = bind(&CBEmu::uselessShitHandler, this);
-	
-	// Setup handlers for commands (No return value)
-	commands[97] = commands[98] = bind(&CBEmu::command97_98, this);
-	commands[99] = bind(&CBEmu::command99, this);
-	commands[12] = bind(&CBEmu::commandGoto, this);
-	commands[42] = bind(&CBEmu::commandDim, this);
-	commands[69] = bind(&SysInterface::commandEnd, this);
-	commands[78] = bind(&CBEmu::commandArrayAssign, this);
-	commands[207] = bind(&TextInterface::commandPrint, this);
-	commands[224] = bind(&InputInterface::commandWaitKey, this);
-	commands[425] = bind(&SysInterface::commandSetWindow, this);
-	commands[481] = bind(&GfxInterface::commandScreen, this);
-	commands[491] = bind(&GfxInterface::commandColor, this);
-	commands[492] = bind(&GfxInterface::commandClsColor, this);
-	commands[498] = bind(&GfxInterface::commandCircle, this);
-	commands[513] = bind(&GfxInterface::commandDrawScreen, this);
-	
-	// Setup handlers for functions (Return value)
-	functions[106] = bind(&MathInterface::functionSin, this);
-	functions[107] = bind(&MathInterface::functionCos, this);
-	functions[122] = bind(&MathInterface::functionWrapAngle, this);
-	functions[150] = bind(&StringInterface::functionStr, this);
-	functions[422] = bind(&SysInterface::functionTimer, this);
-	
+
 	initialized = true;
 	INFO("Initialized");
 }
@@ -526,12 +526,49 @@ void CBEmu::handleCommand(void) {
 	cpos += 4;
 	
 	HCDEBUG("Command: %1", command);
+
+	switch (command)
+	{
+	case 12:
+		commandGoto();break;
+	case 42:
+		commandDim();break;
+	case 69:
+		commandEnd();break;
+	case 78:
+		commandArrayAssign();break;
+	case 97:
+	case 98:
+		command97_98();break;
+	case 99:
+		command99();break;
+	case 207:
+		commandPrint();break;
+	case 224:
+		commandWaitKey();break;
+	case 425:
+		commandSetWindow();break;
+	case 481:
+		commandScreen();break;
+	case 491:
+		commandColor();break;
+	case 492:
+		commandClsColor();break;
+	case 498:
+		commandCircle();break;
+	case 513:
+		commandDrawScreen();break;
+	default:
+		FIXME("Unimplemented command: %1", command);
+	}
+
+	/*
 	if (commands.find(command) == commands.end()) {
 		FIXME("Unimplemented command: %1", command);
 	}
 	else {
 		commands[command]();
-	}
+	}*/
 }
 
 /*
@@ -541,12 +578,29 @@ void CBEmu::handleFunction(void) {
 	uint32_t func = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	HCDEBUG("Function: %1", func);
+
+	switch(func)
+	{
+	case 106:
+		functionSin();break;
+	case 107:
+		functionCos();break;
+	case 122:
+		functionWrapAngle();break;
+	case 150:
+		functionStr();break;
+	case 442:
+		functionTimer();break;
+	default:
+		FIXME("Unimplemented function: %1", func);
+	}
+	/*
 	if (functions.find(func) == functions.end()) {
 		FIXME("Unimplemented function: %1", func);
 	}
 	else {
 		functions[func]();
-	}
+	}*/
 }
 
 /*
