@@ -1,9 +1,13 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "inputinterface.h"
 
 InputInterface::InputInterface() {
-	cb = static_cast <CBEmu *> (this);
+	cb = static_cast <CBEnchanted *> (this);
+}
+
+void InputInterface::commandCloseInput(void) {
+	
 }
 
 /*
@@ -24,6 +28,52 @@ void InputInterface::commandWaitKey(void) {
 				break;
 		}
 	}
+}
+
+void InputInterface::commandClearKeys(void) {
+	
+}
+
+void InputInterface::commandPositionMouse(void) {
+	
+}
+
+void InputInterface::commandWaitMouse(void) {
+	
+}
+
+void InputInterface::commandShowMouse(void) {
+	
+}
+
+void InputInterface::commandClearMouse(void) {
+	
+}
+
+void InputInterface::commandSAFEEXIT(void) {
+	
+}
+
+
+
+void InputInterface::functionInput(void) {
+	
+}
+
+void InputInterface::functionKeyDown(void) {
+	
+}
+
+void InputInterface::functionKeyHit(void) {
+	
+}
+
+void InputInterface::functionKeyUp(void) {
+	
+}
+
+void InputInterface::functionGetKey(void) {
+	
 }
 
 /*
@@ -49,3 +99,74 @@ void InputInterface::functionWaitKey(void) {
 	}
 }
 
+void InputInterface::functionMouseDown(void) {
+	
+}
+
+void InputInterface::functionMouseHit(void) {
+	
+}
+
+void InputInterface::functionMouseUp(void) {
+	
+}
+
+void InputInterface::functionGetMouse(void) {
+	
+}
+
+void InputInterface::functionWaitMouse(void) {
+	
+}
+
+void InputInterface::functionMouseX(void) {
+	
+}
+
+void InputInterface::functionMouseY(void) {
+	
+}
+
+void InputInterface::functionMouseWX(void) {
+	
+}
+
+void InputInterface::functionMouseWY(void) {
+	
+}
+
+void InputInterface::functionMouseZ(void) {
+	
+}
+
+void InputInterface::functionMouseMoveX(void) {
+	
+}
+
+void InputInterface::functionMouseMoveY(void) {
+	
+}
+
+void InputInterface::functionMouseMoveZ(void) {
+	
+}
+
+void InputInterface::functionLeftKey(void) {
+	
+}
+
+void InputInterface::functionRightKey(void) {
+	
+}
+
+void InputInterface::functionUpKey(void) {
+	
+}
+
+void InputInterface::functionDownKey(void) {
+	
+}
+
+void InputInterface::functionEscapeKey(void) {
+	
+}

@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 
 #ifdef WIN32
 #include <Windows.h>

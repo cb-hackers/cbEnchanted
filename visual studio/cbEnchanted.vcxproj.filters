@@ -21,7 +21,7 @@
     <ClCompile Include="..\src\camerainterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\cbemu.cpp">
+    <ClCompile Include="..\src\cbenchanted.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cbvariableholder.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="..\src\camerainterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cbemu.h">
+    <ClInclude Include="..\src\cbenchanted.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cbvariableholder.h">

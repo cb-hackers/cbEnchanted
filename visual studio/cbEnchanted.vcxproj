@@ -79,7 +79,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\animinterface.cpp" />
     <ClCompile Include="..\src\camerainterface.cpp" />
-    <ClCompile Include="..\src\cbemu.cpp" />
+    <ClCompile Include="..\src\cbenchanted.cpp" />
     <ClCompile Include="..\src\cbvariableholder.cpp" />
     <ClCompile Include="..\src\drawingprimitives.cpp" />
     <ClCompile Include="..\src\effectinterface.cpp" />
@@ -102,7 +102,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\animinterface.h" />
     <ClInclude Include="..\src\camerainterface.h" />
-    <ClInclude Include="..\src\cbemu.h" />
+    <ClInclude Include="..\src\cbenchanted.h" />
     <ClInclude Include="..\src\cbvariableholder.h" />
     <ClInclude Include="..\src\drawingprimitives.h" />
     <ClInclude Include="..\src\effectinterface.h" />

@@ -1,7 +1,5 @@
 #include "precomp.h"
-#include "cbemu.h"
-
-
+#include "cbenchanted.h"
 
 boost::any operator ! (boost::any &l) {
 	if (l.type() == typeid(float)) {

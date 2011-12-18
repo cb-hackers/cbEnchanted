@@ -1,5 +1,5 @@
-#ifndef CBEMU_H
-#define CBEMU_H
+#ifndef CBENCHANTED_H
+#define CBENCHANTED_H
 
 #include "cbvariableholder.h"
 #include "mathinterface.h"
@@ -51,10 +51,10 @@
 #endif
 
 
-class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface {
+class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface, public ObjectInterface, public MemInterface, public FileInterface, public MapInterface, public CameraInterface, public ImageInterface, public EffectInterface, public AnimInterface, public SoundInterface {
 	public:
-		CBEmu();
-		~CBEmu();
+		CBEnchanted();
+		~CBEnchanted();
 	
 		void init(string file);		
 		void run();
@@ -90,8 +90,24 @@ class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface
 		void command97_98(void);
 		void command99(void);
 		void commandGoto(void);
+		void commandGosub(void);
+		void commandReturn(void);
 		void commandDim(void);
+		void commandReDim(void);
+		void commandClearArray(void);
+		void commandInsert(void);
+		void commandDelete(void);
+		
 		void commandArrayAssign(void);
+		
+		void functionNew(void);
+		void functionFirst(void);
+		void functionLast(void);
+		void functionBefore(void);
+		void functionAfter(void);
+		void functionRead(void);
+		void functionConvertToInteger(void);
+		void functionConvertToType(void);
 };
 
 #endif

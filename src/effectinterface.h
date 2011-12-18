@@ -2,9 +2,16 @@
 #define EFFECTINTERFACE_H
 
 class EffectInterface {
+	public:
+		EffectInterface();
+		~EffectInterface();
+		
+		void commandParticleMovement(void);
+		void commandParticleAnimation(void);
+		void commandParticleEmission(void);
+		
+		void functionMakeEmitter(void);
 	private:
-	
-	protected:
 	
 };
 

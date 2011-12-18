@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "gfxinterface.h"
 
 #ifdef WIN32
@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Shape.hpp>
 #include "drawingprimitives.h"
 
-GfxInterface::GfxInterface() : cb(static_cast <CBEmu *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(sf::VideoMode(400, 300, 32), "", sf::Style::Default) {
+GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(sf::VideoMode(400, 300, 32), "", sf::Style::Default) {
 	window.SetActive(true);
 }
 
@@ -34,10 +34,6 @@ void GfxInterface::commandScreen(void) {
 	}
 	
 	window.Create(sf::VideoMode(width, height, depth), windowTitle, style);
-}
-
-void GfxInterface::functionScreen(void) {
-	cb->pushValue(0);
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -97,4 +93,112 @@ void GfxInterface::commandDrawScreen(void) {
 	window.Display();
 
 	if (cls) window.Clear(clearColor);
+}
+
+void GfxInterface::commandLock(void) {
+	
+}
+
+void GfxInterface::commandUnlock(void) {
+	
+}
+
+void GfxInterface::commandPutPixel(void) {
+	
+}
+
+void GfxInterface::commandPutPixel2(void) {
+	
+}
+
+void GfxInterface::commandCopyBox(void) {
+	
+}
+
+void GfxInterface::commandCls(void) {
+	
+}
+
+void GfxInterface::commandDot(void) {
+	
+}
+
+void GfxInterface::commandBox(void) {
+	
+}
+
+void GfxInterface::commandEllipse(void) {
+	
+}
+
+void GfxInterface::commandPickColor(void) {
+	
+}
+
+void GfxInterface::commandScreenGamma(void) {
+	
+}
+
+void GfxInterface::commandDrawToImage(void) {
+	
+}
+
+void GfxInterface::commandDrawToScreen(void) {
+	
+}
+
+void GfxInterface::commandDrawToWorld(void) {
+	
+}
+
+void GfxInterface::commandSmooth2D(void) {
+	
+}
+
+void GfxInterface::commandScreenShot(void) {
+	
+}
+
+void GfxInterface::commandUpdateGame(void) {
+	
+}
+
+void GfxInterface::commandDrawGame(void) {
+	
+}
+
+void GfxInterface::functionSCREEN(void) {
+	cb->pushValue(0);
+}
+
+void GfxInterface::functionImage(void) {
+	
+}
+
+void GfxInterface::functionGetPixel(void) {
+	
+}
+
+void GfxInterface::functionGetPixel2(void) {
+	
+}
+
+void GfxInterface::functionGetRGB(void) {
+	
+}
+
+void GfxInterface::functionScreenWidth(void) {
+	
+}
+
+void GfxInterface::functionScreenHeight(void) {
+	
+}
+
+void GfxInterface::functionScreenDepth(void) {
+	
+}
+
+void GfxInterface::functionGFXModeExists(void) {
+	
 }
