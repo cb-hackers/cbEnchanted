@@ -1,0 +1,20 @@
+boost::any operator ! (boost::any &l);
+boost::any operator + (boost::any &l);
+boost::any operator - (boost::any &l);
+boost::any operator % (boost::any &l, boost::any &r);
+boost::any operator * (boost::any &l, boost::any &r);
+boost::any operator + (boost::any &l, boost::any &r);
+boost::any operator - (boost::any &l, boost::any &r);
+boost::any operator / (boost::any &l, boost::any &r);
+boost::any operator << (boost::any &l, boost::any &r);
+boost::any operator >> (boost::any &l, boost::any &r);
+boost::any operator ^ (boost::any &l, boost::any &r);
+int32_t operator != (boost::any &l, boost::any &r);
+int32_t operator && (boost::any &l, boost::any &r);
+int32_t operator <= (boost::any &l, boost::any &r);
+int32_t operator == (boost::any &l, boost::any &r);
+int32_t operator >= (boost::any &l, boost::any &r);
+int32_t operator || (boost::any &l, boost::any &r);
+int32_t operator > (boost::any &l, boost::any &r);
+int32_t operator < (boost::any &l, boost::any &r);
+

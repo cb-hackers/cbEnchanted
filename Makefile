@@ -1,17 +1,14 @@
 BIN = CBEmu
 export PKG_CONFIG_PATH = /usr/local/lib/pkgconfig/
-SOURCES = main cbemu cbvariableholder mathinterface stringinterface textinterface fileinterface meminterface inputinterface sysinterface soundinterface animinterface imageinterface gfxinterface objectinterface camerainterface mapinterface effectinterface
+SOURCES = main cbemu cbvariableholder mathinterface stringinterface textinterface fileinterface meminterface inputinterface sysinterface soundinterface animinterface imageinterface gfxinterface objectinterface camerainterface mapinterface effectinterface mathoperations
 OBJ = $(patsubst %,src/%.o,$(SOURCES))
-LIBS = clanApp clanDisplay clanCore clanGL
 
-
-PACKAGES = $(patsubst %,%-2.2,$(LIBS))
-CXXFLAGS += `pkg-config --cflags $(PACKAGES)` -pthread -O3
+CXXFLAGS += -pthread -O3
 
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) `pkg-config --libs $(PACKAGES)`
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) -lsfml-window -lsfml-graphics -lGL
 
 clean:
 	rm -f $(OBJ) $(BIN)
