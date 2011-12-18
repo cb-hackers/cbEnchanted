@@ -1,15 +1,14 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "inputinterface.h"
 
 InputInterface::InputInterface() {
-	cb = static_cast <CBEmu *> (this);
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 void InputInterface::commandCloseInput(void) {
 	
 }
-
 
 /*
  * InputInterface::commandWaitKey - Wait for key press

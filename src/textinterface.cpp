@@ -1,8 +1,8 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "textinterface.h"
 
-TextInterface::TextInterface() : cb(static_cast <CBEmu *> (this)) {
+TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 	
 }
 		

@@ -1,7 +1,7 @@
 #ifndef OBJECTINTERFACE_H
 #define OBJECTINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class ObjectInterface {
 	public:

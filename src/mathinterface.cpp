@@ -1,9 +1,9 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "mathinterface.h"
 
 MathInterface::MathInterface() {
-	cb = static_cast <CBEmu *> (this);
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 void MathInterface::commandRandomize(void) {

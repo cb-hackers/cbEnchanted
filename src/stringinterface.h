@@ -1,7 +1,7 @@
 #ifndef STRINGINTERFACE_H
 #define STRINGINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class StringInterface {
 	public:
@@ -31,7 +31,7 @@ class StringInterface {
 		void functionCountWords(void);
 		void functionGetWord(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 
 };
 

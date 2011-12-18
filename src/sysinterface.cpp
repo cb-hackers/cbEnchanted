@@ -1,11 +1,11 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "sysinterface.h"
 #include <time.h>
 
 SysInterface::SysInterface() {
-	cb = static_cast <CBEmu *> (this);
+	cb = static_cast <CCBEnchanted *> (this);
 }
 
 void SysInterface::commandWait(void) {
@@ -51,17 +51,17 @@ void SysInterface::commandErrors(void) {
 void SysInterface::commandSetWindow(void) {
 	string quit = cb->popValue<string>();
 	uint32_t mode = cb->popValue<int32_t>();
-	string caption = "CBEmu: " + cb->popValue<string>();
+	string caption = "CBEnchanted: " + cb->popValue<string>();
 	
 	if (quit != "") {
 		cout << "FIXME: setWindow quitmsg" << endl;
 	}
 	
-	static_cast<CBEmu *>(this)->getWindow()->SetTitle(caption);
+	cb->getWindow()->SetTitle(caption);
 }
 
 void SysInterface::commandEnd(void) {
-	static_cast<CBEmu *> (this)->stop();
+	cb->stop();
 }
 
 void SysInterface::functionDate(void) {

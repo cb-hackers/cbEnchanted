@@ -1,7 +1,7 @@
 #ifndef SYSINTERFACE_H
 #define SYSINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class SysInterface {
 	public:
@@ -29,7 +29,7 @@ class SysInterface {
 		void functionFPS(void);
 		void functionCrc32(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class CBEmu;
+class CBEnchanted;
 
 class GfxInterface {
 	public:
@@ -47,7 +47,7 @@ class GfxInterface {
 
 		sf::RenderWindow *getWindow(void) { return &this->window; }
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 		
 		string windowTitle;
 		sf::RenderWindow window;

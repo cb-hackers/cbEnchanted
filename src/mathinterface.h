@@ -1,7 +1,7 @@
 #ifndef MATHINTERFACE_H
 #define MATHINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class MathInterface {
 	public:
@@ -34,7 +34,7 @@ class MathInterface {
 		void functionDistance(void);
 		void functionBoxOverlap(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 };
 
 #endif

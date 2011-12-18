@@ -1,7 +1,7 @@
 #ifndef TEXTINTERFACE_H
 #define TEXTINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class TextInterface {
 	public:
@@ -22,7 +22,7 @@ class TextInterface {
 		void functionTextWidth(void);
 		void functionTextHeight(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 };
 
 #endif

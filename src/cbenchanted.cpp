@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "sysinterface.h"
 #include "stringinterface.h"
@@ -9,20 +9,20 @@
 #include "cbvariableholder.h"
 #include "mathoperations.h"
 
-CBEmu::CBEmu() {
+CBEnchanted::CBEnchanted() {
 	initialized = false;
 	running = false;
 	cpos = 0;
 }
 
-CBEmu::~CBEmu() {
+CBEnchanted::~CBEnchanted() {
 	delete code;
 }
 
 /*
- * CBEmu::run - Interpret CoolBasic bytecode
+ * CBEnchanted::run - Interpret CoolBasic bytecode
  */
-void CBEmu::run() {
+void CBEnchanted::run() {
 	// Make sure that we are initialized properly to avoid crashing
 	assert(initialized == true);
 
@@ -52,9 +52,9 @@ void CBEmu::run() {
 }
 
 /* 
- * CBEmu::init - Initialize the interpreter 
+ * CBEnchanted::init - Initialize the interpreter 
  */
-void CBEmu::init(string file) {
+void CBEnchanted::init(string file) {
 	INFO("Initializing");
 	int32_t startPos; // Beginning of the CoolBasic data
 	int32_t endPos; // End of the executable
@@ -131,18 +131,18 @@ void CBEmu::init(string file) {
 	INFO("Initialized");
 }
 
-void CBEmu::stop() {
+void CBEnchanted::stop() {
 	running = false;
 }
 
-void CBEmu::cleanup() {
+void CBEnchanted::cleanup() {
 	
 }
 
 /*
- * CBEmu::handleSetInt - Set value of integer
+ * CBEnchanted::handleSetInt - Set value of integer
  */
-void CBEmu::handleSetInt(void) {
+void CBEnchanted::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
@@ -150,9 +150,9 @@ void CBEmu::handleSetInt(void) {
 }
 
 /*
- * CBEmu::handleSetFloat - Set value of float
+ * CBEnchanted::handleSetFloat - Set value of float
  */
-void CBEmu::handleSetFloat(void) {
+void CBEnchanted::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	
@@ -160,9 +160,9 @@ void CBEmu::handleSetFloat(void) {
 }
 
 /*
- * CBEmu::handleCommand - Run command
+ * CBEnchanted::handleCommand - Run command
  */
-void CBEmu::handleCommand(void) {
+void CBEnchanted::handleCommand(void) {
 	uint32_t command = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	
@@ -357,9 +357,9 @@ void CBEmu::handleCommand(void) {
 }
 
 /*
- * CBEmu::handleFunction - Run function
+ * CBEnchanted::handleFunction - Run function
  */
-void CBEmu::handleFunction(void) {
+void CBEnchanted::handleFunction(void) {
 	uint32_t func = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	HCDEBUG("Function: %1", func);
@@ -549,42 +549,42 @@ void CBEmu::handleFunction(void) {
 }
 
 /*
- * CBEmu::handlePushInt - Push integer to stack
+ * CBEnchanted::handlePushInt - Push integer to stack
  */
-void CBEmu::handlePushInt(void) {
+void CBEnchanted::handlePushInt(void) {
 	pushValue(*(int32_t *)(code + cpos));
 	cpos += 4;
 }
 
 /*
- * CBEmu::uselessShitHandler - Do nothing
+ * CBEnchanted::uselessShitHandler - Do nothing
  */ 
-void CBEmu::uselessShitHandler(void) {
+void CBEnchanted::uselessShitHandler(void) {
 	
 }
 
 /*
- * CBEmu::command97_98 - Pop 5 values from stack
+ * CBEnchanted::command97_98 - Pop 5 values from stack
  */
-void CBEmu::command97_98(void) {
+void CBEnchanted::command97_98(void) {
 	for (uint32_t i = 0; i < 5; i++) {
 		popValue();
 	}
 }
 
 /*
- * CBEmu::command99 - Pop 6 values from stack
+ * CBEnchanted::command99 - Pop 6 values from stack
  */
-void CBEmu::command99(void) {
+void CBEnchanted::command99(void) {
 	for (uint32_t i = 0; i < 6; i++) {
 		popValue();
 	}
 }
 
 /*
- * CBEmu::commandDim - Create array
+ * CBEnchanted::commandDim - Create array
  */
-void CBEmu::commandDim(void) {
+void CBEnchanted::commandDim(void) {
 	cpos ++;
 	uint32_t n = *(uint32_t *)(code + cpos); // Number of dimensions
 	cpos += 4;
@@ -609,9 +609,9 @@ void CBEmu::commandDim(void) {
 }
 
 /*
- * CBEmu::commandArrayAssing - Assing value of array element
+ * CBEnchanted::commandArrayAssing - Assing value of array element
  */
-void CBEmu::commandArrayAssign(void) {
+void CBEnchanted::commandArrayAssign(void) {
 	uint32_t type = popValue<int32_t>();
 	cpos ++;
 	uint32_t n = *(uint32_t *)(code + cpos);
@@ -633,9 +633,9 @@ void CBEmu::commandArrayAssign(void) {
 }
 
 /*
- * CBEmu::handlePushVariable - Push value of variable to stack
+ * CBEnchanted::handlePushVariable - Push value of variable to stack
  */
-void CBEmu::handlePushVariable(void) {
+void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue<int32_t>();
 	
 	switch (type) {
@@ -653,9 +653,9 @@ void CBEmu::handlePushVariable(void) {
 }
 
 /*
- * CBEmu::handlePushSomething - Push float, string or something else to stack
+ * CBEnchanted::handlePushSomething - Push float, string or something else to stack
  */
-void CBEmu::handlePushSomething(void) {
+void CBEnchanted::handlePushSomething(void) {
 	uint32_t type = popValue<int32_t>();
 	switch (type) {
 		case 2: { // Float
@@ -684,9 +684,9 @@ void CBEmu::handlePushSomething(void) {
 }
 
 /*
- * CBEmu::handleMathOperation - Handle mathematical operation
+ * CBEnchanted::handleMathOperation - Handle mathematical operation
  */
-void CBEmu::handleMathOperation(void) {
+void CBEnchanted::handleMathOperation(void) {
 	uint8_t op = *(uint8_t *)(code + cpos);
 	cpos++;
 	HCDEBUG("Mathoperation: %1", uint32_t(op));
@@ -841,9 +841,9 @@ void CBEmu::handleMathOperation(void) {
 }
 
 /*
- * CBEmu::handleJump - Jump if last operation was true
+ * CBEnchanted::handleJump - Jump if last operation was true
  */
-void CBEmu::handleJump(void) {
+void CBEnchanted::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
@@ -853,73 +853,73 @@ void CBEmu::handleJump(void) {
 }
 
 /*
- * CBEmu::handleIncVar - Increase integer variable
+ * CBEnchanted::handleIncVar - Increase integer variable
  */
-void CBEmu::handleIncVar(void) {
+void CBEnchanted::handleIncVar(void) {
 	setIntegerVariable(*(uint32_t *)(code + cpos), getIntegerVariable(*(uint32_t *)(code + cpos)) + 1);
 	cpos += 4;
 }
 
 /*
- * CBEmu::commandGoto - Jump to different location
+ * CBEnchanted::commandGoto - Jump to different location
  */
-void CBEmu::commandGoto(void) {
+void CBEnchanted::commandGoto(void) {
 	cpos ++;
 	cpos = offsets[*(uint32_t *)(code + cpos)];
 }
 
-void CBEmu::commandDelete(void) {
+void CBEnchanted::commandDelete(void) {
 	
 }
 
-void CBEmu::commandInsert(void) {
+void CBEnchanted::commandInsert(void) {
 	
 }
 
-void CBEmu::commandClearArray(void) {
+void CBEnchanted::commandClearArray(void) {
 	
 }
 
-void CBEmu::commandReDim(void) {
+void CBEnchanted::commandReDim(void) {
 	
 }
 
-void CBEmu::commandReturn(void) {
+void CBEnchanted::commandReturn(void) {
 	
 }
 
-void CBEmu::commandGosub(void) {
+void CBEnchanted::commandGosub(void) {
 	
 }
 
-void CBEmu::functionNew(void) {
+void CBEnchanted::functionNew(void) {
 	
 }
 
-void CBEmu::functionFirst(void) {
+void CBEnchanted::functionFirst(void) {
 	
 }
 
-void CBEmu::functionLast(void) {
+void CBEnchanted::functionLast(void) {
 	
 }
 
-void CBEmu::functionBefore(void) {
+void CBEnchanted::functionBefore(void) {
 	
 }
 
-void CBEmu::functionAfter(void) {
+void CBEnchanted::functionAfter(void) {
 	
 }
 
-void CBEmu::functionRead(void) {
+void CBEnchanted::functionRead(void) {
 	
 }
 
-void CBEmu::functionConvertToInteger(void) {
+void CBEnchanted::functionConvertToInteger(void) {
 	
 }
 
-void CBEmu::functionConvertToType(void) {
+void CBEnchanted::functionConvertToType(void) {
 	
 }

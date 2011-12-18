@@ -1,7 +1,7 @@
 #ifndef INPUTINTERFACE_H
 #define INPUTINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class InputInterface {
 	public:
@@ -41,7 +41,7 @@ class InputInterface {
 		void functionDownKey(void);
 		void functionEscapeKey(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 };
 
 #endif

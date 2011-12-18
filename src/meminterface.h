@@ -1,7 +1,7 @@
 #ifndef MEMINTERFACE_H
 #define MEMINTERFACE_H
 
-class CBEmu;
+class CBEnchanted;
 
 class MemInterface {
 	public:
@@ -23,7 +23,7 @@ class MemInterface {
 		void functionPeekInt(void);
 		void functionPeekFloat(void);
 	private:
-		CBEmu *cb;
+		CBEnchanted *cb;
 	
 };
 

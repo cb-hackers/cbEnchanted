@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbemu.h"
+#include "cbenchanted.h"
 #include "gfxinterface.h"
 
 #ifdef WIN32
@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Shape.hpp>
 #include "drawingprimitives.h"
 
-GfxInterface::GfxInterface() : cb(static_cast <CBEmu *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(sf::VideoMode(400, 300, 32), "", sf::Style::Default) {
+GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(sf::VideoMode(400, 300, 32), "", sf::Style::Default) {
 	window.SetActive(true);
 }
 
