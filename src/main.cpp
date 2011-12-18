@@ -7,7 +7,7 @@
 #else
 	int main(int argc, char** argv) {
 #endif
-    CBEmu cb;
+    CBEnchanted cb;
 	cb.init(string("pallerot.exe"));
 	cb.run();
 	cb.cleanup();

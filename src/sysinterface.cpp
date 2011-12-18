@@ -5,7 +5,7 @@
 #include <time.h>
 
 SysInterface::SysInterface() {
-	cb = static_cast <CCBEnchanted *> (this);
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 void SysInterface::commandWait(void) {
