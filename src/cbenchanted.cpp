@@ -337,21 +337,10 @@ void CBEnchanted::handleCommand(void) {
 		case 797: commandMirrorObject(); break;
 		case 798: commandPixelPick(); break;
 		case 799: commandClearObjects(); break;
-		/*case 12: commandGoto(); break;
-		case 42: commandDim(); break;
-		case 69: commandEnd(); break;
 		case 78: commandArrayAssign(); break;
 		case 97:
 		case 98: command97_98(); break;
 		case 99: command99(); break;
-		case 207: commandPrint(); break;
-		case 224: commandWaitKey(); break;
-		case 425: commandSetWindow(); break;
-		case 481: commandScreen(); break;
-		case 491: commandColor(); break;
-		case 492: commandClsColor(); break;
-		case 498: commandCircle(); break;
-		case 513: commandDrawScreen(); break;*/
 		default: FIXME("Unimplemented command: %i", command);
 	}
 }
@@ -539,11 +528,6 @@ void CBEnchanted::handleFunction(void) {
 		case 755: functionMapWidth(); break;
 		case 756: functionMapHeight(); break;
 		case 790: functionMakeEmitter(); break;
-		/*case 106: functionSin(); break;
-		case 107: functionCos(); break;
-		case 122: functionWrapAngle(); break;
-		case 150: functionStr(); break;
-		case 442: functionTimer(); break;*/
 		default: FIXME("Unimplemented function: %i", func);
 	}
 }
