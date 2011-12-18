@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{557C3A23-098B-4080-A78E-1EBDDD872BCD}</ProjectGuid>
+    <RootNamespace>cbEnchanted</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\SFML_source\include;D:\Boost\boost_1_48_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\SFML\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-main-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>D:\SFML\include;D:\Boost\boost_1_48_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MinimalRebuild>true</MinimalRebuild>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\SFML\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>sfml-graphics-s.lib;sfml-main.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-system-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\animinterface.cpp" />
+    <ClCompile Include="..\src\camerainterface.cpp" />
+    <ClCompile Include="..\src\cbemu.cpp" />
+    <ClCompile Include="..\src\cbvariableholder.cpp" />
+    <ClCompile Include="..\src\drawingprimitives.cpp" />
+    <ClCompile Include="..\src\effectinterface.cpp" />
+    <ClCompile Include="..\src\fileinterface.cpp" />
+    <ClCompile Include="..\src\gfxinterface.cpp" />
+    <ClCompile Include="..\src\imageinterface.cpp" />
+    <ClCompile Include="..\src\inputinterface.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\mapinterface.cpp" />
+    <ClCompile Include="..\src\mathinterface.cpp" />
+    <ClCompile Include="..\src\mathoperations.cpp" />
+    <ClCompile Include="..\src\meminterface.cpp" />
+    <ClCompile Include="..\src\objectinterface.cpp" />
+    <ClCompile Include="..\src\precomp.cpp" />
+    <ClCompile Include="..\src\soundinterface.cpp" />
+    <ClCompile Include="..\src\stringinterface.cpp" />
+    <ClCompile Include="..\src\sysinterface.cpp" />
+    <ClCompile Include="..\src\textinterface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\animinterface.h" />
+    <ClInclude Include="..\src\camerainterface.h" />
+    <ClInclude Include="..\src\cbemu.h" />
+    <ClInclude Include="..\src\cbvariableholder.h" />
+    <ClInclude Include="..\src\drawingprimitives.h" />
+    <ClInclude Include="..\src\effectinterface.h" />
+    <ClInclude Include="..\src\fileinterface.h" />
+    <ClInclude Include="..\src\gfxinterface.h" />
+    <ClInclude Include="..\src\imageinterface.h" />
+    <ClInclude Include="..\src\inputinterface.h" />
+    <ClInclude Include="..\src\mapinterface.h" />
+    <ClInclude Include="..\src\mathinterface.h" />
+    <ClInclude Include="..\src\mathoperations.h" />
+    <ClInclude Include="..\src\meminterface.h" />
+    <ClInclude Include="..\src\objectinterface.h" />
+    <ClInclude Include="..\src\precomp.h" />
+    <ClInclude Include="..\src\soundinterface.h" />
+    <ClInclude Include="..\src\stringinterface.h" />
+    <ClInclude Include="..\src\sysinterface.h" />
+    <ClInclude Include="..\src\textinterface.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

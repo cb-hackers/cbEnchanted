@@ -33,3 +33,4 @@ void MathInterface::functionSin(void) {
 	
 	cb->pushValue(float(sin(angle / 180.0 * 3.14159265358979323)));
 }
+
