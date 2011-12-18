@@ -99,6 +99,15 @@ class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface
 		void commandDelete(void);
 		
 		void commandArrayAssign(void);
+		
+		void functionNew(void);
+		void functionFirst(void);
+		void functionLast(void);
+		void functionBefore(void);
+		void functionAfter(void);
+		void functionRead(void);
+		void functionConvertToInteger(void);
+		void functionConvertToType(void);
 };
 
 #endif

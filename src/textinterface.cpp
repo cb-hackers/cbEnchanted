@@ -45,3 +45,15 @@ void TextInterface::commandAddText(void) {
 void TextInterface::commandClearText(void) {
 	
 }
+
+void TextInterface::functionLoadFont(void) {
+	
+}
+
+void TextInterface::functionTextWidth(void) {
+	
+}
+
+void TextInterface::functionTextHeight(void) {
+	
+}

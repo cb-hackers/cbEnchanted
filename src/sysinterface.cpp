@@ -64,6 +64,30 @@ void SysInterface::commandEnd(void) {
 	static_cast<CBEmu *> (this)->stop();
 }
 
+void SysInterface::functionDate(void) {
+	
+}
+
+void SysInterface::functionTime(void) {
+	
+}
+
 void SysInterface::functionTimer(void) {
 	cb->pushValue((int32_t)clock());
+}
+
+void SysInterface::functionCommandLine(void) {
+	
+}
+
+void SysInterface::functionGetEXEName(void) {
+	
+}
+
+void SysInterface::functionFPS(void) {
+	
+}
+
+void SysInterface::functionCrc32(void) {
+	
 }

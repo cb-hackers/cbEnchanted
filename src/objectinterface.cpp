@@ -140,3 +140,123 @@ void ObjectInterface::commandClearCollisions(void) {
 void ObjectInterface::commandInitObjectList(void) {
 	
 }
+
+void ObjectInterface::functionLoadObject(void) {
+	
+}
+
+void ObjectInterface::functionLoadAnimObject(void) {
+	
+}
+
+void ObjectInterface::functionMakeObject(void) {
+	
+}
+
+void ObjectInterface::functionMakeObjectFloor(void) {
+	
+}
+
+void ObjectInterface::functionCloneObject(void) {
+	
+}
+
+void ObjectInterface::functionObjectInteger(void) {
+	
+}
+
+void ObjectInterface::functionObjectFloat(void) {
+	
+}
+
+void ObjectInterface::functionObjectString(void) {
+	
+}
+
+void ObjectInterface::functionObjectLife(void) {
+	
+}
+
+void ObjectInterface::functionPickedObject(void) {
+	
+}
+
+void ObjectInterface::functionPickedX(void) {
+	
+}
+
+void ObjectInterface::functionPickedY(void) {
+	
+}
+
+void ObjectInterface::functionPickedAngle(void) {
+	
+}
+
+void ObjectInterface::functionGetAngle2(void) {
+	
+}
+
+void ObjectInterface::functionDistance2(void) {
+	
+}
+
+void ObjectInterface::functionObjectX(void) {
+	
+}
+
+void ObjectInterface::functionObjectY(void) {
+	
+}
+
+void ObjectInterface::functionObjectAngle(void) {
+	
+}
+
+void ObjectInterface::functionObjectSizeX(void) {
+	
+}
+
+void ObjectInterface::functionObjectSizeY(void) {
+	
+}
+
+void ObjectInterface::functionObjectPlaying(void) {
+	
+}
+
+void ObjectInterface::functionObjectFrame(void) {
+	
+}
+
+void ObjectInterface::functionObjectsOverlap(void) {
+	
+}
+
+void ObjectInterface::functionObjectSight(void) {
+	
+}
+
+void ObjectInterface::functionCountCollisions(void) {
+	
+}
+
+void ObjectInterface::functionGetCollision(void) {
+	
+}
+
+void ObjectInterface::functionCollisionX(void) {
+	
+}
+
+void ObjectInterface::functionCollisionY(void) {
+	
+}
+
+void ObjectInterface::functionCollisionAngle(void) {
+	
+}
+
+void ObjectInterface::functionNextObject(void) {
+	
+}

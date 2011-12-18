@@ -10,8 +10,6 @@ class GfxInterface {
 		GfxInterface();
 		~GfxInterface();
 		
-		void functionScreen(void);
-		
 		void commandScreen(void);
 		void commandLock(void);
 		void commandUnlock(void);
@@ -36,7 +34,17 @@ class GfxInterface {
 		void commandUpdateGame(void);
 		void commandDrawGame(void);
 		void commandDrawScreen(void);
-		
+
+		void functionSCREEN(void);
+		void functionImage(void);
+		void functionGetPixel(void);
+		void functionGetPixel2(void);
+		void functionGetRGB(void);
+		void functionScreenWidth(void);
+		void functionScreenHeight(void);
+		void functionScreenDepth(void);
+		void functionGFXModeExists(void);
+
 		sf::RenderWindow *getWindow(void) { return &this->window; }
 	private:
 		CBEmu *cb;

@@ -24,3 +24,15 @@ void SoundInterface::commandStopSound(void) {
 void SoundInterface::commandDeleteSound(void) {
 	
 }
+
+void SoundInterface::functionLoadSound(void) {
+	
+}
+
+void SoundInterface::functionPlaySound(void) {
+	
+}
+
+void SoundInterface::functionSoundPlaying(void) {
+	
+}

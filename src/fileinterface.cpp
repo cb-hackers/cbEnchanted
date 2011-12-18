@@ -92,3 +92,67 @@ void FileInterface::commandReadString(void) {
 void FileInterface::commandReadLine(void) {
 	
 }
+
+void FileInterface::functionOpenToRead(void) {
+	
+}
+
+void FileInterface::functionOpenToWrite(void) {
+	
+}
+
+void FileInterface::functionOpenToEdit(void) {
+	
+}
+
+void FileInterface::functionFileOffset(void) {
+	
+}
+
+void FileInterface::functionFindFile(void) {
+	
+}
+
+void FileInterface::functionCurrentDir(void) {
+	
+}
+
+void FileInterface::functionFileExists(void) {
+	
+}
+
+void FileInterface::functionIsDirectory(void) {
+	
+}
+
+void FileInterface::functionFileSize(void) {
+	
+}
+
+void FileInterface::functionEOF(void) {
+	
+}
+
+void FileInterface::functionReadByte(void) {
+	
+}
+
+void FileInterface::functionReadShort(void) {
+	
+}
+
+void FileInterface::functionReadInt(void) {
+	
+}
+
+void FileInterface::functionReadFloat(void) {
+	
+}
+
+void FileInterface::functionReadString(void) {
+	
+}
+
+void FileInterface::functionReadLine(void) {
+	
+}

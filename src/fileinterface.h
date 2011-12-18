@@ -27,6 +27,23 @@ class FileInterface {
 		void commandReadFloat(void);
 		void commandReadString(void);
 		void commandReadLine(void);
+		
+		void functionOpenToRead(void);
+		void functionOpenToWrite(void);
+		void functionOpenToEdit(void);
+		void functionFileOffset(void);
+		void functionFindFile(void);
+		void functionCurrentDir(void);
+		void functionFileExists(void);
+		void functionIsDirectory(void);
+		void functionFileSize(void);
+		void functionEOF(void);
+		void functionReadByte(void);
+		void functionReadShort(void);
+		void functionReadInt(void);
+		void functionReadFloat(void);
+		void functionReadString(void);
+		void functionReadLine(void);
 	private:
 	
 };

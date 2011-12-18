@@ -55,6 +55,28 @@ void InputInterface::commandSAFEEXIT(void) {
 	
 }
 
+
+
+void InputInterface::functionInput(void) {
+	
+}
+
+void InputInterface::functionKeyDown(void) {
+	
+}
+
+void InputInterface::functionKeyHit(void) {
+	
+}
+
+void InputInterface::functionKeyUp(void) {
+	
+}
+
+void InputInterface::functionGetKey(void) {
+	
+}
+
 /*
  *  InputInterface::funtionWaitKey - Wait for key press and return pressed key
  */
@@ -78,3 +100,74 @@ void InputInterface::functionWaitKey(void) {
 	}
 }
 
+void InputInterface::functionMouseDown(void) {
+	
+}
+
+void InputInterface::functionMouseHit(void) {
+	
+}
+
+void InputInterface::functionMouseUp(void) {
+	
+}
+
+void InputInterface::functionGetMouse(void) {
+	
+}
+
+void InputInterface::functionWaitMouse(void) {
+	
+}
+
+void InputInterface::functionMouseX(void) {
+	
+}
+
+void InputInterface::functionMouseY(void) {
+	
+}
+
+void InputInterface::functionMouseWX(void) {
+	
+}
+
+void InputInterface::functionMouseWY(void) {
+	
+}
+
+void InputInterface::functionMouseZ(void) {
+	
+}
+
+void InputInterface::functionMouseMoveX(void) {
+	
+}
+
+void InputInterface::functionMouseMoveY(void) {
+	
+}
+
+void InputInterface::functionMouseMoveZ(void) {
+	
+}
+
+void InputInterface::functionLeftKey(void) {
+	
+}
+
+void InputInterface::functionRightKey(void) {
+	
+}
+
+void InputInterface::functionUpKey(void) {
+	
+}
+
+void InputInterface::functionDownKey(void) {
+	
+}
+
+void InputInterface::functionEscapeKey(void) {
+	
+}

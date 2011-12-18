@@ -10,6 +10,10 @@ class SoundInterface {
 		void commandSetSound(void);
 		void commandStopSound(void);
 		void commandDeleteSound(void);
+		
+		void functionLoadSound(void);
+		void functionPlaySound(void);
+		void functionSoundPlaying(void);
 	private:
 	
 };

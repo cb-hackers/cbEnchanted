@@ -57,3 +57,35 @@ void ImageInterface::commandHotSpot(void) {
 void ImageInterface::commandDeleteImage(void) {
 	
 }
+
+void ImageInterface::functionLoadImage(void) {
+	
+}
+
+void ImageInterface::functionLoadAnimImage(void) {
+	
+}
+
+void ImageInterface::functionMakeImage(void) {
+	
+}
+
+void ImageInterface::functionCloneImage(void) {
+	
+}
+
+void ImageInterface::functionImageWidth(void) {
+	
+}
+
+void ImageInterface::functionImageHeight(void) {
+	
+}
+
+void ImageInterface::functionImagesOverlap(void) {
+	
+}
+
+void ImageInterface::functionImagesCollide(void) {
+	
+}

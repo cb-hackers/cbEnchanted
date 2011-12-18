@@ -17,6 +17,10 @@ class TextInterface {
 		void commandLocate(void);
 		void commandAddText(void);
 		void commandClearText(void);
+		
+		void functionLoadFont(void);
+		void functionTextWidth(void);
+		void functionTextHeight(void);
 	private:
 		CBEmu *cb;
 };

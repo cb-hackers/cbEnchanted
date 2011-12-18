@@ -20,3 +20,7 @@ void EffectInterface::commandParticleAnimation(void) {
 void EffectInterface::commandParticleEmission(void) {
 	
 }
+
+void EffectInterface::functionMakeEmitter(void) {
+	
+}

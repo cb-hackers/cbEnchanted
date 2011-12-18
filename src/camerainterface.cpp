@@ -48,3 +48,15 @@ void CameraInterface::commandTranslateCamera(void) {
 void CameraInterface::commandPositionCamera(void) {
 	
 }
+
+void CameraInterface::functionCameraX(void) {
+	
+}
+
+void CameraInterface::functionCameraY(void) {
+	
+}
+
+void CameraInterface::functionCameraAngle(void) {
+	
+}

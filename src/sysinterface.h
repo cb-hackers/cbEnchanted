@@ -21,7 +21,13 @@ class SysInterface {
 		
 		void commandEnd(void);
 		
+		void functionDate(void);
+		void functionTime(void);
 		void functionTimer(void);
+		void functionCommandLine(void);
+		void functionGetEXEName(void);
+		void functionFPS(void);
+		void functionCrc32(void);
 	private:
 		CBEmu *cb;
 };

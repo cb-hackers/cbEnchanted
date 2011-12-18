@@ -36,10 +36,6 @@ void GfxInterface::commandScreen(void) {
 	window.Create(sf::VideoMode(width, height, depth), windowTitle, style);
 }
 
-void GfxInterface::functionScreen(void) {
-	cb->pushValue(0);
-}
-
 void GfxInterface::commandClsColor(void) {
 	float b = cb->popValue<float>();
 	float g = cb->popValue<float>();
@@ -168,5 +164,41 @@ void GfxInterface::commandUpdateGame(void) {
 }
 
 void GfxInterface::commandDrawGame(void) {
+	
+}
+
+void GfxInterface::functionSCREEN(void) {
+	cb->pushValue(0);
+}
+
+void GfxInterface::functionImage(void) {
+	
+}
+
+void GfxInterface::functionGetPixel(void) {
+	
+}
+
+void GfxInterface::functionGetPixel2(void) {
+	
+}
+
+void GfxInterface::functionGetRGB(void) {
+	
+}
+
+void GfxInterface::functionScreenWidth(void) {
+	
+}
+
+void GfxInterface::functionScreenHeight(void) {
+	
+}
+
+void GfxInterface::functionScreenDepth(void) {
+	
+}
+
+void GfxInterface::functionGFXModeExists(void) {
 	
 }

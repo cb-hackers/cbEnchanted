@@ -41,6 +41,37 @@ class ObjectInterface {
 		void commandSetupCollision(void);
 		void commandClearCollisions(void);
 		void commandInitObjectList(void);
+		
+		void functionLoadObject(void);
+		void functionLoadAnimObject(void);
+		void functionMakeObject(void);
+		void functionMakeObjectFloor(void);
+		void functionCloneObject(void);
+		void functionObjectInteger(void);
+		void functionObjectFloat(void);
+		void functionObjectString(void);
+		void functionObjectLife(void);
+		void functionPickedObject(void);
+		void functionPickedX(void);
+		void functionPickedY(void);
+		void functionPickedAngle(void);
+		void functionGetAngle2(void);
+		void functionDistance2(void);
+		void functionObjectX(void);
+		void functionObjectY(void);
+		void functionObjectAngle(void);
+		void functionObjectSizeX(void);
+		void functionObjectSizeY(void);
+		void functionObjectPlaying(void);
+		void functionObjectFrame(void);
+		void functionObjectsOverlap(void);
+		void functionObjectSight(void);
+		void functionCountCollisions(void);
+		void functionGetCollision(void);
+		void functionCollisionX(void);
+		void functionCollisionY(void);
+		void functionCollisionAngle(void);
+		void functionNextObject(void);
 	private:
 	
 };

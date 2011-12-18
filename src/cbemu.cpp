@@ -365,11 +365,185 @@ void CBEmu::handleFunction(void) {
 	HCDEBUG("Function: %1", func);
 
 	switch(func) {
+		case 50: functionNew(); break;
+		case 52: functionFirst(); break;
+		case 53: functionLast(); break;
+		case 54: functionBefore(); break;
+		case 55: functionAfter(); break;
+		case 61: functionRead(); break;
+		case 63: functionConvertToInteger(); break;
+		case 64: functionConvertToType(); break;
+		case 66: functionNextObject(); break;
+		case 100: functionInt(); break;
+		case 101: functionFloat(); break;
+		case 102: functionRoundUp(); break;
+		case 103: functionRoundDown(); break;
+		case 104: functionAbs(); break;
+		case 105: functionSqrt(); break;
 		case 106: functionSin(); break;
+		case 107: functionCos(); break;
+		case 108: functionTan(); break;
+		case 109: functionASin(); break;
+		case 110: functionACos(); break;
+		case 111: functionATan(); break;
+		case 112: functionGetAngle(); break;
+		case 113: functionGetAngle2(); break;
+		case 114: functionLog(); break;
+		case 115: functionLog10(); break;
+		case 116: functionRnd(); break;
+		case 117: functionRand(); break;
+		case 118: functionMin(); break;
+		case 119: functionMax(); break;
+		case 120: functionCurveValue(); break;
+		case 121: functionCurveAngle(); break;
+		case 122: functionWrapAngle(); break;
+		case 123: functionDistance(); break;
+		case 124: functionDistance2(); break;
+		case 126: functionBoxOverlap(); break;
+		case 150: functionStr(); break;
+		case 151: functionLeft(); break;
+		case 152: functionRight(); break;
+		case 153: functionMid(); break;
+		case 154: functionReplace(); break;
+		case 155: functionInStr(); break;
+		case 156: functionUpper(); break;
+		case 157: functionLower(); break;
+		case 158: functionTrim(); break;
+		case 159: functionLSet(); break;
+		case 160: functionRSet(); break;
+		case 161: functionChr(); break;
+		case 162: functionAsc(); break;
+		case 163: functionLen(); break;
+		case 164: functionHex(); break;
+		case 165: functionBin(); break;
+		case 166: functionString(); break;
+		case 167: functionFlip(); break;
+		case 168: functionStrInsert(); break;
+		case 169: functionStrRemove(); break;
+		case 170: functionStrMove(); break;
+		case 171: functionCountWords(); break;
+		case 172: functionGetWord(); break;
+		case 200: functionLoadFont(); break;
+		case 203: functionTextWidth(); break;
+		case 204: functionTextHeight(); break;
+		case 220: functionInput(); break;
+		case 221: functionKeyDown(); break;
+		case 222: functionKeyHit(); break;
+		case 223: functionGetKey(); break;
+		case 227: functionMouseDown(); break;
+		case 228: functionMouseHit(); break;
+		case 229: functionGetMouse(); break;
+		case 230: functionWaitMouse(); break;
+		case 231: functionMouseX(); break;
+		case 232: functionMouseY(); break;
+		case 233: functionMouseZ(); break;
+		case 234: functionMouseMoveX(); break;
+		case 235: functionMouseMoveY(); break;
+		case 236: functionMouseMoveZ(); break;
+		case 241: functionLeftKey(); break;
+		case 242: functionRightKey(); break;
+		case 243: functionUpKey(); break;
+		case 244: functionDownKey(); break;
+		case 245: functionEscapeKey(); break;
+		case 246: functionMouseWX(); break;
+		case 247: functionMouseWY(); break;
+		case 248: functionKeyUp(); break;
+		case 249: functionMouseUp(); break;
+		case 300: functionMakeMEMBlock(); break;
+		case 302: functionMEMBlockSize(); break;
+		case 305: functionPeekByte(); break;
+		case 306: functionPeekShort(); break;
+		case 307: functionPeekInt(); break;
+		case 308: functionPeekFloat(); break;
+		case 320: functionOpenToRead(); break;
+		case 321: functionOpenToWrite(); break;
+		case 322: functionOpenToEdit(); break;
+		case 324: functionFileOffset(); break;
+		case 328: functionFindFile(); break;
+		case 329: functionCurrentDir(); break;
+		case 333: functionFileExists(); break;
+		case 334: functionIsDirectory(); break;
+		case 335: functionFileSize(); break;
+		case 339: functionEOF(); break;
+		case 341: functionReadByte(); break;
+		case 342: functionReadShort(); break;
+		case 343: functionReadInt(); break;
+		case 344: functionReadFloat(); break;
+		case 345: functionReadFloat(); break;
+		case 346: functionReadString(); break;
+		case 400: functionPlayAnimation(); break;
+		case 403: functionAnimationWidth(); break;
+		case 404: functionAnimationHeight(); break;
+		case 405: functionAnimationPlaying(); break;
+		case 415: functionCrc32(); break;
+		case 420: functionDate(); break;
+		case 421: functionTime(); break;
+		case 422: functionTimer(); break;
+		case 424: functionCommandLine(); break;
+		case 427: functionGetEXEName(); break;
+		case 432: functionFPS(); break;
+		case 450: functionPlaySound(); break;
+		case 452: functionLoadSound(); break;
+		case 455: functionSoundPlaying(); break;
+		case 481: functionSCREEN(); break;
+		case 484: functionGetPixel(); break;
+		case 486: functionGetPixel2(); break;
+		case 500: functionGetRGB(); break;
+		case 501: functionSCREEN(); break;
+		case 502: functionImage(); break;
+		case 507: functionScreenWidth(); break;
+		case 508: functionScreenHeight(); break;
+		case 509: functionScreenDepth(); break;
+		case 510: functionGFXModeExists(); break;
+		case 520: functionLoadImage(); break;
+		case 521: functionLoadAnimImage(); break;
+		case 522: functionMakeImage(); break;
+		case 523: functionCloneImage(); break;
+		case 530: functionImageWidth(); break;
+		case 531: functionImageHeight(); break;
+		case 532: functionImagesOverlap(); break;
+		case 533: functionImagesCollide(); break;
+		case 600: functionLoadObject(); break;
+		case 601: functionLoadAnimObject(); break;
+		case 602: functionMakeObject(); break;
+		case 608: functionMakeObjectFloor(); break;
+		case 615: functionCloneObject(); break;
+		case 638: functionObjectInteger(); break;
+		case 639: functionObjectFloat(); break;
+		case 640: functionObjectString(); break;
+		case 643: functionPickedObject(); break;
+		case 644: functionPickedX(); break;
+		case 645: functionPickedY(); break;
+		case 649: functionObjectLife(); break;
+		case 670: functionObjectAngle(); break;
+		case 674: functionObjectX(); break;
+		case 675: functionObjectY(); break;
+		case 677: functionObjectSizeX(); break;
+		case 678: functionObjectSizeY(); break;
+		case 680: functionObjectPlaying(); break;
+		case 690: functionObjectFrame(); break;
+		case 693: functionCameraX(); break;
+		case 694: functionCameraY(); break;
+		case 696: functionCameraAngle(); break;
+		case 700: functionObjectsOverlap(); break;
+		case 701: functionObjectSight(); break;
+		case 702: functionCountCollisions(); break;
+		case 706: functionGetCollision(); break;
+		case 709: functionCollisionX(); break;
+		case 710: functionCollisionY(); break;
+		case 712: functionCollisionAngle(); break;
+		case 750: functionLoadMap(); break;
+		case 751: functionMakeMap(); break;
+		case 753: functionGetMap(); break;
+		case 754: functionGetMap2(); break;
+		case 755: functionMapWidth(); break;
+		case 756: functionMapHeight(); break;
+		case 790: functionMakeEmitter(); break;
+		/*case 106: functionSin(); break;
 		case 107: functionCos(); break;
 		case 122: functionWrapAngle(); break;
 		case 150: functionStr(); break;
-		case 442: functionTimer(); break;
+		case 442: functionTimer(); break;*/
 		default: FIXME("Unimplemented function: %1", func);
 	}
 }
@@ -715,5 +889,37 @@ void CBEmu::commandReturn(void) {
 }
 
 void CBEmu::commandGosub(void) {
+	
+}
+
+void CBEmu::functionNew(void) {
+	
+}
+
+void CBEmu::functionFirst(void) {
+	
+}
+
+void CBEmu::functionLast(void) {
+	
+}
+
+void CBEmu::functionBefore(void) {
+	
+}
+
+void CBEmu::functionAfter(void) {
+	
+}
+
+void CBEmu::functionRead(void) {
+	
+}
+
+void CBEmu::functionConvertToInteger(void) {
+	
+}
+
+void CBEmu::functionConvertToType(void) {
 	
 }

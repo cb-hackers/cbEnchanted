@@ -15,6 +15,13 @@ class MemInterface {
 		void commandPokeShort(void);
 		void commandPokeInt(void);
 		void commandPokeFloat(void);
+		
+		void functionMakeMEMBlock(void);
+		void functionMEMBlockSize(void);
+		void functionPeekByte(void);
+		void functionPeekShort(void);
+		void functionPeekInt(void);
+		void functionPeekFloat(void);
 	private:
 		CBEmu *cb;
 	

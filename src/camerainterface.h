@@ -16,6 +16,10 @@ class CameraInterface {
 		void commandMoveCamera(void);
 		void commandTranslateCamera(void);
 		void commandPositionCamera(void);
+		
+		void functionCameraX(void);
+		void functionCameraY(void);
+		void functionCameraAngle(void);
 	private:
 	
 };

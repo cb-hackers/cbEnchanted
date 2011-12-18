@@ -9,6 +9,8 @@ class EffectInterface {
 		void commandParticleMovement(void);
 		void commandParticleAnimation(void);
 		void commandParticleEmission(void);
+		
+		void functionMakeEmitter(void);
 	private:
 	
 };
