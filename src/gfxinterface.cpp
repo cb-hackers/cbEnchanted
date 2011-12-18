@@ -4,8 +4,8 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-#include <gl\GL.h>
-#include <SFML\Graphics\Shape.hpp>
+#include <SFML/Graphics/Shape.hpp>
+#include "drawingprimitives.h"
 
 GfxInterface::GfxInterface() : 
 cb(static_cast <CBEmu *> (this)),
@@ -63,43 +63,15 @@ void GfxInterface::commandColor(void) {
 	drawColor.b = (uint8_t)b;
 }
 
-#define CIRCLE_SEGMENT_COUNT 100
+
 void GfxInterface::commandCircle(void) {
 	bool fill = cb->popValue<int32_t>();
-	int32_t rad = cb->popValue<int32_t>();
-	float cy = cb->popValue<float>() + (float)rad *0.5;
-	float cx = cb->popValue<float>() + (float)rad *0.5;
-
-	sf::Shape circle(sf::Shape::Circle(cx,cy,rad,drawColor));
-	circle.EnableFill(fill);
+	float rad = (float)cb->popValue<int32_t>();
+	float cy = cb->popValue<float>() + rad *0.5;
+	float cx = cb->popValue<float>() + rad *0.5;
+	Circle circle(cx,cy,rad*0.5,fill);
+	glColor3ub(drawColor.r,drawColor.g,drawColor.b);
 	window.Draw(circle);
-
-
-	/*Doesn't work...
-	float theta = 2 * 3.1415926 / float(CIRCLE_SEGMENT_COUNT); 
-	float c = cosf(theta);
-	float s = sinf(theta);
-	float t;
-
-	float x = rad;
-	float y = 0; 
-	renderer->SetColor(drawColor);
-	if (fill)
-	{
-		renderer->Begin(GL_TRIANGLE_FAN);
-		glVertex2f(cx,cy);
-	}
-	else
-		glBegin(GL_LINE_LOOP); 
-	for(int ii = 0; ii != CIRCLE_SEGMENT_COUNT; ii++) 
-	{ 
-		glVertex2f(x + cx, y + cy);
-
-		t = x;
-		x = c * x - s * y;
-		y = s * t + c * y;
-	} 
-	glEnd();*/
 }
 
 void GfxInterface::commandLine(void){
@@ -107,11 +79,9 @@ void GfxInterface::commandLine(void){
 	float x2 = cb->popValue<float>();
 	float y1 = cb->popValue<float>();
 	float x1 = cb->popValue<float>();
-	glColor3i(drawColor.r,drawColor.g,drawColor.b);
-	glBegin(GL_LINE);
-	glVertex2f(x1,y1);
-	glVertex2f(x2,y2);
-	glEnd();
+	glColor3ub(drawColor.r,drawColor.g,drawColor.b);
+	Line line(x1,y1,x2,y2);
+	window.Draw(line);
 }
 
 void GfxInterface::commandDrawScreen(void) {

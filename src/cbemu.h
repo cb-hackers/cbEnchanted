@@ -23,7 +23,7 @@
 #define LOG_FIXME    0x04
 #define LOG_HCDEBUG 0x08
 
-#define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME | LOG_HCDEBUG)
+#define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME/* | LOG_HCDEBUG*/)
 
 #if LOG_LEVEL & 1
 #define DEBUG(str, ...) printf(str, ##__VA_ARGS__);
