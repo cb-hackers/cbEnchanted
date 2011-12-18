@@ -80,6 +80,7 @@ void GfxInterface::commandDrawScreen(void) {
 	bool cls = cb->popValue<int32_t>();
 	window.EnableVerticalSync(vSync);
 	sf::Event e;
+	
 	while (window.PollEvent(e)) {
 		switch (e.Type) {
 			case sf::Event::Closed:
