@@ -11,11 +11,17 @@ void StringInterface::functionStr(void) {
 }
 
 void StringInterface::functionLeft(void) {
+	int32_t n = cb->popValue<int32_t>();
+	string s = cb->popValue<string>();
 	
+	cb->pushValue(s.substr(0, n));
 }
 
 void StringInterface::functionRight(void) {
+	int32_t n = cb->popValue<int32_t>();
+	string s = cb->popValue<string>();
 	
+	cb->pushValue(s.substr(s.length() - n));
 }
 
 void StringInterface::functionMid(void) {
