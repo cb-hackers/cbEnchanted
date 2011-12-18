@@ -8,7 +8,7 @@ boost::any operator ! (boost::any &l) {
 	if (l.type() == typeid(int32_t)) {
 		return !boost::any_cast<int32_t>(l);
 	}
-	FIXME("Unsupported operation !%1", l.type().name());
+	FIXME("Unsupported operation !%s", l.type().name());
 }
 
 boost::any operator + (boost::any &l) {
@@ -18,7 +18,7 @@ boost::any operator + (boost::any &l) {
 	if (l.type() == typeid(int32_t)) {
 		return +boost::any_cast<int32_t>(l);
 	}
-	FIXME("Unsupported operation +%1", l.type().name());
+	FIXME("Unsupported operation +%s", l.type().name());
 }
 
 boost::any operator - (boost::any &l) {
@@ -28,7 +28,7 @@ boost::any operator - (boost::any &l) {
 	if (l.type() == typeid(int32_t)) {
 		return -boost::any_cast<int32_t>(l);
 	}
-	FIXME("Unsupported operation -%1", l.type().name());
+	FIXME("Unsupported operation -%s", l.type().name());
 }
 
 boost::any operator % (boost::any &l, boost::any &r) {
@@ -37,7 +37,7 @@ boost::any operator % (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) % boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 % %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s % %s", l.type().name(), r.type().name());
 }
 
 boost::any operator * (boost::any &l, boost::any &r) {
@@ -57,7 +57,7 @@ boost::any operator * (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) * boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 * %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s * %s", l.type().name(), r.type().name());
 }
 
 boost::any operator + (boost::any &l, boost::any &r) {
@@ -88,7 +88,7 @@ boost::any operator + (boost::any &l, boost::any &r) {
 			return boost::any_cast<string>(l) + boost::any_cast<string>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 + %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s + %s", l.type().name(), r.type().name());
 }
 
 boost::any operator - (boost::any &l, boost::any &r) {
@@ -108,7 +108,7 @@ boost::any operator - (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) - boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 - %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s - %s", l.type().name(), r.type().name());
 }
 
 boost::any operator / (boost::any &l, boost::any &r) {
@@ -128,7 +128,7 @@ boost::any operator / (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) / boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 / %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s / %s", l.type().name(), r.type().name());
 }
 
 boost::any operator << (boost::any &l, boost::any &r) {
@@ -137,7 +137,7 @@ boost::any operator << (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) << boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 << %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s << %s", l.type().name(), r.type().name());
 }
 
 boost::any operator >> (boost::any &l, boost::any &r) {
@@ -146,7 +146,7 @@ boost::any operator >> (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) >> boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 >> %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s >> %s", l.type().name(), r.type().name());
 }
 
 boost::any operator ^ (boost::any &l, boost::any &r) {
@@ -166,7 +166,7 @@ boost::any operator ^ (boost::any &l, boost::any &r) {
 			return (int)powl(boost::any_cast<int32_t>(l), boost::any_cast<int32_t>(r));//L: muutin pow:n powl:ksi että toimisi VC++...
 		}
 	}
-	FIXME("Unsupported operation %1 ^ %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s ^ %s", l.type().name(), r.type().name());
 }
 
 int32_t operator != (boost::any &l, boost::any &r) {
@@ -191,7 +191,7 @@ int32_t operator != (boost::any &l, boost::any &r) {
 			return boost::any_cast<string>(l) != boost::any_cast<string>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 != %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s != %s", l.type().name(), r.type().name());
 }
 
 int32_t operator && (boost::any &l, boost::any &r) {
@@ -211,7 +211,7 @@ int32_t operator && (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) && boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 && %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s && %s", l.type().name(), r.type().name());
 }
 
 int32_t operator <= (boost::any &l, boost::any &r) {
@@ -231,7 +231,7 @@ int32_t operator <= (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) <= boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 <= %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s <= %s", l.type().name(), r.type().name());
 }
 
 int32_t operator == (boost::any &l, boost::any &r) {
@@ -256,7 +256,7 @@ int32_t operator == (boost::any &l, boost::any &r) {
 			return boost::any_cast<string>(l) == boost::any_cast<string>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 == %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s == %s", l.type().name(), r.type().name());
 }
 
 int32_t operator >= (boost::any &l, boost::any &r) {
@@ -276,7 +276,7 @@ int32_t operator >= (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) >= boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 >= %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
 }
 
 int32_t operator || (boost::any &l, boost::any &r) {
@@ -296,7 +296,7 @@ int32_t operator || (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) || boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 || %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s || %s", l.type().name(), r.type().name());
 }
 
 int32_t operator > (boost::any &l, boost::any &r) {
@@ -316,7 +316,7 @@ int32_t operator > (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) > boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 >= %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
 }
 
 int32_t operator < (boost::any &l, boost::any &r) {
@@ -336,6 +336,6 @@ int32_t operator < (boost::any &l, boost::any &r) {
 			return boost::any_cast<int32_t>(l) < boost::any_cast<int32_t>(r);
 		}
 	}
-	FIXME("Unsupported operation %1 >= %2", l.type().name(), r.type().name());
+	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
 }
 
