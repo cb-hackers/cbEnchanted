@@ -15,6 +15,10 @@ CBEmu::CBEmu() {
 	cpos = 0;
 }
 
+CBEmu::~CBEmu() {
+	delete code;
+}
+
 /*
  * CBEmu::run - Interpret CoolBasic bytecode
  */
