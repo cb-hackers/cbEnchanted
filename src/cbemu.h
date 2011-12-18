@@ -51,7 +51,7 @@
 #endif
 
 
-class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface {
+class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface, public ObjectInterface, public MemInterface, public FileInterface, public MapInterface, public CameraInterface, public ImageInterface, public EffectInterface, public AnimInterface, public SoundInterface {
 	public:
 		CBEmu();
 		~CBEmu();
@@ -90,7 +90,14 @@ class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface
 		void command97_98(void);
 		void command99(void);
 		void commandGoto(void);
+		void commandGosub(void);
+		void commandReturn(void);
 		void commandDim(void);
+		void commandReDim(void);
+		void commandClearArray(void);
+		void commandInsert(void);
+		void commandDelete(void);
+		
 		void commandArrayAssign(void);
 };
 
