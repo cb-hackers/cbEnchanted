@@ -4,3 +4,8 @@ CBEmu
 # Ignore object files
 *.o
 
+
+/visual studio/ipch
+/visual studio/Release
+/visual studio/Debug
+/visual studio/CodeAnalyst
