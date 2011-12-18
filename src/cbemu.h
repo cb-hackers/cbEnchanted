@@ -54,7 +54,8 @@
 class CBEmu : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface {
 	public:
 		CBEmu();
-		
+		~CBEmu();
+	
 		void init(string file);		
 		void run();
 		void stop();
