@@ -5,7 +5,11 @@
 MathInterface::MathInterface() {
 	cb = static_cast <CBEmu *> (this);
 }
-		
+
+void MathInterface::commandRandomize(void) {
+	
+}
+
 void MathInterface::functionWrapAngle(void) {
 	float angle = cb->popValue<float>();
 	while (angle > 360.0) {

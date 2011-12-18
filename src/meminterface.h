@@ -1,10 +1,22 @@
 #ifndef MEMINTERFACE_H
 #define MEMINTERFACE_H
 
+class CBEmu;
+
 class MemInterface {
+	public:
+		MemInterface();
+		~MemInterface();
+		
+		void commandDeleteMEMBlock(void);
+		void commandResizeMEMBlock(void);
+		void commandMemCopy(void);
+		void commandPokeByte(void);
+		void commandPokeShort(void);
+		void commandPokeInt(void);
+		void commandPokeFloat(void);
 	private:
-	
-	protected:
+		CBEmu *cb;
 	
 };
 

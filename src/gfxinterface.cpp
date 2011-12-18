@@ -98,3 +98,75 @@ void GfxInterface::commandDrawScreen(void) {
 
 	if (cls) window.Clear(clearColor);
 }
+
+void GfxInterface::commandLock(void) {
+	
+}
+
+void GfxInterface::commandUnlock(void) {
+	
+}
+
+void GfxInterface::commandPutPixel(void) {
+	
+}
+
+void GfxInterface::commandPutPixel2(void) {
+	
+}
+
+void GfxInterface::commandCopyBox(void) {
+	
+}
+
+void GfxInterface::commandCls(void) {
+	
+}
+
+void GfxInterface::commandDot(void) {
+	
+}
+
+void GfxInterface::commandBox(void) {
+	
+}
+
+void GfxInterface::commandEllipse(void) {
+	
+}
+
+void GfxInterface::commandPickColor(void) {
+	
+}
+
+void GfxInterface::commandScreenGamma(void) {
+	
+}
+
+void GfxInterface::commandDrawToImage(void) {
+	
+}
+
+void GfxInterface::commandDrawToScreen(void) {
+	
+}
+
+void GfxInterface::commandDrawToWorld(void) {
+	
+}
+
+void GfxInterface::commandSmooth2D(void) {
+	
+}
+
+void GfxInterface::commandScreenShot(void) {
+	
+}
+
+void GfxInterface::commandUpdateGame(void) {
+	
+}
+
+void GfxInterface::commandDrawGame(void) {
+	
+}

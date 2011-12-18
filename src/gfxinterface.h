@@ -11,12 +11,31 @@ class GfxInterface {
 		~GfxInterface();
 		
 		void functionScreen(void);
+		
 		void commandScreen(void);
-		void commandClsColor(void);
+		void commandLock(void);
+		void commandUnlock(void);
+		void commandPutPixel(void);
+		void commandPutPixel2(void);
+		void commandCopyBox(void);
 		void commandColor(void);
-		void commandCircle(void);
-		void commandDrawScreen(void);
+		void commandClsColor(void);
+		void commandCls(void);
+		void commandDot(void);
 		void commandLine(void);
+		void commandBox(void);
+		void commandCircle(void);
+		void commandEllipse(void);
+		void commandPickColor(void);
+		void commandScreenGamma(void);
+		void commandDrawToImage(void);
+		void commandDrawToScreen(void);
+		void commandDrawToWorld(void);
+		void commandSmooth2D(void);
+		void commandScreenShot(void);
+		void commandUpdateGame(void);
+		void commandDrawGame(void);
+		void commandDrawScreen(void);
 		
 		sf::RenderWindow *getWindow(void) { return &this->window; }
 	private:
