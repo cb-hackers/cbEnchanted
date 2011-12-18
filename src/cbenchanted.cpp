@@ -31,7 +31,7 @@ void CBEnchanted::run() {
 	while (getWindow()->IsOpened()) {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
-		HCDEBUG("OpCode: %1", opCode);
+		HCDEBUG("OpCode: %i", opCode);
 		switch (opCode) {
 			case 65: handleSetInt(); break;
 			case 66: handleSetFloat(); break;
@@ -46,7 +46,7 @@ void CBEnchanted::run() {
 			case 97:
 			case 98:
 			case 99: uselessShitHandler(); break;
-			default: FIXME("Unimplemented handler: %1", opCode);
+			default: FIXME("Unimplemented handler: %i", opCode);
 		}
 	}
 }
@@ -120,7 +120,7 @@ void CBEnchanted::init(string file) {
 			case 86:
 			case 90: i += 4; break;
 			case 79: i ++; break;
-			default: FIXME("Unhandled preparsing: %1", (uint32_t) cmd);
+			default: FIXME("Unhandled preparsing: %i", (uint32_t) cmd);
 		}
 		
 	}
@@ -166,7 +166,7 @@ void CBEnchanted::handleCommand(void) {
 	uint32_t command = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	
-	HCDEBUG("Command: %1", command);
+	HCDEBUG("Command: %i", command);
 
 	switch (command) {
 		/*case 1: commandIf(); break;
@@ -352,7 +352,7 @@ void CBEnchanted::handleCommand(void) {
 		case 492: commandClsColor(); break;
 		case 498: commandCircle(); break;
 		case 513: commandDrawScreen(); break;*/
-		default: FIXME("Unimplemented command: %1", command);
+		default: FIXME("Unimplemented command: %i", command);
 	}
 }
 
@@ -362,7 +362,7 @@ void CBEnchanted::handleCommand(void) {
 void CBEnchanted::handleFunction(void) {
 	uint32_t func = *(uint32_t *)(code + cpos);
 	cpos += 4;
-	HCDEBUG("Function: %1", func);
+	HCDEBUG("Function: %i", func);
 
 	switch(func) {
 		case 50: functionNew(); break;
@@ -544,7 +544,7 @@ void CBEnchanted::handleFunction(void) {
 		case 122: functionWrapAngle(); break;
 		case 150: functionStr(); break;
 		case 442: functionTimer(); break;*/
-		default: FIXME("Unimplemented function: %1", func);
+		default: FIXME("Unimplemented function: %i", func);
 	}
 }
 
@@ -648,7 +648,7 @@ void CBEnchanted::handlePushVariable(void) {
 			cpos += 4;
 			break;
 		default:
-			FIXME("Unimplemented variable push: %1", type);
+			FIXME("Unimplemented variable push: %i", type);
 	}
 }
 
@@ -673,12 +673,12 @@ void CBEnchanted::handlePushSomething(void) {
 				pushValue(string(""));
 			}
 			else {
-				cout << "FIXME: Push string" << endl;
+				FIXME("Push string");
 			}
 			break;
 		}
 		default: {
-			FIXME("Unimplemented push: %1", type);
+			FIXME("Unimplemented push: %i", type);
 		}
 	}
 }
@@ -689,7 +689,7 @@ void CBEnchanted::handlePushSomething(void) {
 void CBEnchanted::handleMathOperation(void) {
 	uint8_t op = *(uint8_t *)(code + cpos);
 	cpos++;
-	HCDEBUG("Mathoperation: %1", uint32_t(op));
+	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
 		case 1: {
 			boost::any r = popValue();
@@ -836,7 +836,7 @@ void CBEnchanted::handleMathOperation(void) {
 			break;
 		}
 		default:
-			FIXME("Unimplemented mathematical operation: %1", op);
+			FIXME("Unimplemented mathematical operation: %i", op);
 	}
 }
 
