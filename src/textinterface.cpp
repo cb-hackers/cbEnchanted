@@ -27,7 +27,7 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-	string s = cb->popValue<string>();
+    string s = cb->popValue<string>(); //Can be int or float also!!!
 }
 
 void TextInterface::commandWrite(void) {
