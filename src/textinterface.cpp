@@ -36,10 +36,10 @@ void TextInterface::commandText(void) {
     float y = cast<float>(cb->popValue());
     float x = cast<float>(cb->popValue());
 
-    sf::Text text(txt,currentFont->font,currentFont->fontSize);
+    sf::Text text(txt, currentFont->font, currentFont->fontSize);
     text.SetStyle(currentFont->style);
     text.SetColor(cb->getDrawColor());
-    text.SetPosition(x,y);
+    text.SetPosition(x, y);
 
     cb->getWindow()->Draw(text);
     glDisable(GL_TEXTURE_2D);

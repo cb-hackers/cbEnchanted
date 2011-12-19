@@ -58,8 +58,8 @@ void GfxInterface::commandCircle(void) {
 	float rad = (float)cb->popValue<int32_t>();
 	float cy = cb->popValue<float>() + rad *0.5;
 	float cx = cb->popValue<float>() + rad *0.5;
-	Circle circle(cx,cy,rad*0.5,fill);
-	glColor3ub(drawColor.r,drawColor.g,drawColor.b);
+	Circle circle(cx, cy, rad * 0.5, fill);
+	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
 	window.Draw(circle);
 }
 
@@ -68,8 +68,8 @@ void GfxInterface::commandLine(void){
 	float x2 = cb->popValue<float>();
 	float y1 = cb->popValue<float>();
 	float x1 = cb->popValue<float>();
-	glColor3ub(drawColor.r,drawColor.g,drawColor.b);
-	Line line(x1,y1,x2,y2);
+	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
+	Line line(x1, y1, x2, y2);
 	window.Draw(line);
 }
 
