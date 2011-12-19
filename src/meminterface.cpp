@@ -22,7 +22,7 @@ void MemInterface::commandResizeMEMBlock(void) {
     int32_t size = cb->popValue<int32_t>();
     int32_t* mem = (int32_t*)cb->popValue<int32_t>();
     int32_t memsize = mem[0];
-    char* newblock = new char[size];
+    char* newblock = new char[size+4];
     memcpy(newblock, mem, (size_t)memsize);
     delete mem;
     cb->pushValue((int32_t)newblock);
@@ -35,7 +35,7 @@ void MemInterface::commandMemCopy(void) {
     int32_t* destmem = (int32_t*)cb->popValue<int32_t>();
     int32_t src = cb->popValue<int32_t>();
     int32_t* srcmem = (int32_t*)cb->popValue<int32_t>();
-    memcpy(destmem+dest, srcmem+src, lenght);
+    memcpy(destmem+dest+4, srcmem+src+4, lenght);
 }
 
 //PokeByte
@@ -76,7 +76,6 @@ void MemInterface::functionMakeMEMBlock(void){
     char *mem = new char[size + 4];
     *((uint32_t*)mem) = size;
     cb->pushValue((int32_t)mem);
-
 }
 
 //MemblockSize
