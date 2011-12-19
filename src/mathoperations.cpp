@@ -1,5 +1,7 @@
 #include "precomp.h"
+#include "mathoperations.h"
 #include "cbenchanted.h"
+
 
 boost::any operator ! (boost::any &l) {
 	if (l.type() == typeid(float)) {
@@ -338,4 +340,5 @@ int32_t operator < (boost::any &l, boost::any &r) {
 	}
 	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
 }
+
 
