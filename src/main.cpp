@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "cbenchanted.h"
+#include <winternl.h>
 
 #ifdef WIN32
 #include <Windows.h>

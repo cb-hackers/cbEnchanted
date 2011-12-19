@@ -1,4 +1,5 @@
 #include "cbenchanted.h"
+#include "precomp.h"
 #include "meminterface.h"
 #include <cstring>
 #include <stdint.h>

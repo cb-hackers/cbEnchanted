@@ -94,7 +94,7 @@ void MathInterface::functionGetAngle(void) {
     float x2 = cast<float>(cb->popValue());
     float y1 = cast<float>(cb->popValue());
     float x1 = cast<float>(cb->popValue());
-    cb->pushValue((float)((3.14159265358979323 - atan2f(y2-y1,x2-x1))/3.14159265358979323*180.0)); //TODO: Check if works
+    cb->pushValue((float)((3.14159265358979323 - atan2f(y1-y2,x1-x2))/3.14159265358979323*180.0)); //TODO: Check if works
 }
 
 void MathInterface::functionLog(void) {
