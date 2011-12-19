@@ -1,6 +1,8 @@
 #ifndef CBVARIABLEHOLDER_H
 #define CBVARIABLEHOLDER_H
 
+#include "precomp.h"
+
 template <class T>
 class VariableCollection {
 	public:

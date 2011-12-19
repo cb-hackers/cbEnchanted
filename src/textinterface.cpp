@@ -6,7 +6,7 @@
 #ifdef WIN32
 #define DEFAULT_FONT "C:/Windows/Fonts/cour.ttf"
 #else
-
+#define DEFAULT_FONT "/usr/share/fonts/TTF/cour.ttf"
 #endif
 
 TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {

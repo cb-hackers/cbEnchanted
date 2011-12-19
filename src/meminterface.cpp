@@ -1,7 +1,7 @@
-#include "CBEnchanted.h"
-#include "precomp.h"
+#include "cbenchanted.h"
 #include "meminterface.h"
 #include <cstring>
+#include <stdint.h>
 
 MemInterface::MemInterface() {
 	
