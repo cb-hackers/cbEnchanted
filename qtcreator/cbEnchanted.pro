@@ -4,6 +4,8 @@ TEMPLATE = app
 
 CONFIG += thread precompiled_header
 
+QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
+
 HEADERS += \
     ../src/textinterface.h \
     ../src/sysinterface.h \

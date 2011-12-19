@@ -2,17 +2,23 @@
 #include "cbenchanted.h"
 #include "textinterface.h"
 #include "mathoperations.h"
+#ifdef WIN32
+    #include <Windows.h>
+    #include <GL/GL.h>
+#else
+    #include <GL/gl.h>
+#endif
 
 #ifdef WIN32
 #define DEFAULT_FONT "C:/Windows/Fonts/cour.ttf"
 #else
-
+//TODO: linux font
 #endif
 
 TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
     currentFont = new CBFont;
     currentFont->font.LoadFromFile(DEFAULT_FONT);
-    currentFont->fontSize = 13;
+    currentFont->fontSize = 12;
     currentFont->style = sf::Text::Regular;
 }
 		
@@ -25,6 +31,7 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
+    glEnable(GL_TEXTURE_2D);
     string txt = cast_to_string(cb->popValue());
     float y = cast<float>(cb->popValue());
     float x = cast<float>(cb->popValue());
@@ -35,6 +42,7 @@ void TextInterface::commandText(void) {
     text.SetPosition(x,y);
 
     cb->getWindow()->Draw(text);
+    glDisable(GL_TEXTURE_2D);
 }
 
 void TextInterface::commandCenterText(void) {

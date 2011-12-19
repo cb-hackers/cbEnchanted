@@ -3,6 +3,7 @@
 #include "gfxinterface.h"
 #include "sysinterface.h"
 #include <time.h>
+#include <iostream>
 
 SysInterface::SysInterface() {
 	cb = static_cast <CBEnchanted *> (this);

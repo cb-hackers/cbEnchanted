@@ -1,5 +1,6 @@
 #ifndef CBVARIABLEHOLDER_H
 #define CBVARIABLEHOLDER_H
+#include <iostream>
 
 template <class T>
 class VariableCollection {

@@ -23,7 +23,7 @@ void InputInterface::commandWaitKey(void) {
 				stayIn = false;
 				break;
 			case sf::Event::Closed:
-				cb->getWindow()->Close();
+                cb->stop();
 				stayIn = false;
 				break;
 		}
@@ -92,7 +92,7 @@ void InputInterface::functionWaitKey(void) {
 			cb->pushValue((int32_t)e.Key.Code);
 			break;
 		case sf::Event::Closed:
-			cb->getWindow()->Close();
+            cb->stop();
 			stayIn = false;
 			break;
 		}

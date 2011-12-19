@@ -35,18 +35,18 @@ void GfxInterface::commandScreen(void) {
 }
 
 void GfxInterface::commandClsColor(void) {
-	float b = cb->popValue<float>();
-	float g = cb->popValue<float>();
-	float r = cb->popValue<float>();
+    float b = cb->popValue<float>();
+    float g = cb->popValue<float>();
+    float r = cb->popValue<float>();
 	clearColor.r = (uint8_t)r;
 	clearColor.g = (uint8_t)g;
 	clearColor.b = (uint8_t)b;
 }
 
 void GfxInterface::commandColor(void) {
-	float b = cb->popValue<float>();
-	float g = cb->popValue<float>();
-	float r = cb->popValue<float>();
+    float b = cb->popValue<float>();
+    float g = cb->popValue<float>();
+    float r = cb->popValue<float>();
 	drawColor.r = (uint8_t)r;
 	drawColor.g = (uint8_t)g;
 	drawColor.b = (uint8_t)b;
@@ -76,13 +76,12 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue<int32_t>();
 	bool cls = cb->popValue<int32_t>();
-	window.EnableVerticalSync(vSync);
 	sf::Event e;
 	
 	while (window.PollEvent(e)) {
 		switch (e.Type) {
 			case sf::Event::Closed:
-				window.Close();
+                cb->stop();
 				break;
 			//TODO: Inputs
 			default:
