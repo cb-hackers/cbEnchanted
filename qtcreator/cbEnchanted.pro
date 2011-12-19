@@ -52,7 +52,7 @@ SOURCES += \
 PRECOMPILED_HEADER = ../src/precomp.h
 DEFINES += SFML_STATIC
 
-<<<<<<< HEAD
+
 win32:CONFIG(release, debug|release){
     LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
 }
@@ -62,7 +62,7 @@ else:win32{
     }
 }
 =======
->>>>>>> 94bc13e348e8b325f2a81f92521a49d9eabbbb83
+
 win32{
     CONFIG(release, debug|release){
         LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
@@ -72,7 +72,7 @@ win32{
         LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
         PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
 
-<<<<<<< HEAD
+
     INCLUDEPATH += "$$(SFML_INCLUDE)"
     DEPENDPATH += "$$(SFML_INCLUDE)"
     INCLUDEPATH += "$$(BOOST_INCLUDE)"
@@ -80,7 +80,7 @@ win32{
 }
 =======
     }
->>>>>>> 94bc13e348e8b325f2a81f92521a49d9eabbbb83
+
 
     LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
     DEFINES += WIN32
@@ -88,4 +88,4 @@ win32{
     DEPENDPATH += "$$(SFML_INCLUDE)"
     INCLUDEPATH += "$$(BOOST_INCLUDE)"
     DEPENDPATH += "$$(BOOST_INCLUDE)"
-}
+
