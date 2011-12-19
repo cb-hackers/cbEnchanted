@@ -38,12 +38,12 @@ void MathInterface::functionAbs(void)
 
 	if (v.type() == typeid(float))
 	{
-	    cb->pushValue(abs(boost::any_cast<float>(v)));
-	    return;
+		cb->pushValue(abs(boost::any_cast<float>(v)));
+		return;
 	}
 	if (v.type() == typeid(int32_t)) //TODO: Check if necessary
 	{
-	    cb->pushValue(abs(boost::any_cast<int>(v)));
+		cb->pushValue(abs(boost::any_cast<int>(v)));
 	}
 	cb->pushValue(v);
 }
@@ -136,11 +136,11 @@ void MathInterface::functionCurveValue(void) {
 
 inline float wrapAngle(float v) {
 	while(v > 360.0f) {
-	    v -= 360.0f;
+		v -= 360.0f;
 	}
 	while (v < 0.0f)
 	{
-	    v += 360.0f;
+		v += 360.0f;
 	}
 	return v;
 }
@@ -154,11 +154,11 @@ void MathInterface::functionCurveAngle(void) {
 
 	if (abs(newA - oldA) < (360.0 - newA) + oldA)
 	{
-	    cb->pushValue((oldA + (newA - oldA) / smoothness));
+		cb->pushValue((oldA + (newA - oldA) / smoothness));
 	}
 	else
 	{
-	    cb->pushValue((oldA - ((360.0f - newA) + oldA) / smoothness) + 360.0f);
+		cb->pushValue((oldA - ((360.0f - newA) + oldA) / smoothness) + 360.0f);
 	}
 
 }
@@ -167,36 +167,36 @@ void MathInterface::functionWrapAngle(void) {
 	boost::any a = cb->popValue();
 	if (a.type() == typeid(float))
 	{
-	    float angle = boost::any_cast<float>(a);
-	    while (angle > 360.0) {
-	        angle -= 360.0;
-	    }
-	    while (angle < 0.0) {
-	        angle += 360.0;
-	    }
-	    cb->pushValue(angle);
-	    return;
+		float angle = boost::any_cast<float>(a);
+		while (angle > 360.0) {
+			angle -= 360.0;
+		}
+		while (angle < 0.0) {
+			angle += 360.0;
+		}
+		cb->pushValue(angle);
+		return;
 	}
 	if (a.type() == typeid(int32_t))
 	{
-	    int32_t angle = boost::any_cast<int32_t>(a);
-	    while (angle > 360) {
-	        angle -= 360;
-	    }
-	    while (angle < 0) {
-	        angle += 360;
-	    }
-	    cb->pushValue(angle);
-	    return;
+		int32_t angle = boost::any_cast<int32_t>(a);
+		while (angle > 360) {
+			angle -= 360;
+		}
+		while (angle < 0) {
+			angle += 360;
+		}
+		cb->pushValue(angle);
+		return;
 	}
 	if (a.type() == typeid(uint16_t))
 	{
-	    uint16_t angle = boost::any_cast<uint16_t>(a);
-	    while (angle > 360) {
-	        angle -= 360;
-	    }
-	    cb->pushValue(angle);
-	    return;
+		uint16_t angle = boost::any_cast<uint16_t>(a);
+		while (angle > 360) {
+			angle -= 360;
+		}
+		cb->pushValue(angle);
+		return;
 	}
 	cb->pushValue(a);
 }

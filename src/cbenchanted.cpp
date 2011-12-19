@@ -12,7 +12,7 @@
 CBEnchanted::CBEnchanted() {
 	initialized = false;
 	running = false;
-    cpos = 0;
+	cpos = 0;
 }
 
 CBEnchanted::~CBEnchanted() {
@@ -28,7 +28,7 @@ void CBEnchanted::run() {
 
 	// Run until told to quit
 	running = true;
-    while (running) {
+	while (running) {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
 		HCDEBUG("OpCode: %i", opCode);

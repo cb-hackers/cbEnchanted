@@ -20,10 +20,10 @@
 
 class GfxInterface;
 
-#define LOG_DEBUG    0x01
-#define LOG_INFO     0x02
-#define LOG_FIXME    0x04
-#define LOG_HCDEBUG 0x08
+#define LOG_DEBUG		0x01
+#define LOG_INFO		0x02
+#define LOG_FIXME		0x04
+#define LOG_HCDEBUG		0x08
 
 #define LOG_LEVEL (LOG_DEBUG | LOG_INFO | LOG_FIXME)
 

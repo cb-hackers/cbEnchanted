@@ -35,18 +35,18 @@ void GfxInterface::commandScreen(void) {
 }
 
 void GfxInterface::commandClsColor(void) {
-    float b = cb->popValue<float>();
-    float g = cb->popValue<float>();
-    float r = cb->popValue<float>();
+	float b = cb->popValue<float>();
+	float g = cb->popValue<float>();
+	float r = cb->popValue<float>();
 	clearColor.r = (uint8_t)r;
 	clearColor.g = (uint8_t)g;
 	clearColor.b = (uint8_t)b;
 }
 
 void GfxInterface::commandColor(void) {
-    float b = cb->popValue<float>();
-    float g = cb->popValue<float>();
-    float r = cb->popValue<float>();
+	float b = cb->popValue<float>();
+	float g = cb->popValue<float>();
+	float r = cb->popValue<float>();
 	drawColor.r = (uint8_t)r;
 	drawColor.g = (uint8_t)g;
 	drawColor.b = (uint8_t)b;
@@ -81,7 +81,7 @@ void GfxInterface::commandDrawScreen(void) {
 	while (window.PollEvent(e)) {
 		switch (e.Type) {
 			case sf::Event::Closed:
-                cb->stop();
+				cb->stop();
 				break;
 			//TODO: Inputs
 			default:

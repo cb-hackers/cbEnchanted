@@ -344,26 +344,26 @@ int32_t operator < (boost::any &l, boost::any &r) {
 
 string cast_to_string(const boost::any &a)
 {
-    try {
-        if (a.type() == typeid(string)) return boost::any_cast<string>(a);
-        if (a.type() == typeid(float)) {
-            return boost::lexical_cast<string>(boost::any_cast<float>(a));
-        }
-        if (a.type() == typeid(int32_t)) {
-            return boost::lexical_cast<string>(boost::any_cast<int32_t>(a));
-        }
-        if (a.type() == typeid(uint16_t)) {
-            return boost::lexical_cast<string>(boost::any_cast<uint16_t>(a));
-        }
-        if (a.type() == typeid(uint8_t)) {
-            return boost::lexical_cast<string>(boost::any_cast<uint8_t>(a));
-        }
-    }
-    catch (boost::bad_lexical_cast &error) {
-        return "";
-    }
+	try {
+		if (a.type() == typeid(string)) return boost::any_cast<string>(a);
+		if (a.type() == typeid(float)) {
+			return boost::lexical_cast<string>(boost::any_cast<float>(a));
+		}
+		if (a.type() == typeid(int32_t)) {
+			return boost::lexical_cast<string>(boost::any_cast<int32_t>(a));
+		}
+		if (a.type() == typeid(uint16_t)) {
+			return boost::lexical_cast<string>(boost::any_cast<uint16_t>(a));
+		}
+		if (a.type() == typeid(uint8_t)) {
+			return boost::lexical_cast<string>(boost::any_cast<uint8_t>(a));
+		}
+	}
+	catch (boost::bad_lexical_cast &error) {
+		return "";
+	}
 
-    FIXME("Unsupported cast %s >= %s",a.type().name(),typeid(string).name());
-    return "";
+	FIXME("Unsupported cast %s >= %s",a.type().name(),typeid(string).name());
+	return "";
 }
 

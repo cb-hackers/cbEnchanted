@@ -6,9 +6,9 @@ class CBEnchanted;
 
 struct CBFont
 {
-    sf::Font font;
-    sf::Text::Style style;
-    uint32_t fontSize;
+	sf::Font font;
+	sf::Text::Style style;
+	uint32_t fontSize;
 };
 
 class TextInterface {
@@ -29,10 +29,10 @@ class TextInterface {
 		void functionLoadFont(void);
 		void functionTextWidth(void);
 		void functionTextHeight(void);
-        CBFont *GetCurrentFont() { return currentFont; }
+		CBFont *GetCurrentFont() { return currentFont; }
 	private:
 		CBEnchanted *cb;
-        CBFont *currentFont;
+		CBFont *currentFont;
 };
 
 #endif

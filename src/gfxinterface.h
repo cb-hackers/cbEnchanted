@@ -46,7 +46,7 @@ class GfxInterface {
 		void functionGFXModeExists(void);
 
 		sf::RenderWindow *getWindow(void) { return &this->window; }
-        sf::Color getDrawColor() { return drawColor; }
+		sf::Color getDrawColor() { return drawColor; }
 	private:
 		CBEnchanted *cb;
 		
