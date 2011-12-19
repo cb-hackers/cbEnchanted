@@ -2,6 +2,14 @@
 #define TEXTINTERFACE_H
 
 class CBEnchanted;
+#include <SFML/Graphics/Font.hpp>
+
+struct CBFont
+{
+    sf::Font font;
+    sf::Text::Style style;
+    uint32_t fontSize;
+};
 
 class TextInterface {
 	public:
@@ -21,8 +29,10 @@ class TextInterface {
 		void functionLoadFont(void);
 		void functionTextWidth(void);
 		void functionTextHeight(void);
+        CBFont *GetCurrentFont() { return currentFont; }
 	private:
 		CBEnchanted *cb;
+        CBFont *currentFont;
 };
 
 #endif
