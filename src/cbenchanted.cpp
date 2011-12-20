@@ -82,7 +82,7 @@ void CBEnchanted::init(string file) {
 		char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
-			s += c - key[i % key.length()];
+			s += char(c - key[j % key.length()]);
 		}
 		setString(i, s);
 	}
@@ -653,11 +653,12 @@ void CBEnchanted::handlePushSomething(void) {
 			uint32_t strId = *(uint32_t *)(code + cpos);
 			cpos += 4;
 			
+			// Push empty string
 			if (strId == 0) {
 				pushValue(string(""));
 			}
-			else {
-				FIXME("Push string");
+			else { // Push string set by user
+				pushValue(getString(strId));
 			}
 			break;
 		}
