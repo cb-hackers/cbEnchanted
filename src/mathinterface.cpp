@@ -9,128 +9,128 @@ MathInterface::MathInterface() {
 }
 
 void MathInterface::commandRandomize(void) {
-	srand(cb->popValue<int32_t>());
+    srand(cb->popValue().toInt());
 }
 
 void MathInterface::functionInt(void) {
-	int v = cast<int32_t>(cb->popValue());
+    int v = cb->popValue().cast_to_int();
 	cb->pushValue(v);
 }
 
 void MathInterface::functionFloat(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue(v);
 }
 
 void MathInterface::functionRoundUp(void) {
-	float v = cb->popValue<float>();
+    float v = cb->popValue().toFloat();
 	cb->pushValue(ceil(v));
 }
 
 void MathInterface::functionRoundDown(void) {
-	float v = cb->popValue<float>();
+    float v = cb->popValue().toFloat();
 	cb->pushValue(floor(v));
 }
 
 void MathInterface::functionAbs(void)
 {
-	boost::any v = cb->popValue();
+    Any v = cb->popValue();
 
-	if (v.type() == typeid(float))
+    if (v.type() == Any::Float)
 	{
-		cb->pushValue(abs(boost::any_cast<float>(v)));
+        cb->pushValue(abs(v.toFloat()));
 		return;
 	}
-	if (v.type() == typeid(int32_t)) //TODO: Check if necessary
+    if (v.type() == Any::Int) //TODO: Check if necessary
 	{
-		cb->pushValue(abs(boost::any_cast<int>(v)));
+        cb->pushValue(abs(v.toInt()));
 	}
 	cb->pushValue(v);
 }
 
 void MathInterface::functionSqrt(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue(sqrt(v));
 }
 
 void MathInterface::functionSin(void) {
-	float angle = cast<float>(cb->popValue());
+    float angle = cb->popValue().cast_to_float();
 	
 	cb->pushValue(float(sin(angle / 180.0 * 3.14159265358979323)));
 }
 
 void MathInterface::functionCos(void) {
-	float angle = cast<float>(cb->popValue());
+    float angle = cb->popValue().cast_to_float();
 	
 	cb->pushValue(float(cos(angle / 180.0 * 3.14159265358979323)));
 }
 
 void MathInterface::functionTan(void) {
-	float angle = cast<float>(cb->popValue());
+    float angle = cb->popValue().cast_to_float();
 	cb->pushValue(float(tan(angle / 180.0 * 3.14159265358979323)));
 }
 
 void MathInterface::functionASin(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue((float)(asinf(v) / 3.14159265358979323 * 180.0));
 }
 
 void MathInterface::functionACos(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue((float)(acosf(v) / 3.14159265358979323 * 180.0));
 }
 
 void MathInterface::functionATan(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue((float)(atanf(v) / 3.14159265358979323 * 180.0));
 }
 
 void MathInterface::functionGetAngle(void) {
-	float y2 = cast<float>(cb->popValue());
-	float x2 = cast<float>(cb->popValue());
-	float y1 = cast<float>(cb->popValue());
-	float x1 = cast<float>(cb->popValue());
+    float y2 = cb->popValue().cast_to_float();
+    float x2 = cb->popValue().cast_to_float();
+    float y1 = cb->popValue().cast_to_float();
+    float x1 = cb->popValue().cast_to_float();
 	cb->pushValue((float)((3.14159265358979323 - atan2f(y1 - y2, x1 - x2)) / 3.14159265358979323 * 180.0)); //TODO: Check if works
 }
 
 void MathInterface::functionLog(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue(logf(v));
 }
 
 void MathInterface::functionLog10(void) {
-	float v = cast<float>(cb->popValue());
+    float v = cb->popValue().cast_to_float();
 	cb->pushValue(log10f(v));
 }
 
 void MathInterface::functionRnd(void) {
-	float high = cast<float>(cb->popValue());
-	float low = cast<float>(cb->popValue());
+    float high = cb->popValue().cast_to_float();
+    float low = cb->popValue().cast_to_float();
 	cb->pushValue(low + ((float)rand() / RAND_MAX) * (high - low)); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
 }
 
 void MathInterface::functionRand(void) {
-	int32_t high = cast<int32_t>(cb->popValue());
-	int32_t low = cast<int32_t>(cb->popValue());
+    int32_t high = cb->popValue().cast_to_int();
+    int32_t low = cb->popValue().cast_to_int();
 	cb->pushValue(low + rand() % (high - low)); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
 }
 
 void MathInterface::functionMin(void) {
-	boost::any b = cb->popValue();
-	boost::any a = cb->popValue();
+    Any b = cb->popValue();
+    Any a = cb->popValue();
 	cb->pushValue( (a < b) ? a : b);
 }
 
 void MathInterface::functionMax(void) {
-	boost::any b = cb->popValue();
-	boost::any a = cb->popValue();
+    Any b = cb->popValue();
+    Any a = cb->popValue();
 	cb->pushValue( (a > b) ? a : b);
 }
 
 void MathInterface::functionCurveValue(void) {
-	float smoothness = cast<float>(cb->popValue());
-	float oldV = cast<float>(cb->popValue());
-	float newV = cast<float>(cb->popValue());
+    float smoothness = cb->popValue().cast_to_float();
+    float oldV = cb->popValue().cast_to_float();
+    float newV = cb->popValue().cast_to_float();
 	cb->pushValue(oldV + (newV - oldV) / smoothness);
 }
 
@@ -146,9 +146,9 @@ inline float wrapAngle(float v) {
 }
 
 void MathInterface::functionCurveAngle(void) {
-	float smoothness = cast<float>(cb->popValue());
-	float oldA = cast<float>(cb->popValue());
-	float newA = cast<float>(cb->popValue());
+    float smoothness = cb->popValue().cast_to_float();
+    float oldA = cb->popValue().cast_to_float();
+    float newA = cb->popValue().cast_to_float();
 	oldA = wrapAngle(oldA);
 	newA = wrapAngle(newA);
 
@@ -164,10 +164,10 @@ void MathInterface::functionCurveAngle(void) {
 }
 
 void MathInterface::functionWrapAngle(void) {
-	boost::any a = cb->popValue();
-	if (a.type() == typeid(float))
+    Any a = cb->popValue();
+    if (a.type() == Any::Float)
 	{
-		float angle = boost::any_cast<float>(a);
+        float angle = a.toFloat();
 		while (angle > 360.0) {
 			angle -= 360.0;
 		}
@@ -177,9 +177,9 @@ void MathInterface::functionWrapAngle(void) {
 		cb->pushValue(angle);
 		return;
 	}
-	if (a.type() == typeid(int32_t))
+    if (a.type() == Any::Int)
 	{
-		int32_t angle = boost::any_cast<int32_t>(a);
+        int32_t angle = a.toInt();
 		while (angle > 360) {
 			angle -= 360;
 		}
@@ -189,9 +189,9 @@ void MathInterface::functionWrapAngle(void) {
 		cb->pushValue(angle);
 		return;
 	}
-	if (a.type() == typeid(uint16_t))
+    if (a.type() == Any::Short)
 	{
-		uint16_t angle = boost::any_cast<uint16_t>(a);
+        uint16_t angle = a.toShort();
 		while (angle > 360) {
 			angle -= 360;
 		}
@@ -208,22 +208,22 @@ inline double square(float num) {
 }
 
 void MathInterface::functionDistance(void) {
-	float y2 = cast<float>(cb->popValue());
-	float x2 = cast<float>(cb->popValue());
-	float y1 = cast<float>(cb->popValue());
-	float x1 = cast<float>(cb->popValue());
+    float y2 = cb->popValue().cast_to_float();
+    float x2 = cb->popValue().cast_to_float();
+    float y1 = cb->popValue().cast_to_float();
+    float x1 = cb->popValue().cast_to_float();
 	cb->pushValue((float)sqrt(square(x2-x1)+square(y2-y1)));
 }
 
 void MathInterface::functionBoxOverlap(void) {
-	float height2h = cast<float>(cb->popValue()) * 0.5f;
-	float width2h = cast<float>(cb->popValue()) * 0.5f;
-	float y2 = cast<float>(cb->popValue());
-	float x2 = cast<float>(cb->popValue());
-	float height1h = cast<float>(cb->popValue()) * 0.5f;
-	float width1h = cast<float>(cb->popValue()) * 0.5f;
-	float y1 = cast<float>(cb->popValue());
-	float x1 = cast<float>(cb->popValue());
+    float height2h = cb->popValue().cast_to_float() * 0.5f;
+    float width2h = cb->popValue().cast_to_float() * 0.5f;
+    float y2 = cb->popValue().cast_to_float();
+    float x2 = cb->popValue().cast_to_float();
+    float height1h = cb->popValue().cast_to_float() * 0.5f;
+    float width1h = cb->popValue().cast_to_float() * 0.5f;
+    float y1 = cb->popValue().cast_to_float();
+    float x1 = cb->popValue().cast_to_float();
 
 	cb->pushValue((abs(y1 - y2) < (height1h + height2h)) && ((abs(x1 - x2) < (width1h + width2h))) ? 1 : 0);
 }

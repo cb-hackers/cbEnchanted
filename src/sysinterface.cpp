@@ -50,9 +50,9 @@ void SysInterface::commandErrors(void) {
 }
 
 void SysInterface::commandSetWindow(void) {
-	string quit = cb->popValue<string>();
-	uint32_t mode = cb->popValue<int32_t>();
-	string caption = "CBEnchanted: " + cb->popValue<string>();
+    string quit = cb->popValue().cast_to_string();
+    uint32_t mode = cb->popValue().cast_to_int();
+    string caption = "CBEnchanted: " + cb->popValue().cast_to_string();
 	
 	if (quit != "") {
 		cout << "FIXME: setWindow quitmsg" << endl;
@@ -86,7 +86,7 @@ void SysInterface::functionGetEXEName(void) {
 }
 
 void SysInterface::functionFPS(void) {
-	
+    cb->pushValue(cb->getFPS());
 }
 
 void SysInterface::functionCrc32(void) {

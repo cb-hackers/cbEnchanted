@@ -26,7 +26,8 @@ HEADERS += \
     ../src/cbvariableholder.h \
     ../src/cbenchanted.h \
     ../src/camerainterface.h \
-    ../src/animinterface.h
+    ../src/animinterface.h \
+    ../src/any.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -58,7 +59,8 @@ win32{
     CONFIG(release, debug|release){
         LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
         PRE_TARGETDEPS += "$$(SFML_LIB)/release/sfml-main.lib" "$$(SFML_LIB)/release/sfml-window-s.lib" "$$(SFML_LIB)/release/sfml-audio-s.lib" "$$(SFML_LIB)/release/sfml-graphics-s.lib"
-    }
+		DEFINES += NDEBUG
+	}
     else {
         LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
         PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"

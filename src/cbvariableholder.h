@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "precomp.h"
+#include "any.h"
 
 template <class T>
 class VariableCollection {
@@ -29,41 +30,41 @@ struct Array {
 	map<uint32_t, uint32_t> dimensions;
 	uint32_t type;
 	
-	boost::any *data;
+    Any *data;
 };
 
 class CBVariableHolder {
 	public:
 		CBVariableHolder() {}
 		
-		boost::any popValue(void) {
+        Any popValue(void) {
 			assert(!internalStack.empty());
-			boost::any value = internalStack.top();
+            Any value = internalStack.top();
 			internalStack.pop();
 			
 			assert(!value.empty());
 			return value;
 		}
 		
-		void pushValue(boost::any value) {
+        void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
 		
-		template <typename T>
+        /*template <typename T>
 		inline T popValue(void) {
 			assert(!internalStack.empty());
-			boost::any value;
+            Any value;
 			try {
-				value = internalStack.top();
+                value = internalStack.top();
 				internalStack.pop();
 				assert(!value.empty());
 				return any_cast<T>(value);
 			}
 			catch(const boost::bad_any_cast &error) {
-				cout << "Failed cast from " << value.type().name() << " to " << typeid(T).name() << endl;
+                cout << "Failed cast from " << value.type_info().name() << " to " << typeid(T).name() << endl;
 				exit(1);
 			}
-		}
+        }*/
 
 		uint8_t getByteVariable(uint32_t id) { return byteVariables.get(id); }
 		uint16_t getShortVariable(uint32_t id) { return shortVariables.get(id); }
@@ -98,7 +99,7 @@ class CBVariableHolder {
 		void setString(uint32_t id, string value) { strings.set(id, value); }
 		
 	private:
-		stack <boost::any> internalStack;
+        stack <Any> internalStack;
 		
 		VariableCollection <uint8_t> byteVariables;
 		VariableCollection <uint16_t> shortVariables;

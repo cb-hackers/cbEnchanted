@@ -7,19 +7,29 @@ StringInterface::StringInterface() : cb(static_cast <CBEnchanted *> (this)) {
 }
 		
 void StringInterface::functionStr(void) {
-	cb->pushValue(lexical_cast<string>(cb->popValue<int32_t>()));
+    Any a = cb->popValue();
+    switch (a.type())
+    {
+    case Any::Int: cb->pushValue(lexical_cast<string>(a.toInt()));return;
+    case Any::Float: cb->pushValue(lexical_cast<string>(a.toFloat()));return;
+    case Any::Short: cb->pushValue(lexical_cast<string>(a.toShort()));return;
+    case Any::Byte: cb->pushValue(lexical_cast<string>(a.toByte()));return;
+    default:cb->pushValue(a);
+    }
+
+
 }
 
 void StringInterface::functionLeft(void) {
-	int32_t n = cb->popValue<int32_t>();
-	string s = cb->popValue<string>();
+    int32_t n = cb->popValue().cast_to_int();
+    string s = cb->popValue().toString();
 	
 	cb->pushValue(s.substr(0, n));
 }
 
 void StringInterface::functionRight(void) {
-	int32_t n = cb->popValue<int32_t>();
-	string s = cb->popValue<string>();
+    int32_t n = cb->popValue().cast_to_int();
+    string s = cb->popValue().toString();;
 	
 	cb->pushValue(s.substr(s.length() - n));
 }

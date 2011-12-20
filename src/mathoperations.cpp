@@ -1,369 +1,344 @@
 #include "precomp.h"
 #include "mathoperations.h"
 #include "cbenchanted.h"
+#include "any.h"
 
 
-boost::any operator ! (boost::any &l) {
-	if (l.type() == typeid(float)) {
-		return !boost::any_cast<float>(l);
+Any operator ! (Any &l) {
+    if (l.type() == Any::Float) {
+        return !l.toFloat();
 	}
-	if (l.type() == typeid(int32_t)) {
-		return !boost::any_cast<int32_t>(l);
+    if (l.type() == Any::Int) {
+        return !l.toInt();
 	}
-	FIXME("Unsupported operation !%s", l.type().name());
+    FIXME("Unsupported operation !%s", l.type_info().name());
 }
 
-boost::any operator + (boost::any &l) {
-	if (l.type() == typeid(float)) {
-		return +boost::any_cast<float>(l);
+Any operator + (Any &l) {
+    if (l.type() == Any::Float) {
+        return +l.toFloat();
 	}
-	if (l.type() == typeid(int32_t)) {
-		return +boost::any_cast<int32_t>(l);
+    if (l.type() == Any::Int) {
+        return +l.toInt();
 	}
-	FIXME("Unsupported operation +%s", l.type().name());
+    FIXME("Unsupported operation +%s", l.type_info().name());
 }
 
-boost::any operator - (boost::any &l) {
-	if (l.type() == typeid(float)) {
-		return -boost::any_cast<float>(l);
+Any operator - (Any &l) {
+    if (l.type() == Any::Float) {
+        return -l.toFloat();
 	}
-	if (l.type() == typeid(int32_t)) {
-		return -boost::any_cast<int32_t>(l);
+    if (l.type() == Any::Int) {
+        return -l.toInt();
 	}
-	FIXME("Unsupported operation -%s", l.type().name());
+    FIXME("Unsupported operation -%s", l.type_info().name());
 }
 
-boost::any operator % (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) % boost::any_cast<int32_t>(r);
+Any operator % (Any &l, Any &r) {
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Int) {
+            return l.toInt() % r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s % %s", l.type().name(), r.type().name());
+    FIXME("Unsupported operation %s % %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator * (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) * boost::any_cast<float>(r);
+Any operator * (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() * r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) * boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) * boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) * boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() * r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s * %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() * r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() * r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s * %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator + (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) + boost::any_cast<float>(r);
+Any operator + (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() + r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) + boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) + boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) + boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() + r.toInt();
 		}
 	}
-	if (l.type() == typeid(string)) {
-		/*if (r.type() == typeid(float)) {
-			return boost::any_cast<string>(l) + boost::any_cast<float>(r);
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() + r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<string>(l) + boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toInt() + r.toInt();
+		}
+	}
+    if (l.type() == Any::String) {
+        /*if (r.type() == Any::Float) {
+            return l.toString() + r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toString() + r.toInt();
 		}*/
-		if (r.type() == typeid(string)) {
-			return boost::any_cast<string>(l) + boost::any_cast<string>(r);
+        if (r.type() == Any::String) {
+            return l.toString() + r.toString();
 		}
 	}
-	FIXME("Unsupported operation %s + %s", l.type().name(), r.type().name());
+    FIXME("Unsupported operation %s + %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator - (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) - boost::any_cast<float>(r);
+Any operator - (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() - r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) - boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) - boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) - boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() - r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s - %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() - r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() - r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s - %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator / (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) / boost::any_cast<float>(r);
+Any operator / (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() / r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) / boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) / boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) / boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() / r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s / %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() / r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() / r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s / %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator << (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) << boost::any_cast<int32_t>(r);
+Any operator << (Any &l, Any &r) {
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Int) {
+            return l.toInt() << r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s << %s", l.type().name(), r.type().name());
+    FIXME("Unsupported operation %s << %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator >> (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) >> boost::any_cast<int32_t>(r);
+Any operator >> (Any &l, Any &r) {
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Int) {
+            return l.toInt() >> r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s >> %s", l.type().name(), r.type().name());
+    FIXME("Unsupported operation %s >> %s", l.type_info().name(), r.type_info().name());
 }
 
-boost::any operator ^ (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return (float)pow(boost::any_cast<float>(l), boost::any_cast<float>(r));
+Any operator ^ (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return (float)pow(l.toFloat(), r.toFloat());
 		}
-		if (r.type() == typeid(int32_t)) {
-			return (float)pow(boost::any_cast<float>(l), boost::any_cast<int32_t>(r));
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return (int)pow(boost::any_cast<int32_t>(l), boost::any_cast<float>(r));
-		}
-		if (r.type() == typeid(int32_t)) {
-			return (int)powl(boost::any_cast<int32_t>(l), boost::any_cast<int32_t>(r));//L: muutin pow:n powl:ksi että toimisi VC++...
+        if (r.type() == Any::Int) {
+            return (float)pow(l.toFloat(), r.toInt());
 		}
 	}
-	FIXME("Unsupported operation %s ^ %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return (int)pow(l.toInt(), r.toFloat());
+		}
+        if (r.type() == Any::Int) {
+            return (int)powl(l.toInt(), r.toInt());//L: muutin pow:n powl:ksi että toimisi VC++...
+		}
+	}
+    FIXME("Unsupported operation %s ^ %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator != (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) != boost::any_cast<float>(r);
+int32_t operator != (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() != r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) != boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) != boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) != boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() != r.toInt();
 		}
 	}
-	if (l.type() == typeid(string)) {
-		if (r.type() == typeid(string)) {
-			return boost::any_cast<string>(l) != boost::any_cast<string>(r);
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() != r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() != r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s != %s", l.type().name(), r.type().name());
+    if (l.type() == Any::String) {
+        if (r.type() == Any::String) {
+            return l.toString() != r.toString();
+		}
+	}
+    FIXME("Unsupported operation %s != %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator && (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) && boost::any_cast<float>(r);
+int32_t operator && (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() && r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) && boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) && boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) && boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() && r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s && %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() && r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() && r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s && %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator <= (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) <= boost::any_cast<float>(r);
+int32_t operator <= (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() <= r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) <= boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) <= boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) <= boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() <= r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s <= %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() <= r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() <= r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s <= %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator == (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) == boost::any_cast<float>(r);
+int32_t operator == (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() == r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) == boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) == boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) == boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() == r.toInt();
 		}
 	}
-	if (l.type() == typeid(string)) {
-		if (r.type() == typeid(string)) {
-			return boost::any_cast<string>(l) == boost::any_cast<string>(r);
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() == r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() == r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s == %s", l.type().name(), r.type().name());
+    if (l.type() == Any::String) {
+        if (r.type() == Any::String) {
+            return l.toString() == r.toString();
+		}
+	}
+    FIXME("Unsupported operation %s == %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator >= (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) >= boost::any_cast<float>(r);
+int32_t operator >= (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() >= r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) >= boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) >= boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) >= boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() >= r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() >= r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() >= r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator || (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) || boost::any_cast<float>(r);
+int32_t operator || (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() || r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) || boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) || boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) || boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() || r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s || %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() || r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() || r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s || %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator > (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) > boost::any_cast<float>(r);
+int32_t operator > (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() > r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) > boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) > boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) > boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() > r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() > r.toFloat();
+		}
+        if (r.type() == Any::Int) {
+            return l.toInt() > r.toInt();
+		}
+	}
+    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
 }
 
-int32_t operator < (boost::any &l, boost::any &r) {
-	if (l.type() == typeid(float)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<float>(l) < boost::any_cast<float>(r);
+int32_t operator < (Any &l, Any &r) {
+    if (l.type() == Any::Float) {
+        if (r.type() == Any::Float) {
+            return l.toFloat() < r.toFloat();
 		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<float>(l) < boost::any_cast<int32_t>(r);
-		}
-	}
-	if (l.type() == typeid(int32_t)) {
-		if (r.type() == typeid(float)) {
-			return boost::any_cast<int32_t>(l) < boost::any_cast<float>(r);
-		}
-		if (r.type() == typeid(int32_t)) {
-			return boost::any_cast<int32_t>(l) < boost::any_cast<int32_t>(r);
+        if (r.type() == Any::Int) {
+            return l.toFloat() < r.toInt();
 		}
 	}
-	FIXME("Unsupported operation %s >= %s", l.type().name(), r.type().name());
-}
-
-
-string cast_to_string(const boost::any &a)
-{
-	try {
-		if (a.type() == typeid(string)) return boost::any_cast<string>(a);
-		if (a.type() == typeid(float)) {
-			return boost::lexical_cast<string>(boost::any_cast<float>(a));
+    if (l.type() == Any::Int) {
+        if (r.type() == Any::Float) {
+            return l.toInt() < r.toFloat();
 		}
-		if (a.type() == typeid(int32_t)) {
-			return boost::lexical_cast<string>(boost::any_cast<int32_t>(a));
-		}
-		if (a.type() == typeid(uint16_t)) {
-			return boost::lexical_cast<string>(boost::any_cast<uint16_t>(a));
-		}
-		if (a.type() == typeid(uint8_t)) {
-			return boost::lexical_cast<string>(boost::any_cast<uint8_t>(a));
+        if (r.type() == Any::Int) {
+            return l.toInt() < r.toInt();
 		}
 	}
-	catch (boost::bad_lexical_cast &error) {
-		return "";
-	}
-
-	FIXME("Unsupported cast %s >= %s",a.type().name(),typeid(string).name());
-	return "";
+    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
 }
 

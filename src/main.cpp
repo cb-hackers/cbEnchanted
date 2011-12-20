@@ -8,7 +8,7 @@
 	int main(int argc, char** argv) {
 #endif
 	CBEnchanted cb;
-	cb.init(string("pallerot.exe"));
+    cb.init(string("test.exe"));
 	cb.run();
 	cb.cleanup();
 	

@@ -32,9 +32,9 @@ void TextInterface::commandDeleteFont(void) {
 
 void TextInterface::commandText(void) {
 	glEnable(GL_TEXTURE_2D);
-	string txt = cast_to_string(cb->popValue());
-	float y = cast<float>(cb->popValue());
-	float x = cast<float>(cb->popValue());
+    string txt = cb->popValue().cast_to_string();
+    float y = cb->popValue().cast_to_float();
+    float x = cb->popValue().cast_to_float();
 
 	sf::Text text(txt, currentFont->font, currentFont->fontSize);
 	text.SetStyle(currentFont->style);
@@ -54,7 +54,7 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-	string s = cb->popValue<string>();
+    string s = cb->popValue().toString();
 }
 
 void TextInterface::commandWrite(void) {
