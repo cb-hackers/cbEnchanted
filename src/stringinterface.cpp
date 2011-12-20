@@ -10,10 +10,10 @@ void StringInterface::functionStr(void) {
     Any a = cb->popValue();
     switch (a.type())
     {
-    case Any::Int: cb->pushValue(lexical_cast<string>(a.toInt()));return;
-    case Any::Float: cb->pushValue(lexical_cast<string>(a.toFloat()));return;
-    case Any::Short: cb->pushValue(lexical_cast<string>(a.toShort()));return;
-    case Any::Byte: cb->pushValue(lexical_cast<string>(a.toByte()));return;
+    case Any::Int: cb->pushValue(lexical_cast<string>(a.getInt()));return;
+    case Any::Float: cb->pushValue(lexical_cast<string>(a.getFloat()));return;
+    case Any::Short: cb->pushValue(lexical_cast<string>(a.getShort()));return;
+    case Any::Byte: cb->pushValue(lexical_cast<string>(a.getByte()));return;
     default:cb->pushValue(a);
     }
 
@@ -21,15 +21,15 @@ void StringInterface::functionStr(void) {
 }
 
 void StringInterface::functionLeft(void) {
-    int32_t n = cb->popValue().cast_to_int();
-    string s = cb->popValue().toString();
+    int32_t n = cb->popValue().toInt();
+    string s = cb->popValue().getString();
 	
 	cb->pushValue(s.substr(0, n));
 }
 
 void StringInterface::functionRight(void) {
-    int32_t n = cb->popValue().cast_to_int();
-    string s = cb->popValue().toString();;
+    int32_t n = cb->popValue().toInt();
+    string s = cb->popValue().getString();;
 	
 	cb->pushValue(s.substr(s.length() - n));
 }

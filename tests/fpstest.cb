@@ -1,0 +1,23 @@
+SCREEN 600,600
+Repeat
+    angle#=WrapAngle(angle+2)
+    aa=aa+1
+    ab=ab+suunta
+    If ab>200 Then suunta=-2
+    If ab<=0 Then suunta=2
+    ClsColor 128 + 127 * Cos(aa * PI / 128 + aa * 90 / 74),128 + 127 * Sin(aa * PI / 128 + aa*90 / 63) ,128 - 127 * Cos(aa * PI / 128 + aa*90 / 81)
+    For i=0 To 3
+      Color 128 + 127 * Cos(aa / 2 * PI / 128 + aa / 2 * 90 / 74),128 + 127 * Sin(aa/2 * PI / 128 + aa/2*90 / 63) ,128 - 127 * Cos(aa/2 * PI / 128 + aa/2*90 / 81)
+      Circle 300+Cos(angle + i * 90) * ab - ab / 4,300-Sin(angle+i*90)*ab-ab/4,ab/2
+      For a=1 To 2
+        Color 128 + 127 * Cos(aa * PI / 128 + aa * 90 / 74),128 + 127 * Sin(aa * PI / 128 + aa*90 / 63) ,128 - 127 * Cos(aa * PI / 128 + aa*90 / 81)
+        For q=1 To 20
+          Circle 300+Cos(angle + i * 90) * ab + Cos(a*180-angle+(q*4))*(ab/6)-((ab/10-q)/2),300-Sin(angle+i*90)*ab-Sin(a*180-angle+(q*4))*(ab/6)-((ab/10-q)/2),ab/10-q
+        Next q
+      Next a
+    Next i
+    fpsc + 1
+    Color 255,255,255
+    Text 10,10,FPS()
+    DrawScreen
+Forever

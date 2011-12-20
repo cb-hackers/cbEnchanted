@@ -3,6 +3,7 @@
 
 #include "debug.h"
 #include <assert.h>
+
 class Any {
 public:
     enum Type {
@@ -25,13 +26,13 @@ private:
     unsigned char typeId;
 
 public:
-    inline Any():typeId(Empty) {}
-    inline Any(int32_t a):typeId(Int),d_int(a) { }
-    inline Any(uint16_t a):typeId(Short),d_short(a) { }
-    inline Any(uint8_t a):typeId(Byte),d_byte(a) { }
-    inline Any(float a):typeId(Float),d_float(a) { }
-    inline Any(const string &a):typeId(String),d_string_ptr(new string(a)) { }
-    inline Any(const Any &a):typeId(a.typeId) {
+    inline Any() : typeId(Empty) {}
+    inline Any(int32_t a) : typeId(Int), d_int(a) { }
+    inline Any(uint16_t a) : typeId(Short), d_short(a) { }
+    inline Any(uint8_t a) : typeId(Byte), d_byte(a) { }
+    inline Any(float a) : typeId(Float), d_float(a) { }
+    inline Any(const string &a) : typeId(String), d_string_ptr(new string(a)) { }
+    inline Any(const Any &a) : typeId(a.typeId) {
         if (a.typeId == String)
         {
             d_string_ptr = new string(*a.d_string_ptr);
@@ -40,14 +41,15 @@ public:
         d_int = a.d_int; //Don't have to worry about data type.
     }
 
-    inline const string &toString() const {assert(typeId == String); return *d_string_ptr; }
-    inline int32_t toInt() const {assert(typeId == Int); return d_int; }
-    inline uint16_t toShort() const {assert(typeId == Short); return d_short; }
-    inline uint8_t toByte() const {assert(typeId == Byte); return d_byte; }
-    inline float toFloat() const {assert(typeId == Float); return d_float;}
+    inline const string &getString() const {assert(typeId == String); return *d_string_ptr; }
+    inline int32_t getInt() const {assert(typeId == Int); return d_int; }
+    inline uint16_t getShort() const {assert(typeId == Short); return d_short; }
+    inline uint8_t getByte() const {assert(typeId == Byte); return d_byte; }
+    inline float getFloat() const {assert(typeId == Float); return d_float;}
     inline bool empty() const {return typeId == Empty;}
     inline unsigned char type() const{return typeId;}
-    inline const type_info &type_info() const{
+    
+	const type_info &typeInfo() const{
         switch (typeId)
         {
         case Int:
@@ -65,118 +67,118 @@ public:
         }
     }
 
-    inline string cast_to_string() const{
+    inline string toString() const{
         try {
-            if (type() == Any::String) return toString();
+            if (type() == Any::String) return getString();
             if (type() == Any::Float) {
-                return boost::lexical_cast<string>(toFloat());
+                return boost::lexical_cast<string>(getFloat());
             }
             if (type() == Any::Int) {
-                return boost::lexical_cast<string>(toInt());
+                return boost::lexical_cast<string>(getInt());
             }
             if (type() == Any::Short) {
-                return boost::lexical_cast<string>(toShort());
+                return boost::lexical_cast<string>(getShort());
             }
             if (type() == Any::Byte) {
-                return boost::lexical_cast<string>(toByte());
+                return boost::lexical_cast<string>(getByte());
             }
         }
         catch (boost::bad_lexical_cast &error) {
             return "";
         }
-        FIXME("Unsupported cast %s >= %s",type_info().name(),typeid(string).name());
+        FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(string).name());
         return "";
     }
 
-    inline int32_t cast_to_int() const {
-        if (type() == Any::Int) return toInt();
+    inline int32_t toInt() const {
+        if (type() == Any::Int) return getInt();
         if (type() == Any::Float) {
-            return ((int32_t)toFloat());
+            return ((int32_t)getFloat());
         }
         if (type() == Any::Short) {
-            return ((int32_t)toShort());
+            return ((int32_t)getShort());
         }
         if (type() == Any::Byte) {
-            return ((int32_t)toByte());
+            return ((int32_t)getByte());
         }
         if (type() == Any::String) {
             try {
-                return (boost::lexical_cast<int32_t>(toString()));
+                return (boost::lexical_cast<int32_t>(getString()));
             }
             catch (boost::bad_lexical_cast &error) {
                 return 0;
             }
         }
-        FIXME("Unsupported cast %s >= %s",type_info().name(),typeid(int32_t).name());
+        FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(int32_t).name());
         return 0;
     }
 
-    inline float cast_to_float() const {
-        if (type() == Any::Float) return toFloat();
+    inline float toFloat() const {
+        if (type() == Any::Float) return getFloat();
         if (type() == Any::Int) {
-            return ((float)toInt());
+            return ((float)getInt());
         }
         if (type() == Any::Short) {
-            return ((float)toShort());
+            return ((float)getShort());
         }
         if (type() == Any::Byte) {
-            return ((float)toByte());
+            return ((float)getByte());
         }
         if (type() == Any::String) {
             try {
-                return (boost::lexical_cast<float>(toString()));
+                return (boost::lexical_cast<float>(getString()));
             }
             catch (boost::bad_lexical_cast &error) {
                 return 0.0f;
             }
         }
-        FIXME("Unsupported cast %s >= %s",type_info().name(),typeid(float).name());
+        FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(float).name());
         return 0.0f;
     }
 
-    inline uint16_t cast_to_short() const {
-        if (type() == Any::Short) return toShort();
+    inline uint16_t toShort() const {
+        if (type() == Any::Short) return getShort();
         if (type() == Any::Float) {
-            return ((uint16_t)toFloat());
+            return ((uint16_t)getFloat());
         }
         if (type() == Any::Int) {
-            return ((uint16_t)toInt());
+            return ((uint16_t)getInt());
         }
         if (type() == Any::Byte) {
-            return ((uint16_t)toByte());
+            return ((uint16_t)getByte());
         }
         if (type() == Any::String) {
             try {
-                return (boost::lexical_cast<uint16_t>(toString()));
+                return (boost::lexical_cast<uint16_t>(getString()));
             }
             catch (boost::bad_lexical_cast &error) {
                 return 0;
             }
         }
-        FIXME("Unsupported cast %s >= %s",type_info().name(),typeid(uint16_t).name());
+        FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(uint16_t).name());
         return 0;
     }
 
-    inline uint8_t cast_to_byte() const {
-        if (type() == Any::Byte) return toByte();
+    inline uint8_t toByte() const {
+        if (type() == Any::Byte) return getByte();
         if (type() == Any::Float) {
-            return ((uint8_t)toFloat());
+            return ((uint8_t)getFloat());
         }
         if (type() == Any::Int) {
-            return ((uint8_t)toInt());
+            return ((uint8_t)getInt());
         }
         if (type() == Any::Short) {
-            return ((uint8_t)toShort());
+            return ((uint8_t)getShort());
         }
         if (type() == Any::String) {
             try {
-                return (boost::lexical_cast<uint8_t>(toString()));
+                return (boost::lexical_cast<uint8_t>(getString()));
             }
             catch (boost::bad_lexical_cast &error) {
                 return 0;
             }
         }
-        FIXME("Unsupported cast %s >= %s",type_info().name(),typeid(uint8_t).name());
+        FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(uint8_t).name());
         return 0;
     }
 
