@@ -44,7 +44,9 @@ class GfxInterface {
 		void functionScreenHeight(void);
 		void functionScreenDepth(void);
 		void functionGFXModeExists(void);
+
         int32_t getFPS()const{return currentFPS;}
+
 		sf::RenderWindow *getWindow(void) { return &this->window; }
 		sf::Color getDrawColor() { return drawColor; }
 	private:
