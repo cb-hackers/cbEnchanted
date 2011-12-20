@@ -50,9 +50,9 @@ void SysInterface::commandErrors(void) {
 }
 
 void SysInterface::commandSetWindow(void) {
-    string quit = cb->popValue().cast_to_string();
-    uint32_t mode = cb->popValue().cast_to_int();
-    string caption = "CBEnchanted: " + cb->popValue().cast_to_string();
+    string quit = cb->popValue().toString();
+    uint32_t mode = cb->popValue().toInt();
+    string caption = "CBEnchanted: " + cb->popValue().toString();
 	
 	if (quit != "") {
 		cout << "FIXME: setWindow quitmsg" << endl;

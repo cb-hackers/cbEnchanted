@@ -146,7 +146,7 @@ void CBEnchanted::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
-    setIntegerVariable(var, popValue().toInt());
+    setIntegerVariable(var, popValue().getInt());
 }
 
 /*
@@ -156,7 +156,7 @@ void CBEnchanted::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	
-    setFloatVariable(var, popValue().toFloat());
+    setFloatVariable(var, popValue().getFloat());
 }
 
 /*
@@ -576,7 +576,7 @@ void CBEnchanted::commandDim(void) {
 	uint32_t size = 1;
 	Array a;
 	for (int32_t i = n - 1; i >= 0; --i) {
-        int32_t dim = popValue().toInt() + 1; // Size of dimension
+        int32_t dim = popValue().getInt() + 1; // Size of dimension
 		a.dimensions[i] = dim;
 		size *= dim;
 	}
@@ -596,7 +596,7 @@ void CBEnchanted::commandDim(void) {
  * CBEnchanted::commandArrayAssing - Assing value of array element
  */
 void CBEnchanted::commandArrayAssign(void) {
-    uint32_t type = popValue().toInt();
+    uint32_t type = popValue().getInt();
 	cpos ++;
 	uint32_t n = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -607,10 +607,10 @@ void CBEnchanted::commandArrayAssign(void) {
 	uint32_t pos = 0;
 	for (int32_t i = n - 1; i >= 0; --i) {
 		if (i != n - 1) {
-            pos += popValue().toInt() * getArray(id).dimensions[i + 1];
+            pos += popValue().getInt() * getArray(id).dimensions[i + 1];
 		}
 		else {
-            pos += popValue().toInt();
+            pos += popValue().getInt();
 		}
 	}
 	getArray(id).data[pos] = popValue();
@@ -620,7 +620,7 @@ void CBEnchanted::commandArrayAssign(void) {
  * CBEnchanted::handlePushVariable - Push value of variable to stack
  */
 void CBEnchanted::handlePushVariable(void) {
-    uint32_t type = popValue().toInt();
+    uint32_t type = popValue().getInt();
 	
 	switch (type) {
 		case 1:
@@ -640,7 +640,7 @@ void CBEnchanted::handlePushVariable(void) {
  * CBEnchanted::handlePushSomething - Push float, string or something else to stack
  */
 void CBEnchanted::handlePushSomething(void) {
-    uint32_t type = popValue().toInt();
+    uint32_t type = popValue().getInt();
 	switch (type) {
 		case 2: { // Float
 			float value = *(float *)(code + cpos);
@@ -831,7 +831,7 @@ void CBEnchanted::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
-    if (!popValue().toInt()) {
+    if (!popValue().getInt()) {
 		cpos = offsets[dest];
 	}
 }

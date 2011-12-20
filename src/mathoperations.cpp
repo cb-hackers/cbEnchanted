@@ -6,339 +6,339 @@
 
 Any operator ! (Any &l) {
     if (l.type() == Any::Float) {
-        return !l.toFloat();
+        return !l.getFloat();
 	}
     if (l.type() == Any::Int) {
-        return !l.toInt();
+        return !l.getInt();
 	}
-    FIXME("Unsupported operation !%s", l.type_info().name());
+    FIXME("Unsupported operation !%s", l.typeInfo().name());
 }
 
 Any operator + (Any &l) {
     if (l.type() == Any::Float) {
-        return +l.toFloat();
+        return +l.getFloat();
 	}
     if (l.type() == Any::Int) {
-        return +l.toInt();
+        return +l.getInt();
 	}
-    FIXME("Unsupported operation +%s", l.type_info().name());
+    FIXME("Unsupported operation +%s", l.typeInfo().name());
 }
 
 Any operator - (Any &l) {
     if (l.type() == Any::Float) {
-        return -l.toFloat();
+        return -l.getFloat();
 	}
     if (l.type() == Any::Int) {
-        return -l.toInt();
+        return -l.getInt();
 	}
-    FIXME("Unsupported operation -%s", l.type_info().name());
+    FIXME("Unsupported operation -%s", l.typeInfo().name());
 }
 
 Any operator % (Any &l, Any &r) {
     if (l.type() == Any::Int) {
         if (r.type() == Any::Int) {
-            return l.toInt() % r.toInt();
+            return l.getInt() % r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s % %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s % %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator * (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() * r.toFloat();
+            return l.getFloat() * r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() * r.toInt();
+            return l.getFloat() * r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() * r.toFloat();
+            return l.getInt() * r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() * r.toInt();
+            return l.getInt() * r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s * %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s * %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator + (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() + r.toFloat();
+            return l.getFloat() + r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() + r.toInt();
+            return l.getFloat() + r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() + r.toFloat();
+            return l.getInt() + r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() + r.toInt();
+            return l.getInt() + r.getInt();
 		}
 	}
     if (l.type() == Any::String) {
         /*if (r.type() == Any::Float) {
-            return l.toString() + r.toFloat();
+            return l.getString() + r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toString() + r.toInt();
+            return l.getString() + r.getInt();
 		}*/
         if (r.type() == Any::String) {
-            return l.toString() + r.toString();
+            return l.getString() + r.getString();
 		}
 	}
-    FIXME("Unsupported operation %s + %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s + %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator - (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() - r.toFloat();
+            return l.getFloat() - r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() - r.toInt();
+            return l.getFloat() - r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() - r.toFloat();
+            return l.getInt() - r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() - r.toInt();
+            return l.getInt() - r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s - %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s - %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator / (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() / r.toFloat();
+            return l.getFloat() / r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() / r.toInt();
+            return l.getFloat() / r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() / r.toFloat();
+            return l.getInt() / r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() / r.toInt();
+            return l.getInt() / r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s / %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s / %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator << (Any &l, Any &r) {
     if (l.type() == Any::Int) {
         if (r.type() == Any::Int) {
-            return l.toInt() << r.toInt();
+            return l.getInt() << r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s << %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator >> (Any &l, Any &r) {
     if (l.type() == Any::Int) {
         if (r.type() == Any::Int) {
-            return l.toInt() >> r.toInt();
+            return l.getInt() >> r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s >> %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s >> %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 Any operator ^ (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return (float)pow(l.toFloat(), r.toFloat());
+            return (float)pow(l.getFloat(), r.getFloat());
 		}
         if (r.type() == Any::Int) {
-            return (float)pow(l.toFloat(), r.toInt());
+            return (float)pow(l.getFloat(), r.getInt());
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return (int)pow(l.toInt(), r.toFloat());
+            return (int)pow(l.getInt(), r.getFloat());
 		}
         if (r.type() == Any::Int) {
-            return (int)powl(l.toInt(), r.toInt());//L: muutin pow:n powl:ksi että toimisi VC++...
+            return (int)powl(l.getInt(), r.getInt());//L: muutin pow:n powl:ksi että toimisi VC++...
 		}
 	}
-    FIXME("Unsupported operation %s ^ %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s ^ %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator != (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() != r.toFloat();
+            return l.getFloat() != r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() != r.toInt();
+            return l.getFloat() != r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() != r.toFloat();
+            return l.getInt() != r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() != r.toInt();
+            return l.getInt() != r.getInt();
 		}
 	}
     if (l.type() == Any::String) {
         if (r.type() == Any::String) {
-            return l.toString() != r.toString();
+            return l.getString() != r.getString();
 		}
 	}
-    FIXME("Unsupported operation %s != %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s != %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator && (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() && r.toFloat();
+            return l.getFloat() && r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() && r.toInt();
+            return l.getFloat() && r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() && r.toFloat();
+            return l.getInt() && r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() && r.toInt();
+            return l.getInt() && r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s && %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s && %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator <= (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() <= r.toFloat();
+            return l.getFloat() <= r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() <= r.toInt();
+            return l.getFloat() <= r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() <= r.toFloat();
+            return l.getInt() <= r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() <= r.toInt();
+            return l.getInt() <= r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s <= %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s <= %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator == (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() == r.toFloat();
+            return l.getFloat() == r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() == r.toInt();
+            return l.getFloat() == r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() == r.toFloat();
+            return l.getInt() == r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() == r.toInt();
+            return l.getInt() == r.getInt();
 		}
 	}
     if (l.type() == Any::String) {
         if (r.type() == Any::String) {
-            return l.toString() == r.toString();
+            return l.getString() == r.getString();
 		}
 	}
-    FIXME("Unsupported operation %s == %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s == %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator >= (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() >= r.toFloat();
+            return l.getFloat() >= r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() >= r.toInt();
+            return l.getFloat() >= r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() >= r.toFloat();
+            return l.getInt() >= r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() >= r.toInt();
+            return l.getInt() >= r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator || (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() || r.toFloat();
+            return l.getFloat() || r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() || r.toInt();
+            return l.getFloat() || r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() || r.toFloat();
+            return l.getInt() || r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() || r.toInt();
+            return l.getInt() || r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s || %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s || %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator > (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() > r.toFloat();
+            return l.getFloat() > r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() > r.toInt();
+            return l.getFloat() > r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() > r.toFloat();
+            return l.getInt() > r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() > r.toInt();
+            return l.getInt() > r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
 int32_t operator < (Any &l, Any &r) {
     if (l.type() == Any::Float) {
         if (r.type() == Any::Float) {
-            return l.toFloat() < r.toFloat();
+            return l.getFloat() < r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toFloat() < r.toInt();
+            return l.getFloat() < r.getInt();
 		}
 	}
     if (l.type() == Any::Int) {
         if (r.type() == Any::Float) {
-            return l.toInt() < r.toFloat();
+            return l.getInt() < r.getFloat();
 		}
         if (r.type() == Any::Int) {
-            return l.toInt() < r.toInt();
+            return l.getInt() < r.getInt();
 		}
 	}
-    FIXME("Unsupported operation %s >= %s", l.type_info().name(), r.type_info().name());
+    FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
