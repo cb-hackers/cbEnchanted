@@ -1,7 +1,9 @@
 #include "precomp.h"
 #include "soundinterface.h"
+#include "cbenchanted.h"
+#include "any.h"
 
-SoundInterface::SoundInterface() {
+SoundInterface::SoundInterface() : cb(static_cast <CBEnchanted *> (this)) {
 	
 }
 
@@ -10,29 +12,181 @@ SoundInterface::~SoundInterface() {
 }
 
 void SoundInterface::commandPlaySound(void) {
-	
+	/*int32_t freg = */cb->popValue().toInt();
+	float balance = cb->popValue().toFloat();
+	float volume = cb->popValue().toFloat();
+	Any any = cb->popValue();
+	if (any.type() == Any::Int) {//Loaded sound
+		CBSound *sound = (CBSound*)any.getInt();
+		if (sound->isMusic)
+		{
+			sound->music->SetPitch(balance);
+			sound->music->SetVolume(volume);
+			sound->music->Play();
+		}
+		else
+		{
+			sound->sound->SetPitch(balance);
+			sound->sound->SetVolume(volume);
+			sound->sound->Play();
+		}
+	}
+	else {
+		string filepath = any.toString();
+		CBSound *music = new CBSound;
+		music->music = new sf::Music;
+		if (!music->music->OpenFromFile(filepath))
+		{
+			delete music->music;
+			delete music;
+			cb->pushValue(int32_t(0));
+		}
+		music->music->SetPitch(balance);
+		music->music->SetVolume(volume);
+		music->isMusic = true;
+		music->file = filepath;
+		music->music->Play();
+		deleteWhenStop.insert(music);//User can't use it any more, so delete it after it stops.
+	}
 }
 
 void SoundInterface::commandSetSound(void) {
-	
+	/*int32_t freg = */cb->popValue().toInt();
+	float balance = cb->popValue().toFloat();
+	float volume = cb->popValue().toFloat();
+	bool looping = cb->popValue().toInt();
+	CBSound *sound = (CBSound*)cb->popValue().getInt();
+	if (sound->isMusic) {
+		sound->music->SetLoop(looping);
+		sound->music->SetVolume(volume);
+		sound->music->SetPitch(balance);
+	}
+	else {
+		sound->sound->SetLoop(looping);
+		sound->sound->SetVolume(volume);
+		sound->sound->SetPitch(balance);
+	}
 }
 
 void SoundInterface::commandStopSound(void) {
-	
+	CBSound *sound = (CBSound*)cb->popValue().getInt();
+	if (sound->isMusic) {
+		set<CBSound*>::iterator i = deleteWhenStop.find(sound);
+		if (i != deleteWhenStop.end())
+		{
+			deleteWhenStop.erase(i);
+			delete sound->music;
+			delete sound;
+			return;
+		}
+		sound->music->Stop();
+	}
+	else {
+		sound->sound->Stop();
+	}
 }
 
 void SoundInterface::commandDeleteSound(void) {
-	
+	CBSound *sound = (CBSound*)cb->popValue().getInt();
+	if (sound->isMusic) {
+		set<CBSound*>::iterator i = deleteWhenStop.find(sound);
+		if (i != deleteWhenStop.end())
+		{
+			deleteWhenStop.erase(i);
+		}
+		delete sound->music;
+		delete sound;
+	}
+	else {
+		delete sound->sound;
+		delete sound->soundBuffer;
+		delete sound;
+	}
 }
 
 void SoundInterface::functionLoadSound(void) {
-	
+	string filepath = cb->popValue().toString();
+	CBSound *sound = new CBSound;
+	sound->isMusic = false;
+	sound->file = filepath;
+	sound->soundBuffer = new sf::SoundBuffer;
+	if (!sound->soundBuffer->LoadFromFile(filepath))
+	{
+		delete sound->soundBuffer;
+		delete sound;
+		cb->pushValue(int32_t(0));
+		return;
+	}
+	sound->sound = new sf::Sound(*sound->soundBuffer);
+	cb->pushValue((int32_t)sound);
+
 }
 
 void SoundInterface::functionPlaySound(void) {
-	
+	/*int32_t freg = */cb->popValue().toInt();
+	float balance = cb->popValue().toFloat();
+	float volume = cb->popValue().toFloat();
+	Any any = cb->popValue();
+	if (any.type() == Any::Int) {//Loaded sound
+		CBSound *sound = (CBSound*)any.getInt();
+		if (sound->isMusic)
+		{
+			sound->music->SetPitch(balance);
+			sound->music->SetVolume(volume);
+			sound->music->Play();
+		}
+		else
+		{
+			sound->sound->SetPitch(balance);
+			sound->sound->SetVolume(volume);
+			sound->sound->Play();
+		}
+		cb->pushValue((int32_t)sound);
+	}
+	else {
+		string filepath = any.toString();
+		CBSound *music = new CBSound;
+		music->music = new sf::Music;
+		if (!music->music->OpenFromFile(filepath))
+		{
+			delete music->music;
+			delete music;
+			cb->pushValue(int32_t(0));
+		}
+		music->music->SetPitch(balance);
+		music->music->SetVolume(volume);
+		music->isMusic = true;
+		music->file = filepath;
+		music->music->Play();
+		cb->pushValue((int32_t)music);
+	}
+
 }
 
 void SoundInterface::functionSoundPlaying(void) {
-	
+	CBSound *sound = (CBSound*)cb->popValue().getInt();
+	if (sound->isMusic) {
+		cb->pushValue(int32_t(sound->music->GetStatus() == sf::SoundStream::Playing));
+	}
+	else {
+		cb->pushValue(int32_t(sound->sound->GetStatus() == sf::Sound::Playing));
+	}
+}
+
+void SoundInterface::updateAudio()
+{
+	for (set<CBSound*>::iterator i = deleteWhenStop.begin();i != deleteWhenStop.end();)
+	{
+		CBSound *sound = *i;
+		if (sound->music->GetStatus() == sf::SoundStream::Stopped) {
+			delete sound->music;
+			delete sound;
+			set<CBSound*>::iterator dt = i;i++;
+			deleteWhenStop.erase(dt);
+		}
+		else {
+			i++;
+		}
+
+	}
 }

@@ -3,9 +3,9 @@
 
 #ifdef WIN32
 #include <Windows.h>
-	int CALLBACK WinMain(__in  HINSTANCE hInstance,__in  HINSTANCE hPrevInstance,__in  LPSTR lpCmdLine,__in  int nCmdShow ) {
+int CALLBACK WinMain(__in  HINSTANCE hInstance,__in  HINSTANCE hPrevInstance,__in  LPSTR lpCmdLine,__in  int nCmdShow ) {
 #else
-	int main(int argc, char** argv) {
+int main(int argc, char** argv) {
 #endif
 	CBEnchanted cb;
     cb.init(string("test.exe"));

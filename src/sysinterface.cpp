@@ -4,17 +4,31 @@
 #include "sysinterface.h"
 #include <time.h>
 #include <iostream>
+#ifdef WIN32
+	#include <Windows.h>
+#else
+	#include <unistd.h>
+#endif
 
 SysInterface::SysInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
 
 void SysInterface::commandWait(void) {
-	
+#ifdef WIN32
+	Sleep(cb->popValue().toInt());
+#else
+	uint32_t sleepTime = cb->popValue().toInt();
+	usleep(sleepTime * 1000);
+#endif
 }
 
 void SysInterface::commandMakeError(void) {
-	
+#ifdef WIN32
+	MessageBoxA(NULL,cb->popValue().toString().c_str(),"Error",MB_OK);
+#else
+	assert("Linux MakeError uncomplete" != 0)
+#endif
 }
 
 void SysInterface::commandSaveProgram(void) {
@@ -30,7 +44,7 @@ void SysInterface::commandGotoSavedLocation(void) {
 }
 
 void SysInterface::commandFrameLimit(void) {
-	
+	cb->getWindow()->SetFramerateLimit(cb->popValue().toInt());
 }
 
 void SysInterface::commandEncrypt(void) {
@@ -78,7 +92,11 @@ void SysInterface::functionTimer(void) {
 }
 
 void SysInterface::functionCommandLine(void) {
-	
+#ifdef WIN32
+	cb->pushValue(string(GetCommandLineA()));
+#else
+	assert("Linux CommandLine uncomplete" != 0)
+#endif
 }
 
 void SysInterface::functionGetEXEName(void) {
