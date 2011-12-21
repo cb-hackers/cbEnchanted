@@ -1,0 +1,27 @@
+Screen 300, 200
+
+alku = Timer()
+For i = 200000000 To 999999999
+	If i Mod 20 Then Goto ohi
+	If i Mod 19 Then Goto ohi
+	If i Mod 18 Then Goto ohi
+	If i Mod 17 Then Goto ohi
+	If i Mod 16 Then Goto ohi
+	If i Mod 15 Then Goto ohi
+	If i Mod 14 Then Goto ohi
+	If i Mod 13 Then Goto ohi
+	If i Mod 12 Then Goto ohi
+	If i Mod 11 Then Goto ohi
+	
+	s = i
+	Goto valmis
+ohi:
+Next i
+
+valmis:
+loppu = Timer()
+Repeat
+	Text 0, 0, s
+	Text 0, 16, Str(loppu - alku)
+	DrawScreen
+Forever

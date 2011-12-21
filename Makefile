@@ -8,7 +8,7 @@ CXXFLAGS += -pthread -O3 -Wno-int-to-pointer-cast -fpermissive
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) -lsfml-window -lsfml-graphics -lsfml-system -lGL
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio -lGL
 
 clean:
 	rm -f $(OBJ) $(BIN)
