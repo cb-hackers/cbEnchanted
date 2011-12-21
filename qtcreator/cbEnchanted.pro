@@ -2,9 +2,9 @@ QT -= core gui #No qt
 
 TEMPLATE = app
 
-CONFIG += thread precompiled_header
+CONFIG += thread precompiled_header console
 
-QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
+#QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
 
 HEADERS += \
     ../src/textinterface.h \
@@ -27,7 +27,8 @@ HEADERS += \
     ../src/cbenchanted.h \
     ../src/camerainterface.h \
     ../src/animinterface.h \
-    ../src/any.h
+    ../src/any.h \
+    ../src/debug.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
 
 PRECOMPILED_HEADER = ../src/precomp.h
 DEFINES += SFML_STATIC
+DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 
 win32{
     CONFIG(release, debug|release){

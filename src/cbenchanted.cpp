@@ -632,6 +632,10 @@ void CBEnchanted::handlePushVariable(void) {
 			pushValue(getFloatVariable(*(int32_t *)(code + cpos)));
 			cpos += 4;
 			break;
+		case 7:
+			pushValue(getShortVariable(*(int32_t*)(code +cpos)));
+			cpos += 4;
+			break;
 		default:
 			FIXME("Unimplemented variable push: %i", type);
 	}
@@ -853,6 +857,7 @@ void CBEnchanted::commandGoto(void) {
 	cpos ++;
 	cpos = offsets[*(uint32_t *)(code + cpos)];
 }
+
 
 void CBEnchanted::commandDelete(void) {
 	

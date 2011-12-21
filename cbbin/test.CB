@@ -16,7 +16,6 @@ Repeat
         Next q
       Next a
     Next i
-    fpsc + 1
     Color 255,255,255
     Text 10,10,FPS()
     DrawScreen
