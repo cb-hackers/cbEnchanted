@@ -15,17 +15,14 @@ void InputInterface::commandCloseInput(void) {
  */
 void InputInterface::commandWaitKey(void) {
 	sf::Event e;
-	bool stayIn = true;
-	while(stayIn) {
-		cb->getWindow()->WaitEvent(e);
+    while(true) {
+        cb->getWindow()->WaitEvent(e);
 		switch (e.Type) {
 			case sf::Event::KeyPressed:
-				stayIn = false;
-				break;
+                return;
 			case sf::Event::Closed:
 				cb->stop();
-				stayIn = false;
-				break;
+                return;
 		}
 	}
 }
@@ -82,20 +79,17 @@ void InputInterface::functionGetKey(void) {
  */
 void InputInterface::functionWaitKey(void) {
 	sf::Event e;
-	bool stayIn = true;
-	while(stayIn)
+    while(true)
 	{
 		cb->getWindow()->WaitEvent(e);
 		switch (e.Type)
 		{
 		case sf::Event::KeyPressed:
-			stayIn = false;
-			cb->pushValue((int32_t)e.Key.Code);
-			break;
+            cb->pushValue((int32_t)e.Key.Code);
+            return;
 		case sf::Event::Closed:
 			cb->stop();
-			stayIn = false;
-			break;
+            return;
 		}
 	}
 }

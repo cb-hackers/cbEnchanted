@@ -419,6 +419,7 @@ void CBEnchanted::handleFunction(void) {
 		case 221: functionKeyDown(); break;
 		case 222: functionKeyHit(); break;
 		case 223: functionGetKey(); break;
+        case 224: functionWaitKey(); break;
 		case 227: functionMouseDown(); break;
 		case 228: functionMouseHit(); break;
 		case 229: functionGetMouse(); break;
