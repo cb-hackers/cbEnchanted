@@ -3,7 +3,7 @@ CBEmu
 
 # Ignore object files
 *.o
-
+/tests/exe/*
 
 /visual studio/ipch
 /visual studio/Release
