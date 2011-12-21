@@ -27,7 +27,8 @@ HEADERS += \
     ../src/cbenchanted.h \
     ../src/camerainterface.h \
     ../src/animinterface.h \
-    ../src/any.h
+    ../src/any.h \
+    ../src/object.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -49,7 +50,8 @@ SOURCES += \
     ../src/cbvariableholder.cpp \
     ../src/cbenchanted.cpp \
     ../src/camerainterface.cpp \
-    ../src/animinterface.cpp
+    ../src/animinterface.cpp \
+    ../src/object.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
@@ -75,3 +77,5 @@ win32{
     DEPENDPATH += "$$(BOOST_INCLUDE)"
 
 }
+
+
