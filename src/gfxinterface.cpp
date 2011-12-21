@@ -6,11 +6,17 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(sf::VideoMode(400, 300, 32), "", sf::Style::Default) {
+GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window() {
 	window.SetActive(true);
     fpsCounter = 0;
     currentFPS = 0;
     lastSecTimer = clock();
+    sf::ContextSettings windowSettings;
+    windowSettings.AntialiasingLevel = 0;
+    windowSettings.DepthBits = 0;
+    window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Default,windowSettings);
+    windowSettings = window.GetSettings();
+    INFO("Window antialiasing level: %i",windowSettings.AntialiasingLevel);
 }
 
 GfxInterface::~GfxInterface() {
