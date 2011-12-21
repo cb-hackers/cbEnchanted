@@ -1,0 +1,20 @@
+// Name:IntegerTest
+
+Dim i As Integer
+Dim s As Integer
+
+For i = 0 To 20 step 3
+	s = s + i * i
+Next i
+Cls
+DrawScreen
+
+If s = 819 Then
+	Text 0, 0, "Test succeeded!"
+Else
+	Text 0, 0, "Test failed!"
+EndIf
+
+DrawScreen
+WaitKey
+

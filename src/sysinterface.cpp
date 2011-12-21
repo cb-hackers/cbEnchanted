@@ -8,6 +8,7 @@
 	#include <Windows.h>
 #else
 	#include <unistd.h>
+	#include <sys/time.h>
 #endif
 
 SysInterface::SysInterface() {
@@ -27,7 +28,7 @@ void SysInterface::commandMakeError(void) {
 #ifdef WIN32
 	MessageBoxA(NULL,cb->popValue().toString().c_str(),"Error",MB_OK);
 #else
-	assert("Linux MakeError uncomplete" != 0)
+	assert("Linux MakeError uncomplete" != 0);
 #endif
 }
 
@@ -88,14 +89,23 @@ void SysInterface::functionTime(void) {
 }
 
 void SysInterface::functionTimer(void) {
+#ifdef WIN32	
 	cb->pushValue((int32_t)clock());
+#else
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	//mtime = (tiemz.tv_sec * 1000 + tiemz.tv_usec / 1000.0) + 0.5;
+	cb->pushValue((int32_t)(tv.tv_sec * 1000 + tv.tv_usec / 1000));
+#endif
 }
 
 void SysInterface::functionCommandLine(void) {
 #ifdef WIN32
 	cb->pushValue(string(GetCommandLineA()));
 #else
-	assert("Linux CommandLine uncomplete" != 0)
+	assert("Linux CommandLine uncomplete" != 0);
 #endif
 }
 

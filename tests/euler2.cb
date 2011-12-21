@@ -1,0 +1,19 @@
+Screen 300, 200
+
+Dim i As Integer
+Dim s As Integer
+s = 0
+
+Dim alku As Integer
+alku = Timer()
+For i = 0 To 999
+	If i Mod 3 = 0 Or i Mod 5 = 0 Then
+		s = s + i
+	EndIf
+Next i
+
+loppu = Timer()
+Repeat
+	Text 0, 0, Str(loppu - alku)
+	DrawScreen
+Forever
