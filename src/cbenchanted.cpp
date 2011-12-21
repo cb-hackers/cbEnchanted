@@ -136,7 +136,7 @@ void CBEnchanted::stop() {
 }
 
 void CBEnchanted::cleanup() {
-	
+    cleanupSoundInterface();
 }
 
 /*
