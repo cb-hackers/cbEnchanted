@@ -14,7 +14,8 @@ struct CBFont
 class TextInterface {
 	public:
 		TextInterface();
-		
+		~TextInterface();
+
 		void commandSetFont(void);
 		void commandDeleteFont(void);
 		void commandText(void);

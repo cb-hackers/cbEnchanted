@@ -21,7 +21,12 @@ TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 	currentFont->fontSize = 12;
 	currentFont->style = sf::Text::Regular;
 }
-		
+
+TextInterface::~TextInterface() {
+	delete currentFont;
+}
+
+	
 void TextInterface::commandSetFont(void) {
 	
 }
