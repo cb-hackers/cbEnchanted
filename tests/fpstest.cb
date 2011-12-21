@@ -1,3 +1,5 @@
+// Name:FPSTest
+
 SCREEN 600,600
 Repeat
     angle#=WrapAngle(angle+2)
