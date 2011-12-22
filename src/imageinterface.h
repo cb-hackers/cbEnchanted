@@ -1,6 +1,8 @@
 #ifndef IMAGEINTERFACE_H
 #define IMAGEINTERFACE_H
-
+#include "precomp.h"
+class CBEnchanted;
+class CBImage;
 class ImageInterface {
 	public:
 		ImageInterface();
@@ -28,7 +30,10 @@ class ImageInterface {
 		void functionImagesOverlap(void);
 		void functionImagesCollide(void);
 	private:
-	
+        CBEnchanted *cb;
+        int32_t idCounter;
+        int32_t nextId();
+        map<int32_t,CBImage*> cbImages;
 };
 
 #endif
