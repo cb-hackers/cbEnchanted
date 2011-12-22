@@ -61,8 +61,6 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		void handleJump(void);
 		void handleIncVar(void);
 		
-		void uselessShitHandler(void);
-		
 		void command97_98(void);
 		void command99(void);
 		void commandGoto(void);

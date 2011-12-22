@@ -6,7 +6,7 @@ s = 0
 
 Dim alku As Integer
 alku = Timer()
-For i = 0 To 999
+For i = 0 To 99999
 	If i Mod 3 = 0 Or i Mod 5 = 0 Then
 		s = s + i
 	EndIf
