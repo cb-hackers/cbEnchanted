@@ -15,7 +15,9 @@ void Line::Render(sf::RenderTarget& target, sf::Renderer& renderer) const{
 
 void Circle::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
 {
-	float theta = 2 * 3.1415926 / float(CIRCLE_SEGMENT_COUNT); 
+    int segmentCount = 5 + r;
+    if (segmentCount > 200) segmentCount = 200;
+    float theta = 2 * 3.1415926 / float(segmentCount);
 	float c = cosf(theta);
 	float s = sinf(theta);
 	float t;
@@ -29,7 +31,7 @@ void Circle::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
 		glBegin(GL_LINE_LOOP);
 	}
 
-	for(int ii = 0; ii != CIRCLE_SEGMENT_COUNT; ii++) {
+    for(int ii = 0; ii < segmentCount; ii++) {
 		glVertex2f(x + cx, y + cy);
 
 		t = x;

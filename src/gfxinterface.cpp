@@ -6,8 +6,8 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window() {
-	window.SetActive(true);
+GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(),drawDrawCommandToWorld(false),drawImageToWorld(false),drawTextToWorld(false),windowRenderTargetPointer(&window) {
+    window.SetActive(true);
     fpsCounter = 0;
     currentFPS = 0;
     lastSecTimer = clock();
@@ -17,6 +17,7 @@ GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTit
     window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Default,windowSettings);
     windowSettings = window.GetSettings();
     INFO("Window antialiasing level: %i",windowSettings.AntialiasingLevel);
+    currentRenderTarget = &windowRenderTargetPointer;
 }
 
 GfxInterface::~GfxInterface() {
@@ -63,23 +64,25 @@ void GfxInterface::commandColor(void) {
 
 
 void GfxInterface::commandCircle(void) {
+    currentRenderTarget->setViewTo(drawDrawCommandToWorld);
     bool fill = cb->popValue().toInt();
     float rad = cb->popValue().toFloat();
     float cy = cb->popValue().toFloat() + rad * 0.5;
     float cx = cb->popValue().toFloat() + rad * 0.5;
 	Circle circle(cx, cy, rad * 0.5, fill);
 	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
-	window.Draw(circle);
+    currentRenderTarget->draw(circle);
 }
 
 void GfxInterface::commandLine(void){
+    currentRenderTarget->setViewTo(drawDrawCommandToWorld);
     float y2 = cb->popValue().toFloat();
     float x2 = cb->popValue().toFloat();
     float y1 = cb->popValue().toFloat();
     float x1 = cb->popValue().toFloat();
 	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
 	Line line(x1, y1, x2, y2);
-	window.Draw(line);
+    currentRenderTarget->draw(line);
 }
 
 void GfxInterface::commandDrawScreen(void) {
@@ -93,6 +96,8 @@ void GfxInterface::commandDrawScreen(void) {
 				cb->stop();
 				break;
 			//TODO: Inputs
+            case sf::Event::KeyPressed:
+                if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
 			default:
 				break;
 		}
@@ -104,9 +109,9 @@ void GfxInterface::commandDrawScreen(void) {
         fpsCounter = 0;
         lastSecTimer = clock();
     }
-	window.Display();
+    window.Display();
 
-	if (cls) window.Clear(clearColor);
+    if (cls) currentRenderTarget->clear(clearColor);
 }
 
 void GfxInterface::commandLock(void) {
@@ -130,7 +135,7 @@ void GfxInterface::commandCopyBox(void) {
 }
 
 void GfxInterface::commandCls(void) {
-	
+    currentRenderTarget->clear(clearColor);
 }
 
 void GfxInterface::commandDot(void) {
@@ -198,15 +203,20 @@ void GfxInterface::functionGetPixel2(void) {
 }
 
 void GfxInterface::functionGetRGB(void) {
-	
+    switch (cb->popValue().toInt()) {
+        case 0: cb->pushValue((int32_t)drawColor.r); break;
+        case 1: cb->pushValue((int32_t)drawColor.g); break;
+        case 2: cb->pushValue((int32_t)drawColor.b); break;
+        default: cb->pushValue(0); break;
+    }
 }
 
 void GfxInterface::functionScreenWidth(void) {
-	
+    cb->pushValue((int32_t)window.GetWidth());
 }
 
 void GfxInterface::functionScreenHeight(void) {
-	
+    cb->pushValue((int32_t)window.GetHeight());
 }
 
 void GfxInterface::functionScreenDepth(void) {
@@ -216,3 +226,4 @@ void GfxInterface::functionScreenDepth(void) {
 void GfxInterface::functionGFXModeExists(void) {
 	
 }
+

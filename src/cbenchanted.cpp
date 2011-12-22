@@ -8,8 +8,9 @@
 #include "mathinterface.h"
 #include "cbvariableholder.h"
 #include "mathoperations.h"
-
+static CBEnchanted *cbInstance;
 CBEnchanted::CBEnchanted() {
+    cbInstance = this;
 	initialized = false;
 	running = false;
 	cpos = 0;
@@ -17,6 +18,10 @@ CBEnchanted::CBEnchanted() {
 
 CBEnchanted::~CBEnchanted() {
 	delete code;
+}
+
+CBEnchanted *CBEnchanted::instance() {
+    return cbInstance;
 }
 
 /*

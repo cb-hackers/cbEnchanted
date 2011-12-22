@@ -1,6 +1,6 @@
 #ifndef CAMERAINTERFACE_H
 #define CAMERAINTERFACE_H
-
+class CBEnchanted;
 class CameraInterface {
 	public:
 		CameraInterface();
@@ -15,15 +15,19 @@ class CameraInterface {
 		void commandRotateCamera(void);
 		void commandMoveCamera(void);
 		void commandTranslateCamera(void);
-		void commandPositionCamera(void);
+        void commandPositionCamera(void);
 		
 		void functionCameraX(void);
 		void functionCameraY(void);
 		void functionCameraAngle(void);
+
+        float getCameraX(void) { return cameraX; }
+        float getCameraY(void) { return cameraY; }
 	private:
+        CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
-		float cameraAngle; //rad
+        float cameraAngle;
 
 };
 

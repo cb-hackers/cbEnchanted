@@ -1,6 +1,9 @@
 #ifndef CBENCHANTED_H
 #define CBENCHANTED_H
 
+#define M_PI  3.14159265358979323846264338327950288419716939937510
+#define M_HALF_PI  (3.14159265358979323846264338327950288419716939937510/2.0)
+
 #include "cbvariableholder.h"
 #include "mathinterface.h"
 #include "stringinterface.h"
@@ -28,6 +31,7 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		CBEnchanted();
 		~CBEnchanted();
 	
+        static CBEnchanted *instance();
 		void init(string file);		
 		void run();
 		void stop();

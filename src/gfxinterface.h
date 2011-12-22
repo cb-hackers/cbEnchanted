@@ -2,6 +2,7 @@
 #define GFXINTERFACE_H
 
 #include <SFML/Graphics.hpp>
+#include "rendertargetpointer.h"
 
 class CBEnchanted;
 
@@ -49,18 +50,25 @@ class GfxInterface {
 
 		sf::RenderWindow *getWindow(void) { return &this->window; }
 		sf::Color getDrawColor() { return drawColor; }
+        inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
+        inline bool getDrawImageToWorld()const{return drawImageToWorld;}
+        inline bool getDrawTextToWorld()const{return drawTextToWorld;}
 	private:
 		CBEnchanted *cb;
 		
 		string windowTitle;
-		sf::RenderWindow window;
+        sf::RenderWindow window;
 		sf::Color clearColor;
 		sf::Color drawColor;
         int32_t fpsCounter;
         int32_t currentFPS;
         clock_t lastSecTimer;
+        RenderTargetPointer *currentRenderTarget;
 
-		bool drawToWorld
+        RenderTargetPointer windowRenderTargetPointer;
+        bool drawDrawCommandToWorld;
+        bool drawImageToWorld;
+        bool drawTextToWorld;
 };
 
 #endif

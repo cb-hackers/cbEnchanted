@@ -23,7 +23,7 @@ class Any {
 			string *d_string_ptr;
 			void *d_ptr;
 		};
-		unsigned char typeId;
+        int32_t typeId;
 
 	public:
 		inline Any() : typeId(Empty) {}
@@ -40,6 +40,12 @@ class Any {
 			}
 			d_int = a.d_int; //Don't have to worry about data type.
 		}
+        inline ~Any() {
+            if (typeId == String)
+            {
+                delete d_string_ptr;
+            }
+        }
 
 		inline const string &getString() const {assert(typeId == String); return *d_string_ptr; }
 		inline int32_t getInt() const {assert(typeId == Int); return d_int; }
@@ -47,7 +53,7 @@ class Any {
 		inline uint8_t getByte() const {assert(typeId == Byte); return d_byte; }
 		inline float getFloat() const {assert(typeId == Float); return d_float;}
 		inline bool empty() const {return typeId == Empty;}
-		inline unsigned char type() const{return typeId;}
+        inline int32_t type() const{return typeId;}
 
 		const type_info &typeInfo() const{
 			switch (typeId) {

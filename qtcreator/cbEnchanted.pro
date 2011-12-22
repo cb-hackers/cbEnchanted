@@ -30,7 +30,8 @@ HEADERS += \
     ../src/any.h \
 	../src/object.h \
 	../src/debug.h \
-    ../src/camerainterface.h
+    ../src/camerainterface.h \
+    ../src/rendertargetpointer.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -54,7 +55,8 @@ SOURCES += \
     ../src/camerainterface.cpp \
     ../src/animinterface.cpp \
     ../src/object.cpp \
-    ../src/camerainterface.cpp
+    ../src/camerainterface.cpp \
+    ../src/rendertargetpointer.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
