@@ -59,6 +59,8 @@ class GfxInterface {
         int32_t fpsCounter;
         int32_t currentFPS;
         clock_t lastSecTimer;
+
+		bool drawToWorld
 };
 
 #endif

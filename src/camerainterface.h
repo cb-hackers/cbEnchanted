@@ -21,7 +21,10 @@ class CameraInterface {
 		void functionCameraY(void);
 		void functionCameraAngle(void);
 	private:
-	
+		float cameraX;
+		float cameraY;
+		float cameraAngle; //rad
+
 };
 
 #endif

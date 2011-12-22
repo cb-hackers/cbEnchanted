@@ -28,11 +28,9 @@ HEADERS += \
     ../src/camerainterface.h \
     ../src/animinterface.h \
     ../src/any.h \
-<<<<<<< HEAD
-    ../src/object.h
-=======
-    ../src/debug.h
->>>>>>> 6360ccf0a773664061868cb76f16775d6474a652
+	../src/object.h \
+	../src/debug.h \
+    ../src/camerainterface.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -55,7 +53,8 @@ SOURCES += \
     ../src/cbenchanted.cpp \
     ../src/camerainterface.cpp \
     ../src/animinterface.cpp \
-    ../src/object.cpp
+    ../src/object.cpp \
+    ../src/camerainterface.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
