@@ -69,7 +69,7 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		void commandClearArray(void);
 		void commandInsert(void);
 		void commandDelete(void);
-		
+		void commandSetVariable(void);
 		void commandArrayAssign(void);
 		
 		void functionNew(void);

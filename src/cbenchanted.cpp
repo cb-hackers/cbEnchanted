@@ -136,7 +136,7 @@ void CBEnchanted::stop() {
 }
 
 void CBEnchanted::cleanup() {
-	
+    cleanupSoundInterface();
 }
 
 /*
@@ -189,6 +189,7 @@ void CBEnchanted::handleCommand(void) {
 		case 57: commandDelete(); break;
 		case 65: commandInitObjectList(); break;
 		case 69: commandEnd(); break;
+		case 77: commandSetVariable(); break;
 		case 125: commandRandomize(); break;
 		case 201: commandSetFont(); break;
 		case 202: commandDeleteFont(); break;
@@ -632,6 +633,10 @@ void CBEnchanted::handlePushVariable(void) {
 			pushValue(getFloatVariable(*(int32_t *)(code + cpos)));
 			cpos += 4;
 			break;
+		case 7:
+			pushValue((uint16_t)getShortVariable(*(int32_t *)(code + cpos)));
+			cpos += 4;
+			break;
 		default:
 			FIXME("Unimplemented variable push: %i", type);
 	}
@@ -908,4 +913,28 @@ void CBEnchanted::functionConvertToInteger(void) {
 
 void CBEnchanted::functionConvertToType(void) {
 	
+}		
+
+void CBEnchanted::commandSetVariable(void) {
+	int32_t type = popValue().getInt();
+
+	switch (type) {
+		case 1: // String
+			FIXME("Set string");
+			break;
+		case 2: { // Short
+			int32_t id = popValue().getInt();
+			uint16_t value = popValue().toShort();
+
+			setShortVariable(id, value);
+			//FIXME("Set short");
+			break;
+		}
+		case 4: // Typepointer tjsp
+			FIXME("Set typepointer");
+			break;
+		default:
+			FIXME("Unimplemented SetVariable");
+	}
+	INFO("Push value, type: %i", type);
 }
