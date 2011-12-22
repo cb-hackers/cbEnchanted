@@ -60,7 +60,7 @@ class GfxInterface {
         int32_t currentFPS;
         clock_t lastSecTimer;
 
-		bool drawToWorld
+		bool drawToWorld;
 };
 
 #endif

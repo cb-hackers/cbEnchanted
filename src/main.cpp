@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
 	CBEnchanted cb;
-    cb.init(string("../cbbin/helloworld.exe"));
+    cb.init(string("test.exe"));
 	cb.run();
 	cb.cleanup();
 	

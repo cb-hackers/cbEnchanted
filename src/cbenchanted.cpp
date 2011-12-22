@@ -623,22 +623,22 @@ void CBEnchanted::commandArrayAssign(void) {
  */
 void CBEnchanted::handlePushVariable(void) {
     uint32_t type = popValue().getInt();
-	
+	int32_t var = *(int32_t *)(code + cpos);
+	cpos += 4;
+
 	switch (type) {
-		case 1:
-			pushValue(getIntegerVariable(*(int32_t *)(code + cpos)));
-			cpos += 4;
-			break;
-		case 2:
-			pushValue(getFloatVariable(*(int32_t *)(code + cpos)));
-			cpos += 4;
-			break;
-		case 7:
-			pushValue((uint16_t)getShortVariable(*(int32_t *)(code + cpos)));
-			cpos += 4;
-			break;
-		default:
-			FIXME("Unimplemented variable push: %i", type);
+		case 1: pushValue(getIntegerVariable(var)); break;
+		case 2: pushValue(getFloatVariable(var)); break;
+		case 3: pushValue(getGlobalIntegerVariable(var)); break;
+		case 4: pushValue(getGlobalFloatVariable(var)); break;
+		case 5: pushValue(getStringVariable(var)); break;
+		case 6: pushValue(getGlobalStringVariable(var)); break;
+		case 7: pushValue(getShortVariable(var)); break;
+		case 8: pushValue(getByteVariable(var)); break;
+		case 9: pushValue(getGlobalShortVariable(var)); break;
+		case 10: pushValue(getGlobalByteVariable(var)); break;
+		case 11: FIXME("Push typepointer"); break;
+		default: FIXME("Unimplemented variable push: %i", type);
 	}
 }
 
