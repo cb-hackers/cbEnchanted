@@ -20,6 +20,26 @@ bool Object::load(string file)
 	return true;
 }
 
+bool Object::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
+	if (!imgtex.LoadFromFile(file)) return false;
+
+	imgtex.CreateMaskFromColor(sf::Color(0, 0, 0));
+	texture.LoadFromImage(imgtex);
+	sprite.SetTexture(texture);
+
+	if(fw > texture.GetWidth()) return false;
+	if(fh > texture.GetHeight()) return false;
+	if(framecount > (texture.GetWidth()/frameWidth)*(texture.GetHeight()/frameHeight)) return false;
+
+	frameWidth = fw;
+	frameHeight = fh;
+	startframe = startf;
+	maxframes = framecount;
+	alpha = 100;
+	angle = 0;
+	return true;
+}
+
 void Object::paintObject(sf::Texture txt){
 	texture = txt;
 	sprite.SetTexture(texture);
@@ -57,6 +77,11 @@ void Object::turnObject(float speed){
 
 void Object::render(sf::RenderTarget &target){
 	sprite.SetPosition(posX, posY);
+	if(maxframes!=0){
+
+		int16_t copyY = (currentframe % texture.GetWidth());
+		int16_t copyX = (currentframe / texture.GetHeight());
+	}
 	sprite.Rotate(angle);
 	if(alpha!=100)
 		sprite.SetColor(sf::Color(255, 255, 255, alpha));

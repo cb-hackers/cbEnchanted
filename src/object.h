@@ -33,6 +33,7 @@ class Object{
 		uint16_t frameHeight;
 		uint16_t startframe;
 		uint16_t maxframes;
+		uint16_t currentframe;
 };
 
 #endif // OBJECT_H
