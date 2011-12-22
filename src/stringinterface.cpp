@@ -39,7 +39,10 @@ void StringInterface::functionMid(void) {
 }
 
 void StringInterface::functionReplace(void) {
-	
+	string s3 = cb->popValue().getString();;
+	string s2 = cb->popValue().getString();;
+	string s = cb->popValue().getString();;
+	cb->pushValue(s.replace(s.find(s2), s2.length(), s3));
 }
 
 void StringInterface::functionInStr(void) {
@@ -75,23 +78,31 @@ void StringInterface::functionAsc(void) {
 }
 
 void StringInterface::functionLen(void) {
-	
+	string s = cb->popValue().getString();;
+	cb->pushValue(int(s.length()));
 }
 
 void StringInterface::functionHex(void) {
-	
+
 }
 
 void StringInterface::functionBin(void) {
-	
+
 }
 
 void StringInterface::functionString(void) {
-	
+	int32_t n = cb->popValue().toInt();
+	string s = cb->popValue().getString();;
+	string r = s;
+	for(int i = 1; i < n; i++)
+	{
+		r = r + s;
+	}
+	cb->pushValue(r);
 }
 
 void StringInterface::functionFlip(void) {
-	
+
 }
 
 void StringInterface::functionStrInsert(void) {
@@ -107,7 +118,7 @@ void StringInterface::functionStrMove(void) {
 }
 
 void StringInterface::functionCountWords(void) {
-	
+
 }
 
 void StringInterface::functionGetWord(void) {
