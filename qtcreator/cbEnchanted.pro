@@ -28,10 +28,11 @@ HEADERS += \
     ../src/camerainterface.h \
     ../src/animinterface.h \
     ../src/any.h \
-	../src/object.h \
 	../src/debug.h \
     ../src/camerainterface.h \
-    ../src/rendertargetpointer.h
+    ../src/rendertargetpointer.h \
+    ../src/cbobject.h \
+    ../src/cbimage.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -54,9 +55,10 @@ SOURCES += \
     ../src/cbenchanted.cpp \
     ../src/camerainterface.cpp \
     ../src/animinterface.cpp \
-    ../src/object.cpp \
     ../src/camerainterface.cpp \
-    ../src/rendertargetpointer.cpp
+    ../src/rendertargetpointer.cpp \
+    ../src/cbobject.cpp \
+    ../src/cbimage.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h

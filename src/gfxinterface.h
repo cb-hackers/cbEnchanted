@@ -53,6 +53,7 @@ class GfxInterface {
         inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
         inline bool getDrawImageToWorld()const{return drawImageToWorld;}
         inline bool getDrawTextToWorld()const{return drawTextToWorld;}
+        inline RenderTargetPointer *getCurrentRenderTarget(){return currentRenderTarget;}
 	private:
 		CBEnchanted *cb;
 		

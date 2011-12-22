@@ -37,3 +37,11 @@ void RenderTargetPointer::clear(const sf::Color &c)
     case RenderTexture: static_cast<sf::RenderTexture*>(target)->Clear(c);break;
     }
 }
+
+void RenderTargetPointer::display()
+{
+    switch(targetType) {
+    case RenderWindow: static_cast<sf::RenderWindow*>(target)->Display();break;
+    case RenderTexture: static_cast<sf::RenderTexture*>(target)->Display();break;
+    }
+}

@@ -1,10 +1,10 @@
 
-#include "object.h"
+#include "cbobject.h"
 
-Object::Object(){
+CBObject::CBObject(){
 }
 
-bool Object::load(string file)
+bool CBObject::load(string file)
 {
 	if (!imgtex.LoadFromFile(file)) return false;
 
@@ -20,6 +20,7 @@ bool Object::load(string file)
 	return true;
 }
 
+<<<<<<< HEAD
 bool Object::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
 	if (!imgtex.LoadFromFile(file)) return false;
 
@@ -41,41 +42,44 @@ bool Object::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t star
 }
 
 void Object::paintObject(sf::Texture txt){
+=======
+void CBObject::paintObject(sf::Texture txt){
+>>>>>>> 4b770b5b5a61a0537859e35dfd938b471d750ba8
 	texture = txt;
 	sprite.SetTexture(texture);
 }
 
-void Object::paintObject(Object &obj){
+void CBObject::paintObject(CBObject &obj){
 	texture = obj.texture;
 	sprite.SetTexture(texture);
 }
 
 
-void Object::ghostObject(uint8_t ab){
+void CBObject::ghostObject(uint8_t ab){
 	alpha = ab;
 }
 
-void Object::maskObject(uint8_t r, uint8_t g, uint8_t b){
+void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 	imgtex.CreateMaskFromColor(sf::Color(r, g, b));
 	texture.LoadFromImage(imgtex);
 	sprite.SetTexture(texture);
 }
 
-void Object::moveObject(float fwrd, float sdwrd){
+void CBObject::moveObject(float fwrd, float sdwrd){
 	posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90) / 180.0 * M_PI)*sdwrd;
 	posX-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90) / 180.0 * M_PI)*sdwrd;
 }
 
-void Object::translateObject(float hor, float ver, float depth){
+void CBObject::translateObject(float hor, float ver, float depth){
 	posX+=hor;
 	posY+=ver;
 }
 
-void Object::turnObject(float speed){
+void CBObject::turnObject(float speed){
 	angle+=speed;
 }
 
-void Object::render(sf::RenderTarget &target){
+void CBObject::render(sf::RenderTarget &target){
 	sprite.SetPosition(posX, posY);
 	if(maxframes!=0){
 
@@ -88,19 +92,19 @@ void Object::render(sf::RenderTarget &target){
 	target.Draw(sprite);
 }
 
-void Object::setPosition(float x, float y){
+void CBObject::setPosition(float x, float y){
 	posX = x;
 	posY = y;
 }
 
-float Object::getX(){
+float CBObject::getX(){
 	return posX;
 }
 
-float Object::getY(){
+float CBObject::getY(){
 	return posY;
 }
 
-float Object::getAngle(){
+float CBObject::getAngle(){
 	return angle;
 }

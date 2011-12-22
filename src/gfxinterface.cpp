@@ -109,7 +109,7 @@ void GfxInterface::commandDrawScreen(void) {
         fpsCounter = 0;
         lastSecTimer = clock();
     }
-    window.Display();
+    currentRenderTarget->display();
 
     if (cls) currentRenderTarget->clear(clearColor);
 }

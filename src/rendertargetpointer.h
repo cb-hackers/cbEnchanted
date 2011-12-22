@@ -10,6 +10,7 @@ public:
     void setViewTo(bool drawtoworld);
     void draw(const sf::Drawable &d);
     void clear(const sf::Color &c);
+    void display();
 private:
     enum TargetType {
         RenderWindow,

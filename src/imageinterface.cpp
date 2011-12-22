@@ -1,8 +1,10 @@
 #include "precomp.h"
 #include "imageinterface.h"
+#include "cbenchanted.h"
+#include "cbimage.h"
 
 		
-ImageInterface::ImageInterface() {
+ImageInterface::ImageInterface():cb(static_cast<CBEnchanted*>(this)) {
 	
 }
 
@@ -15,7 +17,13 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
-	
+    bool mask = cb->popValue().getInt();
+    int32_t frame = cb->popValue().toInt();
+    float y = cb->popValue().toFloat();
+    float x = cb->popValue().toFloat();
+    CBImage *img = cbImages[cb->popValue().getInt()];
+    img->SetPosition(x,y);
+    cb->getCurrentRenderTarget()->draw(*img);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -55,11 +63,23 @@ void ImageInterface::commandHotSpot(void) {
 }
 
 void ImageInterface::commandDeleteImage(void) {
-	
+    int32_t id = cb->popValue().getInt();
+    delete cbImages[id];
+    cbImages.erase(id);
 }
 
 void ImageInterface::functionLoadImage(void) {
-	
+    string path = cb->popValue().getString();
+    CBImage *image = new CBImage;
+    if (!image->load(path))
+    {
+        delete image;
+        FIXME("Loading image %s failed.",path.c_str());
+        cb->pushValue(0);
+    }
+    int32_t id = nextId();
+    cbImages[id] = image;
+    cb->pushValue(id);
 }
 
 void ImageInterface::functionLoadAnimImage(void) {
@@ -67,7 +87,13 @@ void ImageInterface::functionLoadAnimImage(void) {
 }
 
 void ImageInterface::functionMakeImage(void) {
-	
+    int32_t h = cb->popValue().toInt();
+    int32_t w = cb->popValue().toInt();
+    CBImage *image = new CBImage;
+    image->makeImage(w,h);
+    int32_t id = nextId();
+    cbImages[id] = image;
+    cb->pushValue(id);
 }
 
 void ImageInterface::functionCloneImage(void) {
@@ -75,11 +101,13 @@ void ImageInterface::functionCloneImage(void) {
 }
 
 void ImageInterface::functionImageWidth(void) {
-	
+    CBImage *img = cbImages[cb->popValue().getInt()];
+    cb->pushValue(img->width());
 }
 
 void ImageInterface::functionImageHeight(void) {
-	
+    CBImage *img = cbImages[cb->popValue().getInt()];
+    cb->pushValue(img->height());
 }
 
 void ImageInterface::functionImagesOverlap(void) {
@@ -88,4 +116,8 @@ void ImageInterface::functionImagesOverlap(void) {
 
 void ImageInterface::functionImagesCollide(void) {
 	
+}
+int32_t ImageInterface::nextId()
+{
+    return ++idCounter;
 }

@@ -6,7 +6,7 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-
+#include <map>
 #include <stdint.h>
 #include <vector>
 #include <cassert>
