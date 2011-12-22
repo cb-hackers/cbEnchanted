@@ -45,7 +45,7 @@ void CBEnchanted::run() {
 			case 90: handleFunction(); break;
 			case 97:
 			case 98:
-			case 99: uselessShitHandler(); break;
+			case 99: break;
 			default: FIXME("Unimplemented handler: %i", opCode);
 		}
 	}
@@ -540,13 +540,6 @@ void CBEnchanted::handleFunction(void) {
 void CBEnchanted::handlePushInt(void) {
 	pushValue(*(int32_t *)(code + cpos));
 	cpos += 4;
-}
-
-/*
- * CBEnchanted::uselessShitHandler - Do nothing
- */ 
-void CBEnchanted::uselessShitHandler(void) {
-	
 }
 
 /*
