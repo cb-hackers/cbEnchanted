@@ -5,8 +5,12 @@ CBImage::CBImage():hotspotX(0),hotspotY(0),image(0),renderTargetPointer(&renderT
 
 }
 
-bool CBImage::load(const string &path)
-{
+CBImage::~CBImage() {
+    if (image) delete image;
+
+}
+
+bool CBImage::load(const string &path) {
     sf::Texture temp;
     if (!temp.LoadFromFile(path))
     {
@@ -19,8 +23,7 @@ bool CBImage::load(const string &path)
     return true;
 }
 
-void CBImage::Render(sf::RenderTarget &target, sf::Renderer &renderer) const
-{
+void CBImage::Render(sf::RenderTarget &target, sf::Renderer &renderer) const {
     glEnable(GL_TEXTURE_2D);
     renderer.SetTexture(&renderTexture.GetTexture());
     const sf::Vector2f pos(GetPosition());
@@ -42,4 +45,9 @@ void CBImage::Render(sf::RenderTarget &target, sf::Renderer &renderer) const
 
 
     glDisable(GL_TEXTURE_2D);
+}
+
+void CBImage::makeImage(int32_t w, int32_t h)
+{
+    renderTexture.Create(w,h);
 }

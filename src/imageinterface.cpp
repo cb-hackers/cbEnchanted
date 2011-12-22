@@ -63,7 +63,9 @@ void ImageInterface::commandHotSpot(void) {
 }
 
 void ImageInterface::commandDeleteImage(void) {
-	
+    int32_t id = cb->popValue().getInt();
+    delete cbImages[id];
+    cbImages.erase(id);
 }
 
 void ImageInterface::functionLoadImage(void) {
@@ -85,7 +87,13 @@ void ImageInterface::functionLoadAnimImage(void) {
 }
 
 void ImageInterface::functionMakeImage(void) {
-	
+    int32_t h = cb->popValue().toInt();
+    int32_t w = cb->popValue().toInt();
+    CBImage *image = new CBImage;
+    image->makeImage(w,h);
+    int32_t id = nextId();
+    cbImages[id] = image;
+    cb->pushValue(id);
 }
 
 void ImageInterface::functionCloneImage(void) {
@@ -93,11 +101,13 @@ void ImageInterface::functionCloneImage(void) {
 }
 
 void ImageInterface::functionImageWidth(void) {
-
+    CBImage *img = cbImages[cb->popValue().getInt()];
+    cb->pushValue(img->width());
 }
 
 void ImageInterface::functionImageHeight(void) {
-	
+    CBImage *img = cbImages[cb->popValue().getInt()];
+    cb->pushValue(img->height());
 }
 
 void ImageInterface::functionImagesOverlap(void) {
