@@ -8,7 +8,7 @@ int CALLBACK WinMain(__in  HINSTANCE hInstance,__in  HINSTANCE hPrevInstance,__i
 int main(int argc, char** argv) {
 #endif
 	CBEnchanted cb;
-    cb.init(string("pallerot.exe"));
+    cb.init(string("../cbbin/helloworld.exe"));
 	cb.run();
 	cb.cleanup();
 	
