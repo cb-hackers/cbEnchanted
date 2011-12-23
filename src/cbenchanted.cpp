@@ -164,9 +164,9 @@ void CBEnchanted::commandFunction(void) {
 	cpos += 4;
 
 	switch (type) {
-		case 1: setIntegerVariable(var, popValue().getInt()); break;
-		case 2: setFloatVariable(var, popValue().getFloat()); break;
-		case 3:	setStringVariable(var, popValue().getString()); break;
+		case 1: setIntegerVariable(var, popValue().toInt()); break;
+		case 2: setFloatVariable(var, popValue().toFloat()); break;
+		case 3:	setStringVariable(var, popValue().toString()); break;
 		case 4:	setShortVariable(var, popValue().toShort()); break;
 		case 5: setByteVariable(var, popValue().toByte()); break;
 	}

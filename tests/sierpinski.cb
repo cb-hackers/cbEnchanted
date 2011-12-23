@@ -1,0 +1,24 @@
+// Sierpinski triangle made with CoolBasic
+ 
+SCREEN 800, 800
+ 
+sierTri(0, 800, 400, 0, 800, 800, 9, 0, 1)
+DrawScreen OFF
+WaitKey
+ 
+Function sierTri(x1#, y1#, x2#, y2#, x3#, y3#, d, n = 0, dd = 0)
+	Line x1 + 1, y1, x2 + 1, y2
+	Line x2 + 1, y2, x3 + 1, y3
+	Line x3 + 1, y3, x1 + 1, y1
+ 
+	If n < d Then
+		If n = 0 Then 
+			sierTri((x1 + x2) * 0.5, (y1 + y2) * 0.5, (x1 + x3) * 0.5, y1, (x2 + y3) * 0.5, (y1 + y2) * 0.5, d, 1, dd) 
+		Else
+			sierTri((x1 + x2) * 0.5, y1 - (y2 - y1) * 0.5, (x1 + x3) * 0.5, y1, (x2 + x3) * 0.5, y1 - (y2 - y1) * 0.5, d, n + 1, dd)
+			sierTri(((x1 + x2) * 0.5) - (x3 - x2), y1 + (y2 - y1) * 0.5, (x1 + x3) * 0.5 - (x3 - x1) * 0.5, y2, (x2 + x3) * 0.5 - (x3 - x2), y1 + (y2 - y1) * 0.5, d, n + 1, dd)
+			sierTri(((x1 + x2) * 0.5) + (x3 - x2), y1 + (y2 - y1) * 0.5, (x1 + x3) * 0.5 + (x3 - x1) * 0.5, y2, (x2 + x3) * 0.5 + (x3 - x2), y1 + (y2 - y1) * 0.5, d, n + 1, dd)
+		EndIf
+	EndIf
+	If dd and Rand(1, 10) = 1 Then DrawScreen OFF
+EndFunction
