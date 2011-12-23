@@ -1,4 +1,5 @@
 
+#include "precomp.h"
 #include "cbobject.h"
 
 CBObject::CBObject(){
@@ -20,8 +21,8 @@ bool CBObject::load(string file)
 	return true;
 }
 
-<<<<<<< HEAD
-bool Object::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
+
+bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
 	if (!imgtex.LoadFromFile(file)) return false;
 
 	imgtex.CreateMaskFromColor(sf::Color(0, 0, 0));
@@ -41,10 +42,13 @@ bool Object::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t star
 	return true;
 }
 
-void Object::paintObject(sf::Texture txt){
-=======
+void CBObject::positionObject(float x, float y){
+	posX = x;
+	posY = y;
+}
+
 void CBObject::paintObject(sf::Texture txt){
->>>>>>> 4b770b5b5a61a0537859e35dfd938b471d750ba8
+
 	texture = txt;
 	sprite.SetTexture(texture);
 }
@@ -85,6 +89,7 @@ void CBObject::render(sf::RenderTarget &target){
 
 		int16_t copyY = (currentframe % texture.GetWidth());
 		int16_t copyX = (currentframe / texture.GetHeight());
+		sprite.SetSubRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
 	}
 	sprite.Rotate(angle);
 	if(alpha!=100)

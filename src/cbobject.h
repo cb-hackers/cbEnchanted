@@ -9,13 +9,14 @@ class CBObject{
 		bool load(string file);
 		bool loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
 		void paintObject(sf::Texture txt);
-        void paintObject(CBObject &obj);
+		void paintObject(CBObject &obj);
 		void moveObject(float fwrd, float sdwrd);
+		void positionObject(float x, float y);
 		void translateObject(float hor, float ver, float depth);
 		void turnObject(float speed);
 		void render(sf::RenderTarget &target);
 		void setPosition(float x, float y);
-        void ghostObject(uint8_t ab);
+		void ghostObject(uint8_t ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
 		float getX();
 		float getY();
