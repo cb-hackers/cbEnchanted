@@ -1,6 +1,5 @@
 #ifndef CBVARIABLEHOLDER_H
 #define CBVARIABLEHOLDER_H
-#include <iostream>
 
 #include "precomp.h"
 #include "any.h"
@@ -8,6 +7,10 @@
 template <class T>
 class VariableCollection {
 	public:
+		void Init(uint32_t size) {
+			variables.reserve(size);
+		}
+
 		T get(uint32_t id) {
 			if (variables.size() <= id) {
 				variables.resize(id + 1);
@@ -15,6 +18,7 @@ class VariableCollection {
 	
 			return variables[id];
 		}
+
 		void set(uint32_t id, T value) {
 			if (variables.size() <= id) {
 				variables.resize(id + 1);
@@ -26,6 +30,15 @@ class VariableCollection {
 		vector <T> variables;
 };
 
+class VariableScope {
+	public:
+		VariableCollection <uint8_t> byteVariables;
+		VariableCollection <uint16_t> shortVariables;
+		VariableCollection <int32_t> integerVariables;
+		VariableCollection <float> floatVariables;
+		VariableCollection <string> stringVariables;
+};
+
 struct Array {
 	map<uint32_t, uint32_t> dimensions;
 	uint32_t type;
@@ -35,8 +48,8 @@ struct Array {
 
 class CBVariableHolder {
 	public:
-		CBVariableHolder() {}
-		
+		CBVariableHolder() { pushScope(); }
+	
         Any popValue(void) {
 			assert(!internalStack.empty());
             Any value = internalStack.top();
@@ -49,28 +62,27 @@ class CBVariableHolder {
         void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
-		
-        /*template <typename T>
-		inline T popValue(void) {
-			assert(!internalStack.empty());
-            Any value;
-			try {
-                value = internalStack.top();
-				internalStack.pop();
-				assert(!value.empty());
-				return any_cast<T>(value);
-			}
-			catch(const boost::bad_any_cast &error) {
-                cout << "Failed cast from " << value.type_info().name() << " to " << typeid(T).name() << endl;
-				exit(1);
-			}
-        }*/
 
-		uint8_t getByteVariable(uint32_t id) { return byteVariables.get(id); }
-		uint16_t getShortVariable(uint32_t id) { return shortVariables.get(id); }
-		int32_t getIntegerVariable(uint32_t id) { return integerVariables.get(id); }
-		float getFloatVariable(uint32_t id) { return floatVariables.get(id); }
-		string getStringVariable(uint32_t id) { return stringVariables.get(id); }
+		void pushScope(void) {
+			VariableScope s;
+			scopes.push(s);
+		}
+
+		void popScope(void) {
+			assert(!scopes.empty());
+
+			scopes.pop();
+		}
+
+		bool inFunction(void) {
+			return scopes.size() > 1;
+		}
+		
+		uint8_t getByteVariable(uint32_t id) { return scopes.top().byteVariables.get(id); }
+		uint16_t getShortVariable(uint32_t id) { return scopes.top().shortVariables.get(id); }
+		int32_t getIntegerVariable(uint32_t id) { return scopes.top().integerVariables.get(id); }
+		float getFloatVariable(uint32_t id) { return scopes.top().floatVariables.get(id); }
+		string getStringVariable(uint32_t id) { return scopes.top().stringVariables.get(id); }
 		
 		uint8_t getGlobalByteVariable(uint32_t id) { return globalByteVariables.get(id); }
 		uint16_t getGlobalShortVariable(uint32_t id) { return globalShortVariables.get(id); }
@@ -82,12 +94,11 @@ class CBVariableHolder {
 		
 		string getString(uint32_t id) { return strings.get(id); }
 		
-		
-		void setByteVariable(uint32_t id, uint8_t value) { byteVariables.set(id, value); }
-		void setShortVariable(uint32_t id, uint16_t value) { shortVariables.set(id, value); }
-		void setIntegerVariable(uint32_t id, int32_t value) { integerVariables.set(id, value); }
-		void setFloatVariable(uint32_t id, float value) { floatVariables.set(id, value); }
-		void setStringVariable(uint32_t id, string value) { stringVariables.set(id, value); }
+		void setByteVariable(uint32_t id, uint8_t value) { scopes.top().byteVariables.set(id, value); }
+		void setShortVariable(uint32_t id, uint16_t value) { scopes.top().shortVariables.set(id, value); }
+		void setIntegerVariable(uint32_t id, int32_t value) { scopes.top().integerVariables.set(id, value); }
+		void setFloatVariable(uint32_t id, float value) { scopes.top().floatVariables.set(id, value); }
+		void setStringVariable(uint32_t id, string value) { scopes.top().stringVariables.set(id, value); }
 		
 		void setGlobalByteVariable(uint32_t id, uint8_t value) { globalByteVariables.set(id, value); }
 		void setGlobalShortVariable(uint32_t id, uint16_t value) { globalShortVariables.set(id, value); }
@@ -97,15 +108,15 @@ class CBVariableHolder {
 		void setArray(uint32_t id, Array value) { arrays.set(id, value); }
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }
-		
 	private:
         stack <Any> internalStack;
-		
-		VariableCollection <uint8_t> byteVariables;
+		stack <VariableScope> scopes;
+
+		/*VariableCollection <uint8_t> byteVariables;
 		VariableCollection <uint16_t> shortVariables;
 		VariableCollection <int32_t> integerVariables;
 		VariableCollection <float> floatVariables;
-		VariableCollection <string> stringVariables;
+		VariableCollection <string> stringVariables;*/
 		
 		VariableCollection <uint8_t> globalByteVariables;
 		VariableCollection <uint16_t> globalShortVariables;

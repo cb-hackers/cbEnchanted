@@ -21,7 +21,9 @@
 #include "mapinterface.h"
 #include "effectinterface.h"
 #include "debug.h"
+#include <vector>
 
+using std::vector;
 
 class GfxInterface;
 
@@ -41,7 +43,8 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		
 		char *code;
 		uint32_t cpos;
-		
+		vector <uint32_t> pos;
+	
 		bool initialized;
 		bool running;
 		
@@ -50,6 +53,7 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		map <uint32_t, uint32_t> offsets;
 		map <uint32_t, uint32_t> roffsets;
 		
+		void handlePushFuncptr(void);
 		void handleSetInt(void);
 		void handleSetFloat(void);
 		void handleFunction(void);
@@ -60,7 +64,8 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		void handleMathOperation(void);
 		void handleJump(void);
 		void handleIncVar(void);
-		
+	
+		void commandFunction(void);
 		void command97_98(void);
 		void command99(void);
 		void commandGoto(void);

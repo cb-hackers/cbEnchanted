@@ -8,7 +8,9 @@
 #include "mathinterface.h"
 #include "cbvariableholder.h"
 #include "mathoperations.h"
+
 static CBEnchanted *cbInstance;
+
 CBEnchanted::CBEnchanted() {
     cbInstance = this;
 	initialized = false;
@@ -36,7 +38,7 @@ void CBEnchanted::run() {
 	while (running) {
 		uint32_t opCode = (uint32_t)code[cpos++];
 
-		HCDEBUG("OpCode: %i", opCode);
+		HCDEBUG("[%i]: OpCode: %i", cpos, opCode);
 		switch (opCode) {
 			case 65: handleSetInt(); break;
 			case 66: handleSetFloat(); break;
@@ -46,6 +48,7 @@ void CBEnchanted::run() {
 			case 78: handleJump(); break;
 			case 79: handleMathOperation(); break;
 			case 80: handleIncVar(); break;
+			case 85: handlePushFuncptr(); break;
 			case 86: handlePushVariable(); break;
 			case 90: handleFunction(); break;
 			case 97:
@@ -122,6 +125,7 @@ void CBEnchanted::init(string file) {
 			case 74:
 			case 78:
 			case 80:
+			case 85:
 			case 86:
 			case 90: i += 4; break;
 			case 79: i ++; break;
@@ -129,8 +133,6 @@ void CBEnchanted::init(string file) {
 		}
 		
 	}
-
-	assert(i == size);
 
 	initialized = true;
 	INFO("Initialized");
@@ -142,6 +144,32 @@ void CBEnchanted::stop() {
 
 void CBEnchanted::cleanup() {
 	cleanupSoundInterface();
+}
+
+void CBEnchanted::handlePushFuncptr(void) {
+	int32_t ptr = *(int32_t *)(code + cpos);
+	cpos += 4;
+	
+	pos.push_back(cpos);
+
+	pushScope();
+	cpos = offsets[ptr];
+}
+
+void CBEnchanted::commandFunction(void) {
+	cpos++;
+	int32_t type = *(int32_t *)(code + cpos);
+	cpos += 5;
+	int32_t var = *(int32_t *)(code + cpos);
+	cpos += 4;
+
+	switch (type) {
+		case 1: setIntegerVariable(var, popValue().getInt()); break;
+		case 2: setFloatVariable(var, popValue().getFloat()); break;
+		case 3:	setStringVariable(var, popValue().getString()); break;
+		case 4:	setShortVariable(var, popValue().toShort()); break;
+		case 5: setByteVariable(var, popValue().toByte()); break;
+	}
 }
 
 /*
@@ -194,7 +222,9 @@ void CBEnchanted::handleCommand(void) {
 		case 57: commandDelete(); break;
 		case 65: commandInitObjectList(); break;
 		case 69: commandEnd(); break;
+		case 70: popValue(); break;
 		case 77: commandSetVariable(); break;
+		case 79: commandFunction(); break;
 		case 125: commandRandomize(); break;
 		case 201: commandSetFont(); break;
 		case 202: commandDeleteFont(); break;
@@ -543,6 +573,7 @@ void CBEnchanted::handleFunction(void) {
  * CBEnchanted::handlePushInt - Push integer to stack
  */
 void CBEnchanted::handlePushInt(void) {
+	HCDEBUG("[%i] Push Int %i", cpos, *(int32_t *)(code + cpos));
 	pushValue(*(int32_t *)(code + cpos));
 	cpos += 4;
 }
@@ -631,10 +662,10 @@ void CBEnchanted::handlePushVariable(void) {
 		case 4: pushValue(getGlobalFloatVariable(var)); break;
 		case 5: pushValue(getStringVariable(var)); break;
 		case 6: pushValue(getGlobalStringVariable(var)); break;
-		case 7: pushValue(getShortVariable(var)); break;
-		case 8: pushValue(getByteVariable(var)); break;
-		case 9: pushValue(getGlobalShortVariable(var)); break;
-		case 10: pushValue(getGlobalByteVariable(var)); break;
+		case 7: pushValue(int32_t(getShortVariable(var))); break;
+		case 8: pushValue(int32_t(getByteVariable(var))); break;
+		case 9: pushValue(int32_t(getGlobalShortVariable(var))); break;
+		case 10: pushValue(int32_t(getGlobalByteVariable(var))); break;
 		case 11: FIXME("Push typepointer"); break;
 		default: FIXME("Unimplemented variable push: %i", type);
 	}
@@ -874,7 +905,12 @@ void CBEnchanted::commandReDim(void) {
 }
 
 void CBEnchanted::commandReturn(void) {
-	
+	cpos = pos.back();
+	pos.pop_back();
+
+	if (inFunction()) {
+		popScope();
+	}
 }
 
 void CBEnchanted::commandGosub(void) {
@@ -917,22 +953,32 @@ void CBEnchanted::commandSetVariable(void) {
 	int32_t type = popValue().getInt();
 
 	switch (type) {
-		case 1: // String
-			FIXME("Set string");
+		case 1: { // String
+			int32_t id = popValue().getInt();
+			string value = popValue().toString();
+
+			setStringVariable(id, value);
 			break;
+		}
 		case 2: { // Short
 			int32_t id = popValue().getInt();
 			uint16_t value = popValue().toShort();
 
 			setShortVariable(id, value);
-			//FIXME("Set short");
+			break;
+		}
+		case 3: { // Byte
+			int32_t id = popValue().getInt();
+			uint8_t value = popValue().toByte();
+
+			setByteVariable(id, value);
 			break;
 		}
 		case 4: // Typepointer tjsp
 			FIXME("Set typepointer");
 			break;
 		default:
-			FIXME("Unimplemented SetVariable");
+			FIXME("Unimplemented SetVariable. Type: %i", type);
 	}
 	INFO("Push value, type: %i", type);
 }

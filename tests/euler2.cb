@@ -1,19 +1,29 @@
 Screen 300, 200
 
+Dim a As Integer
+Dim b As Integer
+
 Dim i As Integer
-Dim s As Integer
-s = 0
 
-Dim alku As Integer
-alku = Timer()
-For i = 0 To 99999
-	If i Mod 3 = 0 Or i Mod 5 = 0 Then
-		s = s + i
-	EndIf
-Next i
+a = 123
+b = 22
 
-loppu = Timer()
-Repeat
-	Text 0, 0, Str(loppu - alku)
-	DrawScreen
-Forever
+i = G(123, 12, 12312)
+
+Text 0, 0, i
+Text 0, 20, a
+Text 0, 40, b
+DrawScreen
+WaitKey
+
+Function G(z As Integer, o As Byte, i As Integer)
+	Dim q As Integer
+	Dim c As Integer
+	
+	c = 5124
+	q = c * 2
+	
+	q = q + z + o + i
+	Text 0, 60, q
+	Return q
+EndFunction
