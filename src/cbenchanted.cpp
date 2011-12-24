@@ -495,8 +495,8 @@ void CBEnchanted::handleFunction(void) {
 		case 342: functionReadShort(); break;
 		case 343: functionReadInt(); break;
 		case 344: functionReadFloat(); break;
-		case 345: functionReadFloat(); break;
-		case 346: functionReadString(); break;
+		case 345: functionReadString(); break;
+		case 346: functionReadLine(); break;
 		case 400: functionPlayAnimation(); break;
 		case 403: functionAnimationWidth(); break;
 		case 404: functionAnimationHeight(); break;
