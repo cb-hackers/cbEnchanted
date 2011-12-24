@@ -263,9 +263,8 @@ void CBEnchanted::handleCommand(void) {
 		case 342: commandReadShort(); break;
 		case 343: commandReadInt(); break;
 		case 344: commandReadFloat(); break;
-		case 345: commandReadFloat(); break;
-		case 346: commandReadString(); break;
-		case 347: commandReadLine(); break;
+		case 345: commandReadString(); break;
+		case 346: commandReadLine(); break;
 		case 348: commandWriteByte(); break;
 		case 349: commandWriteShort(); break;
 		case 350: commandWriteInt(); break;
