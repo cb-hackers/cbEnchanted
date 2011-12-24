@@ -1,11 +1,14 @@
 #ifndef FILEINTERFACE_H
 #define FILEINTERFACE_H
 
+#include "precomp.h"
+
+class cbEnchanted;
 class FileInterface {
 	public:
 		FileInterface();
 		~FileInterface();
-		
+
 		void commandCloseFile(void);
 		void commandSeekFile(void);
 		void commandStartSearch(void);
@@ -45,7 +48,10 @@ class FileInterface {
 		void functionReadString(void);
 		void functionReadLine(void);
 	private:
-	
+		CBEnchanted *cb;
+		int32_t idC;
+		fstream filestr;
+		map<int32_t,fstream*> filestrs;
 };
 
 #endif
