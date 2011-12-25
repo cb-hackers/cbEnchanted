@@ -50,8 +50,7 @@ class FileInterface {
 	private:
 		CBEnchanted *cb;
 		int32_t idC;
-		fstream filestr;
-		map<int32_t,fstream*> filestrs;
+		map<int32_t,FILE*> filestrs;
 };
 
 #endif
