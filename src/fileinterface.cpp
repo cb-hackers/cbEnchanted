@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 #include <cstdio>
+#include <boost/filesystem.hpp>
 
 FileInterface::FileInterface() : cb(static_cast <CBEnchanted *> (this)) {
 
@@ -12,21 +13,16 @@ FileInterface::~FileInterface() {
 }
 
 void FileInterface::commandCloseFile(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-	fclose(file2);
+	fclose(filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandSeekFile(void) {
 	fpos_t pos = cb->popValue().getInt();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	fsetpos(file2,&pos);
+	fsetpos(filestrs[cb->popValue().getInt()],&pos);
 }
 
 void FileInterface::commandStartSearch(void) {
-	
+
 }
 
 void FileInterface::commandEndSearch(void) {
@@ -34,56 +30,47 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	
+	current_path(path(cb->popValue().toString()));
 }
 
 void FileInterface::commandMakeDir(void) {
-	
+	create_directory(path(cb->popValue().toString()));
 }
 
 void FileInterface::commandCopyFile(void) {
-	
+	string file_s2 = cb->popValue().toString();
+	string file_s1 = cb->popValue().toString();
+	copy_file(path(file_s1),path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
-	
+	remove(path(cb->popValue().toString()));
 }
 
 void FileInterface::commandExecute(void) {
-	
+	string file_s = cb->popValue().toString();
+	system(file_s.c_str());
 }
 
 void FileInterface::commandWriteByte(void) {
 	char byte = cb->popValue().getByte();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	fputc((int) byte,file2);
+	fputc((int) byte,filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteShort(void) {
 	short sh = cb->popValue().getShort();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	fwrite(&sh,sizeof(short),1,file2);
+	fwrite(&sh,sizeof(short),1,filestrs[cb->popValue().getInt()]);
 
 }
 
 void FileInterface::commandWriteInt(void) {
 	int32_t i = cb->popValue().getInt();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	fwrite(&i,sizeof(int32_t),1,file2);
+	fwrite(&i,sizeof(int32_t),1,filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteFloat(void) {
 	float fl = cb->popValue().getFloat();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	fwrite(&fl,sizeof(float),1,file2);
+	fwrite(&fl,sizeof(float),1,filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteString(void) {
@@ -141,82 +128,64 @@ void FileInterface::commandReadLine(void) {
 
 void FileInterface::functionOpenToRead(void) {
 
-	string sfile = cb->popValue().toString();
-	char * cFile;
-	cFile = new char [sfile.length()+1];
-	strcpy(cFile,sfile.c_str());
-
+	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(cFile, "r");;
-
-	delete[] cFile;
+	filestrs[id] = fopen(file_s.c_str(), "r");;
 
 	cb->pushValue(id);
 }
 
 void FileInterface::functionOpenToWrite(void) {
 
-	string sfile = cb->popValue().toString();
-	char * cFile;
-	cFile = new char [sfile.length()+1];
-	strcpy(cFile,sfile.c_str());
+	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(cFile, "w");
-
-	delete[] cFile;
+	filestrs[id] = fopen(file_s.c_str(), "w");
 
 	cb->pushValue(id);
 }
 
 void FileInterface::functionOpenToEdit(void) {
 
-	string sfile = cb->popValue().toString();
-	char * cFile;
-	cFile = new char [sfile.length()+1];
-	strcpy(cFile,sfile.c_str());
+	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(cFile, "r+");
-
-	delete[] cFile;
+	filestrs[id] = fopen(file_s.c_str(), "r+");
 
 	cb->pushValue(id);
 }
 
 void FileInterface::functionFileOffset(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
 
-	cb->pushValue(ftell(file2));
+	cb->pushValue(int(ftell(filestrs[cb->popValue().getInt()])));
 }
 
 void FileInterface::functionFindFile(void) {
-	
+
 }
 
 void FileInterface::functionCurrentDir(void) {
-	
+	cb->pushValue(current_path().string());
 }
 
 void FileInterface::functionFileExists(void) {
-	
+	cb->pushValue(exists(cb->popValue().toString()));
 }
 
 void FileInterface::functionIsDirectory(void) {
-	
+	cb->pushValue(is_directory(cb->popValue().toString()));
 }
 
 void FileInterface::functionFileSize(void) {
-
+	cb->pushValue(int32_t(file_size(cb->popValue().toString())));
 }
 
 void FileInterface::functionEOF(void) {
 	FILE *file2;
 	file2 = filestrs[cb->popValue().getInt()];
 
-	bool eof = 0;
+	int32_t eof = 0;
 	if (feof(file2)!=0) {eof=1;}
 
 	cb->pushValue(eof);
@@ -224,10 +193,7 @@ void FileInterface::functionEOF(void) {
 }
 
 void FileInterface::functionReadByte(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
-
-	cb->pushValue(char(fgetc(file2)));
+	cb->pushValue(char(fgetc(filestrs[cb->popValue().getInt()])));
 }
 
 void FileInterface::functionReadShort(void) {
