@@ -23,13 +23,13 @@ void StringInterface::functionStr(void) {
 void StringInterface::functionLeft(void) {
     int32_t n = cb->popValue().toInt();
     string s = cb->popValue().getString();
-	
+
 	cb->pushValue(s.substr(0, n));
 }
 
 void StringInterface::functionRight(void) {
     int32_t n = cb->popValue().toInt();
-    string s = cb->popValue().getString();;
+	string s = cb->popValue().getString();;
 	
 	cb->pushValue(s.substr(s.length() - n));
 }
@@ -42,7 +42,16 @@ void StringInterface::functionReplace(void) {
 	string s3 = cb->popValue().getString();;
 	string s2 = cb->popValue().getString();;
 	string s = cb->popValue().getString();;
-	cb->pushValue(s.replace(s.find(s2), s2.length(), s3));
+
+	string::size_type p = 0;
+
+	while ((p = s.find(s2, p))!=string::npos)
+	{
+		s.replace(p, s2.size(), s3);
+		++p;
+	}
+
+	cb->pushValue(s);
 }
 
 void StringInterface::functionInStr(void) {
