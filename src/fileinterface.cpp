@@ -94,11 +94,9 @@ void FileInterface::commandWriteLine(void) {
 	FILE *file2;
 	file2 = filestrs[cb->popValue().getInt()];
 
-	char * cLine;
-	cLine = new char [line.length()+1];
-	strcpy(cLine,line.c_str());
+	line += "\n";
 
-	fputs(cLine,file2);
+	fputs(line.c_str(),file2);
 
 }
 
