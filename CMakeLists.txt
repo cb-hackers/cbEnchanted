@@ -46,7 +46,7 @@ list(APPEND LIBS ${Boost_LIBRARIES})
 # Sources
 
 file(GLOB SOURCES src/*.cpp)
-file(GLOB HEADER src/*.h)
+file(GLOB HEADERS src/*.h)
 
 add_executable(${EXE_NAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${EXE_NAME} ${LIBS})
