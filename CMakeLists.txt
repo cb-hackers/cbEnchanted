@@ -36,8 +36,8 @@ include_directories(${SFML_INCLUDE_DIR})
 list(APPEND LIBS ${SFML_LIBRARIES})
 
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIR})
-list(APPEND LIBS ${OpenGL_LIBRARIES})
+include_directories(${OPENGL_INCLUDE_DIR})
+list(APPEND LIBS ${OPENGL_LIBRARIES})
 
 if(WIN32)
 	set(Boost_USE_STATIC_LIBS   ON)
