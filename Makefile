@@ -7,7 +7,7 @@ CXXFLAGS += -pthread -O3 -Wno-int-to-pointer-cast -fpermissive -DLOG_LEVEL_FIXME
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio -lGL
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN) -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio -lGL -lboost_filesystem -lboost_system
 
 clean:
 	rm -f $(OBJ) $(BIN)
