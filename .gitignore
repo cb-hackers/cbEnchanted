@@ -10,3 +10,13 @@ test.exe
 /visual studio/Release
 /visual studio/Debug
 /visual studio/CodeAnalyst
+
+CMakeLists.txt.user*
+build/
+
+qtcreator/cbEnchanted.pro.user
+
+tools/cbcompiler/IDE/CompileLog.txt
+tools/cbcompiler/IDE/Compiler
+tools/cbcompiler/IDE/Editor.out
+
