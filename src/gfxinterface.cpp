@@ -12,9 +12,10 @@ GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTit
     currentFPS = 0;
     lastSecTimer = clock();
     sf::ContextSettings windowSettings;
-    windowSettings.AntialiasingLevel = 0;
+    windowSettings.AntialiasingLevel = 1;
     windowSettings.DepthBits = 0;
-    window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Default,windowSettings);
+    window.EnableVerticalSync(true);
+    window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
     windowSettings = window.GetSettings();
     INFO("Window antialiasing level: %i",windowSettings.AntialiasingLevel);
     currentRenderTarget = &windowRenderTargetPointer;
@@ -29,19 +30,19 @@ void GfxInterface::commandScreen(void) {
     uint32_t height = cb->popValue().toInt();
     uint32_t width = cb->popValue().toInt();
 	uint32_t style;
+    if (depth == 0) depth = 32;
 	switch (state) {
 		case 0: //cbFullscreen
 			style = sf::Style::Fullscreen;
 			break;
 		case 1: // default
-			style = sf::Style::Close;
+            style = sf::Style::Close;
 			break;
 		case 2: //cbSizable
 			style = sf::Style::Close | sf::Style::Resize;
 			break;
-	}
-	
-	window.Create(sf::VideoMode(width, height, depth), windowTitle, style);
+    }
+    window.Create(sf::VideoMode(width, height, depth), windowTitle, style,window.GetSettings());
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -69,8 +70,10 @@ void GfxInterface::commandCircle(void) {
     float rad = cb->popValue().toFloat();
     float cy = cb->popValue().toFloat() + rad * 0.5;
     float cx = cb->popValue().toFloat() + rad * 0.5;
+    //sf::Shape circle = sf::Shape::Circle(cx,cy,rad,drawColor);
+
 	Circle circle(cx, cy, rad * 0.5, fill);
-	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
+    glColor3ub(drawColor.r, drawColor.g, drawColor.b);
     currentRenderTarget->draw(circle);
 }
 
@@ -80,8 +83,9 @@ void GfxInterface::commandLine(void){
     float x2 = cb->popValue().toFloat();
     float y1 = cb->popValue().toFloat();
     float x1 = cb->popValue().toFloat();
-	glColor3ub(drawColor.r, drawColor.g, drawColor.b);
-	Line line(x1, y1, x2, y2);
+    glColor3ub(drawColor.r, drawColor.g, drawColor.b);
+    Line line(x1, y1, x2, y2);
+    //sf::Shape line = sf::Shape::Line(x1,y1,x2,y2,1,drawColor);
     currentRenderTarget->draw(line);
 }
 
@@ -90,7 +94,7 @@ void GfxInterface::commandDrawScreen(void) {
     bool cls = cb->popValue().toInt();
 	sf::Event e;
 	
-	while (window.PollEvent(e)) {
+    while (window.PollEvent(e)) {
 		switch (e.Type) {
 			case sf::Event::Closed:
 				cb->stop();

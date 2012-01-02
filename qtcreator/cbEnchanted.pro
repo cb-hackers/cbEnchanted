@@ -4,7 +4,8 @@ TEMPLATE = app
 
 CONFIG += thread precompiled_header console
 
-#QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
+QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
+QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t
 
 HEADERS += \
     ../src/textinterface.h \
@@ -74,11 +75,9 @@ win32{
     else {
         LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
         PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
-    }
-
+	}
 
     LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
-	DEFINES += WIN32
     INCLUDEPATH += "$$(SFML_INCLUDE)"
     DEPENDPATH += "$$(SFML_INCLUDE)"
     INCLUDEPATH += "$$(BOOST_INCLUDE)"

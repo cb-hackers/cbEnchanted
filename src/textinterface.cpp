@@ -36,7 +36,6 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-	glEnable(GL_TEXTURE_2D);
     string txt = cb->popValue().toString();
     float y = cb->popValue().toFloat();
     float x = cb->popValue().toFloat();
@@ -47,7 +46,6 @@ void TextInterface::commandText(void) {
 	text.SetPosition(x, y);
 
 	cb->getWindow()->Draw(text);
-	glDisable(GL_TEXTURE_2D);
 }
 
 void TextInterface::commandCenterText(void) {

@@ -21,5 +21,5 @@ Repeat
     fpsc + 1
     Color 255,255,255
     Text 10,10,FPS()
-    DrawScreen
+    DrawScreen Off
 Forever

@@ -125,11 +125,11 @@ void InputInterface::functionMouseY(void) {
 }
 
 void InputInterface::functionMouseWX(void) {
-	
+    sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
 }
 
 void InputInterface::functionMouseWY(void) {
-	
+    sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
 }
 
 void InputInterface::functionMouseZ(void) {

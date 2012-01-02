@@ -7,6 +7,7 @@
 #endif
 
 void Line::Render(sf::RenderTarget& target, sf::Renderer& renderer) const{
+    glDisable(GL_TEXTURE_2D);
 	glBegin(GL_LINES);
 		glVertex2f(x1, y1);
 		glVertex2f(x2, y2);
@@ -15,6 +16,7 @@ void Line::Render(sf::RenderTarget& target, sf::Renderer& renderer) const{
 
 void Circle::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
 {
+    glDisable(GL_TEXTURE_2D);
     int segmentCount = 5 + r;
     if (segmentCount > 200) segmentCount = 200;
     float theta = 2 * 3.1415926 / float(segmentCount);

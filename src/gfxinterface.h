@@ -48,7 +48,7 @@ class GfxInterface {
 
         int32_t getFPS()const{return currentFPS;}
 
-		sf::RenderWindow *getWindow(void) { return &this->window; }
+        sf::RenderWindow *getWindow(void) { return &this->window; }
 		sf::Color getDrawColor() { return drawColor; }
         inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
         inline bool getDrawImageToWorld()const{return drawImageToWorld;}
