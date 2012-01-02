@@ -7,7 +7,7 @@ InputInterface::InputInterface() {
 }
 
 void InputInterface::commandCloseInput(void) {
-	
+	STUB;
 }
 
 /*
@@ -28,7 +28,7 @@ void InputInterface::commandWaitKey(void) {
 }
 
 void InputInterface::commandClearKeys(void) {
-	
+	STUB;
 }
 
 void InputInterface::commandPositionMouse(void) {
@@ -39,39 +39,39 @@ void InputInterface::commandPositionMouse(void) {
 }
 
 void InputInterface::commandWaitMouse(void) {
-	
+	STUB;
 }
 
 void InputInterface::commandShowMouse(void) {
-	
+	STUB;
 }
 
 void InputInterface::commandClearMouse(void) {
-	
+	STUB;
 }
 
 void InputInterface::commandSAFEEXIT(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionInput(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionKeyDown(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionKeyHit(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionKeyUp(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionGetKey(void) {
-	
+	STUB;
 }
 
 /*
@@ -95,23 +95,23 @@ void InputInterface::functionWaitKey(void) {
 }
 
 void InputInterface::functionMouseDown(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseHit(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseUp(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionGetMouse(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionWaitMouse(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseX(void) {
@@ -133,19 +133,19 @@ void InputInterface::functionMouseWY(void) {
 }
 
 void InputInterface::functionMouseZ(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseMoveX(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseMoveY(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionMouseMoveZ(void) {
-	
+	STUB;
 }
 
 void InputInterface::functionLeftKey(void) {

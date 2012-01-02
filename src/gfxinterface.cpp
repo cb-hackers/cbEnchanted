@@ -119,23 +119,23 @@ void GfxInterface::commandDrawScreen(void) {
 }
 
 void GfxInterface::commandLock(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandUnlock(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandPutPixel(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandPutPixel2(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandCopyBox(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandCls(void) {
@@ -143,51 +143,51 @@ void GfxInterface::commandCls(void) {
 }
 
 void GfxInterface::commandDot(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandBox(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandEllipse(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandPickColor(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandScreenGamma(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandDrawToImage(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandDrawToScreen(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandDrawToWorld(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandSmooth2D(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandScreenShot(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandUpdateGame(void) {
-	
+	STUB;
 }
 
 void GfxInterface::commandDrawGame(void) {
-	
+	STUB;
 }
 
 void GfxInterface::functionSCREEN(void) {
@@ -195,15 +195,15 @@ void GfxInterface::functionSCREEN(void) {
 }
 
 void GfxInterface::functionImage(void) {
-	
+	STUB;
 }
 
 void GfxInterface::functionGetPixel(void) {
-	
+	STUB;
 }
 
 void GfxInterface::functionGetPixel2(void) {
-	
+	STUB;
 }
 
 void GfxInterface::functionGetRGB(void) {
@@ -224,10 +224,10 @@ void GfxInterface::functionScreenHeight(void) {
 }
 
 void GfxInterface::functionScreenDepth(void) {
-	
+	STUB;
 }
 
 void GfxInterface::functionGFXModeExists(void) {
-	
+	STUB;
 }
 

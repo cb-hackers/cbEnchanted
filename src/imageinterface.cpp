@@ -13,7 +13,7 @@ ImageInterface::~ImageInterface() {
 }
 
 void ImageInterface::commandSaveImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandDrawImage(void) {
@@ -27,39 +27,39 @@ void ImageInterface::commandDrawImage(void) {
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandDrawImageBox(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandMaskImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandDefaultMask(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandResizeImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandRotateImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandPickImageColor(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandPickImageColor2(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandHotSpot(void) {
-	
+	STUB;
 }
 
 void ImageInterface::commandDeleteImage(void) {
@@ -83,7 +83,7 @@ void ImageInterface::functionLoadImage(void) {
 }
 
 void ImageInterface::functionLoadAnimImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::functionMakeImage(void) {
@@ -97,7 +97,7 @@ void ImageInterface::functionMakeImage(void) {
 }
 
 void ImageInterface::functionCloneImage(void) {
-	
+	STUB;
 }
 
 void ImageInterface::functionImageWidth(void) {
@@ -111,11 +111,11 @@ void ImageInterface::functionImageHeight(void) {
 }
 
 void ImageInterface::functionImagesOverlap(void) {
-	
+	STUB;
 }
 
 void ImageInterface::functionImagesCollide(void) {
-	
+	STUB;
 }
 int32_t ImageInterface::nextId()
 {

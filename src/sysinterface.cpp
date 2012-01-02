@@ -33,15 +33,15 @@ void SysInterface::commandMakeError(void) {
 }
 
 void SysInterface::commandSaveProgram(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandLoadProgram(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandGotoSavedLocation(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandFrameLimit(void) {
@@ -49,19 +49,19 @@ void SysInterface::commandFrameLimit(void) {
 }
 
 void SysInterface::commandEncrypt(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandDecrypt(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandCallDLL(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandErrors(void) {
-	
+	STUB;
 }
 
 void SysInterface::commandSetWindow(void) {
@@ -81,11 +81,11 @@ void SysInterface::commandEnd(void) {
 }
 
 void SysInterface::functionDate(void) {
-	
+	STUB;
 }
 
 void SysInterface::functionTime(void) {
-	
+	STUB;
 }
 
 void SysInterface::functionTimer(void) {
@@ -110,7 +110,7 @@ void SysInterface::functionCommandLine(void) {
 }
 
 void SysInterface::functionGetEXEName(void) {
-	
+	STUB;
 }
 
 void SysInterface::functionFPS(void) {
@@ -118,5 +118,5 @@ void SysInterface::functionFPS(void) {
 }
 
 void SysInterface::functionCrc32(void) {
-	
+	STUB;
 }

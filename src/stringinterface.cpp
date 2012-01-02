@@ -55,35 +55,35 @@ void StringInterface::functionReplace(void) {
 }
 
 void StringInterface::functionInStr(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionUpper(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionLower(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionTrim(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionLSet(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionRSet(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionChr(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionAsc(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionLen(void) {
@@ -92,11 +92,11 @@ void StringInterface::functionLen(void) {
 }
 
 void StringInterface::functionHex(void) {
-
+	STUB;
 }
 
 void StringInterface::functionBin(void) {
-
+	STUB;
 }
 
 void StringInterface::functionString(void) {
@@ -111,25 +111,25 @@ void StringInterface::functionString(void) {
 }
 
 void StringInterface::functionFlip(void) {
-
+	STUB;
 }
 
 void StringInterface::functionStrInsert(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionStrRemove(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionStrMove(void) {
-	
+	STUB;
 }
 
 void StringInterface::functionCountWords(void) {
-
+	STUB;
 }
 
 void StringInterface::functionGetWord(void) {
-	
+	STUB;
 }

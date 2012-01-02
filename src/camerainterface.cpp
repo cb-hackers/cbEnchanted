@@ -11,23 +11,23 @@ CameraInterface::~CameraInterface() {
 }
 
 void CameraInterface::commandCloneCameraPosition(void) {
-	
+	STUB;
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
-	
+	STUB;
 }
 
 void CameraInterface::commandCameraFollow(void) {
-	
+	STUB;
 }
 
 void CameraInterface::commandCameraPick(void) {
-	
+	STUB;
 }
 
 void CameraInterface::commandPointCamera(void) {
-	
+	STUB;
 }
 
 void CameraInterface::commandTurnCamera(void) {

@@ -28,11 +28,11 @@ TextInterface::~TextInterface() {
 
 	
 void TextInterface::commandSetFont(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandDeleteFont(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandText(void) {
@@ -49,11 +49,11 @@ void TextInterface::commandText(void) {
 }
 
 void TextInterface::commandCenterText(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandVerticalText(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandPrint(void) {
@@ -61,29 +61,29 @@ void TextInterface::commandPrint(void) {
 }
 
 void TextInterface::commandWrite(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandLocate(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandAddText(void) {
-	
+	STUB;
 }
 
 void TextInterface::commandClearText(void) {
-	
+	STUB;
 }
 
 void TextInterface::functionLoadFont(void) {
-	
+	STUB;
 }
 
 void TextInterface::functionTextWidth(void) {
-	
+	STUB;
 }
 
 void TextInterface::functionTextHeight(void) {
-	
+	STUB;
 }

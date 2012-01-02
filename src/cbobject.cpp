@@ -1,6 +1,8 @@
 
 #include "precomp.h"
 #include "cbobject.h"
+#include "debug.h"
+
 
 CBObject::CBObject(){
 }

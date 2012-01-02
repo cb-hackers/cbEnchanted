@@ -17,16 +17,16 @@ void FileInterface::commandCloseFile(void) {
 }
 
 void FileInterface::commandSeekFile(void) {
-	fpos_t pos = cb->popValue().getInt();
+	fpos_t pos = (fpos_t)cb->popValue().getInt();
 	fsetpos(filestrs[cb->popValue().getInt()],&pos);
 }
 
 void FileInterface::commandStartSearch(void) {
-
+	STUB;
 }
 
 void FileInterface::commandEndSearch(void) {
-	
+	STUB;
 }
 
 void FileInterface::commandChDir(void) {
@@ -101,27 +101,27 @@ void FileInterface::commandWriteLine(void) {
 }
 
 void FileInterface::commandReadByte(void) {
-
+	STUB;
 }
 
 void FileInterface::commandReadShort(void) {
-	
+	STUB;
 }
 
 void FileInterface::commandReadInt(void) {
-	
+	STUB;
 }
 
 void FileInterface::commandReadFloat(void) {
-	
+	STUB;
 }
 
 void FileInterface::commandReadString(void) {
-	
+	STUB;
 }
 
 void FileInterface::commandReadLine(void) {
-
+	STUB;
 }
 
 void FileInterface::functionOpenToRead(void) {
