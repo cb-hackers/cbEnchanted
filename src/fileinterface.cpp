@@ -17,8 +17,8 @@ void FileInterface::commandCloseFile(void) {
 }
 
 void FileInterface::commandSeekFile(void) {
-	fpos_t pos = (fpos_t)cb->popValue().getInt();
-	fsetpos(filestrs[cb->popValue().getInt()],&pos);
+	int32_t pos = cb->popValue().getInt();
+	fseek(filestrs[cb->popValue().getInt()], pos, SEEK_SET);
 }
 
 void FileInterface::commandStartSearch(void) {
