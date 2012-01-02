@@ -2,7 +2,7 @@ BIN = CBEnchanted
 SOURCES = main cbenchanted cbvariableholder mathinterface stringinterface textinterface fileinterface meminterface inputinterface sysinterface soundinterface animinterface imageinterface gfxinterface objectinterface camerainterface mapinterface effectinterface mathoperations drawingprimitives rendertargetpointer cbimage
 OBJ = $(patsubst %,src/%.o,$(SOURCES))
 
-CXXFLAGS += -pthread -O3 -Wno-int-to-pointer-cast -fpermissive -DLOG_LEVEL_FIXME -DLOG_LEVEL_DEBUG -DLOG_LEVEL_INFO
+CXXFLAGS += -pthread -O3 -Wno-int-to-pointer-cast -fpermissive -DLOG_LEVEL_STUB -DLOG_LEVEL_FIXME -DLOG_LEVEL_DEBUG -DLOG_LEVEL_INFO
 
 all: $(BIN)
 
