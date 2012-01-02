@@ -15,7 +15,7 @@
 
 #ifdef LOG_LEVEL_FIXME
 #define FIXME(str, ...) printf((string("FIXME: ") + string(str) + string("\n")).c_str(), ##__VA_ARGS__);
-#define STUB printf((string("FIXME: ") + __FUNCTION__ + string(" is stub\n")).c_str())
+#define STUB printf("FIXME: %s is stub\n", __FUNCTION__)
 #else
     #define FIXME(str, ...)
 	#define STUB
