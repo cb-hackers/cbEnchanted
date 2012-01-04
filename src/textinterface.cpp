@@ -46,7 +46,7 @@ void TextInterface::commandText(void) {
 	text.SetColor(cb->getDrawColor());
 	text.SetPosition(x, y);
 
-    cb->getWindow()->Draw(text);
+    cb->getCurrentRenderTarget()->draw(text);
 }
 
 void TextInterface::commandCenterText(void) {

@@ -12,7 +12,7 @@ GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTit
     currentFPS = 0;
     lastSecTimer = clock();
     sf::ContextSettings windowSettings;
-    windowSettings.AntialiasingLevel = 1;
+    windowSettings.AntialiasingLevel = 0;
     windowSettings.DepthBits = 0;
     window.EnableVerticalSync(true);
     window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
@@ -151,6 +151,7 @@ void GfxInterface::commandDrawScreen(void) {
     window.Display();
 
     if (cls) window.Clear(clearColor);
+    else window.Display();
 }
 
 void GfxInterface::commandLock(void) {
