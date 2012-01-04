@@ -16,10 +16,11 @@ CBEnchanted::CBEnchanted() {
 	initialized = false;
 	running = false;
 	cpos = 0;
+	safeExit = 1;
 }
 
 CBEnchanted::~CBEnchanted() {
-	delete code;
+	delete[] code;
 }
 
 CBEnchanted *CBEnchanted::instance() {
