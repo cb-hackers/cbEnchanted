@@ -14,13 +14,15 @@ public:
     int32_t height()const{return renderTexture.GetHeight();}
     void makeImage(int32_t w, int32_t h);
     void setHotspot(float x,float y) {hotspotX = x;hotspotY = y;}
+    void setDrawPos(const sf::Vector2f &pos){drawingPos = pos;}
     RenderTargetPointer *getRenderTargetPointer(){return &renderTargetPointer;}
-    void Render(sf::RenderTarget &target, sf::Renderer &renderer) const;
+    void Draw(sf::RenderTarget &target, sf::RenderStates states) const;
 private:
     float hotspotX,hotspotY;
     sf::RenderTexture renderTexture;
     sf::Image *image;
     RenderTargetPointer renderTargetPointer;
+    sf::Vector2f drawingPos;
 };
 
 #endif // CBIMAGE_H

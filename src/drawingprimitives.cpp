@@ -6,7 +6,7 @@
 	#include <GL/gl.h>
 #endif
 
-void Line::Render(sf::RenderTarget& target, sf::Renderer& renderer) const{
+void Line::Draw(sf::RenderTarget &target, sf::RenderStates states) const {
     glDisable(GL_TEXTURE_2D);
 	glBegin(GL_LINES);
 		glVertex2f(x1, y1);
@@ -14,8 +14,7 @@ void Line::Render(sf::RenderTarget& target, sf::Renderer& renderer) const{
 	glEnd();
 }
 
-void Circle::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
-{
+void Circle::Draw(sf::RenderTarget &target, sf::RenderStates states) const {
     glDisable(GL_TEXTURE_2D);
     int segmentCount = 5 + r;
     if (segmentCount > 200) segmentCount = 200;

@@ -69,12 +69,12 @@ DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 win32{
     CONFIG(release, debug|release){
         LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
-        PRE_TARGETDEPS += "$$(SFML_LIB)/release/sfml-main.lib" "$$(SFML_LIB)/release/sfml-window-s.lib" "$$(SFML_LIB)/release/sfml-audio-s.lib" "$$(SFML_LIB)/release/sfml-graphics-s.lib"
+		PRE_TARGETDEPS += "$$(SFML_LIB)/release/sfml-main.lib" "$$(SFML_LIB)/release/sfml-window-s.lib" "$$(SFML_LIB)/release/sfml-audio-s.lib" "$$(SFML_LIB)/release/sfml-graphics-s.lib"
 		DEFINES += NDEBUG
 	}
     else {
         LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
-        PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
+		PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
 	}
 
     LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32

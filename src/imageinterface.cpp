@@ -22,7 +22,7 @@ void ImageInterface::commandDrawImage(void) {
     float y = cb->popValue().toFloat();
     float x = cb->popValue().toFloat();
     CBImage *img = cbImages[cb->popValue().getInt()];
-    img->SetPosition(x,y);
+    img->setDrawPos(sf::Vector2f(x,y));
     cb->getCurrentRenderTarget()->draw(*img);
 }
 

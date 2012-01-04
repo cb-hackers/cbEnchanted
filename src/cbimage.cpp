@@ -1,5 +1,7 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 CBImage::CBImage():hotspotX(0),hotspotY(0),image(0),renderTargetPointer(&renderTexture)
 {
 
@@ -23,28 +25,33 @@ bool CBImage::load(const string &path) {
     return true;
 }
 
-void CBImage::Render(sf::RenderTarget &target, sf::Renderer &renderer) const {
+void CBImage::Draw(sf::RenderTarget &target, sf::RenderStates states) const{
     glEnable(GL_TEXTURE_2D);
-    renderer.SetTexture(&renderTexture.GetTexture());
-    const sf::Vector2f pos(GetPosition());
-    renderer.Begin(sf::Renderer::QuadList);
+    renderTexture.GetTexture().Bind();
+
+    glBegin(GL_QUADS);
     if (CBEnchanted::instance()->getDrawImageToWorld())
     {
-        renderer.AddVertex(hotspotX+pos.x,hotspotY+pos.y,0.0f,1.0f);
-        renderer.AddVertex(hotspotX+pos.x+renderTexture.GetWidth(),hotspotY+pos.y,1.0f,1.0f);
-        renderer.AddVertex(hotspotX+pos.x+renderTexture.GetWidth(),hotspotY+pos.y-renderTexture.GetHeight(),1.0f,0.0f);
-        renderer.AddVertex(hotspotX+pos.x,hotspotY+pos.y-renderTexture.GetHeight(),0.0f,0.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex2f(hotspotX+drawingPos.x,hotspotY+drawingPos.y);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex2f(hotspotX+drawingPos.x+renderTexture.GetWidth(),hotspotY+drawingPos.y);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex2f(hotspotX+drawingPos.x+renderTexture.GetWidth(),hotspotY+drawingPos.y-renderTexture.GetHeight());
+        glTexCoord2f(0.0f,0.0f);
+        glVertex2f(hotspotX+drawingPos.x,hotspotY+drawingPos.y-renderTexture.GetHeight());
     }
     else {
-        renderer.AddVertex(hotspotX+pos.x,hotspotY+pos.y,0.0f,1.0f);
-        renderer.AddVertex(hotspotX+pos.x+renderTexture.GetWidth(),hotspotY+pos.y,1.0f,1.0f);
-        renderer.AddVertex(hotspotX+pos.x+renderTexture.GetWidth(),hotspotY+pos.y+renderTexture.GetHeight(),1.0f,0.0f);
-        renderer.AddVertex(hotspotX+pos.x,hotspotY+pos.y+renderTexture.GetHeight(),0.0f,0.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex2f(hotspotX+drawingPos.x,hotspotY+drawingPos.y);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex2f(hotspotX+drawingPos.x+renderTexture.GetWidth(),hotspotY+drawingPos.y);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex2f(hotspotX+drawingPos.x+renderTexture.GetWidth(),hotspotY+drawingPos.y+renderTexture.GetHeight());
+        glTexCoord2f(0.0f,0.0f);
+        glVertex2f(hotspotX+drawingPos.x,hotspotY+drawingPos.y+renderTexture.GetHeight());
     }
-    renderer.End();
-
-
-    glDisable(GL_TEXTURE_2D);
+    glEnd();
 }
 
 void CBImage::makeImage(int32_t w, int32_t h)
