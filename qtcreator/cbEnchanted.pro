@@ -23,7 +23,6 @@ HEADERS += \
     ../src/gfxinterface.h \
     ../src/fileinterface.h \
     ../src/effectinterface.h \
-    ../src/drawingprimitives.h \
     ../src/cbvariableholder.h \
     ../src/cbenchanted.h \
     ../src/camerainterface.h \
@@ -51,7 +50,6 @@ SOURCES += \
     ../src/gfxinterface.cpp \
     ../src/fileinterface.cpp \
     ../src/effectinterface.cpp \
-    ../src/drawingprimitives.cpp \
     ../src/cbvariableholder.cpp \
     ../src/cbenchanted.cpp \
     ../src/camerainterface.cpp \

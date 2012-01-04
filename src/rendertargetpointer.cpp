@@ -30,6 +30,14 @@ void RenderTargetPointer::draw(const sf::Drawable &d) {
     }
 }
 
+void RenderTargetPointer::draw(const sf::Vertex *vertices, unsigned int vertexCount, sf::PrimitiveType type, const sf::RenderStates &states)
+{
+    switch(targetType) {
+    case RenderWindow: static_cast<sf::RenderWindow*>(target)->Draw(vertices,vertexCount,type,states);break;
+    case RenderTexture: static_cast<sf::RenderTexture*>(target)->Draw(vertices,vertexCount,type,states);break;
+    }
+}
+
 void RenderTargetPointer::clear(const sf::Color &c)
 {
     switch(targetType) {

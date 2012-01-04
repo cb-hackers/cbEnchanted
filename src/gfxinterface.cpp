@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "gfxinterface.h"
-#include "drawingprimitives.h"
+
 #include <SFML/Graphics/Shape.hpp>
 #ifdef WIN32
 #include <Windows.h>
@@ -62,31 +62,66 @@ void GfxInterface::commandColor(void) {
     drawColor.g = g;
     drawColor.b = b;
 }
-
+#define CIRCLE_SEGMENT_COUNT 100
 
 void GfxInterface::commandCircle(void) {
     currentRenderTarget->setViewTo(drawDrawCommandToWorld);
     bool fill = cb->popValue().toInt();
-    float rad = cb->popValue().toFloat();
-    float cy = cb->popValue().toFloat() + rad * 0.5;
-    float cx = cb->popValue().toFloat() + rad * 0.5;
+    float r = cb->popValue().toFloat()*0.5;
+    float cy = cb->popValue().toFloat() + r;
+    float cx = cb->popValue().toFloat() + r;
     //sf::Shape circle = sf::Shape::Circle(cx,cy,rad,drawColor);
+    int segmentCount = CIRCLE_SEGMENT_COUNT;
+    sf::Vertex vertices[CIRCLE_SEGMENT_COUNT+1];
+    int index = 0;
+    if (fill) {
+        segmentCount -= 1;
+        index = 1;
+        vertices[0].Color = drawColor;
+        vertices[0].Position.x = cx;
+        vertices[0].Position.y = cy;
+    }
 
-	Circle circle(cx, cy, rad * 0.5, fill);
-    glColor3ub(drawColor.r, drawColor.g, drawColor.b);
-    currentRenderTarget->draw(circle);
+
+
+    float theta = 2 * 3.1415926 / float(segmentCount);
+    float c = cosf(theta);
+    float s = sinf(theta);
+    float t;
+    float x = r;
+    float y = 0;
+
+    for(int ii = 0; ii < segmentCount; ii++) {
+        vertices[index].Position.x = x + cx;
+        vertices[index].Position.y = y + cy;
+        vertices[index].Color = drawColor;
+        index++;
+        t = x;
+        x = c * x - s * y;
+        y = s * t + c * y;
+    }
+    vertices[index].Position.x = x + cx;
+    vertices[index].Position.y = y + cy;
+    vertices[index].Color = drawColor;
+    if (fill) {
+        currentRenderTarget->draw(vertices,CIRCLE_SEGMENT_COUNT+1,sf::TrianglesFan);
+    }
+    else {
+        currentRenderTarget->draw(vertices,CIRCLE_SEGMENT_COUNT+1,sf::LinesStrip);
+    }
 }
 
 void GfxInterface::commandLine(void){
     currentRenderTarget->setViewTo(drawDrawCommandToWorld);
-    float y2 = cb->popValue().toFloat();
-    float x2 = cb->popValue().toFloat();
-    float y1 = cb->popValue().toFloat();
-    float x1 = cb->popValue().toFloat();
-    glColor3ub(drawColor.r, drawColor.g, drawColor.b);
-    Line line(x1, y1, x2, y2);
-    //sf::Shape line = sf::Shape::Line(x1,y1,x2,y2,1,drawColor);
-    currentRenderTarget->draw(line);
+    sf::Vertex points[2];
+    points[0].Position.y = cb->popValue().toFloat();
+    points[0].Position.x = cb->popValue().toFloat();
+    points[1].Position.y = cb->popValue().toFloat();
+    points[1].Position.x = cb->popValue().toFloat();
+
+    points[0].Color = drawColor;
+    points[1].Color = drawColor;
+    currentRenderTarget->draw(points,2,sf::Lines);
 }
 
 void GfxInterface::commandDrawScreen(void) {
@@ -113,9 +148,9 @@ void GfxInterface::commandDrawScreen(void) {
         fpsCounter = 0;
         lastSecTimer = clock();
     }
-    currentRenderTarget->display();
+    window.Display();
 
-    if (cls) currentRenderTarget->clear(clearColor);
+    if (cls) window.Clear(clearColor);
 }
 
 void GfxInterface::commandLock(void) {
