@@ -183,7 +183,48 @@ void GfxInterface::commandDot(void) {
 }
 
 void GfxInterface::commandBox(void) {
-	STUB;
+    currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+    bool fill = cb->popValue().toInt();
+    float h = cb->popValue().toFloat();
+    float w = cb->popValue().toFloat();
+    float y = cb->popValue().toFloat();
+    float x = cb->popValue().toFloat();
+
+    sf::Vertex vertices[5];
+    vertices[0].Color = drawColor;
+    vertices[0].Position.x = x;
+    vertices[0].Position.y = y;
+
+    vertices[1].Color = drawColor;
+    vertices[1].Position.x = x+w;
+    vertices[1].Position.y = y;
+    if (drawDrawCommandToWorld){
+        vertices[2].Color = drawColor;
+        vertices[2].Position.x = x+w;
+        vertices[2].Position.y = y+h;
+
+        vertices[3].Color = drawColor;
+        vertices[3].Position.x = x;
+        vertices[3].Position.y = y+h;
+    }
+    else {
+        vertices[2].Color = drawColor;
+        vertices[2].Position.x = x+w;
+        vertices[2].Position.y = y-h;
+
+        vertices[3].Color = drawColor;
+        vertices[3].Position.x = x;
+        vertices[3].Position.y = y-h;
+    }
+    if (fill) {
+        currentRenderTarget->draw(vertices,4,sf::Quads);
+    }
+    else {
+        vertices[4].Color = drawColor;
+        vertices[4].Position.x = x;
+        vertices[4].Position.y = y;
+        currentRenderTarget->draw(vertices,5,sf::LinesStrip);
+    }
 }
 
 void GfxInterface::commandEllipse(void) {
