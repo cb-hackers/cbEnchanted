@@ -1,7 +1,7 @@
 #ifndef CBIMAGE_H
 #define CBIMAGE_H
 #include "precomp.h"
-#include "rendertargetpointer.h"
+#include "rendertarget.h"
 class CBImage : public sf::Drawable
 {
 public:
@@ -15,13 +15,13 @@ public:
     void makeImage(int32_t w, int32_t h);
     void setHotspot(float x,float y) {hotspotX = x;hotspotY = y;}
     void setDrawPos(const sf::Vector2f &pos){drawingPos = pos;}
-    RenderTargetPointer *getRenderTargetPointer(){return &renderTargetPointer;}
+    RenderTarget *getRenderTarget(){return &renderTarget;}
     void Draw(sf::RenderTarget &target, sf::RenderStates states) const;
 private:
     float hotspotX,hotspotY;
     sf::RenderTexture renderTexture;
     sf::Image *image;
-    RenderTargetPointer renderTargetPointer;
+    RenderTarget renderTarget;
     sf::Vector2f drawingPos;
 };
 

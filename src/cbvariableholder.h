@@ -104,7 +104,8 @@ class CBVariableHolder {
 		void setGlobalShortVariable(uint32_t id, uint16_t value) { globalShortVariables.set(id, value); }
 		void setGlobalIntegerVariable(uint32_t id, int32_t value) { globalIntegerVariables.set(id, value); }
 		void setGlobalFloatVariable(uint32_t id, float value) { globalFloatVariables.set(id, value); }
-		
+        void setGlobalStringVariable(uint32_t id, string value) { globalStringVariables.set(id, value); }
+
 		void setArray(uint32_t id, Array value) { arrays.set(id, value); }
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }

@@ -30,9 +30,9 @@ HEADERS += \
     ../src/any.h \
 	../src/debug.h \
     ../src/camerainterface.h \
-    ../src/rendertargetpointer.h \
     ../src/cbobject.h \
-    ../src/cbimage.h
+    ../src/cbimage.h \
+    ../src/rendertarget.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -55,9 +55,9 @@ SOURCES += \
     ../src/camerainterface.cpp \
     ../src/animinterface.cpp \
     ../src/camerainterface.cpp \
-    ../src/rendertargetpointer.cpp \
     ../src/cbobject.cpp \
-    ../src/cbimage.cpp
+    ../src/cbimage.cpp \
+    ../src/rendertarget.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h

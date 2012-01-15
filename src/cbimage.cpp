@@ -2,7 +2,7 @@
 #include "cbenchanted.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
-CBImage::CBImage():hotspotX(0),hotspotY(0),image(0),renderTargetPointer(&renderTexture)
+CBImage::CBImage():hotspotX(0),hotspotY(0),image(0),renderTarget()
 {
 
 }

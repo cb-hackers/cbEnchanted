@@ -48,8 +48,9 @@ void CBEnchanted::run() {
 			case 74: handlePushSomething(); break;
 			case 78: handleJump(); break;
 			case 79: handleMathOperation(); break;
-			case 80: handleIncVar(); break;
-			case 85: handlePushFuncptr(); break;
+            case 80: handleIncVar(); break;
+            case 81: handleIncGlobalVar(); break;
+            case 85: handlePushFuncptr(); break;
 			case 86: handlePushVariable(); break;
 			case 90: handleFunction(); break;
 			case 97:
@@ -126,6 +127,7 @@ void CBEnchanted::init(string file) {
 			case 74:
 			case 78:
 			case 80:
+            case 81: //!!!!
 			case 85:
 			case 86:
 			case 90: i += 4; break;
@@ -134,6 +136,9 @@ void CBEnchanted::init(string file) {
 		}
 		
 	}
+
+    //Create screen
+    initializeGfx();
 
 	initialized = true;
 	INFO("Initialized");
@@ -226,6 +231,7 @@ void CBEnchanted::handleCommand(void) {
 		case 70: popValue(); break;
 		case 77: commandSetVariable(); break;
 		case 79: commandFunction(); break;
+        case 80: commandSetGlobalVariable(); break;
 		case 125: commandRandomize(); break;
 		case 201: commandSetFont(); break;
 		case 202: commandDeleteFont(); break;
@@ -374,9 +380,9 @@ void CBEnchanted::handleCommand(void) {
 		case 798: commandPixelPick(); break;
 		case 799: commandClearObjects(); break;
 		case 78: commandArrayAssign(); break;
-		case 97:
-		case 98: command97_98(); break;
-		case 99: command99(); break;
+        case 97: commandSetArrayNumbers(); break;
+        case 98: commandSetGlobalVariableNumbers(); break;
+        case 99: commandSetVariableNumbers(); break;
 		default: FIXME("Unimplemented command: %i", command);
 	}
 }
@@ -579,24 +585,6 @@ void CBEnchanted::handlePushInt(void) {
 }
 
 /*
- * CBEnchanted::command97_98 - Pop 5 values from stack
- */
-void CBEnchanted::command97_98(void) {
-	for (uint32_t i = 0; i < 5; i++) {
-		popValue();
-	}
-}
-
-/*
- * CBEnchanted::command99 - Pop 6 values from stack
- */
-void CBEnchanted::command99(void) {
-	for (uint32_t i = 0; i < 6; i++) {
-		popValue();
-	}
-}
-
-/*
  * CBEnchanted::commandDim - Create array
  */
 void CBEnchanted::commandDim(void) {
@@ -654,7 +642,7 @@ void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue().getInt();
 	int32_t var = *(int32_t *)(code + cpos);
 	cpos += 4;
-
+    HCDEBUG("[%i] Push variable: %i",cpos,type);
 	switch (type) {
 		case 1: pushValue(getIntegerVariable(var)); break;
 		case 2: pushValue(getFloatVariable(var)); break;
@@ -881,6 +869,14 @@ void CBEnchanted::handleIncVar(void) {
 }
 
 /*
+ * CBEnchanted::handleIncGlobalVar - Increase global integer variable
+ */
+void CBEnchanted::handleIncGlobalVar(void) {
+    setGlobalIntegerVariable(*(uint32_t *)(code + cpos), getGlobalIntegerVariable(*(uint32_t *)(code + cpos)) + 1);
+    cpos += 4;
+}
+
+/*
  * CBEnchanted::commandGoto - Jump to different location
  */
 void CBEnchanted::commandGoto(void) {
@@ -981,4 +977,42 @@ void CBEnchanted::commandSetVariable(void) {
 			FIXME("Unimplemented SetVariable. Type: %i", type);
 	}
 	INFO("Push value, type: %i", type);
+}
+
+void CBEnchanted::commandSetGlobalVariable() {
+    int32_t type = popValue().getInt();
+    int32_t var = popValue().getInt();
+    switch  (type) {
+        case 1: setGlobalIntegerVariable(var, popValue().toInt()); break;
+        case 2: setGlobalFloatVariable(var, popValue().toFloat()); break;
+        case 3:	setGlobalStringVariable(var, popValue().toString()); break;
+        case 4:	setGlobalShortVariable(var, popValue().toShort()); break;
+        case 5: setGlobalByteVariable(var, popValue().toByte()); break;
+    }
+}
+
+void CBEnchanted::commandSetArrayNumbers() {
+    int32_t byteArrayCount = popValue().getInt();
+    int32_t shortArrayCount = popValue().getInt();
+    int32_t stringArrayCount = popValue().getInt();
+    int32_t floatArrayCount = popValue().getInt();
+    int32_t integerArrayCount = popValue().getInt();
+}
+
+void CBEnchanted::commandSetGlobalVariableNumbers() {
+    int32_t byteCount = popValue().getInt();
+    int32_t shortCount = popValue().getInt();
+    int32_t stringCount = popValue().getInt();
+    int32_t floatCount = popValue().getInt();
+    int32_t integerCount = popValue().getInt();
+}
+
+void CBEnchanted::commandSetVariableNumbers() {
+    //TODO: Check if right order
+    int32_t byteCount = popValue().getInt();
+    int32_t shortCount = popValue().getInt();
+    int32_t stringCount = popValue().getInt();
+    int32_t floatCount = popValue().getInt();
+    int32_t integerCount = popValue().getInt();
+    int32_t typePtrCount = popValue().getInt();
 }

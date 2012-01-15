@@ -2,7 +2,7 @@
 #define GFXINTERFACE_H
 
 #include <SFML/Graphics.hpp>
-#include "rendertargetpointer.h"
+#include "rendertarget.h"
 
 class CBEnchanted;
 
@@ -53,7 +53,10 @@ class GfxInterface {
         inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
         inline bool getDrawImageToWorld()const{return drawImageToWorld;}
         inline bool getDrawTextToWorld()const{return drawTextToWorld;}
-        inline RenderTargetPointer *getCurrentRenderTarget(){return currentRenderTarget;}
+        inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
+        void setCurrentRenderTarget(RenderTarget *t);
+
+        void initializeGfx();
 	private:
 		CBEnchanted *cb;
 		
@@ -64,9 +67,9 @@ class GfxInterface {
         int32_t fpsCounter;
         int32_t currentFPS;
         clock_t lastSecTimer;
-        RenderTargetPointer *currentRenderTarget;
+        RenderTarget *currentRenderTarget;
 
-        RenderTargetPointer windowRenderTargetPointer;
+        RenderTarget windowRenderTarget;
         bool drawDrawCommandToWorld;
         bool drawImageToWorld;
         bool drawTextToWorld;
