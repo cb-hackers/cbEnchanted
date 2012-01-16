@@ -12,13 +12,16 @@ CBImage::~CBImage() {
 }
 
 bool CBImage::load(const string &path) {
-    sf::Texture temp;
+    sf::Image temp;
     if (!temp.LoadFromFile(path))
     {
         return false;
     }
-    renderTarget.create(temp.GetWidth(),temp.GetHeight());
-    sf::Sprite tempsprite(temp);
+    temp.CreateMaskFromColor(sf::Color(0,0,0));
+    sf::Texture texture;
+    texture.LoadFromImage(temp);
+    renderTarget.create(texture.GetWidth(),texture.GetHeight());
+    sf::Sprite tempsprite(texture);
     renderTarget.draw(tempsprite); //Draws loaded texture
     renderTarget.display();
     return true;

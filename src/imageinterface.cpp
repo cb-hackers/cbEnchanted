@@ -17,6 +17,7 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
+    cb->getCurrentRenderTarget()->setViewTo(cb->getDrawImageToWorld());
     bool mask = cb->popValue().getInt();
     int32_t frame = cb->popValue().toInt();
     float y = cb->popValue().toFloat();
