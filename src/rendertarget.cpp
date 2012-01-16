@@ -238,6 +238,13 @@ void RenderTarget::drawDot(float x, float y)
     glEnd();
 }
 
+void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y) {
+    enableSFMLDrawMode();
+    sf::Sprite sprite(rt.getSurface()->GetTexture());
+    sprite.SetPosition(x,y);
+    target.Draw(sprite);
+}
+
 void RenderTarget::enableOpenGLDrawMode()
 {
     if (!openGLDrawMode) {setup();openGLDrawMode = true;}

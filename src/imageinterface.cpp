@@ -22,8 +22,7 @@ void ImageInterface::commandDrawImage(void) {
     float y = cb->popValue().toFloat();
     float x = cb->popValue().toFloat();
     CBImage *img = cbImages[cb->popValue().getInt()];
-    img->setDrawPos(sf::Vector2f(x,y));
-    cb->getCurrentRenderTarget()->draw(*img);
+    img->draw(x,y);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -59,7 +58,10 @@ void ImageInterface::commandPickImageColor2(void) {
 }
 
 void ImageInterface::commandHotSpot(void) {
-	STUB;
+    float y = cb->popValue().toFloat();
+    float x = cb->popValue().toFloat();
+    int32_t id = cb->popValue().getInt();
+    cbImages[id]->setHotspot(x,y);
 }
 
 void ImageInterface::commandDeleteImage(void) {
