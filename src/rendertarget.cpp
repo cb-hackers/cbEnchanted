@@ -38,9 +38,13 @@ RenderTarget::RenderTarget()
 
 void RenderTarget::create(int w, int h)
 {
-    target.Create(w,h);
+    if (!target.Create(w,h)) {
+        FIXME("Creating RenderTarget failed. Can't create RenderTexture.");
+        return;
+    }
     target.Clear();
-
+    target.ResetGLStates();
+    openGLDrawMode = false;
 }
 
 void RenderTarget::setup(){
@@ -49,6 +53,10 @@ void RenderTarget::setup(){
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
     glBindTexture(GL_TEXTURE_2D,0);
     glMatrixMode(GL_PROJECTION);
     glViewport(0,0,target.GetWidth(),target.GetHeight());

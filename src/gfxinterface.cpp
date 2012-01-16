@@ -23,8 +23,6 @@ void GfxInterface::initializeGfx()
     window.EnableVerticalSync(true);
     window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
     windowSettings = window.GetSettings();
-    INFO("Window antialiasing level: %i",windowSettings.AntialiasingLevel);
-
     windowRenderTarget.create(400,300);
 
     setCurrentRenderTarget(&windowRenderTarget);
@@ -119,7 +117,7 @@ void GfxInterface::commandDrawScreen(void) {
     windowRenderTarget.display();
     sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
     sprite.SetPosition(0,0);
-    sprite.SetScale(window.GetWidth()/windowRenderTarget.width(),window.GetHeight()/windowRenderTarget.height());
+    sprite.SetScale((float)window.GetWidth()/(float)windowRenderTarget.width(),(float)window.GetHeight()/(float)windowRenderTarget.height());
     window.Draw(sprite);
     window.Display();
     if (cls) {
