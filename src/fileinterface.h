@@ -49,8 +49,13 @@ class FileInterface {
 		void functionReadLine(void);
 	private:
 		CBEnchanted *cb;
+
 		int32_t idC;
 		map<int32_t,FILE*> filestrs;
+
+		directory_iterator dir_iter;
+		directory_iterator dir_end;
+
 };
 
 #endif

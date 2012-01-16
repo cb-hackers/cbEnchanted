@@ -1,8 +1,6 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "fileinterface.h"
-#include <cstdio>
-#include <boost/filesystem.hpp>
 
 FileInterface::FileInterface() : cb(static_cast <CBEnchanted *> (this)) {
 
@@ -22,11 +20,18 @@ void FileInterface::commandSeekFile(void) {
 }
 
 void FileInterface::commandStartSearch(void) {
-	STUB;
+	directory_iterator new_dir_iter(current_path());
+	directory_iterator new_dir_end;
+
+	dir_iter = new_dir_iter;
+	dir_end = new_dir_end;
 }
 
 void FileInterface::commandEndSearch(void) {
-	STUB;
+	directory_iterator new_dir_end;
+
+	dir_iter = new_dir_end;
+	dir_end = new_dir_end;
 }
 
 void FileInterface::commandChDir(void) {
@@ -156,11 +161,17 @@ void FileInterface::functionOpenToEdit(void) {
 
 void FileInterface::functionFileOffset(void) {
 
-	cb->pushValue(int(ftell(filestrs[cb->popValue().getInt()])));
+	cb->pushValue(int32_t(ftell(filestrs[cb->popValue().getInt()])));
 }
 
 void FileInterface::functionFindFile(void) {
-
+	if (dir_iter != dir_end) {
+		path filepath(dir_iter->path());
+		cb->pushValue(filepath.filename().string());
+		++dir_iter;
+	} else {
+		cb->pushValue(string(""));
+	}
 }
 
 void FileInterface::functionCurrentDir(void) {
