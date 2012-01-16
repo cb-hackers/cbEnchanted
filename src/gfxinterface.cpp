@@ -6,6 +6,7 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
+#include "cbimage.h"
 GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(),drawDrawCommandToWorld(false),drawImageToWorld(false),drawTextToWorld(false) {
     fpsCounter = 0;
     currentFPS = 0;
@@ -186,15 +187,17 @@ void GfxInterface::commandScreenGamma(void) {
 }
 
 void GfxInterface::commandDrawToImage(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    currentRenderTarget = cb->getImage(id)->getRenderTarget();
+    currentRenderTarget->setup();
 }
 
 void GfxInterface::commandDrawToScreen(void) {
-	STUB;
+    currentRenderTarget = &windowRenderTarget;
+    currentRenderTarget->setup();
 }
 
 void GfxInterface::commandDrawToWorld(void) {
-	STUB;
 }
 
 void GfxInterface::commandSmooth2D(void) {

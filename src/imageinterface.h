@@ -29,6 +29,8 @@ class ImageInterface {
 		void functionImageHeight(void);
 		void functionImagesOverlap(void);
 		void functionImagesCollide(void);
+
+        CBImage *getImage(int32_t id){return cbImages[id];}
 	private:
         CBEnchanted *cb;
         int32_t idCounter;
