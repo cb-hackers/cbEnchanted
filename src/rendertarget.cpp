@@ -44,8 +44,9 @@ void RenderTarget::create(int w, int h)
     }
     target.Clear();
     target.ResetGLStates();
-    changedSinceDisplay = true;
+    changedSinceDisplay = false;
     openGLDrawMode = false;
+    if (CBEnchanted::instance()->getCurrentRenderTarget()) CBEnchanted::instance()->getCurrentRenderTarget()->setup();
 }
 
 void RenderTarget::create(const sf::Texture &texture)
@@ -55,21 +56,21 @@ void RenderTarget::create(const sf::Texture &texture)
         return;
     }
     target.Clear(sf::Color(0,0,0,0));
-    target.ResetGLStates();
-    sf::Sprite temp(texture);
-    target.Draw(temp);
     openGLDrawMode = false;
-    changedSinceDisplay = true;
+    drawTexture(texture,0,0);
+    display();
+    CBEnchanted::instance()->getCurrentRenderTarget()->setup();
 }
 
 void RenderTarget::setup(){
     target.SetActive(true);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE); //Disabling combining of glColor and texture color.
     glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_LINE_SMOOTH);
     glBindTexture(GL_TEXTURE_2D,0);
@@ -77,7 +78,7 @@ void RenderTarget::setup(){
     glViewport(0,0,target.GetWidth(),target.GetHeight());
     glLoadMatrixf(target.GetView().GetTransform().GetMatrix());
     glMatrixMode(GL_MODELVIEW);
-    glColor4ub(CBEnchanted::instance()->getDrawColor().r,CBEnchanted::instance()->getDrawColor().r,CBEnchanted::instance()->getDrawColor().g,CBEnchanted::instance()->getDrawColor().b);
+    glColor4ub(CBEnchanted::instance()->getDrawColor().r,CBEnchanted::instance()->getDrawColor().g,CBEnchanted::instance()->getDrawColor().b,CBEnchanted::instance()->getDrawColor().a);
     glLoadIdentity();
     openGLDrawMode = true;
 }
@@ -121,10 +122,14 @@ void RenderTarget::clear(const sf::Color &c)
     changedSinceDisplay = true;
 }
 
-void RenderTarget::display()
+void RenderTarget::display()const
 {
-    if (changedSinceDisplay) target.Display();
-    changedSinceDisplay = false;
+    if (changedSinceDisplay)
+    {
+        RenderTarget *t = const_cast<RenderTarget*>(this);
+        t->target.Display();
+        t->changedSinceDisplay = false;
+    }
 }
 
 void RenderTarget::drawLine(float x1, float y1, float x2, float y2)
@@ -268,19 +273,43 @@ void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y) {
     sprite.SetPosition(x,y);
     target.Draw(sprite,defaultRenderState);*/
     enableOpenGLDrawMode();
+    rt.display();
     int h = rt.height();
     if (drawToWorldViewOn) h = -h;
     int w = rt.width();
     glEnable(GL_TEXTURE_2D);
     rt.getSurface()->GetTexture().Bind();
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f,1.0f);
-    glVertex2f(x,y);
-    glTexCoord2f(1.0f,1.0f);
-    glVertex2f(x+w,y);
-    glTexCoord2f(1.0f,0.0f);
-    glVertex2f(x+w,y+h);
     glTexCoord2f(0.0f,0.0f);
+    glVertex2f(x,y);
+    glTexCoord2f(1.0f,0.0f);
+    glVertex2f(x+w,y);
+    glTexCoord2f(1.0f,1.0f);
+    glVertex2f(x+w,y+h);
+    glTexCoord2f(0.0f,1.0f);
+    glVertex2f(x,y+h);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
+    glDisable(GL_TEXTURE_2D);
+    changedSinceDisplay = true;
+}
+
+void RenderTarget::drawTexture(const sf::Texture &tex, float x, float y)
+{
+    enableOpenGLDrawMode();
+    int h = tex.GetHeight();
+    if (drawToWorldViewOn) h = -h;
+    int w = tex.GetWidth();
+    glEnable(GL_TEXTURE_2D);
+    tex.Bind();
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f,0.0f);
+    glVertex2f(x,y);
+    glTexCoord2f(1.0f,0.0f);
+    glVertex2f(x+w,y);
+    glTexCoord2f(1.0f,1.0f);
+    glVertex2f(x+w,y+h);
+    glTexCoord2f(0.0f,1.0f);
     glVertex2f(x,y+h);
     glEnd();
     glBindTexture(GL_TEXTURE_2D,0);

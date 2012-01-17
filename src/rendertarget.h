@@ -1,7 +1,7 @@
 #ifndef RENDERTARGETPOINTER_H
 #define RENDERTARGETPOINTER_H
 #include "precomp.h"
-class RenderTarget
+class RenderTarget : public sf::NonCopyable
 {
 public:
     RenderTarget();
@@ -17,11 +17,12 @@ public:
     void drawBox(float x,float y,float w,float h,bool fill);
     void drawEllipse(float x,float y,float w,float h,bool fill);
     void drawRenderTarget(const RenderTarget &rt,float x,float y);
+    void drawTexture(const sf::Texture &tex,float x, float y);
     void drawDot(float cx,float cy);
     void setColor(const sf::Color &c) {glColor4ub(c.r,c.g,c.b,c.a);}
 
     void clear(const sf::Color &c);
-    void display();
+    void display() const;
     int width()const{return target.GetWidth();}
     int height()const{return target.GetHeight();}
     void setup();
