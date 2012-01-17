@@ -11,7 +11,19 @@ FileInterface::~FileInterface() {
 }
 
 void FileInterface::commandCloseFile(void) {
-	fclose(filestrs[cb->popValue().getInt()]);
+	int32_t ID;
+	ID = cb->popValue().getInt();
+	if (filestrs[ID]==0)
+	{
+		FIXME("CloseFile failed.");
+		cb->pushValue(0);
+	}
+
+	if(fclose(filestrs[ID])!=0)
+	{
+		FIXME("CloseFile failed.");
+		cb->pushValue(0);
+	}
 }
 
 void FileInterface::commandSeekFile(void) {
@@ -53,8 +65,17 @@ void FileInterface::commandDeleteFile(void) {
 }
 
 void FileInterface::commandExecute(void) {
-	string file_s = cb->popValue().toString();
-	system(file_s.c_str());
+	string cmd = cb->popValue().toString();
+	string scmd;
+
+	#ifdef WIN32
+		scmd = "start " + cmd;
+	#else
+		scmd = "xdg-open " + cmd;
+	#endif
+
+	system(scmd.c_str());
+
 }
 
 void FileInterface::commandWriteByte(void) {
@@ -135,6 +156,10 @@ void FileInterface::functionOpenToRead(void) {
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "r");;
+	if (filestrs[id]==NULL) {
+		FIXME("OpenToRead failed.");
+		cb->pushValue(0);
+	}
 
 	cb->pushValue(id);
 }
@@ -145,6 +170,11 @@ void FileInterface::functionOpenToWrite(void) {
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "w");
+	if (filestrs[id]==NULL) {
+		FIXME("OpenToWrite failed.");
+		cb->pushValue(0);
+	}
+
 
 	cb->pushValue(id);
 }
@@ -155,6 +185,10 @@ void FileInterface::functionOpenToEdit(void) {
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "r+");
+	if (filestrs[id]==NULL) {
+		FIXME("OpenToEdit failed.");
+		cb->pushValue(0);
+	}
 
 	cb->pushValue(id);
 }
