@@ -26,7 +26,7 @@ void GfxInterface::initializeGfx()
     windowSettings = window.GetSettings();
     windowRenderTarget.create(400,300);
 
-    setCurrentRenderTarget(&windowRenderTarget);
+    currentRenderTarget = &windowRenderTarget;
 }
 
 void GfxInterface::commandScreen(void) {
@@ -117,7 +117,6 @@ void GfxInterface::commandDrawScreen(void) {
     }
     windowRenderTarget.display();
     sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
-    sprite.SetPosition(0,0);
     sprite.SetScale((float)window.GetWidth()/(float)windowRenderTarget.width(),(float)window.GetHeight()/(float)windowRenderTarget.height());
     window.Draw(sprite);
     window.Display();
@@ -188,13 +187,11 @@ void GfxInterface::commandScreenGamma(void) {
 
 void GfxInterface::commandDrawToImage(void) {
     int32_t id = cb->popValue().getInt();
-    currentRenderTarget = cb->getImage(id)->getRenderTarget();
-    currentRenderTarget->setup();
+    setCurrentRenderTarget(cb->getImage(id)->getRenderTarget());
 }
 
 void GfxInterface::commandDrawToScreen(void) {
-    currentRenderTarget = &windowRenderTarget;
-    currentRenderTarget->setup();
+    setCurrentRenderTarget(&windowRenderTarget);
 }
 
 void GfxInterface::commandDrawToWorld(void) {
@@ -258,6 +255,7 @@ void GfxInterface::functionGFXModeExists(void) {
 }
 
 void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
+    currentRenderTarget->display(); //Check if works without.
     currentRenderTarget = t;
     t->setup();
 }
