@@ -127,9 +127,48 @@ void StringInterface::functionStrMove(void) {
 }
 
 void StringInterface::functionCountWords(void) {
-	STUB;
+	string sep = cb->popValue().toString();
+	string str = cb->popValue().toString();
+
+	if(sep=="") {sep = ' ';}
+
+	string::size_type p = 0;
+	int32_t count = 0;
+
+	while ((p = str.find(sep, p))!=string::npos)
+	{
+		++p;
+		++count;
+	}
+
+	count++;
+
+	cb->pushValue(count);
+
 }
 
 void StringInterface::functionGetWord(void) {
-	STUB;
+	string sep = cb->popValue().toString();
+	int32_t w = cb->popValue().toInt();
+	string str = cb->popValue().toString();
+
+	if(sep=="") {sep = ' ';}
+
+	int32_t sep_pos = 0;
+
+	for(int i = 1; i != w; ++i)
+	{
+		sep_pos = str.find(sep);
+		if(sep_pos) {
+			str = str.substr(sep_pos + 1);
+		}
+	}
+
+	sep_pos = str.find(sep);
+	if (sep_pos) {
+		cb->pushValue(str.substr(0, sep_pos));
+	} else {
+		cb->pushValue(str.substr(0));
+	}
+
 }
