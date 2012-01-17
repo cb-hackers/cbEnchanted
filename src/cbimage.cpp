@@ -19,11 +19,8 @@ bool CBImage::load(const string &path) {
     }
     temp.CreateMaskFromColor(sf::Color(0,0,0));
     sf::Texture texture;
-    texture.LoadFromImage(temp);
-    renderTarget.create(texture.GetWidth(),texture.GetHeight());
-    sf::Sprite tempsprite(texture);
-    renderTarget.draw(tempsprite); //Draws loaded texture
-    renderTarget.display();
+    if (!texture.LoadFromImage(temp)) return false;
+    renderTarget.create(texture);
     return true;
 }
 

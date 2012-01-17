@@ -8,6 +8,7 @@ public:
     sf::RenderTexture *getSurface(){return &target;}
     const sf::RenderTexture *getSurface()const{return &target;}
     void create(int w,int h);
+    void create(const sf::Texture &texture);
     void setViewTo(bool drawtoworld);
     void draw(const sf::Drawable &d);
     void draw(const sf::Vertex* vertices, unsigned int vertexCount,sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
@@ -32,6 +33,8 @@ private:
     sf::Image *lockBuffer;
     bool drawToWorldViewOn;
     bool openGLDrawMode;
+    sf::RenderStates defaultRenderState;
+    bool changedSinceDisplay;
 };
 
 #endif // RENDERTARGETPOINTER_H
