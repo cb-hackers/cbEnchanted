@@ -22,6 +22,8 @@
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/dynamic_bitset.hpp>
+#include <boost/algorithm/string.hpp>
 
 #ifndef M_PI
     #define M_PI 3.1415926535897932384626433832795028841971693993751

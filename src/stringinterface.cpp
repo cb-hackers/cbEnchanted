@@ -35,7 +35,12 @@ void StringInterface::functionRight(void) {
 }
 
 void StringInterface::functionMid(void) {
-	
+	int32_t len = cb->popValue().getInt();
+	int32_t pos = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	cb->pushValue(str.substr(pos-1, len));
+
 }
 
 void StringInterface::functionReplace(void) {
@@ -55,48 +60,96 @@ void StringInterface::functionReplace(void) {
 }
 
 void StringInterface::functionInStr(void) {
-	STUB;
+	int32_t pos = cb->popValue().getInt();
+	string sep = cb->popValue().getString();
+	string str = cb->popValue().getString();
+
+	cb->pushValue(int32_t(str.find(sep, pos)+1));
+
 }
 
 void StringInterface::functionUpper(void) {
-	STUB;
+	string str = cb->popValue().getString();
+	cb->pushValue(boost::algorithm::to_upper_copy(str));
 }
 
 void StringInterface::functionLower(void) {
-	STUB;
+	string str = cb->popValue().getString();
+
+	cb->pushValue(boost::algorithm::to_lower_copy(str));
 }
 
 void StringInterface::functionTrim(void) {
-	STUB;
+	string str = cb->popValue().getString();
+
+	str = str.substr(str.find_first_not_of(" "));
+	str = str.substr(0, str.find_last_not_of(" ")+1);
+
+	cb->pushValue(str);
+
 }
 
 void StringInterface::functionLSet(void) {
-	STUB;
+	int32_t len = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	str.resize(len, ' ');
+	cb->pushValue(str);
+
 }
 
 void StringInterface::functionRSet(void) {
-	STUB;
+	int32_t len = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	if(len>str.length()) {
+		string str2;
+		str2.resize(len - str.length(), ' ');
+		cb->pushValue(str2 + str);
+	} else {
+		cb->pushValue(str.substr(str.length()-len));
+	}
+
 }
 
 void StringInterface::functionChr(void) {
-	STUB;
+	char AV = cb->popValue().getInt();
+	stringstream ss;
+	ss << AV;
+	cb->pushValue(ss.str());
 }
 
 void StringInterface::functionAsc(void) {
-	STUB;
+	string AC = cb->popValue().getString();
+	int AV = int(*AC.c_str());
+	cb->pushValue(AV);
 }
 
 void StringInterface::functionLen(void) {
-	string s = cb->popValue().getString();;
+	string s = cb->popValue().getString();
 	cb->pushValue(int(s.length()));
 }
 
 void StringInterface::functionHex(void) {
-	STUB;
+	int32_t V = cb->popValue().getInt();
+	stringstream ss;
+
+	ss << hex << V;
+
+	string str1 = ss.str();
+	string str2;
+	str2.resize(8 - str1.length(), '0');
+	cb->pushValue(str2 + str1);
 }
 
 void StringInterface::functionBin(void) {
-	STUB;
+	int32_t V = cb->popValue().getInt();
+	stringstream ss;
+
+	const boost::dynamic_bitset<> bin(32, V);
+	ss << bin;
+
+	cb->pushValue(ss.str());
 }
 
 void StringInterface::functionString(void) {
@@ -111,19 +164,52 @@ void StringInterface::functionString(void) {
 }
 
 void StringInterface::functionFlip(void) {
-	STUB;
+	string str = cb->popValue().getString();
+	stringstream ss;
+	string::reverse_iterator rit;
+	for (rit = str.rbegin();rit < str.rend(); rit++)
+	{
+		ss << *rit;
+	}
+
+	cb->pushValue(ss.str());
+
 }
 
 void StringInterface::functionStrInsert(void) {
-	STUB;
+	string txt = cb->popValue().getString();
+	int32_t pos = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	str.insert(pos, txt);
+
+	cb->pushValue(str);
+
 }
 
 void StringInterface::functionStrRemove(void) {
-	STUB;
+	int32_t len = cb->popValue().getInt();
+	int32_t pos = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	str.erase(pos-1, len);
+
+	cb->pushValue(str);
+
 }
 
 void StringInterface::functionStrMove(void) {
-	STUB;
+	int32_t mov = cb->popValue().getInt();
+	int32_t len = cb->popValue().getInt();
+	int32_t pos = cb->popValue().getInt();
+	string str = cb->popValue().getString();
+
+	string txt = str.substr(pos-1, len);
+	str.erase(pos-1, len);
+
+	str.insert(-1+pos+mov, txt);
+
+	cb->pushValue(str);
 }
 
 void StringInterface::functionCountWords(void) {
