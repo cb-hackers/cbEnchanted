@@ -39,6 +39,8 @@ void StringInterface::functionMid(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString();
 
+	printf("%s\n", str.c_str());
+
 	cb->pushValue(str.substr(pos-1, len));
 
 }
@@ -64,7 +66,7 @@ void StringInterface::functionInStr(void) {
 	string sep = cb->popValue().getString();
 	string str = cb->popValue().getString();
 
-	cb->pushValue(int32_t(str.find(sep, pos)+1));
+	cb->pushValue(int32_t(str.find(sep, pos-1)+1));
 
 }
 
@@ -113,7 +115,7 @@ void StringInterface::functionRSet(void) {
 }
 
 void StringInterface::functionChr(void) {
-	char AV = cb->popValue().getInt();
+	unsigned char AV = cb->popValue().getInt();
 	stringstream ss;
 	ss << AV;
 	cb->pushValue(ss.str());
@@ -121,8 +123,8 @@ void StringInterface::functionChr(void) {
 
 void StringInterface::functionAsc(void) {
 	string AC = cb->popValue().getString();
-	int AV = int(*AC.c_str());
-	cb->pushValue(AV);
+	unsigned char AV = unsigned char(*AC.c_str());
+	cb->pushValue(int(AV));
 }
 
 void StringInterface::functionLen(void) {
