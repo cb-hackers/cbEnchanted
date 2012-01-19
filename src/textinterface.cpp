@@ -36,7 +36,6 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-    cb->getCurrentRenderTarget()->enableSFMLDrawMode();
     string txt = cb->popValue().toString();
     float y = cb->popValue().toFloat();
     float x = cb->popValue().toFloat();

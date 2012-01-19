@@ -4,6 +4,10 @@
 class RenderTarget : public sf::NonCopyable
 {
 public:
+    enum DrawingMode {
+        DM_Textures, //Vertex array, texcoord array, color array, textures
+        DM_NoTextures
+    };
     RenderTarget();
     sf::RenderTexture *getSurface(){return &target;}
     const sf::RenderTexture *getSurface()const{return &target;}
@@ -19,21 +23,21 @@ public:
     void drawRenderTarget(const RenderTarget &rt,float x,float y);
     void drawTexture(const sf::Texture &tex,float x, float y);
     void drawDot(float cx,float cy);
-    void setColor(const sf::Color &c) {glColor4ub(c.r,c.g,c.b,c.a);}
+    void setColor(const sf::Color &c) {target.SetActive();glColor4ub(c.r,c.g,c.b,c.a);}
 
     void clear(const sf::Color &c);
+    static void initCircleVertexArray();
     void display() const;
     int width()const{return target.GetWidth();}
     int height()const{return target.GetHeight();}
     void setup();
-    void enableOpenGLDrawMode();
-    void enableSFMLDrawMode();
+    void setDrawingMode(DrawingMode mode);
 private:
 
     sf::RenderTexture target;
     sf::Image *lockBuffer;
     bool drawToWorldViewOn;
-    bool openGLDrawMode;
+    DrawingMode drawingMode;
     sf::RenderStates defaultRenderState;
     bool changedSinceDisplay;
 };

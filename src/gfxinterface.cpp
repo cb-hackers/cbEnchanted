@@ -123,7 +123,7 @@ void GfxInterface::commandDrawScreen(void) {
     if (cls) {
         windowRenderTarget.clear(clearColor);
     }
-    windowRenderTarget.setup();
+    currentRenderTarget->setup();
 }
 
 void GfxInterface::commandLock(void) {
