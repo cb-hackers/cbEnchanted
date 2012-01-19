@@ -141,7 +141,7 @@ void StringInterface::functionHex(void) {
 	string str1 = ss.str();
 	string str2;
 	str2.resize(8 - str1.length(), '0');
-	cb->pushValue(str2 + str1);
+	cb->pushValue(str2 + boost::algorithm::to_upper_copy(str1));
 }
 
 void StringInterface::functionBin(void) {
