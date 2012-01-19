@@ -26,6 +26,7 @@ void GfxInterface::initializeGfx()
     windowSettings = window.GetSettings();
     windowRenderTarget.create(400,300);
 
+    bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
     currentRenderTarget = &windowRenderTarget;
 }
 
@@ -127,11 +128,23 @@ void GfxInterface::commandDrawScreen(void) {
 }
 
 void GfxInterface::commandLock(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    if (id == 0) {
+        currentRenderTarget->lock();
+    }
+    else {
+        bufferMap[id]->lock();
+    }
 }
 
 void GfxInterface::commandUnlock(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    if (id == 0) {
+        currentRenderTarget->unlock();
+    }
+    else {
+        bufferMap[id]->unlock();
+    }
 }
 
 void GfxInterface::commandPutPixel(void) {
@@ -139,7 +152,16 @@ void GfxInterface::commandPutPixel(void) {
 }
 
 void GfxInterface::commandPutPixel2(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    int32_t pixel = cb->popValue().getInt();
+    int32_t y = cb->popValue().toInt();
+    int32_t x = cb->popValue().toInt();
+    if (id == 0) {
+        currentRenderTarget->putPixel2(x,y,pixel);
+    }
+    else {
+        bufferMap[id]->putPixel2(x,y,pixel);
+    }
 }
 
 void GfxInterface::commandCopyBox(void) {
@@ -214,19 +236,32 @@ void GfxInterface::commandDrawGame(void) {
 }
 
 void GfxInterface::functionSCREEN(void) {
-	cb->pushValue(0);
+    cb->pushValue(windowRenderTarget.getId());
 }
 
 void GfxInterface::functionImage(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    RenderTarget *rt = cb->getImage(id)->getRenderTarget();
+
+    bufferMap[rt->getId()] = rt;
+    cb->pushValue(rt->getId());
 }
 
 void GfxInterface::functionGetPixel(void) {
-	STUB;
+    STUB;
 }
 
 void GfxInterface::functionGetPixel2(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    int32_t y = cb->popValue().toInt();
+    int32_t x = cb->popValue().toInt();
+    sf::Color color;
+    if (id == 0) {
+        cb->pushValue(currentRenderTarget->getPixel2(x,y));
+    }
+    else {
+        cb->pushValue(bufferMap[id]->getPixel2(x,y));
+    }
 }
 
 void GfxInterface::functionGetRGB(void) {

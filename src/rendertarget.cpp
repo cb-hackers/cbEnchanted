@@ -38,10 +38,16 @@ inline void setCurrentRenderContext(RenderTarget *t) {
     currentRenderContext->getSurface()->SetActive();
 }
 
-
-RenderTarget::RenderTarget():defaultRenderState(sf::BlendAlpha)
+static int32_t renderTargetIdCounter = 1;
+RenderTarget::RenderTarget():defaultRenderState(sf::BlendAlpha),lockBuffer(0)
 {
     drawToWorldViewOn = false;
+    id = renderTargetIdCounter++;
+}
+
+RenderTarget::~RenderTarget()
+{
+    if (lockBuffer) delete lockBuffer;
 }
 
 void RenderTarget::create(int w, int h)
@@ -338,4 +344,44 @@ void RenderTarget::drawTexture(const sf::Texture &tex, float x, float y)
     glVertex2f(x,y+h);
     glEnd();
     changedSinceDisplay = true;
+}
+
+void RenderTarget::lock() {
+    if (!lockBuffer) {
+        lockBuffer = new sf::Image;
+    }
+    display();
+    *lockBuffer = target.GetTexture().CopyToImage();
+}
+
+void RenderTarget::unlock() {
+    if (lockBuffer) {
+        sf::Texture temp;
+        temp.LoadFromImage(*lockBuffer);
+        target.Clear(sf::Color(0,0,0,0));
+        drawTexture(temp,0,0);
+        delete lockBuffer;
+        lockBuffer = 0;
+    }
+}
+
+int32_t RenderTarget::getPixel2(int x, int y) {
+    if (!lockBuffer) {
+        FIXME("getPixel2: Buffer isn't locked");
+        return 0;
+    }
+    sf::Color c = lockBuffer->GetPixel(x,y);
+    return ((int)c.a << 24) + ((int)c.r << 16) + ((int)c.g << 8) + (int)c.b;
+}
+
+sf::Color colorFromPixel(int pixel) {
+    return sf::Color((pixel << 8) >> 24,(pixel << 16) >> 24,(pixel << 24) >> 24,pixel >> 24);
+}
+
+void RenderTarget::putPixel2(int x, int y, int pixel) {
+    if (!lockBuffer) {
+        FIXME("putPixel2: Buffer isn't locked");
+        return;
+    }
+    lockBuffer->SetPixel(x,y,colorFromPixel(pixel));
 }

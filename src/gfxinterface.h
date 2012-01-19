@@ -73,6 +73,8 @@ class GfxInterface {
         bool drawDrawCommandToWorld;
         bool drawImageToWorld;
         bool drawTextToWorld;
+
+        std::map<int32_t,RenderTarget*> bufferMap;
 };
 
 #endif

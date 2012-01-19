@@ -9,6 +9,7 @@ public:
         DM_NoTextures
     };
     RenderTarget();
+    ~RenderTarget();
     sf::RenderTexture *getSurface(){return &target;}
     const sf::RenderTexture *getSurface()const{return &target;}
     void create(int w,int h);
@@ -25,6 +26,13 @@ public:
     void drawDot(float cx,float cy);
     void setColor(const sf::Color &c) {target.SetActive();glColor4ub(c.r,c.g,c.b,c.a);}
 
+    int32_t getPixel(int x,int y);
+    int32_t getPixel2(int x,int y);
+    void putPixel(int x,int y,int pixel);
+    void putPixel2(int x,int y,int pixel);
+    void lock();
+    void unlock();
+
     void clear(const sf::Color &c);
     static void initCircleVertexArray();
     void display() const;
@@ -32,6 +40,7 @@ public:
     int height()const{return target.GetHeight();}
     void setup();
     void setDrawingMode(DrawingMode mode);
+    int32_t getId()const{return id;}
 private:
 
     sf::RenderTexture target;
@@ -40,6 +49,10 @@ private:
     DrawingMode drawingMode;
     sf::RenderStates defaultRenderState;
     bool changedSinceDisplay;
+    bool pointSmoothing;
+
+    bool lineSmoothing;
+    int32_t id;
 };
 
 #endif // RENDERTARGETPOINTER_H
