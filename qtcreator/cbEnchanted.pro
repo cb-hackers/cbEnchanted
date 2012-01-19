@@ -2,7 +2,10 @@ QT -= core gui #No qt
 
 TEMPLATE = app
 
-CONFIG += thread precompiled_header console
+CONFIG += thread console
+!contains(CBE_CONFIG,full_optimization) {
+	CONFIG += precompiled_header
+}
 
 QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
 QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t
