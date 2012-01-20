@@ -35,12 +35,16 @@ void FileInterface::commandStartSearch(void) {
 	directory_iterator new_dir_iter(current_path());
 	directory_iterator new_dir_end;
 
+	rcount = 0;
+
 	dir_iter = new_dir_iter;
 	dir_end = new_dir_end;
 }
 
 void FileInterface::commandEndSearch(void) {
 	directory_iterator new_dir_end;
+
+	rcount = 0;
 
 	dir_iter = new_dir_end;
 	dir_end = new_dir_end;
@@ -199,9 +203,24 @@ void FileInterface::functionFileOffset(void) {
 }
 
 void FileInterface::functionFindFile(void) {
-	if (dir_iter != dir_end) {
-		path filepath(dir_iter->path());
-		cb->pushValue(filepath.filename().string());
+	++rcount;
+	if (rcount == 1) {
+		if(path(current_path()).has_relative_path())
+		{
+			cb->pushValue(string("."));
+		} else {
+			++rcount;
+			functionFindFile();
+		}
+	} else if (rcount == 2) {
+		if(path(current_path()).has_parent_path())
+		{
+			cb->pushValue(string(".."));
+		} else {
+			functionFindFile();
+		}
+	} else if (dir_iter != dir_end) {
+		cb->pushValue(path(dir_iter->path()).filename().string());
 		++dir_iter;
 	} else {
 		cb->pushValue(string(""));
