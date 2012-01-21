@@ -15,6 +15,7 @@ class Any {
 			String = 5
 		};
 	private:
+		int32_t typeId;
 		union { //Data
 			float d_float;
 			int32_t d_int;
@@ -23,7 +24,6 @@ class Any {
 			string *d_string_ptr;
 			void *d_ptr;
 		};
-        int32_t typeId;
 
 	public:
 		inline Any() : typeId(Empty) {}
@@ -40,12 +40,12 @@ class Any {
 			}
 			d_int = a.d_int; //Don't have to worry about data type.
 		}
-        inline ~Any() {
-            if (typeId == String)
-            {
-                delete d_string_ptr;
-            }
-        }
+		inline ~Any() {
+			if (typeId == String)
+			{
+				delete d_string_ptr;
+			}
+		}
 
 		inline const string &getString() const {assert(typeId == String); return *d_string_ptr; }
 		inline int32_t getInt() const {assert(typeId == Int); return d_int; }
@@ -53,7 +53,7 @@ class Any {
 		inline uint8_t getByte() const {assert(typeId == Byte); return d_byte; }
 		inline float getFloat() const {assert(typeId == Float); return d_float;}
 		inline bool empty() const {return typeId == Empty;}
-        inline int32_t type() const{return typeId;}
+		inline int32_t type() const{return typeId;}
 
 		const type_info &typeInfo() const{
 			switch (typeId) {
@@ -73,6 +73,7 @@ class Any {
 		}
 
 		inline string toString() const{
+			assert(!empty());
 			try {
 				if (type() == Any::String) {
 					return getString();
@@ -98,6 +99,7 @@ class Any {
 		}
 
 		inline int32_t toInt() const {
+			assert(!empty());
 			if (type() == Any::Int) {
 				return getInt();
 			}
@@ -123,6 +125,7 @@ class Any {
 		}
 
 		inline float toFloat() const {
+			assert(!empty());
 			if (type() == Any::Float) {
 				return getFloat();
 			}
@@ -148,6 +151,7 @@ class Any {
 		}
 
 		inline uint16_t toShort() const {
+			assert(!empty());
 			if (type() == Any::Short) {
 				return getShort();
 			}
@@ -173,6 +177,7 @@ class Any {
 		}
 
 		inline uint8_t toByte() const {
+			assert(!empty());
 			if (type() == Any::Byte) {
 				return getByte();
 			}

@@ -5,7 +5,7 @@
 
 class CBObject{
 	public:
-        CBObject();
+		CBObject();
 		bool load(string file);
 		bool loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
 		void paintObject(sf::Texture txt);

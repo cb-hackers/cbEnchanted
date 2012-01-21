@@ -36,16 +36,16 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-    string txt = cb->popValue().toString();
-    float y = cb->popValue().toFloat();
-    float x = cb->popValue().toFloat();
+	string txt = cb->popValue().toString();
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
 
 	sf::Text text(txt, currentFont->font, currentFont->fontSize);
 	text.SetStyle(currentFont->style);
 	text.SetColor(cb->getDrawColor());
 	text.SetPosition(x, y);
 
-    cb->getCurrentRenderTarget()->draw(text);
+	cb->getCurrentRenderTarget()->draw(text);
 }
 
 void TextInterface::commandCenterText(void) {
@@ -57,7 +57,7 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-    string s = cb->popValue().getString();
+	string s = cb->popValue().getString();
 }
 
 void TextInterface::commandWrite(void) {

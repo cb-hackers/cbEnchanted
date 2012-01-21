@@ -33,7 +33,7 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		CBEnchanted();
 		~CBEnchanted();
 	
-        static CBEnchanted *instance();
+		static CBEnchanted *instance();
 		void init(string file);		
 		void run();
 		void stop();
@@ -64,13 +64,13 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		void handleMathOperation(void);
 		void handleJump(void);
 		void handleIncVar(void);
-        void handleIncGlobalVar(void);
+		void handleIncGlobalVar(void);
 	
 		void commandFunction(void);
-        void commandSetGlobalVariable(void); //80
-        void commandSetArrayNumbers(void); //97
-        void commandSetGlobalVariableNumbers(void); //98
-        void commandSetVariableNumbers(void);
+		void commandSetGlobalVariable(void); //80
+		void commandSetArrayNumbers(void); //97
+		void commandSetGlobalVariableNumbers(void); //98
+		void commandSetVariableNumbers(void);
 		void commandGoto(void);
 		void commandGosub(void);
 		void commandReturn(void);

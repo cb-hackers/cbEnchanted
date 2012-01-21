@@ -83,13 +83,13 @@ void FileInterface::commandExecute(void) {
 }
 
 void FileInterface::commandWriteByte(void) {
-    uint8_t byte = cb->popValue().getByte();
+	uint8_t byte = cb->popValue().getByte();
 	fputc((int) byte,filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteShort(void) {
-    uint16_t sh = cb->popValue().getShort();
-    fwrite(&sh,sizeof(uint16_t),1,filestrs[cb->popValue().getInt()]);
+	uint16_t sh = cb->popValue().getShort();
+	fwrite(&sh,sizeof(uint16_t),1,filestrs[cb->popValue().getInt()]);
 
 }
 
@@ -255,14 +255,14 @@ void FileInterface::functionEOF(void) {
 }
 
 void FileInterface::functionReadByte(void) {
-    cb->pushValue(uint8_t(fgetc(filestrs[cb->popValue().getInt()])));
+	cb->pushValue(uint8_t(fgetc(filestrs[cb->popValue().getInt()])));
 }
 
 void FileInterface::functionReadShort(void) {
 
-    uint16_t sh;
+	uint16_t sh;
 
-    fread(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
+	fread(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
 
 	cb->pushValue(sh);
 

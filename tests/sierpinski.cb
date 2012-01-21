@@ -1,6 +1,6 @@
 // Sierpinski triangle made with CoolBasic
 
-SCREEN 800, 600
+SCREEN 800, 800
  
 sierTri(0, 800, 400, 0, 800, 800, 9, 0, 1)
 DrawScreen OFF

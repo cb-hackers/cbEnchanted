@@ -15,14 +15,14 @@ void InputInterface::commandCloseInput(void) {
  */
 void InputInterface::commandWaitKey(void) {
 	sf::Event e;
-    while(true) {
-        cb->getWindow()->WaitEvent(e);
+	while(true) {
+		cb->getWindow()->WaitEvent(e);
 		switch (e.Type) {
 			case sf::Event::KeyPressed:
-                return;
+				return;
 			case sf::Event::Closed:
 				cb->stop();
-                return;
+				return;
 		}
 	}
 }
@@ -79,17 +79,17 @@ void InputInterface::functionGetKey(void) {
  */
 void InputInterface::functionWaitKey(void) {
 	sf::Event e;
-    while(true)
+	while(true)
 	{
 		cb->getWindow()->WaitEvent(e);
 		switch (e.Type)
 		{
 		case sf::Event::KeyPressed:
-            cb->pushValue((int32_t)e.Key.Code);
-            return;
+			cb->pushValue((int32_t)e.Key.Code);
+			return;
 		case sf::Event::Closed:
 			cb->stop();
-            return;
+			return;
 		}
 	}
 }
@@ -125,11 +125,11 @@ void InputInterface::functionMouseY(void) {
 }
 
 void InputInterface::functionMouseWX(void) {
-    sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
+	sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
 }
 
 void InputInterface::functionMouseWY(void) {
-    sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
+	sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
 }
 
 void InputInterface::functionMouseZ(void) {

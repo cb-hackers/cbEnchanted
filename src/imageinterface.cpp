@@ -17,13 +17,13 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
-    cb->getCurrentRenderTarget()->setViewTo(cb->getDrawImageToWorld());
-    bool mask = cb->popValue().getInt();
-    int32_t frame = cb->popValue().toInt();
-    float y = cb->popValue().toFloat();
-    float x = cb->popValue().toFloat();
-    CBImage *img = cbImages[cb->popValue().getInt()];
-    img->draw(x,y);
+	cb->getCurrentRenderTarget()->setViewTo(cb->getDrawImageToWorld());
+	bool mask = cb->popValue().getInt();
+	int32_t frame = cb->popValue().toInt();
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	img->draw(x,y);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -59,30 +59,30 @@ void ImageInterface::commandPickImageColor2(void) {
 }
 
 void ImageInterface::commandHotSpot(void) {
-    float y = cb->popValue().toFloat();
-    float x = cb->popValue().toFloat();
-    int32_t id = cb->popValue().getInt();
-    cbImages[id]->setHotspot(x,y);
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	cbImages[id]->setHotspot(x,y);
 }
 
 void ImageInterface::commandDeleteImage(void) {
-    int32_t id = cb->popValue().getInt();
-    delete cbImages[id];
-    cbImages.erase(id);
+	int32_t id = cb->popValue().getInt();
+	delete cbImages[id];
+	cbImages.erase(id);
 }
 
 void ImageInterface::functionLoadImage(void) {
-    string path = cb->popValue().getString();
-    CBImage *image = new CBImage;
-    if (!image->load(path))
-    {
-        delete image;
-        FIXME("Loading image %s failed.",path.c_str());
-        cb->pushValue(0);
-    }
-    int32_t id = nextId();
-    cbImages[id] = image;
-    cb->pushValue(id);
+	string path = cb->popValue().getString();
+	CBImage *image = new CBImage;
+	if (!image->load(path))
+	{
+		delete image;
+		FIXME("Loading image %s failed.",path.c_str());
+		cb->pushValue(0);
+	}
+	int32_t id = nextId();
+	cbImages[id] = image;
+	cb->pushValue(id);
 }
 
 void ImageInterface::functionLoadAnimImage(void) {
@@ -90,13 +90,13 @@ void ImageInterface::functionLoadAnimImage(void) {
 }
 
 void ImageInterface::functionMakeImage(void) {
-    int32_t h = cb->popValue().toInt();
-    int32_t w = cb->popValue().toInt();
-    CBImage *image = new CBImage;
-    image->makeImage(w,h);
-    int32_t id = nextId();
-    cbImages[id] = image;
-    cb->pushValue(id);
+	int32_t h = cb->popValue().toInt();
+	int32_t w = cb->popValue().toInt();
+	CBImage *image = new CBImage;
+	image->makeImage(w,h);
+	int32_t id = nextId();
+	cbImages[id] = image;
+	cb->pushValue(id);
 }
 
 void ImageInterface::functionCloneImage(void) {
@@ -104,13 +104,13 @@ void ImageInterface::functionCloneImage(void) {
 }
 
 void ImageInterface::functionImageWidth(void) {
-    CBImage *img = cbImages[cb->popValue().getInt()];
-    cb->pushValue(img->width());
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	cb->pushValue(img->width());
 }
 
 void ImageInterface::functionImageHeight(void) {
-    CBImage *img = cbImages[cb->popValue().getInt()];
-    cb->pushValue(img->height());
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	cb->pushValue(img->height());
 }
 
 void ImageInterface::functionImagesOverlap(void) {
@@ -122,5 +122,5 @@ void ImageInterface::functionImagesCollide(void) {
 }
 int32_t ImageInterface::nextId()
 {
-    return ++idCounter;
+	return ++idCounter;
 }

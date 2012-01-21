@@ -43,23 +43,23 @@ struct Array {
 	map<uint32_t, uint32_t> dimensions;
 	uint32_t type;
 	
-    Any *data;
+	Any *data;
 };
 
 class CBVariableHolder {
 	public:
 		CBVariableHolder() { pushScope(); }
 	
-        Any popValue(void) {
+		Any popValue(void) {
 			assert(!internalStack.empty());
-            Any value = internalStack.top();
+			Any value = internalStack.top();
 			internalStack.pop();
 			
 			assert(!value.empty());
 			return value;
 		}
 		
-        void pushValue(const Any &value) {
+		void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
 
@@ -104,13 +104,13 @@ class CBVariableHolder {
 		void setGlobalShortVariable(uint32_t id, uint16_t value) { globalShortVariables.set(id, value); }
 		void setGlobalIntegerVariable(uint32_t id, int32_t value) { globalIntegerVariables.set(id, value); }
 		void setGlobalFloatVariable(uint32_t id, float value) { globalFloatVariables.set(id, value); }
-        void setGlobalStringVariable(uint32_t id, string value) { globalStringVariables.set(id, value); }
+		void setGlobalStringVariable(uint32_t id, string value) { globalStringVariables.set(id, value); }
 
 		void setArray(uint32_t id, Array value) { arrays.set(id, value); }
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }
 	private:
-        stack <Any> internalStack;
+		stack <Any> internalStack;
 		stack <VariableScope> scopes;
 
 		/*VariableCollection <uint8_t> byteVariables;

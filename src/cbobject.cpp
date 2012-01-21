@@ -91,7 +91,7 @@ void CBObject::render(sf::RenderTarget &target){
 
 		int16_t copyY = (currentframe % texture.GetWidth());
 		int16_t copyX = (currentframe / texture.GetHeight());
-        sprite.SetTextureRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
+		sprite.SetTextureRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
 	}
 	sprite.Rotate(angle);
 	if(alpha!=100)

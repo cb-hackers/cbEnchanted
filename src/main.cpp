@@ -3,8 +3,8 @@
 
 int main(int argc, char** argv) {
 	CBEnchanted cb;
-	std::string exe = "test.exe";
-	if (argc == 2) exe = std::string(argv[1]);
+	std::string exe = "tests/exe/sierpinski.exe";
+	//if (argc == 2) exe = std::string(argv[1]);
 	cb.init(exe);
 	cb.run();
 	cb.cleanup();

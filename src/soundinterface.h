@@ -15,7 +15,7 @@ struct CBSound {
 	//Is sound played directly from file
 	bool isMusic;
 	string file;
-    int32_t id;
+	int32_t id;
 };
 
 class SoundInterface {
@@ -33,16 +33,16 @@ class SoundInterface {
 		void functionSoundPlaying(void);
 
 
-        void updateAudio(void);
-        void cleanupSoundInterface(void);
+		void updateAudio(void);
+		void cleanupSoundInterface(void);
 	private:
-        int32_t nextId(void);
-        int32_t idCounter;
+		int32_t nextId(void);
+		int32_t idCounter;
 		CBEnchanted *cb;
 
 		//List of music what should be deleted when it stops.
 		set<CBSound*> deleteWhenStop;
-        map<int32_t,CBSound*> cbSounds;
+		map<int32_t,CBSound*> cbSounds;
 };
 
 #endif
