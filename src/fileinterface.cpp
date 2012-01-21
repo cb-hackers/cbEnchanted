@@ -13,13 +13,13 @@ FileInterface::~FileInterface() {
 void FileInterface::commandCloseFile(void) {
 	int32_t ID;
 	ID = cb->popValue().getInt();
-	if (filestrs[ID]==0)
+	if (filestrs[ID] == 0)
 	{
 		FIXME("CloseFile failed.");
 		cb->pushValue(0);
 	}
 
-	if(fclose(filestrs[ID])!=0)
+	if(fclose(filestrs[ID]) != 0)
 	{
 		FIXME("CloseFile failed.");
 		cb->pushValue(0);
@@ -61,7 +61,7 @@ void FileInterface::commandMakeDir(void) {
 void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString();
 	string file_s1 = cb->popValue().toString();
-	copy_file(path(file_s1),path(file_s2));
+	copy_file(path(file_s1), path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
@@ -79,28 +79,27 @@ void FileInterface::commandExecute(void) {
 	#endif
 
 	system(scmd.c_str());
-
 }
 
 void FileInterface::commandWriteByte(void) {
 	uint8_t byte = cb->popValue().getByte();
-	fputc((int) byte,filestrs[cb->popValue().getInt()]);
+	fputc((int) byte, filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteShort(void) {
 	uint16_t sh = cb->popValue().getShort();
-	fwrite(&sh,sizeof(uint16_t),1,filestrs[cb->popValue().getInt()]);
+	fwrite(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
 
 }
 
 void FileInterface::commandWriteInt(void) {
 	int32_t i = cb->popValue().getInt();
-	fwrite(&i,sizeof(int32_t),1,filestrs[cb->popValue().getInt()]);
+	fwrite(&i, sizeof(int32_t), 1, filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteFloat(void) {
 	float fl = cb->popValue().getFloat();
-	fwrite(&fl,sizeof(float),1,filestrs[cb->popValue().getInt()]);
+	fwrite(&fl, sizeof(float), 1, filestrs[cb->popValue().getInt()]);
 }
 
 void FileInterface::commandWriteString(void) {
@@ -111,11 +110,11 @@ void FileInterface::commandWriteString(void) {
 
 	int l = int(sstring.length());
 	char * str;
-	str = new char [sstring.length()+1];
-	strcpy(str,sstring.c_str());
+	str = new char [sstring.length() + 1];
+	strcpy(str, sstring.c_str());
 
-	fwrite(&l,sizeof(int32_t),1,file2);
-	fwrite(str,l,1,file2);
+	fwrite(&l, sizeof(int32_t), 1, file2);
+	fwrite(str, l, 1, file2);
 	delete[] str;
 }
 
@@ -126,8 +125,7 @@ void FileInterface::commandWriteLine(void) {
 
 	line += "\n";
 
-	fputs(line.c_str(),file2);
-
+	fputs(line.c_str(), file2);
 }
 
 void FileInterface::commandReadByte(void) {
@@ -155,12 +153,11 @@ void FileInterface::commandReadLine(void) {
 }
 
 void FileInterface::functionOpenToRead(void) {
-
 	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "r");;
-	if (filestrs[id]==NULL) {
+	if (filestrs[id] == NULL) {
 		FIXME("OpenToRead failed.");
 		cb->pushValue(0);
 	}
@@ -169,27 +166,24 @@ void FileInterface::functionOpenToRead(void) {
 }
 
 void FileInterface::functionOpenToWrite(void) {
-
 	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "w");
-	if (filestrs[id]==NULL) {
+	if (filestrs[id] == NULL) {
 		FIXME("OpenToWrite failed.");
 		cb->pushValue(0);
 	}
-
 
 	cb->pushValue(id);
 }
 
 void FileInterface::functionOpenToEdit(void) {
-
 	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "r+");
-	if (filestrs[id]==NULL) {
+	if (filestrs[id] == NULL) {
 		FIXME("OpenToEdit failed.");
 		cb->pushValue(0);
 	}
@@ -198,31 +192,33 @@ void FileInterface::functionOpenToEdit(void) {
 }
 
 void FileInterface::functionFileOffset(void) {
-
 	cb->pushValue(int32_t(ftell(filestrs[cb->popValue().getInt()])));
 }
 
 void FileInterface::functionFindFile(void) {
 	++rcount;
 	if (rcount == 1) {
-		if(path(current_path()).has_relative_path())
-		{
+		if(path(current_path()).has_relative_path()) {
 			cb->pushValue(string("."));
-		} else {
+		}
+		else {
 			++rcount;
 			functionFindFile();
 		}
-	} else if (rcount == 2) {
-		if(path(current_path()).has_parent_path())
-		{
+	}
+	else if (rcount == 2) {
+		if(path(current_path()).has_parent_path()) {
 			cb->pushValue(string(".."));
-		} else {
+		}
+		else {
 			functionFindFile();
 		}
-	} else if (dir_iter != dir_end) {
+	}
+	else if (dir_iter != dir_end) {
 		cb->pushValue(path(dir_iter->path()).filename().string());
 		++dir_iter;
-	} else {
+	}
+	else {
 		cb->pushValue(string(""));
 	}
 }
@@ -247,11 +243,7 @@ void FileInterface::functionEOF(void) {
 	FILE *file2;
 	file2 = filestrs[cb->popValue().getInt()];
 
-	int32_t eof = 0;
-	if (feof(file2)!=0) {eof=1;}
-
-	cb->pushValue(eof);
-
+	cb->pushValue(feof(file2) != 0);
 }
 
 void FileInterface::functionReadByte(void) {
@@ -259,13 +251,11 @@ void FileInterface::functionReadByte(void) {
 }
 
 void FileInterface::functionReadShort(void) {
-
 	uint16_t sh;
 
 	fread(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
 
 	cb->pushValue(sh);
-
 }
 
 void FileInterface::functionReadInt(void) {
@@ -277,7 +267,7 @@ void FileInterface::functionReadInt(void) {
 }
 
 void FileInterface::functionReadFloat(void) {
-	float fl=0.0f;
+	float fl = 0.0f;
 
 	fread(&fl, sizeof(float), 1, filestrs[cb->popValue().getInt()]);
 
@@ -293,13 +283,13 @@ void FileInterface::functionReadString(void) {
 	fread(&i, sizeof(int32_t), 1, file2);
 
 	char * str;
-	str = new char [i+1];
+	str = new char [i + 1];
 
 	fread(str, i, 1, file2);
 
 	string line(str);
 
-	line=line.substr(0, line.length()-1);
+	line=line.substr(0, line.length() - 1);
 
 	delete[] str;
 
@@ -307,21 +297,17 @@ void FileInterface::functionReadString(void) {
 }
 
 void FileInterface::functionReadLine(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
+	FILE *file2 = filestrs[cb->popValue().getInt()];
 
 	string line = "";
-	int c;
 	while(1) {
-
-		c = fgetc(file2);
-		if (c != '\n' && c != EOF)
-		{
+		int c = fgetc(file2);
+		if (c != '\n' && c != EOF) {
 			line = line + char(c);
-		} else {
+		}
+		else {
 			break;
 		}
-
 	}
 	cb->pushValue(line);
 }

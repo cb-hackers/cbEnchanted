@@ -35,8 +35,7 @@ void SoundInterface::commandPlaySound(void) {
 		string filepath = any.toString();
 		CBSound *music = new CBSound;
 		music->music = new sf::Music;
-		if (!music->music->OpenFromFile(filepath))
-		{
+		if (!music->music->OpenFromFile(filepath)) {
 			delete music->music;
 			delete music;
 			cb->pushValue(int32_t(0));
@@ -54,7 +53,7 @@ void SoundInterface::commandPlaySound(void) {
 
 void SoundInterface::commandSetSound(void) {
 	/*int32_t freg = */cb->popValue().toInt();
-	float balance = cb->popValue().toFloat()/100.0;
+	float balance = cb->popValue().toFloat() / 100.0;
 	float volume = cb->popValue().toFloat();
 	bool looping = cb->popValue().toInt();
 	CBSound *sound = cbSounds[cb->popValue().getInt()];
@@ -74,8 +73,7 @@ void SoundInterface::commandStopSound(void) {
 	CBSound *sound = cbSounds[cb->popValue().getInt()];
 	if (sound->isMusic) {
 		set<CBSound*>::iterator i = deleteWhenStop.find(sound);
-		if (i != deleteWhenStop.end())
-		{
+		if (i != deleteWhenStop.end()) {
 			deleteWhenStop.erase(i);
 			cbSounds.erase(sound->id);
 			delete sound->music;
@@ -93,8 +91,7 @@ void SoundInterface::commandDeleteSound(void) {
 	CBSound *sound = cbSounds[cb->popValue().getInt()];
 	if (sound->isMusic) {
 		set<CBSound*>::iterator i = deleteWhenStop.find(sound);
-		if (i != deleteWhenStop.end())
-		{
+		if (i != deleteWhenStop.end()) {
 			deleteWhenStop.erase(i);
 		}
 		cbSounds.erase(sound->id);
@@ -115,8 +112,7 @@ void SoundInterface::functionLoadSound(void) {
 	sound->isMusic = false;
 	sound->file = filepath;
 	sound->soundBuffer = new sf::SoundBuffer;
-	if (!sound->soundBuffer->LoadFromFile(filepath))
-	{
+	if (!sound->soundBuffer->LoadFromFile(filepath)) {
 		delete sound->soundBuffer;
 		delete sound;
 		cb->pushValue(int32_t(0));
@@ -128,7 +124,6 @@ void SoundInterface::functionLoadSound(void) {
 	sound->id = id;
 	cbSounds[id] = sound;
 	cb->pushValue(id);
-
 }
 
 void SoundInterface::functionPlaySound(void) {
@@ -157,8 +152,7 @@ void SoundInterface::functionPlaySound(void) {
 		string filepath = any.toString();
 		CBSound *music = new CBSound;
 		music->music = new sf::Music;
-		if (!music->music->OpenFromFile(filepath))
-		{
+		if (!music->music->OpenFromFile(filepath)) {
 			delete music->music;
 			delete music;
 			cb->pushValue(int32_t(0));
@@ -186,10 +180,8 @@ void SoundInterface::functionSoundPlaying(void) {
 	}
 }
 
-void SoundInterface::updateAudio(void)
-{
-	for (set<CBSound*>::iterator i = deleteWhenStop.begin();i != deleteWhenStop.end();)
-	{
+void SoundInterface::updateAudio(void) {
+	for (set<CBSound*>::iterator i = deleteWhenStop.begin(); i != deleteWhenStop.end();) {
 		CBSound *sound = *i;
 		if (sound->music->GetStatus() == sf::SoundStream::Stopped) {
 			delete sound->music;
@@ -200,20 +192,16 @@ void SoundInterface::updateAudio(void)
 		else {
 			i++;
 		}
-
 	}
 }
 
 //Deletes all sounds.
-void SoundInterface::cleanupSoundInterface()
-{
-	for (map<int32_t,CBSound*>::iterator i = cbSounds.begin();i != cbSounds.end();i++)
-	{
+void SoundInterface::cleanupSoundInterface() {
+	for (map<int32_t, CBSound*>::iterator i = cbSounds.begin(); i != cbSounds.end(); i++) {
 		delete i->second;
 	}
 }
 
-int32_t SoundInterface::nextId()
-{
+int32_t SoundInterface::nextId() {
 	return ++idCounter;
 }

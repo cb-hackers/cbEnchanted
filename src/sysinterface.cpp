@@ -26,7 +26,7 @@ void SysInterface::commandWait(void) {
 
 void SysInterface::commandMakeError(void) {
 #ifdef WIN32
-	MessageBoxA(NULL,cb->popValue().toString().c_str(),"Error",MB_OK);
+	MessageBoxA(NULL,cb->popValue().toString().c_str(), "Error", MB_OK);
 #else
 	assert("Linux MakeError uncomplete" != 0);
 #endif
@@ -91,7 +91,7 @@ void SysInterface::functionDate(void) {
 	short day  = timei->tm_mday;
 
 	stringstream ssdate;
-	ssdate << day << " " << d.substr(4,3) << " " << d.substr(d.length()-5, 4);
+	ssdate << day << " " << d.substr(4, 3) << " " << d.substr(d.length() - 5, 4);
 
 	cb->pushValue(ssdate.str());
 }
@@ -101,7 +101,7 @@ void SysInterface::functionTime(void) {
 	time (&rtime);
 	string t(ctime(&rtime));
 
-	cb->pushValue(t.substr(11,8));
+	cb->pushValue(t.substr(11, 8));
 }
 
 void SysInterface::functionTimer(void) {

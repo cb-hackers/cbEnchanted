@@ -7,7 +7,7 @@
 #include <Windows.h>
 #endif
 #include "cbimage.h"
-GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(),drawDrawCommandToWorld(false),drawImageToWorld(false),drawTextToWorld(false),currentRenderTarget(0) {
+GfxInterface::GfxInterface() : cb(static_cast <CBEnchanted *> (this)), windowTitle(""), clearColor(0, 0, 0, 255), drawColor(255, 255, 255, 255), window(), drawDrawCommandToWorld(false), drawImageToWorld(false), drawTextToWorld(false), currentRenderTarget(0) {
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -24,7 +24,7 @@ void GfxInterface::initializeGfx()
 	window.EnableVerticalSync(true);
 	window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
 	windowSettings = window.GetSettings();
-	windowRenderTarget.create(400,300);
+	windowRenderTarget.create(400, 300);
 
 	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
 	currentRenderTarget = &windowRenderTarget;

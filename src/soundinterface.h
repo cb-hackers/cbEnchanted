@@ -42,7 +42,7 @@ class SoundInterface {
 
 		//List of music what should be deleted when it stops.
 		set<CBSound*> deleteWhenStop;
-		map<int32_t,CBSound*> cbSounds;
+		map<int32_t, CBSound*> cbSounds;
 };
 
 #endif

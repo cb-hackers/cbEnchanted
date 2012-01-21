@@ -33,27 +33,25 @@ class Any {
 		inline Any(float a) : typeId(Float), d_float(a) { }
 		inline Any(const string &a) : typeId(String), d_string_ptr(new string(a)) { }
 		inline Any(const Any &a) : typeId(a.typeId) {
-			if (a.typeId == String)
-			{
+			if (a.typeId == String) {
 				d_string_ptr = new string(*a.d_string_ptr);
 				return;
 			}
 			d_int = a.d_int; //Don't have to worry about data type.
 		}
 		inline ~Any() {
-			if (typeId == String)
-			{
+			if (typeId == String) {
 				delete d_string_ptr;
 			}
 		}
 
-		inline const string &getString() const {assert(typeId == String); return *d_string_ptr; }
-		inline int32_t getInt() const {assert(typeId == Int); return d_int; }
-		inline uint16_t getShort() const {assert(typeId == Short); return d_short; }
-		inline uint8_t getByte() const {assert(typeId == Byte); return d_byte; }
-		inline float getFloat() const {assert(typeId == Float); return d_float;}
-		inline bool empty() const {return typeId == Empty;}
-		inline int32_t type() const{return typeId;}
+		inline const string &getString() const { assert(typeId == String); return *d_string_ptr; }
+		inline int32_t getInt() const { assert(typeId == Int); return d_int; }
+		inline uint16_t getShort() const { assert(typeId == Short); return d_short; }
+		inline uint8_t getByte() const { assert(typeId == Byte); return d_byte; }
+		inline float getFloat() const { assert(typeId == Float); return d_float; }
+		inline bool empty() const { return typeId == Empty; }
+		inline int32_t type() const{ return typeId; }
 
 		const type_info &typeInfo() const{
 			switch (typeId) {
@@ -94,7 +92,7 @@ class Any {
 			catch (boost::bad_lexical_cast &error) {
 				return "";
 			}
-			FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(string).name());
+			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(string).name());
 			return "";
 		}
 
@@ -120,7 +118,7 @@ class Any {
 					return 0;
 				}
 			}
-			FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(int32_t).name());
+			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(int32_t).name());
 			return 0;
 		}
 
@@ -146,7 +144,7 @@ class Any {
 					return 0.0f;
 				}
 			}
-			FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(float).name());
+			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(float).name());
 			return 0.0f;
 		}
 
@@ -172,7 +170,7 @@ class Any {
 					return 0;
 				}
 			}
-			FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(uint16_t).name());
+			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(uint16_t).name());
 			return 0;
 		}
 
@@ -198,7 +196,7 @@ class Any {
 					return 0;
 				}
 			}
-			FIXME("Unsupported cast %s >= %s",typeInfo().name(),typeid(uint8_t).name());
+			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(uint8_t).name());
 			return 0;
 		}
 };
