@@ -81,11 +81,27 @@ void SysInterface::commandEnd(void) {
 }
 
 void SysInterface::functionDate(void) {
-	STUB;
+	time_t rtime;
+	struct tm * timei;
+	time (&rtime);
+	timei = localtime(&rtime);
+
+	string d(ctime(&rtime));
+
+	short day  = timei->tm_mday;
+
+	stringstream ssdate;
+	ssdate << day << " " << d.substr(4,3) << " " << d.substr(d.length()-5, 4);
+
+	cb->pushValue(ssdate.str());
 }
 
 void SysInterface::functionTime(void) {
-	STUB;
+	time_t rtime;
+	time (&rtime);
+	string t(ctime(&rtime));
+
+	cb->pushValue(t.substr(11,8));
 }
 
 void SysInterface::functionTimer(void) {
