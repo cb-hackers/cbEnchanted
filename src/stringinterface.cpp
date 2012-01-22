@@ -39,8 +39,6 @@ void StringInterface::functionMid(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString();
 
-	printf("%s\n", str.c_str());
-
 	cb->pushValue(str.substr(pos-1, len));
 
 }
