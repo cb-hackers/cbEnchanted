@@ -1,9 +1,11 @@
-#include "precomp.h"
 #include "objectinterface.h"
+#include "precomp.h"
 #include "debug.h"
+#include "cbimage.h"
+#include "cbenchanted.h"
 
 ObjectInterface::ObjectInterface() {
-	
+	cb = static_cast<CBEnchanted*>(this);
 }
 
 ObjectInterface::~ObjectInterface() {
@@ -11,71 +13,169 @@ ObjectInterface::~ObjectInterface() {
 }
 
 void ObjectInterface::commandDeleteObject(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	std::vector<CBObject*>::const_iterator i = objectDrawOrder.cbegin() + object->getDrawOrderNumber();
+	objectDrawOrder.erase(i);
+	delete object;
+	objectMap.erase(id);
 }
 
 void ObjectInterface::commandClearObjects(void) {
-	STUB;
+	for (std::map<int32_t,CBObject*>::iterator i = objectMap.begin();i != objectMap.end();i++)
+	{
+		delete i->second;
+	}
+	objectMap.clear();
+	objectDrawOrder.clear();
 }
 
 void ObjectInterface::commandMoveObject(void) {
-	STUB;
+	float z = cb->popValue().toFloat();
+	float side = cb->popValue().toFloat();
+	float fwrd = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->moveObject(fwrd,side);
 }
 
 void ObjectInterface::commandTranslateObject(void) {
-	STUB;
+	float z = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->translateObject(x,y,z);
 }
 
 void ObjectInterface::commandPositionObject(void) {
-	STUB;
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->positionObject(x,y);
 }
 
 void ObjectInterface::commandScreenPositionObject(void) {
-	STUB;
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->positionObject(cb->screenCoordToWorld(sf::Vector2f(x,y)));
 }
 
 void ObjectInterface::commandTurnObject(void) {
-	STUB;
+	//Random shit...
+	cb->popValue();
+	cb->popValue();
+
+	float a = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->turnObject(a);
 }
 
 void ObjectInterface::commandRotateObject(void) {
-	STUB;
+	float a = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->rotateObject(a);
 }
 
 void ObjectInterface::commandPointObject(void) {
-	STUB;
+	int32_t id2 = cb->popValue().getInt();
+	CBObject *object2 = objectMap[id2];
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *object1 = objectMap[id1];
+
+	object1->rotateObject((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
 }
 
 void ObjectInterface::commandCloneObjectPosition(void) {
-	STUB;
+	int32_t id2 = cb->popValue().getInt();
+	CBObject *object2 = objectMap[id2];
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *object1 = objectMap[id1];
+	object1->positionObject(object2->getPos());
 }
 
 void ObjectInterface::commandCloneObjectOrientation(void) {
-	STUB;
+	int32_t id2 = cb->popValue().getInt();
+	CBObject *object2 = objectMap[id2];
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *object1 = objectMap[id1];
+	object1->rotateObject(object2->getAngle());
 }
 
 void ObjectInterface::commandObjectOrder(void) {
-	STUB;
+	int32_t select = cb->popValue().toInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	int32_t oldPlace = object->getDrawOrderNumber();
+	if (select == 1) {//move to first
+		std::vector<CBObject*>::iterator it = --objectDrawOrder.end();
+		for (int32_t i = (*it)->getDrawOrderNumber(); i != oldPlace;)
+		{
+			(*it)->setDrawOrderNumber(--i);
+			--it;
+		}
+		objectDrawOrder.erase(it);//remove old
+		objectDrawOrder.push_back(object);//insert to end
+	}
+	else if (select == -1) {
+		std::vector<CBObject*>::iterator it = objectDrawOrder.begin();
+		for (int32_t i = 0; i != oldPlace;)
+		{
+			(*it)->setDrawOrderNumber(++i);
+			--it;
+		}
+		objectDrawOrder.erase(it);//remove old
+		objectDrawOrder.insert(objectDrawOrder.begin(),object);//insert to begin
+	}
 }
 
 void ObjectInterface::commandMaskObject(void) {
-	STUB;
+	uint8_t b = cb->popValue().toByte();
+	uint8_t g = cb->popValue().toByte();
+	uint8_t r = cb->popValue().toByte();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->maskObject(r,g,b);
 }
 
 void ObjectInterface::commandShowObject(void) {
-	STUB;
+	bool t = cb->popValue().toInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->showObject(t);
 }
 
 void ObjectInterface::commandDefaultVisible(void) {
-	STUB;
+	bool t = cb->popValue().toInt();
+	CBObject::setDefaultVisible(t);
 }
 
 void ObjectInterface::commandPaintObject(void) {
-	STUB;
+	int p = cb->popValue().getInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+
+	if (p > 0) { //Object
+		CBObject *object2 = objectMap[p];
+		object->paintObject(*object2);
+	}
+	else { //Image
+		CBImage *img = cb->getImage(p);
+		object->paintObject(img->getRenderTarget()->getSurface()->GetTexture());
+	}
 }
 
 void ObjectInterface::commandGhostObject(void) {
-	STUB;
+	float a = cb->popValue().toFloat() / 100.0;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->ghostObject((uint8_t)(a*255.0));
+
 }
 
 void ObjectInterface::commandMirrorObject(void) {
@@ -143,7 +243,19 @@ void ObjectInterface::commandInitObjectList(void) {
 }
 
 void ObjectInterface::functionLoadObject(void) {
-	STUB;
+	cb->popValue(); //Rotation...
+	string path = cb->popValue().getString();
+	CBObject *obj = new CBObject;
+	if (!obj->load(path)) {
+		FIXME("Can't load object: %s",path.c_str());
+		cb->pushValue(0);
+		return;
+	}
+	obj->setDrawOrderNumber(objectDrawOrder.size());
+	objectDrawOrder.push_back(obj);
+	int32_t id = nextObjectId();
+	objectMap[id] = obj;
+	cb->pushValue(id);
 }
 
 void ObjectInterface::functionLoadAnimObject(void) {
@@ -203,15 +315,21 @@ void ObjectInterface::functionDistance2(void) {
 }
 
 void ObjectInterface::functionObjectX(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getX());
 }
 
 void ObjectInterface::functionObjectY(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getY());
 }
 
 void ObjectInterface::functionObjectAngle(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getAngle());
 }
 
 void ObjectInterface::functionObjectSizeX(void) {
@@ -260,4 +378,11 @@ void ObjectInterface::functionCollisionAngle(void) {
 
 void ObjectInterface::functionNextObject(void) {
 	STUB;
+}
+
+void ObjectInterface::drawObjects(RenderTarget &target) {
+	target.setViewTo(true);
+	for (std::vector<CBObject*>::iterator i = objectDrawOrder.begin();i != objectDrawOrder.end();i++) {
+		(*i)->render(target);
+	}
 }

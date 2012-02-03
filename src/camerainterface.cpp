@@ -2,7 +2,7 @@
 #include "camerainterface.h"
 #include "cbenchanted.h"
 
-CameraInterface::CameraInterface(): cb(static_cast<CBEnchanted*>(this)){
+CameraInterface::CameraInterface(): cb(static_cast<CBEnchanted*>(this)),cameraX(0),cameraY(0),cameraAngle(0){
 	
 }
 
@@ -65,4 +65,12 @@ void CameraInterface::functionCameraY(void) {
 
 void CameraInterface::functionCameraAngle(void) {
 	cb->pushValue(cameraAngle);
+}
+
+sf::Vector2f CameraInterface::screenCoordToWorld(const sf::Vector2f &v) {
+	return sf::Vector2f(v.x-cb->getWindow()->GetWidth()/2.0f+cameraX,-v.y+cb->getWindow()->GetHeight()/2.0f+cameraY);
+}
+
+sf::Vector2f CameraInterface::worldCoordToScreen(const sf::Vector2f &v) {
+	return sf::Vector2f(v.x+cb->getWindow()->GetWidth()/2.0f-cameraX,-v.y+cb->getWindow()->GetHeight()/2.0f+cameraY);
 }

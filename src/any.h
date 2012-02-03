@@ -89,7 +89,7 @@ class Any {
 					return boost::lexical_cast<string>(getByte());
 				}
 			}
-			catch (boost::bad_lexical_cast &error) {
+            catch (boost::bad_lexical_cast &) {
 				return "";
 			}
 			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(string).name());

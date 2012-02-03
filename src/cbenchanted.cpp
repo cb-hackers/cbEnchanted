@@ -64,7 +64,7 @@ void CBEnchanted::run() {
 /* 
  * CBEnchanted::init - Initialize the interpreter 
  */
-void CBEnchanted::init(string file) {
+bool CBEnchanted::init(string file) {
 	INFO("Initializing");
 	int32_t startPos; // Beginning of the CoolBasic data
 	int32_t endPos; // End of the executable
@@ -75,7 +75,10 @@ void CBEnchanted::init(string file) {
 	// Open file for reading
 	ifstream input(file.c_str(), ios::binary);
 
-	assert(input.is_open());
+	if (!input.is_open()) {
+		FIXME("Can't open exe! %s",file.c_str());
+		return false;
+	}
 
 	input.seekg(-4, ios::end);
 	endPos = input.tellg();
@@ -142,6 +145,7 @@ void CBEnchanted::init(string file) {
 
 	initialized = true;
 	INFO("Initialized");
+	return true;
 }
 
 void CBEnchanted::stop() {

@@ -90,7 +90,7 @@ void MathInterface::functionGetAngle(void) {
 	float x2 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
-	cb->pushValue((float)((3.14159265358979323 - atan2f(y1 - y2, x1 - x2)) / 3.14159265358979323 * 180.0)); //TODO: Check if works
+	cb->pushValue((float)((3.14159265358979323 - atan2f(y1 - y2, x1 - x2)) / 3.14159265358979323 * 180.0));
 }
 
 void MathInterface::functionLog(void) {

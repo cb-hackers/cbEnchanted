@@ -1,6 +1,7 @@
 #ifndef CAMERAINTERFACE_H
 #define CAMERAINTERFACE_H
 class CBEnchanted;
+#include "precomp.h"
 class CameraInterface {
 	public:
 		CameraInterface();
@@ -23,6 +24,8 @@ class CameraInterface {
 
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }
+		sf::Vector2f screenCoordToWorld(const sf::Vector2f &v);
+		sf::Vector2f worldCoordToScreen(const sf::Vector2f &v);
 	private:
 		CBEnchanted *cb;
 		float cameraX;

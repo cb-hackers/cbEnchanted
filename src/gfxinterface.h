@@ -57,6 +57,7 @@ class GfxInterface {
 		void setCurrentRenderTarget(RenderTarget *t);
 
 		void initializeGfx();
+
 	private:
 		CBEnchanted *cb;
 		

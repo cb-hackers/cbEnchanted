@@ -2,33 +2,6 @@
 #include "cbenchanted.h"
 #include <SFML/Graphics/RenderTexture.hpp>
 #define CIRCLE_VERTEX_COUNT 100
-float circleVertexArray[(CIRCLE_VERTEX_COUNT+2)*2];
-class CircleVertexArrayConstructDumbClass {
-public:
-	CircleVertexArrayConstructDumbClass()
-	{
-		circleVertexArray[0] = circleVertexArray[1] = 0;
-		int index = 2;
-
-		float theta = 2 * 3.1415926 / float(CIRCLE_VERTEX_COUNT);
-		float c = cosf(theta);
-		float s = sinf(theta);
-		float t;
-		float x = 1.0f;
-		float y = 0;
-
-		for(int ii = 0; ii < CIRCLE_VERTEX_COUNT; ii++) {
-			circleVertexArray[index++] = x;
-			circleVertexArray[index++] = y;
-			t = x;
-			x = c * x - s * y;
-			y = s * t + c * y;
-		}
-		circleVertexArray[index++] = x;
-		circleVertexArray[index++] = y;
-	}
-};
-CircleVertexArrayConstructDumbClass circleVertexArrayConstructDumbClass;
 
 RenderTarget *currentRenderContext = 0;
 inline void setCurrentRenderContext(RenderTarget *t) {

@@ -3,8 +3,12 @@
 #include "cbobject.h"
 #include "debug.h"
 
+static bool defaultVisible = true;
 
-CBObject::CBObject(){
+CBObject::CBObject():visible(defaultVisible),posX(0),posY(0),angle(180),alpha(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0){
+}
+CBObject::~CBObject() {
+
 }
 
 bool CBObject::load(string file)
@@ -19,7 +23,7 @@ bool CBObject::load(string file)
 	startframe = 0;
 	maxframes = 0;
 	alpha = 100;
-	angle = 0;
+	angle = 180;
 	return true;
 }
 
@@ -40,7 +44,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	startframe = startf;
 	maxframes = framecount;
 	alpha = 100;
-	angle = 0;
+	angle = 180;
 	return true;
 }
 
@@ -49,13 +53,14 @@ void CBObject::positionObject(float x, float y){
 	posY = y;
 }
 
-void CBObject::paintObject(sf::Texture txt){
-
+void CBObject::paintObject(const sf::Texture &txt){
+	imgtex = txt.CopyToImage();
 	texture = txt;
 	sprite.SetTexture(texture);
 }
 
-void CBObject::paintObject(CBObject &obj){
+void CBObject::paintObject(const CBObject &obj){
+	imgtex = obj.imgtex;
 	texture = obj.texture;
 	sprite.SetTexture(texture);
 }
@@ -72,8 +77,8 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 }
 
 void CBObject::moveObject(float fwrd, float sdwrd){
-	posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90) / 180.0 * M_PI)*sdwrd;
-	posX-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90) / 180.0 * M_PI)*sdwrd;
+	posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle+90.0) / 180.0 * M_PI)*sdwrd;
+	posY-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle+90.0) / 180.0 * M_PI)*sdwrd;
 }
 
 void CBObject::translateObject(float hor, float ver, float depth){
@@ -85,18 +90,21 @@ void CBObject::turnObject(float speed){
 	angle+=speed;
 }
 
-void CBObject::render(sf::RenderTarget &target){
-	sprite.SetPosition(posX, posY);
-	if(maxframes!=0){
+void CBObject::render(RenderTarget &target){
+	if (visible) {
+		sprite.SetPosition(posX, posY);
+		if(maxframes!=0){
 
-		int16_t copyY = (currentframe % texture.GetWidth());
-		int16_t copyX = (currentframe / texture.GetHeight());
-		sprite.SetTextureRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
+			int16_t copyY = (currentframe % texture.GetWidth());
+			int16_t copyX = (currentframe / texture.GetHeight());
+			sprite.SetTextureRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
+		}
+		sprite.SetOrigin(texture.GetWidth()*0.5,texture.GetHeight()*0.5);
+		sprite.SetRotation(-angle);
+		if(alpha!=100)
+			sprite.SetColor(sf::Color(255, 255, 255, alpha));
+		target.draw(sprite);
 	}
-	sprite.Rotate(angle);
-	if(alpha!=100)
-		sprite.SetColor(sf::Color(255, 255, 255, alpha));
-	target.Draw(sprite);
 }
 
 void CBObject::setPosition(float x, float y){
@@ -113,5 +121,10 @@ float CBObject::getY(){
 }
 
 float CBObject::getAngle(){
-	return angle;
+	return angle-180;
+}
+
+void CBObject::setDefaultVisible(bool t)
+{
+	defaultVisible = t;
 }

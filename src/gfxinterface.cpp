@@ -95,8 +95,9 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
+	cb->drawObjects(windowRenderTarget);
+
 	sf::Event e;
-	
 	while (window.PollEvent(e)) {
 		switch (e.Type) {
 			case sf::Event::Closed:

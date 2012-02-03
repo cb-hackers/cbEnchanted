@@ -1,5 +1,8 @@
 #ifndef OBJECTINTERFACE_H
 #define OBJECTINTERFACE_H
+#include "precomp.h"
+#include "cbobject.h"
+#include "rendertarget.h"
 
 class CBEnchanted;
 
@@ -72,8 +75,15 @@ class ObjectInterface {
 		void functionCollisionY(void);
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
+
+		void drawObjects(RenderTarget &target);
 	private:
-	
+		CBEnchanted *cb;
+		std::map<int32_t,CBObject*> objectMap;
+		std::vector<CBObject*> objectDrawOrder;
+
+		//Returns new id for objectMap
+		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}
 };
 
 #endif

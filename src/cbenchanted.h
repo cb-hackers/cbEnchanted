@@ -34,7 +34,7 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		~CBEnchanted();
 	
 		static CBEnchanted *instance();
-		void init(string file);		
+        bool init(string file);
 		void run();
 		void stop();
 		void cleanup();
