@@ -259,31 +259,54 @@ void ObjectInterface::functionLoadObject(void) {
 }
 
 void ObjectInterface::functionLoadAnimObject(void) {
-	STUB;
+
 }
 
 void ObjectInterface::functionMakeObject(void) {
-	STUB;
+	CBObject *obj = new CBObject;
+	obj->setDrawOrderNumber(objectDrawOrder.size());
+	objectDrawOrder.push_back(obj);
+	int32_t id = nextObjectId();
+	objectMap[id] = obj;
+	cb->pushValue(id);
 }
 
 void ObjectInterface::functionMakeObjectFloor(void) {
-	STUB;
+	CBObject *obj = new CBObject(true);
+	obj->setDrawOrderNumber(objectDrawOrder.size());
+	objectDrawOrder.push_back(obj);
+	int32_t id = nextObjectId();
+	objectMap[id] = obj;
+	cb->pushValue(id);
 }
 
 void ObjectInterface::functionCloneObject(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	CBObject *obj = object->copyObject();
+	obj->setDrawOrderNumber(objectDrawOrder.size());
+	objectDrawOrder.push_back(obj);
+	int32_t id2 = nextObjectId();
+	objectMap[id2] = obj;
+	cb->pushValue(id2);
 }
 
 void ObjectInterface::functionObjectInteger(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getObjectInteger());
 }
 
 void ObjectInterface::functionObjectFloat(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getObjectFloat());
 }
 
 void ObjectInterface::functionObjectString(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getObjectString());
 }
 
 void ObjectInterface::functionObjectLife(void) {
@@ -307,11 +330,23 @@ void ObjectInterface::functionPickedAngle(void) {
 }
 
 void ObjectInterface::functionGetAngle2(void) {
-	STUB;
+	int32_t id2 = cb->popValue().getInt();
+	CBObject *object2 = objectMap[id2];
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *object1 = objectMap[id1];
+
+	cb->pushValue((float)((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0));
+}
+inline double square(float num) {
+	return (double)num * (double)num;
 }
 
 void ObjectInterface::functionDistance2(void) {
-	STUB;
+	int32_t id2 = cb->popValue().getInt();
+	CBObject *object2 = objectMap[id2];
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *object1 = objectMap[id1];
+	cb->pushValue((float)sqrt(square(object2->getX()-object1->getX())+square(object2->getY()-object1->getY())));
 }
 
 void ObjectInterface::functionObjectX(void) {
@@ -333,11 +368,15 @@ void ObjectInterface::functionObjectAngle(void) {
 }
 
 void ObjectInterface::functionObjectSizeX(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getObjectSizeX());
 }
 
 void ObjectInterface::functionObjectSizeY(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getObjectSizeY());
 }
 
 void ObjectInterface::functionObjectPlaying(void) {
@@ -345,7 +384,7 @@ void ObjectInterface::functionObjectPlaying(void) {
 }
 
 void ObjectInterface::functionObjectFrame(void) {
-	
+	STUB;
 }
 
 void ObjectInterface::functionObjectsOverlap(void) {
