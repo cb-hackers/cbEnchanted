@@ -77,10 +77,12 @@ class ObjectInterface {
 		void functionNextObject(void);
 
 		void drawObjects(RenderTarget &target);
+        inline CBObject *getObject(int32_t key){return objectMap[key];}
 	private:
 		CBEnchanted *cb;
 		std::map<int32_t,CBObject*> objectMap;
 		std::vector<CBObject*> objectDrawOrder;
+        std::vector<CBObject*> floorObjectDrawOrder;
 
 		//Returns new id for objectMap
 		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}

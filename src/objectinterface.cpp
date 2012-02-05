@@ -160,7 +160,7 @@ void ObjectInterface::commandPaintObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
 
-	if (p > 0) { //Object
+    if (p > 0 && !object->isFloorObject()) { //Object
 		CBObject *object2 = objectMap[p];
 		object->paintObject(*object2);
 	}
@@ -273,8 +273,8 @@ void ObjectInterface::functionMakeObject(void) {
 
 void ObjectInterface::functionMakeObjectFloor(void) {
 	CBObject *obj = new CBObject(true);
-	obj->setDrawOrderNumber(objectDrawOrder.size());
-	objectDrawOrder.push_back(obj);
+    obj->setDrawOrderNumber(floorObjectDrawOrder.size());
+    floorObjectDrawOrder.push_back(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	cb->pushValue(id);
@@ -420,7 +420,12 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-	target.setViewTo(true);
+    target.setViewTo(false);
+    for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
+        --i;
+        (*i)->render(target);
+    }
+    target.setViewTo(true);
 	for (std::vector<CBObject*>::iterator i = objectDrawOrder.begin();i != objectDrawOrder.end();i++) {
 		(*i)->render(target);
 	}

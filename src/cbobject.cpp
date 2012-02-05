@@ -2,10 +2,12 @@
 #include "precomp.h"
 #include "cbobject.h"
 #include "debug.h"
+#include <math.h>
+#include "cbenchanted.h"
 
 static bool defaultVisible = true;
 
-CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(180),alpha(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
+CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(0),alpha(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
 }
 CBObject::~CBObject() {
 	if (!copied)
@@ -34,7 +36,7 @@ bool CBObject::load(string file)
 	startframe = 0;
 	maxframes = 0;
 	alpha = 255;
-	angle = 180;
+    angle = 0;
 	painted = true;
 	return true;
 }
@@ -62,7 +64,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	startframe = startf;
 	maxframes = framecount;
 	alpha = 255;
-	angle = 180;
+    angle = 0;
 	painted = true;
 	return true;
 }
@@ -73,6 +75,8 @@ void CBObject::positionObject(float x, float y){
 }
 
 void CBObject::paintObject(const sf::Texture &txt){
+    if (!imgtex) imgtex = new sf::Image;
+    if (!texture) texture = new sf::Texture;
 	*imgtex = txt.CopyToImage();
 	imgtex->CreateMaskFromColor(sf::Color(0, 0, 0));
 	texture->LoadFromImage(*imgtex);
@@ -81,6 +85,8 @@ void CBObject::paintObject(const sf::Texture &txt){
 }
 
 void CBObject::paintObject(const CBObject &obj){
+    if (!imgtex) imgtex = new sf::Image;
+    if (!texture) texture = new sf::Texture;
 	imgtex = obj.imgtex;
 	texture = obj.texture;
 	sprite.SetTexture(*texture);
@@ -103,8 +109,8 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 }
 
 void CBObject::moveObject(float fwrd, float sdwrd){
-	posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle+90.0) / 180.0 * M_PI)*sdwrd;
-	posY-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle+90.0) / 180.0 * M_PI)*sdwrd;
+    posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90.0) / 180.0 * M_PI)*sdwrd;
+    posY-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90.0) / 180.0 * M_PI)*sdwrd;
 }
 
 void CBObject::translateObject(float hor, float ver, float depth){
@@ -119,7 +125,25 @@ void CBObject::turnObject(float speed){
 void CBObject::render(RenderTarget &target){
 	if (visible && painted) {
 		if (floor) {
+            sprite.SetOrigin(0,0);
 			//Drawing floor objects
+
+            float snappedx=floorf(CBEnchanted::instance()->getCameraX()/texture->GetWidth());
+            float snappedy=floorf(CBEnchanted::instance()->getCameraY()/texture->GetHeight());
+
+            float ekax=-CBEnchanted::instance()->getCameraX()+snappedx*texture->GetWidth();
+            float ekay=-CBEnchanted::instance()->getCameraY()+snappedy*texture->GetHeight();
+
+            float xx=ekax;
+            while (xx<target.width()) {
+                float yy=ekay;
+                while (yy<target.height()) {
+                    sprite.SetPosition(xx,yy);
+                    target.draw(sprite);
+                    yy=yy+texture->GetHeight();
+                }
+                xx=xx+texture->GetWidth();
+            }
 		}
 		else {
 			sprite.SetPosition(posX, posY);
@@ -155,7 +179,7 @@ float CBObject::getY(){
 }
 
 float CBObject::getAngle(){
-	return angle-180;
+    return angle;
 }
 
 void CBObject::setDefaultVisible(bool t) {

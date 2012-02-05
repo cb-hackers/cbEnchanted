@@ -80,13 +80,12 @@ void RenderTarget::setDrawingMode(RenderTarget::DrawingMode mode) {
 	}
 }
 
-void RenderTarget::setViewTo(bool drawtoworld) {
-	if (drawToWorldViewOn == drawtoworld) return; //Useless to update view
+void RenderTarget::setViewTo(bool drawtoworld, bool force) {
+    if (drawToWorldViewOn == drawtoworld && !force) return; //Useless to update view
 	if (drawtoworld) {
 		sf::View view;
-		view.SetSize(target.GetWidth(), target.GetHeight());
-		view.SetCenter(CBEnchanted::instance()->getCameraX(), CBEnchanted::instance()->getCameraY());
-		view.SetRotation(180); //Flip y
+        view.SetSize(target.GetWidth(), target.GetHeight());
+        view.SetCenter(CBEnchanted::instance()->getCameraX(), CBEnchanted::instance()->getCameraY());
 		target.SetView(view);
 		drawToWorldViewOn = true;
 		glMatrixMode(GL_PROJECTION);
@@ -239,7 +238,7 @@ void RenderTarget::drawEllipse(float cx, float cy, float w, float h, bool fill) 
 	}
 	glEnd();
 	glLoadIdentity();
-	changedSinceDisplay = true;
+    changedSinceDisplay = true;
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	glTranslatef(cx, cy, 0);
 	glScalef(w, h, 1.0f);

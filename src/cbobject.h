@@ -39,6 +39,7 @@ class CBObject{
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
+        bool isFloorObject()const{return floor;}
 	protected:
 		//Created using copy
 		bool copied;

@@ -14,7 +14,7 @@ public:
 	const sf::RenderTexture *getSurface()const{return &target;}
 	void create(int w,int h);
 	void create(const sf::Texture &texture);
-	void setViewTo(bool drawtoworld);
+    void setViewTo(bool drawtoworld,bool force = false);
 	void draw(const sf::Drawable &d);
 	void draw(const sf::Vertex* vertices, unsigned int vertexCount,sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	void drawLine(float x1,float y1,float x2,float y2);
@@ -32,6 +32,8 @@ public:
 	void putPixel2(int x,int y,int pixel);
 	void lock();
 	void unlock();
+
+    bool isDrawToWorldViewOn()const{return drawToWorldViewOn;}
 
 	void clear(const sf::Color &c);
 	static void initCircleVertexArray();

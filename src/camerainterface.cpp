@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "camerainterface.h"
 #include "cbenchanted.h"
+#include "cbobject.h"
 
 CameraInterface::CameraInterface(): cb(static_cast<CBEnchanted*>(this)),cameraX(0),cameraY(0),cameraAngle(0){
 	
@@ -11,11 +12,17 @@ CameraInterface::~CameraInterface() {
 }
 
 void CameraInterface::commandCloneCameraPosition(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    CBObject *obj = cb->getObject(id);
+    cameraX = obj->getX();
+    cameraY = obj->getY();
+    if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
-	STUB;
+    int32_t id = cb->popValue().getInt();
+    CBObject *obj = cb->getObject(id);
+    cameraAngle = obj->getX();
 }
 
 void CameraInterface::commandCameraFollow(void) {
