@@ -1,6 +1,8 @@
 #ifndef MAPINTERFACE_H
 #define MAPINTERFACE_H
 
+#include "cbmap.h"
+
 class MapInterface {
 	public:
 		MapInterface();
@@ -18,6 +20,7 @@ class MapInterface {
 		void functionMapHeight(void);
 	private:
 	
+		CBMap *map;
 };
 
 #endif

@@ -26,6 +26,7 @@ class CBMap : public CBObject{
 
         public:
                 CBMap();
+
                 ~CBMap();
 
 
@@ -36,13 +37,14 @@ class CBMap : public CBObject{
                 void drawOverLayer(sf::RenderTarget &target, float camX, float camY);
 
                 void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
-
+                void maskObject(uint8_t r, uint8_t g, uint8_t b);
 
                 int32_t mapSizeX(){return mapWidth;}
                 int32_t mapSizeY(){return mapHeight;}
 
                 int32_t getSizeX(){return mapWidth*tileWidth;}
                 int32_t getSizeY(){return mapHeight*tileHeight;}
+                void playObject();
 };
 
 

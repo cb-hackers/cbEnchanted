@@ -4,6 +4,7 @@
 CBMap::CBMap(){
 }
 
+
 CBMap::~CBMap(){
         for(int i = 0; i < 4; ++i){
                 delete [] layer;
@@ -62,7 +63,7 @@ bool CBMap::loadMap(string file){
                 mapStream >> mapWidth;
                 mapStream >> mapHeight;
 
-                for(int i = 0; i < 4; i++){
+                for(int i = 0; i < 4; ++i){
                         layer[i] = new int32_t[mapWidth*mapHeight];
                 }
 
