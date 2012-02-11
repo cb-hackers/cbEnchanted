@@ -1,7 +1,10 @@
 #ifndef MAPINTERFACE_H
 #define MAPINTERFACE_H
 
+#include "precomp.h"
 #include "cbmap.h"
+
+class CBEnchanted;
 
 class MapInterface {
 	public:
@@ -19,8 +22,8 @@ class MapInterface {
 		void functionMapWidth(void);
 		void functionMapHeight(void);
 	private:
-	
-		CBMap *map;
+		CBEnchanted *cb;
+		CBMap *tileMap;
 };
 
 #endif

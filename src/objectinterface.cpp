@@ -430,3 +430,10 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 		(*i)->render(target);
 	}
 }
+
+
+int32_t ObjectInterface::addMap(CBMap *mapObj){
+	int32_t id = nextObjectId();
+	objectMap[id] = mapObj;
+	return id;
+}

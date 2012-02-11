@@ -28,7 +28,25 @@ using std::vector;
 class GfxInterface;
 
 
-class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInterface, public StringInterface, public TextInterface, public InputInterface, public SysInterface, public ObjectInterface, public MemInterface, public FileInterface, public MapInterface, public CameraInterface, public ImageInterface, public EffectInterface, public AnimInterface, public SoundInterface {
+class CBEnchanted :
+		public CBVariableHolder,
+		public MathInterface,
+		public GfxInterface,
+		public StringInterface,
+		public TextInterface,
+		public InputInterface,
+		public SysInterface,
+		public ObjectInterface,
+		public MemInterface,
+		public FileInterface,
+		public MapInterface,
+		public CameraInterface,
+		public ImageInterface,
+		public EffectInterface,
+		public AnimInterface,
+		public SoundInterface
+
+{
 	public:
 		CBEnchanted();
 		~CBEnchanted();
@@ -50,8 +68,8 @@ class CBEnchanted : public CBVariableHolder, public MathInterface, public GfxInt
 		
 		bool safeExit;
 
-		map <uint32_t, uint32_t> offsets;
-		map <uint32_t, uint32_t> roffsets;
+		std::map <uint32_t, uint32_t> offsets;
+		std::map <uint32_t, uint32_t> roffsets;
 		
 		void handlePushFuncptr(void);
 		void handleSetInt(void);

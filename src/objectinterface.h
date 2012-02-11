@@ -3,7 +3,7 @@
 #include "precomp.h"
 #include "cbobject.h"
 #include "rendertarget.h"
-
+#include "cbmap.h"
 class CBEnchanted;
 
 class ObjectInterface {
@@ -75,6 +75,8 @@ class ObjectInterface {
 		void functionCollisionY(void);
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
+
+		int32_t addMap(CBMap *mapObj);
 
 		void drawObjects(RenderTarget &target);
         inline CBObject *getObject(int32_t key){return objectMap[key];}

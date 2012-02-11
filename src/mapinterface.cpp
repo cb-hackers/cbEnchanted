@@ -1,13 +1,17 @@
 #include "precomp.h"
-#include "mapinterface.h"
 #include "debug.h"
+#include "mapinterface.h"
+#include "cbobject.h"
+#include "debug.h"
+#include "cbenchanted.h"
 
 MapInterface::MapInterface() {
-	
+	cb = static_cast<CBEnchanted*>(this);
 }
 
 MapInterface::~MapInterface() {
-	
+	if(tileMap!=NULL)
+		delete tileMap;
 }
 
 void MapInterface::commandEditMap(void) {
@@ -23,7 +27,18 @@ void MapInterface::commandSetTile(void) {
 }
 
 void MapInterface::functionLoadMap(void) {
-	STUB;
+
+	string mappath = cb->popValue().getString();
+	string tilesetpath = cb->popValue().getString();
+	tileMap = new CBMap();
+	if(tileMap->loadMap(mappath) == false){
+		INFO("Cannot load map!");
+	}else{
+		INFO("Map loading success!");
+	}
+	tileMap->loadTileset(tilesetpath);
+	int32_t id = cb->addMap(tileMap);
+	cb->pushValue(id);
 }
 
 void MapInterface::functionMakeMap(void) {

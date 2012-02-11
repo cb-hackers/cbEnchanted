@@ -1,7 +1,7 @@
 
 #include "precomp.h"
-#include "cbobject.h"
 #include "debug.h"
+#include "cbobject.h"
 #include <math.h>
 #include "cbenchanted.h"
 

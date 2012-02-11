@@ -1,0 +1,7 @@
+
+map = LoadMap("Media\cdm2.til", "Media\Tileset.bmp")
+
+Repeat 
+
+DrawScreen
+Forever 
