@@ -30,9 +30,9 @@ class CBMap : public CBObject{
 		bool loadMap(string path);
 		bool loadTileset(string path);
 
-		void drawBackLayer(RenderTarget &target, float camX, float camY);
-		void drawOverLayer(RenderTarget &target, float camX, float camY);
-		void drawTile(int32_t tile,float x,float y);
+		void drawBackLayer(RenderTarget &target);
+		void drawOverLayer(RenderTarget &target);
+		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
 

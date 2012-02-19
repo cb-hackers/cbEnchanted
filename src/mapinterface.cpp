@@ -28,8 +28,10 @@ void MapInterface::commandSetTile(void) {
 
 void MapInterface::functionLoadMap(void) {
 
-	string mappath = cb->popValue().getString();
-	string tilesetpath = cb->popValue().getString();
+	string tilesetpath = cb->popValue().toString();
+	INFO(tilesetpath.c_str());
+	string mappath = cb->popValue().toString();
+	INFO(mappath.c_str());
 	tileMap = new CBMap();
 	if(tileMap->loadMap(mappath) == false){
 		INFO("Cannot load map!");

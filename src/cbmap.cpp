@@ -1,7 +1,7 @@
 
 #include "cbmap.h"
 #include "cbenchanted.h"
-
+#include "precomp.h"
 CBMap::CBMap(){
 }
 
@@ -15,124 +15,172 @@ CBMap::~CBMap(){
 }
 
 bool CBMap::loadMap(string file){
+	INFO("Load map called");
+
 	fstream mapStream(file.c_str(), ios::binary | ios::in);
-	uint8_t checkNum[4];
+	unsigned char checkNum[4];
 	float version;
 	uint8_t empty;
+
 	if(mapStream.is_open()){
+
+		INFO("Map were opened for reading.");
+
 		//Tarkistustavut...
-		mapStream >> checkNum[0];
-		mapStream >> checkNum[1];
-		mapStream >> checkNum[2];
-		mapStream >> checkNum[3];
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 23  &&
 		   checkNum[1] != 179 &&
 		   checkNum[2] != 243 &&
-		   checkNum[3] != 56)
-				return false;
+		   checkNum[3] != 56){
+			FIXME("Check nums aren't correct!")
+		}
 
-		mapStream >> version;
-		if(version!=1.3)
-			return false;
+
+		mapStream.read((char*)&version, 4);
+		INFO("Map version: %f", version);
+		if(!(version>=1.0 && version <= 2.0)){
+			FIXME("Version isn't right!")
+		}
 
 
 		for(int i = 0; i < 512; ++i)
-			mapStream >> empty;
+			mapStream.read((char*)&empty, 1);
 
-		mapStream >> maskR;
-		mapStream >> maskG;
-		mapStream >> maskB;
+		mapStream.read((char*)&maskR, 1);
+		mapStream.read((char*)&maskG, 1);
+		mapStream.read((char*)&maskB, 1);
+		mapStream.read((char*)&empty, 1);
+		INFO("Mask Colors: %u, %u, %u: ", maskR, maskG, maskB);
 
 		for(int i = 0; i < 40; ++i)
-				mapStream >> empty;
-
+				mapStream.read((char*)&empty, 1);
 		for(int i = 0; i < 256; ++i)
-				mapStream >> empty;
+				mapStream.read((char*)&empty, 1);
 
 
-		mapStream >> tilecount;
+		mapStream.read((char*)&tilecount, 4);
+		INFO("Tile count: %u", tilecount);
 		if(tilecount < 0)
 				return false;
 
 		animLenght = new int32_t [tilecount];
 		animSlowness = new int32_t [tilecount];
 
-		mapStream >> tileWidth;
-		mapStream >> tileHeight;
+		mapStream.read((char*)&tileWidth, 4);
+		mapStream.read((char*)&tileHeight, 4);
+		INFO("Tile width, height: %i, %i", tileWidth, tileHeight);
 
-		mapStream >> mapWidth;
-		mapStream >> mapHeight;
+		mapStream.read((char*)&mapWidth, 4);
+		mapStream.read((char*)&mapHeight, 4);
+		INFO("Map width, height: %i, %i", mapWidth, mapHeight);
 
 		for(int i = 0; i < 4; ++i){
 			layer[i] = new int32_t[mapWidth*mapHeight];
 		}
+
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		//Karttadata alkaa
 		if(checkNum[0] != 254  &&
 		   checkNum[1] != 45   &&
 		   checkNum[2] != 12   &&
 		   checkNum[3] != 166)
-				return false;
+				FIXME("Check nums aren't correct!");
 
-		for(int32_t y = 1; y < mapHeight; ++y){
-			for(int32_t x = 1; x < mapHeight; ++x){
+		for(int32_t y = 0; y < mapHeight; ++y){
+			for(int32_t x = 0; x < mapWidth; ++x){
 				int32_t position = y * mapWidth + x;
-				mapStream >> layer[0][position];
+				mapStream.read((char*)&layer[0][position], 4);
 			}
 		}
+
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 253  &&
 		   checkNum[1] != 44   &&
 		   checkNum[2] != 11   &&
 		   checkNum[3] != 165)
-				return false;
+				FIXME("Check nums aren't correct!");
 
-		for(int32_t y = 1; y < mapHeight; ++y){
-			for(int32_t x = 1; x < mapHeight; ++x){
+		for(int32_t y = 0; y < mapHeight; ++y){
+			for(int32_t x = 0; x < mapWidth; ++x){
 				int32_t position = y * mapWidth + x;
-				mapStream >> layer[1][position];
+				mapStream.read((char*)&layer[1][position], 4);
 			}
 		}
+
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 252  &&
 		   checkNum[1] != 43   &&
 		   checkNum[2] != 10   &&
 		   checkNum[3] != 164)
-				return false;
+				FIXME("Check nums aren't correct!");
 
-		for(int32_t y = 1; y < mapHeight; ++y){
-			for(int32_t x = 1; x < mapHeight; ++x){
+		for(int32_t y = 0; y < mapHeight; ++y){
+			for(int32_t x = 0; x < mapWidth; ++x){
 				int32_t position = y * mapWidth + x;
-				mapStream >> layer[2][position];
+				mapStream.read((char*)&layer[2][position], 4);
 			}
 		}
+
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 251  &&
 		   checkNum[1] != 42   &&
 		   checkNum[2] != 9    &&
 		   checkNum[3] != 163)
-				return false;
+				FIXME("Check nums aren't correct!");
 
-		for(int32_t y = 1; y < mapHeight; ++y){
-			for(int32_t x = 1; x < mapHeight; ++x){
+		for(int32_t y = 0; y < mapHeight; ++y){
+			for(int32_t x = 0; x < mapWidth; ++x){
 				int32_t position = y * mapWidth + x;
-				mapStream >> layer[3][position];
+				mapStream.read((char*)&layer[3][position], 4);
 			}
 		}
 
+		mapStream.read((char*)&checkNum[0], 1);
+		mapStream.read((char*)&checkNum[1], 1);
+		mapStream.read((char*)&checkNum[2], 1);
+		mapStream.read((char*)&checkNum[3], 1);
+		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 250  &&
 		   checkNum[1] != 41   &&
 		   checkNum[2] != 8    &&
 		   checkNum[3] != 162)
-				return false;
+				FIXME("Check nums aren't correct!");
 
 		for(int32_t i = 1; i < tilecount; ++i){
-			mapStream >> animLenght[i];
-			mapStream >> animSlowness[i];
+			mapStream.read((char*)&animLenght[i], 4);
+			mapStream.read((char*)&animSlowness[i], 4);
 		}
 
+	}else{
+		string err = "Can not open: "+file;
+		INFO(err.c_str());
 	}
 	mapStream.close();
 
@@ -170,7 +218,7 @@ void CBMap::drawBackLayer(RenderTarget &target){
 		for (int32_t x = leftTile;x <= rightTile;++x) {
 			int32_t tile = *(tiles+y*mapWidth+x);
 			if (tile > 0) {
-				drawTile(tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
+				drawTile(target,tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
 			}
 		}
 	}
@@ -179,7 +227,13 @@ void CBMap::drawOverLayer(RenderTarget &target){
 
 }
 
-void CBMap::drawTile(int32_t tile, float x, float y) {
+void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
+        int32_t frameX = texture->GetWidth() / tileWidth;
+        int32_t frameY = texture->GetHeight() / tileHeight;
+        frameX = (frameX % tile) * frameWidth;
+        frameY = (frameY / tile) * frameHeight;
+        sprite.SetTextureRect(sf::Rect<int32_t>(frameX, frameY, tileWidth, tileHeight));
+        target.draw(sprite);
 
 }
 
