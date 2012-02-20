@@ -7,6 +7,7 @@
 
 MapInterface::MapInterface() {
 	cb = static_cast<CBEnchanted*>(this);
+	tileMap = 0;
 }
 
 MapInterface::~MapInterface() {
@@ -32,6 +33,7 @@ void MapInterface::functionLoadMap(void) {
 	INFO(tilesetpath.c_str());
 	string mappath = cb->popValue().toString();
 	INFO(mappath.c_str());
+	if (tileMap) delete tileMap;
 	tileMap = new CBMap();
 	if(tileMap->loadMap(mappath) == false){
 		INFO("Cannot load map!");

@@ -1,5 +1,5 @@
 
-map = LoadMap("Media\cdm2.til", "Media\Tileset.bmp")
+map = LoadMap("C:\Ohjelmointi\cbenchanted\tests\Media\cdm2.til", "C:\Ohjelmointi\cbenchanted\tests\Media\Tileset.bmp")
 
 Repeat 
 

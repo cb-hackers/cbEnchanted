@@ -226,7 +226,36 @@ void CBMap::drawBackLayer(RenderTarget &target){
 	INFO()
 }
 void CBMap::drawOverLayer(RenderTarget &target){
+	float camX = CBEnchanted::instance()->getCameraX()-posX;
+	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
+
+	//Calculate bounds
+	int32_t leftTile = floorf(mapWidth*0.5+(camX-(target.width()*0.5))/tileWidth);
+	if (leftTile >= mapWidth) return; //Out of map
+	if (leftTile < 0) leftTile = 0;
+
+	int32_t topTile = floorf(-mapHeight*0.5+(camY+(target.height()*0.5))/tileWidth);
+	if (topTile >= mapHeight) return; //Out of map
+	if (topTile < 0) leftTile = 0;
+
+	int32_t rightTile = leftTile + ceilf(float(target.width())/tileWidth);
+	if (rightTile < 0) return;
+	if (rightTile >= mapWidth) rightTile = mapWidth-1;
+
+	int32_t bottomTile = topTile + ceilf(float(target.height())/tileHeight);
+	if (bottomTile < 0) return;
+	if (bottomTile >= mapHeight) rightTile = mapHeight-1;
+	int32_t *tiles = layer[1];
+
+	for (int32_t y = topTile; y <= bottomTile;++y) {
+		for (int32_t x = leftTile;x <= rightTile;++x) {
+			int32_t tile = *(tiles+y*mapWidth+x);
+			if (tile > 0) {
+				drawTile(target,tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
+			}
+		}
+	}
 }
 
 void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {

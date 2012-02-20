@@ -420,6 +420,7 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
+<<<<<<< HEAD
     cb->tileMap->drawBackLayer(target);
     target.setViewTo(false);
     for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
@@ -427,9 +428,19 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
         (*i)->render(target);
     }
     target.setViewTo(true);
+=======
+	target.setViewTo(false);
+	for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
+		--i;
+		(*i)->render(target);
+	}
+	if (cb->getTileMap()) cb->getTileMap()->drawBackLayer(target);
+	target.setViewTo(true);
+>>>>>>> 0797ca189d153b122ecbcc94fe72a3972c3abfef
 	for (std::vector<CBObject*>::iterator i = objectDrawOrder.begin();i != objectDrawOrder.end();i++) {
 		(*i)->render(target);
 	}
+	if (cb->getTileMap()) cb->getTileMap()->drawOverLayer(target);
 }
 
 
