@@ -184,6 +184,7 @@ bool CBMap::loadMap(string file){
 	}
 	mapStream.close();
 
+	INFO("Tile at the center of the map: %i", getMap(0, mapWidth/2, mapHeight/2));
 	return true;
 }
 
@@ -222,6 +223,7 @@ void CBMap::drawBackLayer(RenderTarget &target){
 			}
 		}
 	}
+	INFO()
 }
 void CBMap::drawOverLayer(RenderTarget &target){
 
@@ -240,4 +242,9 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
         int32_t position = MapY * mapWidth + MapX;
         layer[maplayer][position] = tile;
+}
+
+int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
+        int32_t position = MapY * mapWidth + MapX;
+        return layer[maplayer][position];
 }

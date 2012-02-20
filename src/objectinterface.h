@@ -84,7 +84,7 @@ class ObjectInterface {
 		CBEnchanted *cb;
 		std::map<int32_t,CBObject*> objectMap;
 		std::vector<CBObject*> objectDrawOrder;
-        std::vector<CBObject*> floorObjectDrawOrder;
+		std::vector<CBObject*> floorObjectDrawOrder;
 
 		//Returns new id for objectMap
 		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}

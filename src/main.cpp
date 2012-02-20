@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
 	CBEnchanted cb;
-	std::string exe = "tests/exe/sierpinski.exe";
+	std::string exe = "C:/Ohjelmointi/cbenchanted/tests/karttaTesti.exe";
 	//if (argc == 2) exe = std::string(argv[1]);
 	if (cb.init(exe))
 	{

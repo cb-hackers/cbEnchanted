@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "cbimage.h"
 #include "cbenchanted.h"
-
+#include "mapinterface.h"
 ObjectInterface::ObjectInterface() {
 	cb = static_cast<CBEnchanted*>(this);
 }
@@ -420,6 +420,7 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
+    cb->tileMap->drawBackLayer(target);
     target.setViewTo(false);
     for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
         --i;

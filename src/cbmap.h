@@ -35,6 +35,7 @@ class CBMap : public CBObject{
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
+		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t MapY);
 
 		int32_t mapSizeX(){return mapWidth;}
 		int32_t mapSizeY(){return mapHeight;}
