@@ -1,21 +1,11 @@
 
-Const SW = 640
-Const SH = 480
-SCREEN SW, SH
-Const _FPS = 70
+
+map = LoadMap("C:\Ohjelmointi\cbenchanted\tests\Media\cdm2.til", "C:\Ohjelmointi\cbenchanted\tests\Media\tileset.bmp")
+guy = LoadObject("C:\Ohjelmointi\cbenchanted\tests\Media\soldier.bmp")
 
 Repeat 
-    ClearText 
-    Text 0, 0, FPS()
-    a = a + 1
-    
-    //Line SW/2, SH/2, SW/2 + Cos(a) * 200, SH/2 - Sin(a) * 200
-    
-    If Timer() > hetki + (1000.0/_FPS) Then 
-        Wait RoundDown(1000.0/_FPS)
-        hetki = Timer()
-    EndIf 
-    
-    
-DrawScreen
+
+    CloneCameraPosition guy
+    MoveObject guy, 0, 1
+    DrawScreen
 Forever 

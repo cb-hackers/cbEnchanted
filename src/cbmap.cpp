@@ -15,7 +15,7 @@ CBMap::~CBMap(){
 }
 
 bool CBMap::loadMap(string file){
-	INFO("Load map called");
+
 
 	fstream mapStream(file.c_str(), ios::binary | ios::in);
 	unsigned char checkNum[4];
@@ -225,7 +225,6 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	}*/
 	float camX = CBEnchanted::instance()->getCameraX()-posX;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
-
 
 
 	int32_t piirto_x = camX+getSizeX()/2-target.width()/2;

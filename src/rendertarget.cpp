@@ -91,7 +91,6 @@ void RenderTarget::setViewTo(bool drawtoworld, bool force) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(target.GetView().GetTransform().GetMatrix());
 		glMatrixMode(GL_MODELVIEW);
-		glScalef(1.0f,-1.0f,1.0);
 	}
 	else {
 		target.SetView(target.GetDefaultView());
@@ -191,7 +190,6 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill) {
 	}
 	glEnd();
 	glLoadIdentity();
-	if (drawToWorldViewOn) glScalef(1.0f,-1.0f,1.0);
 	changedSinceDisplay = true;
 }
 
@@ -240,7 +238,6 @@ void RenderTarget::drawEllipse(float cx, float cy, float w, float h, bool fill) 
 	}
 	glEnd();
 	glLoadIdentity();
-	if (drawToWorldViewOn) glScalef(1.0f,-1.0f,1.0);
 	changedSinceDisplay = true;
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	glTranslatef(cx, cy, 0);
