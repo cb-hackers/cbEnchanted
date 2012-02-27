@@ -59,7 +59,7 @@ class CBObject{
 		uint16_t startframe;
 		uint16_t maxframes;
 		uint16_t currentframe;
-
+		uint8_t picksTyle;
 		//CB: ObjectInteger, ObjectFloat, ObjectString
 		int32_t objectIntData;
 		string objectStringData;

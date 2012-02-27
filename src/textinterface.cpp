@@ -11,8 +11,10 @@
 
 #ifdef WIN32
 #define DEFAULT_FONT "C:/Windows/Fonts/cour.ttf"
+#define FONT_PATH "C:/Windows/Fonts/"
 #else
 #define DEFAULT_FONT "/usr/share/fonts/TTF/cour.ttf"
+#define FONT_PATH "/usr/share/fonts/"
 #endif
 
 TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
@@ -20,15 +22,20 @@ TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 	currentFont->font.LoadFromFile(DEFAULT_FONT);
 	currentFont->fontSize = 12;
 	currentFont->style = sf::Text::Regular;
+	fontMap[0] = currentFont;
 }
 
 TextInterface::~TextInterface() {
-	delete currentFont;
+	for(int32_t i = 0; i < nextfontid(); i++){
+		delete fontMap[i];
+		fontMap.erase(i);
+	}
 }
 
 	
 void TextInterface::commandSetFont(void) {
-	STUB;
+	int32_t id = cb->popValue().toInt();
+	currentFont = fontMap[id];
 }
 
 void TextInterface::commandDeleteFont(void) {
@@ -77,7 +84,33 @@ void TextInterface::commandClearText(void) {
 }
 
 void TextInterface::functionLoadFont(void) {
-	STUB;
+	string file = cb->popValue().toString();
+	uint16_t size = cb->popValue().toInt();
+	uint8_t bold = cb->popValue().toInt();
+	uint8_t italic = cb->popValue().toInt();
+	uint8_t underLine = cb->popValue().toInt();
+
+	string path = FONT_PATH + file;
+
+	int styles = sf::Text::Regular;
+
+	if(bold > 0){
+		styles = styles | sf::Text::Bold;
+	}
+	if(italic > 0){
+		styles = styles | sf::Text::Italic;
+	}
+	if(underLine > 0){
+		styles = styles | sf::Text::Underlined;
+	}
+
+	CBFont *font = new CBFont;
+	font->font.LoadFromFile(path);
+	font->fontSize = size;
+	font->style = (sf::Text::Style)styles;
+
+	int32_t keyId = nextfontid();
+	fontMap[keyId] = font;
 }
 
 void TextInterface::functionTextWidth(void) {

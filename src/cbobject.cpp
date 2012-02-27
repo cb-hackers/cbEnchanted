@@ -123,29 +123,30 @@ void CBObject::turnObject(float speed){
 }
 
 void CBObject::render(RenderTarget &target){
+	float camX = CBEnchanted::instance()->getCameraX();
+	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
 		if (floor) {
-            sprite.SetOrigin(0,0);
-			//Drawing floor objects
+		    sprite.SetOrigin(0,0);
+				//Drawing floor objects
 
-            float snappedx=floorf(CBEnchanted::instance()->getCameraX()/texture->GetWidth());
-            float snappedy=floorf(CBEnchanted::instance()->getCameraY()/texture->GetHeight());
+		    float snappedx=floorf(camX/texture->GetWidth());
+		    float snappedy=floorf(camY/texture->GetHeight());
 
-            float ekax=-CBEnchanted::instance()->getCameraX()+snappedx*texture->GetWidth();
-            float ekay=-CBEnchanted::instance()->getCameraY()+snappedy*texture->GetHeight();
+		    float ekax= camX+snappedx*texture->GetWidth();
+		    float ekay=-camY-snappedy*texture->GetHeight();
 
-            float xx=ekax;
-            while (xx<target.width()) {
-                float yy=ekay;
-                while (yy<target.height()) {
-                    sprite.SetPosition(xx,yy);
-                    target.draw(sprite);
-                    yy=yy+texture->GetHeight();
-                }
-                xx=xx+texture->GetWidth();
-            }
-		}
-		else {
+		    float xx=ekax;
+		    while (xx<target.width()) {
+			float yy=ekay;
+			while (yy<target.height()) {
+			    sprite.SetPosition(xx,yy);
+			    target.draw(sprite);
+			    yy=yy+texture->GetHeight();
+			}
+			xx=xx+texture->GetWidth();
+		    }
+		} else {
 			sprite.SetPosition(posX, posY);
 			if(maxframes!=0){
 				int16_t copyY = (currentframe % texture->GetWidth());

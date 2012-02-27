@@ -1,5 +1,6 @@
 #ifndef INPUTINTERFACE_H
 #define INPUTINTERFACE_H
+#include "precomp.h"
 
 class CBEnchanted;
 
@@ -42,6 +43,7 @@ class InputInterface {
 		void functionEscapeKey(void);
 	private:
 		CBEnchanted *cb;
+		std::map<int32_t, sf::Keyboard::Key> key;
 };
 
 #endif

@@ -30,8 +30,8 @@ class CBMap : public CBObject{
 		bool loadMap(string path);
 		bool loadTileset(string path);
 
-		void drawBackLayer(RenderTarget &target);
-		void drawOverLayer(RenderTarget &target);
+		void drawLayer(uint8_t level, RenderTarget &target);
+
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
@@ -42,6 +42,7 @@ class CBMap : public CBObject{
 
 		int32_t getSizeX(){return mapWidth*tileWidth;}
 		int32_t getSizeY(){return mapHeight*tileHeight;}
+
 		void playObject();
 };
 

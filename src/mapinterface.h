@@ -21,14 +21,12 @@ class MapInterface {
 		void functionGetMap2(void);
 		void functionMapWidth(void);
 		void functionMapHeight(void);
-<<<<<<< HEAD
-		CBMap *tileMap;
-=======
+
 
 		CBMap *getTileMap(){return tileMap;}
->>>>>>> 0797ca189d153b122ecbcc94fe72a3972c3abfef
 	private:
 		CBEnchanted *cb;
+		CBMap *tileMap;
 
 
 };

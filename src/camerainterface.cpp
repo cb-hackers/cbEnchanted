@@ -22,7 +22,7 @@ void CameraInterface::commandCloneCameraPosition(void) {
 void CameraInterface::commandCloneCameraOrientation(void) {
     int32_t id = cb->popValue().getInt();
     CBObject *obj = cb->getObject(id);
-    cameraAngle = obj->getX();
+    cameraAngle = obj->getAngle();
 }
 
 void CameraInterface::commandCameraFollow(void) {
@@ -34,7 +34,9 @@ void CameraInterface::commandCameraPick(void) {
 }
 
 void CameraInterface::commandPointCamera(void) {
-	STUB;
+	int32_t id = cb->popValue().toInt();
+	CBObject *obj = cb->getObject(id);
+	cameraAngle =  (3.14159265358979323 - atan2f(cameraY - obj->getY(), cameraX - obj->getY())) / 3.14159265358979323 * 180.0;
 }
 
 void CameraInterface::commandTurnCamera(void) {
@@ -55,6 +57,8 @@ void CameraInterface::commandMoveCamera(void) {
 void CameraInterface::commandTranslateCamera(void) {
 	cameraX += cb->popValue().toFloat();
 	cameraY += cb->popValue().toFloat();
+
+	INFO("%f, %f", cameraX, cameraY);
 }
 
 void CameraInterface::commandPositionCamera(void) {

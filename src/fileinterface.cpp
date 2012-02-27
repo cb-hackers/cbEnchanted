@@ -7,7 +7,6 @@ FileInterface::FileInterface() : cb(static_cast <CBEnchanted *> (this)) {
 }
 
 FileInterface::~FileInterface() {
-	
 }
 
 void FileInterface::commandCloseFile(void) {
@@ -129,27 +128,51 @@ void FileInterface::commandWriteLine(void) {
 }
 
 void FileInterface::commandReadByte(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	uint8_t byte;
+	fread((char*)&byte, 1, 1, file);
+	cb->pushValue(byte);
 }
 
 void FileInterface::commandReadShort(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	uint16_t shortint;
+	fread((char*)&shortint, 2, 1, file);
+	cb->pushValue(shortint);
 }
 
 void FileInterface::commandReadInt(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	int32_t integer;
+	fread((char*)&integer, 4, 1, file);
+	cb->pushValue(integer);
 }
 
 void FileInterface::commandReadFloat(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	float decimal;
+	fread((char*)&decimal, 4, 1, file);
+	cb->pushValue(decimal);
 }
 
 void FileInterface::commandReadString(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	int32_t lenght;
+	fread((char*)&lenght, 4, 1, file);
+	char *txt = new char[lenght];
+	fread((char*)txt, 1, lenght, file);
+	string text = txt;
+	cb->pushValue(text);
+	delete [] txt;
 }
 
 void FileInterface::commandReadLine(void) {
-	STUB;
+	FILE *file = filestrs[cb->popValue().getInt()];
+	string str;
+	char txt[10000];
+	fgets(txt, 10000, file);
+	str = txt;
+	cb->pushValue(str);
 }
 
 void FileInterface::functionOpenToRead(void) {

@@ -21,5 +21,6 @@ Repeat
     fpsc + 1
     Color 255,255,255
     Text 10,10,FPS()
+    Text 10,15, "Is key enter pressed: "+KeyDown(28)
     DrawScreen
 Forever

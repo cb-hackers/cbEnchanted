@@ -2,7 +2,7 @@
 #include "cbmap.h"
 #include "cbenchanted.h"
 #include "precomp.h"
-CBMap::CBMap(){
+CBMap::CBMap():CBObject(){
 }
 
 
@@ -188,31 +188,31 @@ bool CBMap::loadMap(string file){
 	return true;
 }
 
+
+
 bool CBMap::loadTileset(string path){
 	return load(path);
 }
 
-void CBMap::drawBackLayer(RenderTarget &target){
-	float camX = CBEnchanted::instance()->getCameraX()-posX;
-	float camY = CBEnchanted::instance()->getCameraY()-posY;
-
-
+void CBMap::drawLayer(uint8_t level, RenderTarget &target){
+	/*
 	//Calculate bounds
 	int32_t leftTile = floorf(mapWidth*0.5+(camX-(target.width()*0.5))/tileWidth);
-	if (leftTile >= mapWidth) return; //Out of map
+	if (leftTile >= mapWidth){INFO("Out of map!"); return;}
 	if (leftTile < 0) leftTile = 0;
-
+	INFO("Left tile %i", leftTile)
 	int32_t topTile = floorf(-mapHeight*0.5+(camY+(target.height()*0.5))/tileWidth);
-	if (topTile >= mapHeight) return; //Out of map
+	if (topTile >= mapHeight){INFO("Out of map!"); return;} //Out of map
 	if (topTile < 0) leftTile = 0;
-
+	INFO("Top tile %i", topTile)
 	int32_t rightTile = leftTile + ceilf(float(target.width())/tileWidth);
-	if (rightTile < 0) return;
+	if (rightTile < 0){INFO("Out of map!"); return;}
 	if (rightTile >= mapWidth) rightTile = mapWidth-1;
-
+	INFO("Right tile %i", rightTile)
 	int32_t bottomTile = topTile + ceilf(float(target.height())/tileHeight);
-	if (bottomTile < 0) return;
+	if (bottomTile < 0){INFO("Out of map! Bottom Tile were last."); return;}
 	if (bottomTile >= mapHeight) rightTile = mapHeight-1;
+	INFO("Bottom tile %i", bottomTile)
 	int32_t *tiles = layer[0];
 
 	for (int32_t y = topTile; y <= bottomTile;++y) {
@@ -222,48 +222,54 @@ void CBMap::drawBackLayer(RenderTarget &target){
 				drawTile(target,tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
 			}
 		}
-	}
-	INFO()
-}
-void CBMap::drawOverLayer(RenderTarget &target){
+	}*/
 	float camX = CBEnchanted::instance()->getCameraX()-posX;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
-	//Calculate bounds
-	int32_t leftTile = floorf(mapWidth*0.5+(camX-(target.width()*0.5))/tileWidth);
-	if (leftTile >= mapWidth) return; //Out of map
-	if (leftTile < 0) leftTile = 0;
 
-	int32_t topTile = floorf(-mapHeight*0.5+(camY+(target.height()*0.5))/tileWidth);
-	if (topTile >= mapHeight) return; //Out of map
-	if (topTile < 0) leftTile = 0;
+	int32_t piirto_x = camX+getSizeX()/2-target.width()/2;
+	int32_t piirto_y = camY+getSizeY()/2-target.height()/2;
+	int32_t tile_y = piirto_y / tileHeight;
+	int32_t jarjestys_y=-(piirto_y % tileHeight);
 
-	int32_t rightTile = leftTile + ceilf(float(target.width())/tileWidth);
-	if (rightTile < 0) return;
-	if (rightTile >= mapWidth) rightTile = mapWidth-1;
-
-	int32_t bottomTile = topTile + ceilf(float(target.height())/tileHeight);
-	if (bottomTile < 0) return;
-	if (bottomTile >= mapHeight) rightTile = mapHeight-1;
-	int32_t *tiles = layer[1];
-
-	for (int32_t y = topTile; y <= bottomTile;++y) {
-		for (int32_t x = leftTile;x <= rightTile;++x) {
-			int32_t tile = *(tiles+y*mapWidth+x);
-			if (tile > 0) {
-				drawTile(target,tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
+	while(jarjestys_y < target.height()){
+		tile_y %= getSizeY();
+		int32_t tile_x = piirto_x / tileWidth;
+		int32_t jarjestys_x =-(piirto_x % tileHeight);
+		while(jarjestys_x < target.width()){
+			int32_t getX = tile_x % getSizeX();
+			int32_t tileNum = getMap(level, getX, tile_y);
+			if(tileNum > 0){
+				drawTile(target, tileNum, jarjestys_x, jarjestys_y);
 			}
+			tile_x++;
+			jarjestys_x+=tileWidth;
 		}
+		tile_y++;
+		jarjestys_y+=tileHeight;
 	}
+
+
 }
 
+
 void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
-        int32_t frameX = texture->GetWidth() / tileWidth;
-        int32_t frameY = texture->GetHeight() / tileHeight;
-        frameX = (frameX % tile) * frameWidth;
-        frameY = (frameY / tile) * frameHeight;
-        sprite.SetTextureRect(sf::Rect<int32_t>(frameX, frameY, tileWidth, tileHeight));
+        if(tile == 0)
+                return;
+        if(tile>0)
+                tile--;
+
+        int32_t fX = 0;
+        int32_t fY = 0;
+        int32_t framesX = texture->GetWidth() / tileWidth;
+        int32_t framesY = texture->GetHeight() / tileHeight;
+
+        fX = (tile % framesX);
+        fY = (tile / framesY);
+
+        sprite.SetTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
+        sprite.SetPosition(x, y);
         target.draw(sprite);
 
 }
@@ -274,6 +280,8 @@ void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
 }
 
 int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
+        if(MapX < 0 || MapX > mapWidth || MapY < 0 || MapY > mapHeight)
+                return 0;
         int32_t position = MapY * mapWidth + MapX;
         return layer[maplayer][position];
 }

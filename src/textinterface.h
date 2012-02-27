@@ -2,6 +2,7 @@
 #define TEXTINTERFACE_H
 
 class CBEnchanted;
+#include "precomp.h"
 #include <SFML/Graphics/Font.hpp>
 
 struct CBFont
@@ -33,7 +34,8 @@ class TextInterface {
 		CBFont *GetCurrentFont() { return currentFont; }
 	private:
 		CBEnchanted *cb;
+		map<int32_t, CBFont*> fontMap;
 		CBFont *currentFont;
-};
+};		inline int32_t nextfontid(){static int32_t fontID = 0; return ++fontID;}
 
 #endif
