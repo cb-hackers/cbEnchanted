@@ -84,13 +84,14 @@ void RenderTarget::setViewTo(bool drawtoworld, bool force) {
     if (drawToWorldViewOn == drawtoworld && !force) return; //Useless to update view
 	if (drawtoworld) {
 		sf::View view;
-        view.SetSize(target.GetWidth(), target.GetHeight());
-        view.SetCenter(CBEnchanted::instance()->getCameraX(), CBEnchanted::instance()->getCameraY());
+		view.SetSize(target.GetWidth(), target.GetHeight());
+		view.SetCenter(CBEnchanted::instance()->getCameraX(), CBEnchanted::instance()->getCameraY());
 		target.SetView(view);
 		drawToWorldViewOn = true;
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(target.GetView().GetTransform().GetMatrix());
 		glMatrixMode(GL_MODELVIEW);
+		glScalef(1.0f,-1.0f,1.0);
 	}
 	else {
 		target.SetView(target.GetDefaultView());
@@ -190,6 +191,7 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill) {
 	}
 	glEnd();
 	glLoadIdentity();
+	if (drawToWorldViewOn) glScalef(1.0f,-1.0f,1.0);
 	changedSinceDisplay = true;
 }
 
@@ -238,7 +240,8 @@ void RenderTarget::drawEllipse(float cx, float cy, float w, float h, bool fill) 
 	}
 	glEnd();
 	glLoadIdentity();
-    changedSinceDisplay = true;
+	if (drawToWorldViewOn) glScalef(1.0f,-1.0f,1.0);
+	changedSinceDisplay = true;
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	glTranslatef(cx, cy, 0);
 	glScalef(w, h, 1.0f);
