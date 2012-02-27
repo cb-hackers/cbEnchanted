@@ -7,7 +7,7 @@
 
 static bool defaultVisible = true;
 
-CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(0),alpha(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
+CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(0),alphablend(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
 }
 CBObject::~CBObject() {
 	if (!copied)
@@ -35,7 +35,7 @@ bool CBObject::load(string file)
 	frameHeight = 0;
 	startframe = 0;
 	maxframes = 0;
-	alpha = 255;
+	alphablend = 255;
     angle = 0;
 	painted = true;
 	return true;
@@ -63,7 +63,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	sizeY = frameHeight;
 	startframe = startf;
 	maxframes = framecount;
-	alpha = 255;
+	alphablend = 255;
     angle = 0;
 	painted = true;
 	return true;
@@ -95,7 +95,7 @@ void CBObject::paintObject(const CBObject &obj){
 
 
 void CBObject::ghostObject(uint8_t ab){
-	alpha = ab;
+	alphablend = ab;
 }
 
 void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
@@ -159,8 +159,8 @@ void CBObject::render(RenderTarget &target){
 			}
 
 			sprite.SetRotation(-angle);
-			if(alpha!=255)
-				sprite.SetColor(sf::Color(255, 255, 255, alpha));
+			if(alphablend!=255)
+				sprite.SetColor(sf::Color(255, 255, 255, alphablend));
 			target.draw(sprite);
 		}
 	}

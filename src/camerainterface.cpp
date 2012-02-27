@@ -20,15 +20,11 @@ void CameraInterface::commandCloneCameraPosition(void) {
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
-<<<<<<< HEAD
-    int32_t id = cb->popValue().getInt();
-    CBObject *obj = cb->getObject(id);
-    cameraAngle = obj->getAngle();
-=======
+
 	int32_t id = cb->popValue().getInt();
 	CBObject *obj = cb->getObject(id);
-	cameraAngle = obj->getX();
->>>>>>> e12a924043602aac1b66de14f4fbf301f1e51a94
+	cameraAngle = obj->getAngle();
+
 }
 
 void CameraInterface::commandCameraFollow(void) {
@@ -54,22 +50,25 @@ void CameraInterface::commandRotateCamera(void) {
 }
 
 void CameraInterface::commandMoveCamera(void) {
-	float right = cb->popValue().toFloat();
+	cb->popValue();
 	float fwrd = cb->popValue().toFloat();
+	float right = cb->popValue().toFloat();
+	INFO("%f, %f", right, fwrd);
 	cameraX += cosf(cameraAngle*M_PI/180.0)*fwrd;
 	cameraY += sinf(cameraAngle*M_PI/180.0)*fwrd;
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::commandTranslateCamera(void) {
-	cameraX += cb->popValue().toFloat();
+
+	cb->popValue();
 	cameraY += cb->popValue().toFloat();
-<<<<<<< HEAD
+	cameraX += cb->popValue().toFloat();
 
 	INFO("%f, %f", cameraX, cameraY);
-=======
+
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
->>>>>>> e12a924043602aac1b66de14f4fbf301f1e51a94
+
 }
 
 void CameraInterface::commandPositionCamera(void) {

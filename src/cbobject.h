@@ -53,7 +53,7 @@ class CBObject{
 		sf::Image *imgtex; //Kuva tekstuurille. V‰rimaskin takia pit‰‰ tehd‰ n‰in vitun vaikeasti. -.-
 		sf::Texture *texture; //Tekstuurin "v‰litt‰j‰"
 		sf::Sprite sprite; //Ja itse piirt‰j‰.
-		uint8_t alpha;
+		uint8_t alphablend;
 		uint16_t frameWidth;
 		uint16_t frameHeight;
 		uint16_t startframe;
