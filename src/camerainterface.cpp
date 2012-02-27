@@ -12,17 +12,17 @@ CameraInterface::~CameraInterface() {
 }
 
 void CameraInterface::commandCloneCameraPosition(void) {
-    int32_t id = cb->popValue().getInt();
-    CBObject *obj = cb->getObject(id);
-    cameraX = obj->getX();
-    cameraY = obj->getY();
-    if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = cb->getObject(id);
+	cameraX = obj->getX();
+	cameraY = obj->getY();
+	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
-    int32_t id = cb->popValue().getInt();
-    CBObject *obj = cb->getObject(id);
-    cameraAngle = obj->getX();
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = cb->getObject(id);
+	cameraAngle = obj->getX();
 }
 
 void CameraInterface::commandCameraFollow(void) {
@@ -50,16 +50,19 @@ void CameraInterface::commandMoveCamera(void) {
 	float fwrd = cb->popValue().toFloat();
 	cameraX += cosf(cameraAngle*M_PI/180.0)*fwrd;
 	cameraY += sinf(cameraAngle*M_PI/180.0)*fwrd;
+	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::commandTranslateCamera(void) {
 	cameraX += cb->popValue().toFloat();
 	cameraY += cb->popValue().toFloat();
+	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::commandPositionCamera(void) {
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
+	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 }
 
 void CameraInterface::functionCameraX(void) {
