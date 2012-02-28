@@ -269,7 +269,7 @@ void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
 }
 
 int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
-        if(MapX < 0 || MapX > mapWidth || MapY < 0 || MapY > mapHeight)
+		if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
                 return 0;
         int32_t position = MapY * mapWidth + MapX;
         return layer[maplayer][position];
