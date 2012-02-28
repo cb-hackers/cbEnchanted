@@ -239,7 +239,7 @@ void ObjectInterface::commandClearCollisions(void) {
 }
 
 void ObjectInterface::commandInitObjectList(void) {
-	STUB;
+	iter = objectMap.begin();
 }
 
 void ObjectInterface::functionLoadObject(void) {
@@ -416,7 +416,13 @@ void ObjectInterface::functionCollisionAngle(void) {
 }
 
 void ObjectInterface::functionNextObject(void) {
-	STUB;
+	if(iter == objectMap.end()){
+		cb->pushValue(0);
+		return;
+	}
+	int32_t handle = (*iter).first;
+	iter++;
+	cb->pushValue(handle);
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {

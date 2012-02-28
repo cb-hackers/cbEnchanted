@@ -8,6 +8,7 @@ class CBObject{
 		CBObject(bool floor = false);
 		~CBObject();
 		bool load(string file);
+		bool load(string file,const sf::Color &mask);
 		bool loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
 		void paintObject(const sf::Texture &txt);
 		void paintObject(const CBObject &obj);
