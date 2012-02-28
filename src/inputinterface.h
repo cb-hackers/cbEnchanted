@@ -43,7 +43,7 @@ class InputInterface {
 		void functionEscapeKey(void);
 	private:
 		CBEnchanted *cb;
-		std::map<int32_t, sf::Keyboard::Key> key;
+		sf::Keyboard::Key key[256];
 };
 
 #endif

@@ -43,6 +43,8 @@ class CBMap : public CBObject{
 		int32_t getSizeX(){return mapWidth*tileWidth;}
 		int32_t getSizeY(){return mapHeight*tileHeight;}
 
+		int32_t getTileWidth(){return tileHeight;}
+		int32_t getTileHeight(){return tileWidth;}
 		void playObject();
 };
 

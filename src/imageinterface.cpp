@@ -13,7 +13,10 @@ ImageInterface::~ImageInterface() {
 }
 
 void ImageInterface::commandSaveImage(void) {
+	/*string path = cb->popValue().toString();
+	int32_t id = cb->popValue().toInt();*/
 	STUB;
+
 }
 
 void ImageInterface::commandDrawImage(void) {

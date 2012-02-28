@@ -16,7 +16,12 @@ MapInterface::~MapInterface() {
 }
 
 void MapInterface::commandEditMap(void) {
-	STUB;
+	uint16_t tile = cb->popValue().toInt();
+	uint32_t y = cb->popValue().toInt();
+	uint32_t x = cb->popValue().toInt();
+	uint8_t layer = cb->popValue().toInt();
+	uint32_t map = cb->popValue().toInt();
+	tileMap->edit(layer, x, y, tile);
 }
 
 void MapInterface::commandSetMap(void) {
@@ -28,7 +33,6 @@ void MapInterface::commandSetTile(void) {
 }
 
 void MapInterface::functionLoadMap(void) {
-	INFO("Loading map..")
 	string tilesetpath = cb->popValue().toString();
 	INFO(tilesetpath.c_str());
 	string mappath = cb->popValue().toString();
@@ -50,7 +54,12 @@ void MapInterface::functionMakeMap(void) {
 }
 
 void MapInterface::functionGetMap(void) {
-	STUB;
+	int32_t posY = cb->popValue().toInt();
+	int32_t posX = cb->popValue().toInt();
+	uint8_t layer = cb->popValue().toInt();
+	uint32_t mapX = (tileMap->getSizeX()/2+posX) / tileMap->getTileWidth();
+	uint32_t mapY = (tileMap->getSizeX()/2+posX) / tileMap->getTileWidth();
+	cb->pushValue(tileMap->getMap(layer, mapX, mapY));
 }
 
 void MapInterface::functionGetMap2(void) {
@@ -58,9 +67,11 @@ void MapInterface::functionGetMap2(void) {
 }
 
 void MapInterface::functionMapWidth(void) {
-	STUB;
+	int32_t width = tileMap->mapSizeX();
+	cb->pushValue(width);
 }
 
 void MapInterface::functionMapHeight(void) {
-	STUB;
+	int32_t height = tileMap->mapSizeY();
+	cb->pushValue(height);
 }

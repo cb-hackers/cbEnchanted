@@ -53,7 +53,7 @@ void CameraInterface::commandMoveCamera(void) {
 	cb->popValue();
 	float fwrd = cb->popValue().toFloat();
 	float right = cb->popValue().toFloat();
-	INFO("%f, %f", right, fwrd);
+
 	cameraX += cosf(cameraAngle*M_PI/180.0)*fwrd;
 	cameraY += sinf(cameraAngle*M_PI/180.0)*fwrd;
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
@@ -65,7 +65,6 @@ void CameraInterface::commandTranslateCamera(void) {
 	cameraY += cb->popValue().toFloat();
 	cameraX += cb->popValue().toFloat();
 
-	INFO("%f, %f", cameraX, cameraY);
 
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);
 

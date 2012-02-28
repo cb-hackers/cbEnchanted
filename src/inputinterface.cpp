@@ -233,25 +233,21 @@ void InputInterface::functionMouseMoveZ(void) {
 
 void InputInterface::functionLeftKey(void) {
 	int32_t press = int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left));
-	INFO("Left: %i", press);
 	cb->pushValue(press);
 }
 
 void InputInterface::functionRightKey(void) {
 	int32_t press = int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
-	INFO("Right: %i", press);
 	cb->pushValue(press);
 }
 
 void InputInterface::functionUpKey(void) {
 	int32_t press = int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
-	INFO("Up: %i", press);
 	cb->pushValue(press);
 }
 
 void InputInterface::functionDownKey(void) {
 	int32_t press = int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Down));
-	INFO("Down: %i", press);
 	cb->pushValue(press);
 }
 

@@ -8,7 +8,7 @@ CBMap::CBMap():CBObject(){
 
 CBMap::~CBMap(){
 	for(int i = 0; i < 4; ++i){
-		delete [] layer;
+		delete [] layer[i];
 	}
 	delete [] animLenght;
 	delete [] animSlowness;
@@ -24,21 +24,17 @@ bool CBMap::loadMap(string file){
 
 	if(mapStream.is_open()){
 
-		INFO("Map were opened for reading.");
-
 		//Tarkistustavut...
 		mapStream.read((char*)&checkNum[0], 1);
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
 
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
-
 		if(checkNum[0] != 23  &&
 		   checkNum[1] != 179 &&
 		   checkNum[2] != 243 &&
 		   checkNum[3] != 56){
-			FIXME("Check nums aren't correct!")
+			FIXME("Incorrect magic numbers!")
 		}
 
 
@@ -56,7 +52,6 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&maskG, 1);
 		mapStream.read((char*)&maskB, 1);
 		mapStream.read((char*)&empty, 1);
-		INFO("Mask Colors: %u, %u, %u: ", maskR, maskG, maskB);
 
 		for(int i = 0; i < 40; ++i)
 				mapStream.read((char*)&empty, 1);
@@ -65,7 +60,7 @@ bool CBMap::loadMap(string file){
 
 
 		mapStream.read((char*)&tilecount, 4);
-		INFO("Tile count: %u", tilecount);
+
 		if(tilecount < 0)
 				return false;
 
@@ -74,11 +69,9 @@ bool CBMap::loadMap(string file){
 
 		mapStream.read((char*)&tileWidth, 4);
 		mapStream.read((char*)&tileHeight, 4);
-		INFO("Tile width, height: %i, %i", tileWidth, tileHeight);
 
 		mapStream.read((char*)&mapWidth, 4);
 		mapStream.read((char*)&mapHeight, 4);
-		INFO("Map width, height: %i, %i", mapWidth, mapHeight);
 
 		for(int i = 0; i < 4; ++i){
 			layer[i] = new int32_t[mapWidth*mapHeight];
@@ -88,14 +81,13 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		//Karttadata alkaa
 		if(checkNum[0] != 254  &&
 		   checkNum[1] != 45   &&
 		   checkNum[2] != 12   &&
 		   checkNum[3] != 166)
-				FIXME("Check nums aren't correct!");
+			FIXME("Incorrect magic nums!")
 
 		for(int32_t y = 0; y < mapHeight; ++y){
 			for(int32_t x = 0; x < mapWidth; ++x){
@@ -108,13 +100,12 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 253  &&
 		   checkNum[1] != 44   &&
 		   checkNum[2] != 11   &&
 		   checkNum[3] != 165)
-				FIXME("Check nums aren't correct!");
+				FIXME("Incorrect magic nums!");
 
 		for(int32_t y = 0; y < mapHeight; ++y){
 			for(int32_t x = 0; x < mapWidth; ++x){
@@ -146,13 +137,12 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 251  &&
 		   checkNum[1] != 42   &&
 		   checkNum[2] != 9    &&
 		   checkNum[3] != 163)
-				FIXME("Check nums aren't correct!");
+				FIXME("Incorrect magic nums!");
 
 		for(int32_t y = 0; y < mapHeight; ++y){
 			for(int32_t x = 0; x < mapWidth; ++x){
@@ -171,7 +161,7 @@ bool CBMap::loadMap(string file){
 		   checkNum[1] != 41   &&
 		   checkNum[2] != 8    &&
 		   checkNum[3] != 162)
-				FIXME("Check nums aren't correct!");
+				FIXME("Incorrect magic nums!");
 
 		for(int32_t i = 1; i < tilecount; ++i){
 			mapStream.read((char*)&animLenght[i], 4);
@@ -184,7 +174,6 @@ bool CBMap::loadMap(string file){
 	}
 	mapStream.close();
 
-	INFO("Tile at the center of the map: %i", getMap(0, mapWidth/2, mapHeight/2));
 	return true;
 }
 
