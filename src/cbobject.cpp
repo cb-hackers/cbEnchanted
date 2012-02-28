@@ -119,7 +119,7 @@ void CBObject::translateObject(float hor, float ver, float depth){
 }
 
 void CBObject::turnObject(float speed){
-	angle+=speed;
+	angle-=speed;
 }
 
 void CBObject::render(RenderTarget &target){

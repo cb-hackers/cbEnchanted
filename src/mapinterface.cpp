@@ -33,6 +33,7 @@ void MapInterface::commandSetTile(void) {
 }
 
 void MapInterface::functionLoadMap(void) {
+	INFO("");
 	string tilesetpath = cb->popValue().toString();
 	INFO(tilesetpath.c_str());
 	string mappath = cb->popValue().toString();

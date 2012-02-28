@@ -50,7 +50,7 @@ void CameraInterface::commandRotateCamera(void) {
 }
 
 void CameraInterface::commandMoveCamera(void) {
-	cb->popValue();
+	cameraZ = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
 	float right = cb->popValue().toFloat();
 
@@ -61,7 +61,7 @@ void CameraInterface::commandMoveCamera(void) {
 
 void CameraInterface::commandTranslateCamera(void) {
 
-	cb->popValue();
+	cameraZ = cb->popValue().toFloat();
 	cameraY += cb->popValue().toFloat();
 	cameraX += cb->popValue().toFloat();
 
@@ -71,6 +71,7 @@ void CameraInterface::commandTranslateCamera(void) {
 }
 
 void CameraInterface::commandPositionCamera(void) {
+	cameraZ = cb->popValue().toFloat();
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) cb->getCurrentRenderTarget()->setViewTo(true,true);

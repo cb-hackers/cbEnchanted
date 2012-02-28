@@ -26,10 +26,7 @@ TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 }
 
 TextInterface::~TextInterface() {
-	for(int32_t i = 0; i < nextfontid(); i++){
-		delete fontMap[i];
-		fontMap.erase(i);
-	}
+
 }
 
 	
