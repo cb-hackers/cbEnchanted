@@ -173,14 +173,14 @@ bool CBMap::loadMap(string file){
 		INFO(err.c_str());
 	}
 	mapStream.close();
-
+	//sprite.SetOrigin(sf::Vector2f(tileWidth*0.5,tileHeight*0.5));
 	return true;
 }
 
 
 
 bool CBMap::loadTileset(string path){
-	return load(path);
+	return load(path,sf::Color(maskR,maskG,maskB));
 }
 
 void CBMap::drawLayer(uint8_t level, RenderTarget &target){
@@ -223,10 +223,12 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 
 	while(jarjestys_y < target.height()){
 		tile_y %= getSizeY();
-		int32_t tile_x = piirto_x / tileWidth;
+		if (tile_y >= mapHeight) break;
+		int32_t tile_x = piirto_x / tileWidth+1;
 		int32_t jarjestys_x =-(piirto_x % tileHeight);
 		while(jarjestys_x < target.width()){
 			int32_t getX = tile_x % getSizeX();
+			if (getX >= mapWidth) break;
 			int32_t tileNum = getMap(level, getX, tile_y);
 			if(tileNum > 0){
 				drawTile(target, tileNum, jarjestys_x, jarjestys_y);
@@ -243,22 +245,21 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 
 
 void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
-        if(tile == 0)
-                return;
-        if(tile>0)
-                tile--;
+	if(tile == 0)
+		return;
+	tile--;
 
-        int32_t fX = 0;
-        int32_t fY = 0;
-        int32_t framesX = texture->GetWidth() / tileWidth;
-        int32_t framesY = texture->GetHeight() / tileHeight;
+	int32_t fX = 0;
+	int32_t fY = 0;
+	int32_t framesX = texture->GetWidth() / tileWidth;
+	int32_t framesY = texture->GetHeight() / tileHeight;
 
-        fX = (tile % framesX);
-        fY = (tile / framesY);
+	fX = (tile % framesX);
+	fY = (tile / framesY);
 
-        sprite.SetTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
-        sprite.SetPosition(x, y);
-        target.draw(sprite);
+	sprite.SetTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
+	sprite.SetPosition(x, y);
+	target.draw(sprite);
 
 }
 

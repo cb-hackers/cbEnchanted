@@ -41,6 +41,30 @@ bool CBObject::load(string file)
 	return true;
 }
 
+bool CBObject::load(string file, const sf::Color &mask)
+{
+	if (imgtex) delete imgtex;
+	imgtex = new sf::Image;
+	if (!imgtex->LoadFromFile(file)) return false;
+
+	imgtex->CreateMaskFromColor(mask);
+
+	if (texture) delete texture;
+	texture = new sf::Texture;
+	texture->LoadFromImage(*imgtex);
+	sprite.SetTexture(*texture);
+	sizeX = texture->GetWidth();
+	sizeY = texture->GetHeight();
+	frameWidth = 0;
+	frameHeight = 0;
+	startframe = 0;
+	maxframes = 0;
+	alphablend = 255;
+	angle = 0;
+	painted = true;
+	return true;
+}
+
 
 bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
 	if (imgtex) delete imgtex;
@@ -158,7 +182,7 @@ void CBObject::render(RenderTarget &target){
 				sprite.SetOrigin(texture->GetWidth()*0.5,texture->GetHeight()*0.5);
 			}
 
-			sprite.SetRotation(-angle);
+			sprite.SetRotation(angle);
 			if(alphablend!=255)
 				sprite.SetColor(sf::Color(255, 255, 255, alphablend));
 			target.draw(sprite);
