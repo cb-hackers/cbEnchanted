@@ -4,6 +4,7 @@
 
 class CBEnchanted;
 
+
 class InputInterface {
 	public:
 		InputInterface();
@@ -41,9 +42,12 @@ class InputInterface {
 		void functionUpKey(void);
 		void functionDownKey(void);
 		void functionEscapeKey(void);
+
+		void setKeyState(uint8_t inptKey);
 	private:
 		CBEnchanted *cb;
-		sf::Keyboard::Key key[256];
+		sf::Keyboard::Key key[221];
+		uint8_t keyState[221];
 };
 
 #endif

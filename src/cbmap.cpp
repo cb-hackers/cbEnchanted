@@ -3,6 +3,8 @@
 #include "cbenchanted.h"
 #include "precomp.h"
 CBMap::CBMap():CBObject(){
+	layerShowing[0] = 1;
+	layerShowing[1] = 1;
 }
 
 
@@ -12,6 +14,17 @@ CBMap::~CBMap(){
 	}
 	delete [] animLenght;
 	delete [] animSlowness;
+}
+
+bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH){
+	mapWidth = width;
+	mapHeight = height;
+	tileWidth = tileW;
+	tileHeight = tileH;
+	for(int i = 0; i < 4; ++i){
+		layer[i] = new int32_t[mapWidth*mapHeight];
+	}
+	return true;
 }
 
 bool CBMap::loadMap(string file){
@@ -39,7 +52,6 @@ bool CBMap::loadMap(string file){
 
 
 		mapStream.read((char*)&version, 4);
-		INFO("Map version: %f", version);
 		if(!(version>=1.0 && version <= 2.0)){
 			FIXME("Version isn't right!")
 		}
@@ -118,7 +130,6 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 252  &&
 		   checkNum[1] != 43   &&
@@ -155,7 +166,6 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&checkNum[1], 1);
 		mapStream.read((char*)&checkNum[2], 1);
 		mapStream.read((char*)&checkNum[3], 1);
-		INFO("Magic number: %u, %u, %u, %u",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		if(checkNum[0] != 250  &&
 		   checkNum[1] != 41   &&
@@ -183,40 +193,22 @@ bool CBMap::loadTileset(string path){
 	return load(path,sf::Color(maskR,maskG,maskB));
 }
 
-void CBMap::drawLayer(uint8_t level, RenderTarget &target){
-	/*
-	//Calculate bounds
-	int32_t leftTile = floorf(mapWidth*0.5+(camX-(target.width()*0.5))/tileWidth);
-	if (leftTile >= mapWidth){INFO("Out of map!"); return;}
-	if (leftTile < 0) leftTile = 0;
-	INFO("Left tile %i", leftTile)
-	int32_t topTile = floorf(-mapHeight*0.5+(camY+(target.height()*0.5))/tileWidth);
-	if (topTile >= mapHeight){INFO("Out of map!"); return;} //Out of map
-	if (topTile < 0) leftTile = 0;
-	INFO("Top tile %i", topTile)
-	int32_t rightTile = leftTile + ceilf(float(target.width())/tileWidth);
-	if (rightTile < 0){INFO("Out of map!"); return;}
-	if (rightTile >= mapWidth) rightTile = mapWidth-1;
-	INFO("Right tile %i", rightTile)
-	int32_t bottomTile = topTile + ceilf(float(target.height())/tileHeight);
-	if (bottomTile < 0){INFO("Out of map! Bottom Tile were last."); return;}
-	if (bottomTile >= mapHeight) rightTile = mapHeight-1;
-	INFO("Bottom tile %i", bottomTile)
-	int32_t *tiles = layer[0];
+void CBMap::setLayers(uint8_t back, uint8_t over){
+	layerShowing[0] = back;
+	layerShowing[1] = over;
+}
 
-	for (int32_t y = topTile; y <= bottomTile;++y) {
-		for (int32_t x = leftTile;x <= rightTile;++x) {
-			int32_t tile = *(tiles+y*mapWidth+x);
-			if (tile > 0) {
-				drawTile(target,tile,posX+(x-mapWidth*0.5)*tileWidth,posY+(y+mapHeight*0.5)*tileHeight);
-			}
-		}
-	}*/
+void CBMap::drawLayer(uint8_t level, RenderTarget &target){
+	if(level > 2)
+			return;
+	if(layerShowing[level] < 1)
+			return;
+
 	float camX = CBEnchanted::instance()->getCameraX()-posX;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
-	int32_t piirto_x = camX+getSizeX()/2-target.width()/2;
+	int32_t piirto_x = camX-tileWidth+getSizeX()/2-target.width()/2;
 	int32_t piirto_y = camY+getSizeY()/2-target.height()/2;
 	int32_t tile_y = piirto_y / tileHeight;
 	int32_t jarjestys_y=-(piirto_y % tileHeight);
@@ -263,14 +255,19 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 
 }
 
+void CBMap::setTile(uint32_t tile, uint32_t lenght, uint32_t slowness){
+	animLenght[tile] = lenght;
+	animSlowness[tile] = slowness;
+}
+
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
         int32_t position = MapY * mapWidth + MapX;
         layer[maplayer][position] = tile;
 }
 
 int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
-		if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
-                return 0;
+        if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
+                 return 0;
         int32_t position = MapY * mapWidth + MapX;
         return layer[maplayer][position];
 }

@@ -134,7 +134,7 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 
 void CBObject::moveObject(float fwrd, float sdwrd){
     posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90.0) / 180.0 * M_PI)*sdwrd;
-    posY-=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90.0) / 180.0 * M_PI)*sdwrd;
+    posY+=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90.0) / 180.0 * M_PI)*sdwrd;
 }
 
 void CBObject::translateObject(float hor, float ver, float depth){
@@ -143,7 +143,7 @@ void CBObject::translateObject(float hor, float ver, float depth){
 }
 
 void CBObject::turnObject(float speed){
-	angle-=speed;
+	angle+=speed;
 }
 
 void CBObject::render(RenderTarget &target){
@@ -183,8 +183,10 @@ void CBObject::render(RenderTarget &target){
 			}
 
 			sprite.SetRotation(angle);
-			if(alphablend!=255)
+			if(alphablend!=255){
 				sprite.SetColor(sf::Color(255, 255, 255, alphablend));
+
+			}
 			target.draw(sprite);
 		}
 	}

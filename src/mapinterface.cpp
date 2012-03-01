@@ -25,15 +25,20 @@ void MapInterface::commandEditMap(void) {
 }
 
 void MapInterface::commandSetMap(void) {
-	STUB;
+	uint8_t over = cb->popValue().toInt();
+	uint8_t back = cb->popValue().toInt();
+	tileMap->setLayers(back, over);
 }
 
 void MapInterface::commandSetTile(void) {
-	STUB;
+	uint32_t slowness = cb->popValue().toInt();
+	uint32_t lenght = cb->popValue().toInt();
+	uint32_t tile = cb->popValue().toInt();
+	tileMap->setTile(tile, lenght, slowness);
 }
 
 void MapInterface::functionLoadMap(void) {
-	INFO("");
+	INFO("asd?");
 	string tilesetpath = cb->popValue().toString();
 	INFO(tilesetpath.c_str());
 	string mappath = cb->popValue().toString();
@@ -51,7 +56,14 @@ void MapInterface::functionLoadMap(void) {
 }
 
 void MapInterface::functionMakeMap(void) {
-	STUB;
+	if (tileMap) delete tileMap;
+	uint16_t tileH = cb->popValue().toInt();
+	uint16_t tileW = cb->popValue().toInt();
+	uint32_t mapH = cb->popValue().toInt();
+	uint32_t mapW = cb->popValue().toInt();
+	tileMap->create(mapW, mapH, tileW, tileH);
+	int32_t id = cb->addMap(tileMap);
+	cb->pushValue(id);
 }
 
 void MapInterface::functionGetMap(void) {
@@ -64,7 +76,10 @@ void MapInterface::functionGetMap(void) {
 }
 
 void MapInterface::functionGetMap2(void) {
-	STUB;
+	int32_t posY = cb->popValue().toInt();
+	int32_t posX = cb->popValue().toInt();
+	uint8_t layer = cb->popValue().toInt();
+	cb->pushValue(tileMap->getMap(layer, posX, posY));
 }
 
 void MapInterface::functionMapWidth(void) {
