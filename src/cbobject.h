@@ -22,6 +22,7 @@ class CBObject{
 		void rotateObject(float a){angle = 180.0+a;}
 		void ghostObject(uint8_t ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
+		virtual bool isMap()const{return false;}
 		float getX();
 		float getY();
 		void showObject(bool t) {visible = t;}
