@@ -26,6 +26,7 @@ TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 }
 
 TextInterface::~TextInterface() {
+
 }
 
 	

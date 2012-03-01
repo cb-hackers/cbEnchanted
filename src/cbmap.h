@@ -20,6 +20,7 @@ class CBMap : public CBObject{
 
 		int32_t *animLenght;
 		int32_t *animSlowness;
+		uint8_t layerShowing[2];
 
 	public:
 		CBMap();
@@ -29,7 +30,7 @@ class CBMap : public CBObject{
 
 		bool loadMap(string path);
 		bool loadTileset(string path);
-
+		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
 
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
@@ -45,7 +46,9 @@ class CBMap : public CBObject{
 
 		int32_t getTileWidth(){return tileHeight;}
 		int32_t getTileHeight(){return tileWidth;}
+		void setLayers(uint8_t back, uint8_t over);
 		void playObject();
+		void setTile(uint32_t tile, uint32_t lenght, uint32_t slowness);
 };
 
 

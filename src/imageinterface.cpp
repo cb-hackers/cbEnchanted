@@ -30,6 +30,8 @@ void ImageInterface::commandDrawImage(void) {
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
+	//int32_t id = cb->popValue().getInt();
+	//CBImage *img = cbImages[cb->popValue().getInt()];
 	STUB;
 }
 

@@ -30,6 +30,7 @@ class CameraInterface {
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
+		float cameraZ;
 		float cameraAngle;
 
 };
