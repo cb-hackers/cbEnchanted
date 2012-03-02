@@ -45,7 +45,7 @@ InputInterface::InputInterface() {
 	key[40] = sf::Keyboard::Quote;
 	key[41] = sf::Keyboard::Tilde;
 	key[42] = sf::Keyboard::LShift;
-	key[43] = sf::Keyboard::Divide;
+	key[43] = sf::Keyboard::BackSlash;
 	key[44] = sf::Keyboard::Z;
 	key[45] = sf::Keyboard::X;
 	key[46] = sf::Keyboard::C;
@@ -86,7 +86,30 @@ InputInterface::InputInterface() {
 	key[81] = sf::Keyboard::Numpad3;
 	key[82] = sf::Keyboard::Numpad0;
 	//key[83] = sf::Keyboard::;
-}
+	//key[86] = sf::Keyboard::;
+	key[87] = sf::Keyboard::F11;
+	key[88] = sf::Keyboard::F12;
+	//key[156] = sf::Keyboard::;
+	key[157] = sf::Keyboard::LControl;
+	key[181] = sf::Keyboard::Divide;
+	//key[182] = sf::Keyboard::;
+	key[182] = sf::Keyboard::RAlt;
+	key[197] = sf::Keyboard::Pause;
+	key[199] = sf::Keyboard::Home;
+	key[200] = sf::Keyboard::Up;
+	key[201] = sf::Keyboard::PageUp;
+	key[203] = sf::Keyboard::Left;
+	key[205] = sf::Keyboard::Right;
+	key[207] = sf::Keyboard::End;
+	key[208] = sf::Keyboard::Down;
+	key[209] = sf::Keyboard::PageDown;
+	key[210] = sf::Keyboard::Insert;
+	key[211] = sf::Keyboard::Delete;
+	key[219] = sf::Keyboard::LSystem;
+	key[220] = sf::Keyboard::RSystem;
+	key[221] = sf::Keyboard::Menu;
+
+ }
 
 void InputInterface::commandCloseInput(void) {
 	STUB;
@@ -142,15 +165,27 @@ void InputInterface::functionInput(void) {
 
 void InputInterface::functionKeyDown(void) {
 	int32_t keyC = cb->popValue().toInt();
-	cb->pushValue(int(sf::Keyboard::IsKeyPressed(key[keyC])));
+	cb->pushValue(keyState[keyC]);
 }
 
 void InputInterface::functionKeyHit(void) {
-	STUB;
+	/*
+	int32_t keyC = cb->popValue().toInt();
+	if(keyState[keyC] != 0)
+		return;
+
+	if(keyState[keyC] = 0)
+		cb->pushValue(1);*/
 }
 
 void InputInterface::functionKeyUp(void) {
-	STUB;
+	/*
+	int32_t keyC = cb->popValue().toInt();
+	if(keyState[keyC] != 1)
+		return;
+
+	if(keyState[keyC] = 1)
+		cb->pushValue(1);*/
 }
 
 void InputInterface::functionGetKey(void) {
@@ -253,4 +288,9 @@ void InputInterface::functionDownKey(void) {
 
 void InputInterface::functionEscapeKey(void) {
 	cb->pushValue(int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Escape)));
+}
+
+
+void InputInterface::setKeyState(uint8_t inptKey){
+	keyState[inptKey] = sf::Keyboard::IsKeyPressed(key[inptKey]);
 }

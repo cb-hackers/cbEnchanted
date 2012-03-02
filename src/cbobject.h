@@ -29,18 +29,19 @@ class CBObject{
 		float getAngle(); //Funktion nimi on nyt vähän harhaanjohtava, mutta se nyt saa luvan kelvata koska se on luokan sisällä.
 		void setDrawOrderNumber(int32_t n){drawOrderNumber = n;}
 		int32_t getDrawOrderNumber()const{return drawOrderNumber;}
-        static void setDefaultVisible(bool t);
+		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
 		float getObjectFloat()const{return objectFloatData;}
 		string getObjectString()const{return objectStringData;}
 		void setObjectInteger(int32_t i){objectIntData = i;}
 		void setObjectFloat(float f){objectFloatData = f;}
 		void setObjectString(const string &s){objectStringData = s;}
+		void playObject();
 		CBObject *copyObject()const;
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
-        bool isFloorObject()const{return floor;}
+		bool isFloorObject()const{return floor;}
 	protected:
 		//Created using copy
 		bool copied;

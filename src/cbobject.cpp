@@ -88,7 +88,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	startframe = startf;
 	maxframes = framecount;
 	alphablend = 255;
-    angle = 0;
+	angle = 0;
 	painted = true;
 	return true;
 }
@@ -117,6 +117,9 @@ void CBObject::paintObject(const CBObject &obj){
 	painted = true;
 }
 
+void CBObject::playObject(){
+
+}
 
 void CBObject::ghostObject(uint8_t ab){
 	alphablend = ab;

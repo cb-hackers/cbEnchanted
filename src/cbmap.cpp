@@ -14,6 +14,7 @@ CBMap::~CBMap(){
 	}
 	delete [] animLenght;
 	delete [] animSlowness;
+	delete [] currentFrame;
 }
 
 bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH){
@@ -78,6 +79,10 @@ bool CBMap::loadMap(string file){
 
 		animLenght = new int32_t [tilecount];
 		animSlowness = new int32_t [tilecount];
+		currentFrame = new float [tilecount];
+		for(uint16_t i = 0; i < tilecount; i++){
+			currentFrame[i] = 0;
+		}
 
 		mapStream.read((char*)&tileWidth, 4);
 		mapStream.read((char*)&tileHeight, 4);
@@ -255,9 +260,18 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 
 }
 
+void CBMap::paintObject(const sf::Texture &txt){
+	STUB;
+}
+
+
 void CBMap::setTile(uint32_t tile, uint32_t lenght, uint32_t slowness){
 	animLenght[tile] = lenght;
 	animSlowness[tile] = slowness;
+}
+
+void CBMap::playObject(){
+
 }
 
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){

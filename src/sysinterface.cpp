@@ -70,7 +70,7 @@ void SysInterface::commandSetWindow(void) {
 	string caption = "CBEnchanted: " + cb->popValue().toString();
 	
 	if (quit != "") {
-		cout << "FIXME: setWindow quitmsg" << endl;
+		FIXME("FIXME: setWindow quitmsg");
 	}
 	
 	cb->getWindow()->SetTitle(caption);
