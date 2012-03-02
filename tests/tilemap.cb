@@ -1,15 +1,17 @@
 
 
-map = LoadMap("C:\Ohjelmointi\cbenchanted\tests\Media\cdm2.til", "C:\Ohjelmointi\cbenchanted\tests\Media\tileset.bmp")
-guy = LoadObject("C:\Ohjelmointi\cbenchanted\tests\Media\soldier.bmp")
+map = LoadMap("Media\cdm2.til", "Media\tileset.bmp")
+guy = LoadObject("Media\soldier.bmp")
 PositionCamera 0, 0, 20
 Repeat 
-    SetWindow "CamX: "+CameraX()+" CamY: "+CameraY()
-    GhostObject guy, 75
+    SetWindow "CamX: "+CameraX()+" CamY: "+CameraY()+" Object angle:"+ObjectAngle(guy)
+    //GhostObject guy, 75
     
-    MoveObject guy, 2*(UpKey() - DownKey())
-    TurnObject guy, 2*(RightKey() - LeftKey()) 
+    If LeftKey() Then TurnObject guy,1
+    If RightKey() Then TurnObject guy, -1
+    If UpKey() Then MoveObject guy, 2
+    If DownKey() Then MoveObject guy, -2
 
-    
+    CloneCameraPosition guy
     DrawScreen
 Forever 

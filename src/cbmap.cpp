@@ -209,8 +209,8 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
-	int32_t piirto_x = camX-tileWidth+getSizeX()/2-target.width()/2;
-	int32_t piirto_y = camY+getSizeY()/2-target.height()/2;
+	int32_t piirto_x = camX+getSizeX()/2-target.width()/2;
+	int32_t piirto_y = -camY+getSizeY()/2-target.height()/2;
 	int32_t tile_y = piirto_y / tileHeight;
 	int32_t jarjestys_y=-(piirto_y % tileHeight);
 

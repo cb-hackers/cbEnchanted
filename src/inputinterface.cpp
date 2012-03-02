@@ -254,3 +254,5 @@ void InputInterface::functionDownKey(void) {
 void InputInterface::functionEscapeKey(void) {
 	cb->pushValue(int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Escape)));
 }
+
+void InputInterface::setKeyState(uint8_t inptKey) {}
