@@ -188,7 +188,8 @@ bool CBMap::loadMap(string file){
 		INFO(err.c_str());
 	}
 	mapStream.close();
-	//sprite.SetOrigin(sf::Vector2f(tileWidth*0.5,tileHeight*0.5));
+	sizeX = tileWidth*mapWidth;
+	sizeY = tileHeight*mapHeight;
 	return true;
 }
 
@@ -213,8 +214,8 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
-	int32_t piirto_x = camX-tileWidth+getSizeX()/2-target.width()/2;
-	int32_t piirto_y = camY+getSizeY()/2-target.height()/2;
+	int32_t piirto_x = camX+getSizeX()/2-target.width()/2;
+	int32_t piirto_y = -camY+getSizeY()/2-target.height()/2;
 	int32_t tile_y = piirto_y / tileHeight;
 	int32_t jarjestys_y=-(piirto_y % tileHeight);
 
@@ -275,13 +276,13 @@ void CBMap::playObject(){
 }
 
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
-        int32_t position = MapY * mapWidth + MapX;
-        layer[maplayer][position] = tile;
+	int32_t position = MapY * mapWidth + MapX;
+	layer[maplayer][position] = tile;
 }
 
 int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
-        if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
-                 return 0;
-        int32_t position = MapY * mapWidth + MapX;
-        return layer[maplayer][position];
+	if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
+		return 0;
+	int32_t position = MapY * mapWidth + MapX;
+	return layer[maplayer][position];
 }
