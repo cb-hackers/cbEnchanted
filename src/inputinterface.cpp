@@ -290,11 +290,8 @@ void InputInterface::functionEscapeKey(void) {
 	cb->pushValue(int(sf::Keyboard::IsKeyPressed(sf::Keyboard::Escape)));
 }
 
-<<<<<<< HEAD
 
 void InputInterface::setKeyState(uint8_t inptKey){
 	keyState[inptKey] = sf::Keyboard::IsKeyPressed(key[inptKey]);
 }
-=======
-void InputInterface::setKeyState(uint8_t inptKey) {}
->>>>>>> 0c8925ed49a96b277bcbeca5bad556ae29c8d9ef
+

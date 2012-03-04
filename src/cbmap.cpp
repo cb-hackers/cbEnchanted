@@ -222,7 +222,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	while(jarjestys_y < target.height()){
 		tile_y %= getSizeY();
 		if (tile_y >= mapHeight) break;
-		int32_t tile_x = piirto_x / tileWidth+1;
+		int32_t tile_x = piirto_x / tileWidth;
 		int32_t jarjestys_x =-(piirto_x % tileHeight);
 		while(jarjestys_x < target.width()){
 			int32_t getX = tile_x % getSizeX();

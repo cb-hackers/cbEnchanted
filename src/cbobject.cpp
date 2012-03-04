@@ -187,7 +187,7 @@ void CBObject::render(RenderTarget &target){
 
 			sprite.SetRotation(angle);
 			if(alphablend!=255){
-				sprite.SetColor(sf::Color(255, 255, 255, alphablend));
+				sprite.SetColor(sf::Color(255, 255, 0, alphablend));
 
 			}
 			target.draw(sprite);
