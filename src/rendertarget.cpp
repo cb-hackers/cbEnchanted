@@ -2,6 +2,9 @@
 #include "cbenchanted.h"
 #include <SFML/Graphics/RenderTexture.hpp>
 #define CIRCLE_VERTEX_COUNT 100
+#ifndef GL_COMBINE
+	#define GL_COMBINE 0x8570
+#endif
 
 RenderTarget *currentRenderContext = 0;
 inline void setCurrentRenderContext(RenderTarget *t) {
@@ -71,9 +74,11 @@ void RenderTarget::setDrawingMode(RenderTarget::DrawingMode mode) {
 	if (drawingMode == mode) return;
 	switch(mode) {
 		case DM_Textures:
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE); //Enable combining of glColor and texture color.
 			glEnable(GL_TEXTURE_2D);
 			break;
 		case DM_NoTextures:
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); //Disabling combining of glColor and texture color.
 			glDisable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			break;
