@@ -117,13 +117,12 @@ void GfxInterface::commandDrawScreen(void) {
 			//TODO: Inputs
 			case sf::Event::KeyPressed:
 				if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
-				for(uint16_t i = 1; i < 221; i++){
-					cb->instance()->InputInterface::setKeyState(i);
-				}
+				cb->instance()->InputInterface::setKeyStates();
 			default:
 				break;
 		}
 	}
+	cb->instance()->ObjectInterface::updateLifes();
 	fpsCounter++;
 	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)
 	{

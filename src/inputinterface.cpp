@@ -108,6 +108,9 @@ InputInterface::InputInterface() {
 	key[219] = sf::Keyboard::LSystem;
 	key[220] = sf::Keyboard::RSystem;
 	key[221] = sf::Keyboard::Menu;
+	for(uint8_t i = 0; i < 221; i++){
+		keyState[i] = 0;
+	}
 
  }
 
@@ -291,7 +294,8 @@ void InputInterface::functionEscapeKey(void) {
 }
 
 
-void InputInterface::setKeyState(uint8_t inptKey){
-	keyState[inptKey] = sf::Keyboard::IsKeyPressed(key[inptKey]);
+void InputInterface::setKeyStates(){
+	for(uint8_t i = 0; i < 221; i++)
+		keyState[i] = sf::Keyboard::IsKeyPressed(key[i]);
 }
 

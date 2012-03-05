@@ -7,8 +7,29 @@
 
 static bool defaultVisible = true;
 
-CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(0),alphablend(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
+CBObject::CBObject(bool floor):
+	visible(defaultVisible),
+	posX(0),
+	posY(0),
+	angle(0),
+	alphablend(255),
+	startframe(0),
+	maxframes(0),
+	frameWidth(0),
+	frameHeight(0),
+	currentframe(0),
+	painted(false),
+	floor(floor),
+	imgtex(0),
+	texture(0),
+	copied(false),
+	sizeX(0),
+	sizeY(0),
+	usinglife(0),
+	life(0)
+{
 }
+
 CBObject::~CBObject() {
 	if (!copied)
 	{
@@ -36,7 +57,7 @@ bool CBObject::load(string file)
 	startframe = 0;
 	maxframes = 0;
 	alphablend = 255;
-    angle = 0;
+	angle = 0;
 	painted = true;
 	return true;
 }
@@ -187,7 +208,7 @@ void CBObject::render(RenderTarget &target){
 
 			sprite.SetRotation(angle);
 			if(alphablend!=255){
-				sprite.SetColor(sf::Color(255, 255, 0, alphablend));
+				sprite.SetColor(sf::Color(255, 255, 255, alphablend));
 
 			}
 			target.draw(sprite);
@@ -226,4 +247,18 @@ CBObject *CBObject::copyObject() const {
 	obj->frameWidth = frameWidth;
 	obj->visible = true;
 	return obj;
+}
+
+
+void CBObject::setLife(uint32_t energy){
+	usinglife = 1;
+	life = energy;
+}
+
+uint32_t CBObject::getLife(){
+	return life;
+}
+
+uint8_t CBObject::isLife(){
+	return usinglife;
 }

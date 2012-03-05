@@ -43,6 +43,9 @@ class CBObject{
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
 		bool isFloorObject()const{return floor;}
+		void setLife(uint32_t energy);
+		uint32_t getLife(); //<- lol "Get a life" asd
+		uint8_t isLife();
 	protected:
 		//Created using copy
 		bool copied;
@@ -67,6 +70,8 @@ class CBObject{
 		int32_t objectIntData;
 		string objectStringData;
 		float objectFloatData;
+		uint8_t usinglife; //Elämä käytössä?
+		uint32_t life;
 };
 
 #endif // OBJECT_H

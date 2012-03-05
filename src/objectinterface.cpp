@@ -455,3 +455,16 @@ int32_t ObjectInterface::addMap(CBMap *mapObj){
 	objectMap[id] = mapObj;
 	return id;
 }
+
+void ObjectInterface::updateLifes(){
+	std::map<int32_t,CBObject*>::iterator i;
+	for (i = objectMap.begin(); i != objectMap.end(); i++) {
+		if((*i).second -> isLife() && (*i).second ->getLife() < 0){
+			delete i->second;
+			objectMap.erase(i);
+		}
+		if((*i).second ->isLife()){
+			(*i).second->setLife((*i).second->getLife()-1);
+		}
+	}
+}
