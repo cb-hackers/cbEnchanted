@@ -460,7 +460,9 @@ void ObjectInterface::updateLifes(){
 	std::map<int32_t,CBObject*>::iterator i;
 	for (i = objectMap.begin(); i != objectMap.end(); i++) {
 		if((*i).second -> isLife() && (*i).second ->getLife() < 0){
-			delete i->second;
+			std::vector<CBObject*>::const_iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
+			objectDrawOrder.erase(draw);
+			delete (*i).second;
 			objectMap.erase(i);
 		}
 		if((*i).second ->isLife()){
