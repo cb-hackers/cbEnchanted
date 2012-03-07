@@ -37,7 +37,8 @@ HEADERS += \
     ../src/cbimage.h \
     ../src/rendertarget.h \
     ../src/cbmap.h \
-    ../src/collisioncheck.h
+    ../src/collisioncheck.h \
+    ../src/collision.h
 
 SOURCES += \
     ../src/textinterface.cpp \

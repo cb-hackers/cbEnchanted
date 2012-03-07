@@ -2,6 +2,7 @@
 #define OBJECT_H
 #include "precomp.h"
 #include "rendertarget.h"
+#include "collision.h"
 
 class CBObject{
 	public:
@@ -66,6 +67,7 @@ class CBObject{
 		int32_t objectIntData;
 		string objectStringData;
 		float objectFloatData;
+		std::vector<Collision> collisionList;
 };
 
 #endif // OBJECT_H
