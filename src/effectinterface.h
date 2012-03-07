@@ -1,5 +1,9 @@
 #ifndef EFFECTINTERFACE_H
 #define EFFECTINTERFACE_H
+#include "precomp.h"
+#include "cbobject.h"
+
+
 
 class EffectInterface {
 	public:
@@ -12,7 +16,7 @@ class EffectInterface {
 		
 		void functionMakeEmitter(void);
 	private:
-	
+
 };
 
 #endif

@@ -34,7 +34,7 @@ class CBMap : public CBObject{
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
 
-		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
+		void drawTile(RenderTarget &target, int32_t tile,float x,float y, uint16_t frame = 0);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
 		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t MapY);

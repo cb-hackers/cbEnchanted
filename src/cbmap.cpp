@@ -229,7 +229,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 			if (getX >= mapWidth) break;
 			int32_t tileNum = getMap(level, getX, tile_y);
 			if(tileNum > 0){
-				drawTile(target, tileNum, jarjestys_x, jarjestys_y);
+				drawTile(target, tileNum, jarjestys_x, jarjestys_y,(int)currentFrame[tileNum]);
 			}
 			tile_x++;
 			jarjestys_x+=tileWidth;
@@ -242,7 +242,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 }
 
 
-void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
+void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y, uint16_t frame) {
 	if(tile == 0)
 		return;
 	tile--;
@@ -251,7 +251,8 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 	int32_t fY = 0;
 	int32_t framesX = texture->GetWidth() / tileWidth;
 	int32_t framesY = texture->GetHeight() / tileHeight;
-
+	if(animLenght[tile] != 0)
+		tile+=frame;
 	fX = (tile % framesX);
 	fY = (tile / framesY);
 
@@ -272,7 +273,16 @@ void CBMap::setTile(uint32_t tile, uint32_t lenght, uint32_t slowness){
 }
 
 void CBMap::playObject(){
-
+	for(uint16_t tiles = 0; tiles < tilecount; tiles++){
+		if(animLenght[tiles]){
+			if(currentFrame[tiles] > animLenght[tiles])
+				currentFrame[tiles] = 0;
+			if(currentFrame[tiles] < animLenght[tiles]){
+				currentFrame[tiles] = currentFrame[tiles] + 1.0 /(animSlowness[tiles]*animSpeed);
+				INFO("%f", currentFrame[tiles]);
+			}
+		}
+	}
 }
 
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){

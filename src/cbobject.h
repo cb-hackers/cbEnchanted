@@ -37,6 +37,7 @@ class CBObject{
 		void setObjectInteger(int32_t i){objectIntData = i;}
 		void setObjectFloat(float f){objectFloatData = f;}
 		void setObjectString(const string &s){objectStringData = s;}
+		void setFrame(uint16_t frame);
 		void playObject();
 		CBObject *copyObject()const;
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
@@ -44,6 +45,11 @@ class CBObject{
 		float getObjectSizeY()const{return sizeY;}
 		bool isFloorObject()const{return floor;}
 		void setLife(uint32_t energy);
+
+		void setFrames(uint16_t startf, uint16_t endf, float spd, uint8_t looping);
+		inline uint8_t isAnimated()const{return (maxframes > 0);};
+		inline float getCurrentFrame(){return currentframe;};
+
 		uint32_t getLife(); //<- lol "Get a life" asd
 		uint8_t isLife();
 	protected:
@@ -64,7 +70,7 @@ class CBObject{
 		uint16_t frameHeight;
 		uint16_t startframe;
 		uint16_t maxframes;
-		uint16_t currentframe;
+		float currentframe;
 		uint8_t picksTyle;
 		//CB: ObjectInteger, ObjectFloat, ObjectString
 		int32_t objectIntData;
@@ -72,6 +78,12 @@ class CBObject{
 		float objectFloatData;
 		uint8_t usinglife; //Elämä käytössä?
 		uint32_t life;
+
+		uint16_t animStartFrame;
+		uint16_t animEndingFrame;
+		float animSpeed;
+		uint8_t animLooping;
+
 };
 
 #endif // OBJECT_H

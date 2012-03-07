@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "gfxinterface.h"
-
+#include "objectinterface.h"
 #include <SFML/Graphics/Shape.hpp>
 #ifdef WIN32
 #include <Windows.h>
@@ -106,6 +106,7 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
+	cb->animateObjects();
 	cb->drawObjects(windowRenderTarget);
 
 	sf::Event e;
@@ -117,12 +118,12 @@ void GfxInterface::commandDrawScreen(void) {
 			//TODO: Inputs
 			case sf::Event::KeyPressed:
 				if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
-				cb->instance()->InputInterface::setKeyStates();
+				cb->setKeyStates();
 			default:
 				break;
 		}
 	}
-	cb->instance()->ObjectInterface::updateLifes();
+	cb->updateLifes();
 	fpsCounter++;
 	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)
 	{
@@ -308,4 +309,5 @@ void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
 	currentRenderTarget = t;
 	t->setup();
 }
+
 
