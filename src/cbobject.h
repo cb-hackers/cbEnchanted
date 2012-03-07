@@ -31,18 +31,28 @@ class CBObject{
 		float getAngle(); //Funktion nimi on nyt vähän harhaanjohtava, mutta se nyt saa luvan kelvata koska se on luokan sisällä.
 		void setDrawOrderNumber(int32_t n){drawOrderNumber = n;}
 		int32_t getDrawOrderNumber()const{return drawOrderNumber;}
-        static void setDefaultVisible(bool t);
+		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
 		float getObjectFloat()const{return objectFloatData;}
 		string getObjectString()const{return objectStringData;}
 		void setObjectInteger(int32_t i){objectIntData = i;}
 		void setObjectFloat(float f){objectFloatData = f;}
 		void setObjectString(const string &s){objectStringData = s;}
+		void setFrame(uint16_t frame);
+		void playObject();
 		CBObject *copyObject()const;
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
-        bool isFloorObject()const{return floor;}
+		bool isFloorObject()const{return floor;}
+		void setLife(uint32_t energy);
+
+		void setFrames(uint16_t startf, uint16_t endf, float spd, uint8_t looping);
+		inline uint8_t isAnimated()const{return (maxframes > 0);};
+		inline float getCurrentFrame(){return currentframe;};
+
+		uint32_t getLife(); //<- lol "Get a life" asd
+		uint8_t isLife();
 	protected:
 		//Created using copy
 		bool copied;
@@ -61,12 +71,19 @@ class CBObject{
 		uint16_t frameHeight;
 		uint16_t startframe;
 		uint16_t maxframes;
-		uint16_t currentframe;
+		float currentframe;
 		uint8_t picksTyle;
 		//CB: ObjectInteger, ObjectFloat, ObjectString
 		int32_t objectIntData;
 		string objectStringData;
 		float objectFloatData;
+		uint8_t usinglife; //Elämä käytössä?
+		uint32_t life;
+
+		uint16_t animStartFrame;
+		uint16_t animEndingFrame;
+		float animSpeed;
+		uint8_t animLooping;
 		std::vector<Collision> collisionList;
 };
 

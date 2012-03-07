@@ -4,6 +4,8 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
 #include "mapinterface.h"
+#include "gfxinterface.h"
+
 ObjectInterface::ObjectInterface() {
 	cb = static_cast<CBEnchanted*>(this);
 }
@@ -215,7 +217,14 @@ void ObjectInterface::commandObjectLife(void) {
 }
 
 void ObjectInterface::commandPlayObject(void) {
-	STUB;
+	uint8_t looping = cb->popValue().toInt();
+	float speed = cb->popValue().toFloat();
+	uint16_t endf = cb->popValue().toInt();
+	uint16_t startf = cb->popValue().toInt();
+	int32_t id = cb->popValue().toInt();
+	CBObject *object = objectMap[id];
+
+	object->setFrames(startf, endf, speed, looping);
 }
 
 void ObjectInterface::commandLoopObject(void) {
@@ -259,7 +268,23 @@ void ObjectInterface::functionLoadObject(void) {
 }
 
 void ObjectInterface::functionLoadAnimObject(void) {
-
+	cb->popValue().toInt();
+	uint16_t frames = cb->popValue().toInt();
+	uint16_t startf = cb->popValue().toInt();
+	uint16_t frameH = cb->popValue().toInt();
+	uint16_t frameW = cb->popValue().toInt();
+	string path = cb->popValue().getString();
+	CBObject *obj = new CBObject;
+	if(!obj->loadAnimObject(path, frameW, frameH, startf, frames)){
+		FIXME("Can't load object: %s", path.c_str());
+		cb->pushValue(0);
+		return;
+	}
+	obj->setDrawOrderNumber(objectDrawOrder.size());
+	objectDrawOrder.push_back(obj);
+	int32_t id = nextObjectId();
+	objectMap[id] = obj;
+	cb->pushValue(id);
 }
 
 void ObjectInterface::functionMakeObject(void) {
@@ -384,7 +409,9 @@ void ObjectInterface::functionObjectPlaying(void) {
 }
 
 void ObjectInterface::functionObjectFrame(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue(object->getCurrentFrame());
 }
 
 void ObjectInterface::functionObjectsOverlap(void) {
@@ -454,4 +481,29 @@ int32_t ObjectInterface::addMap(CBMap *mapObj){
 	int32_t id = nextObjectId();
 	objectMap[id] = mapObj;
 	return id;
+}
+
+
+void ObjectInterface::updateLifes(){
+	std::map<int32_t,CBObject*>::iterator i;
+	for (i = objectMap.begin(); i != objectMap.end(); i++) {
+		if((*i).second -> isLife() && (*i).second ->getLife() < 0){
+			std::vector<CBObject*>::const_iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
+			objectDrawOrder.erase(draw);
+			delete (*i).second;
+			objectMap.erase(i);
+		}
+		if((*i).second ->isLife()){
+			(*i).second->setLife((*i).second->getLife()-1);
+		}
+	}
+}
+
+void ObjectInterface::animateObjects(){
+	std::map<int32_t, CBObject*>::iterator i;
+	for(i = objectMap.begin(); i != objectMap.end(); i++){
+		if((*i).second -> isAnimated()){
+			(*i).second -> playObject();
+		}
+	}
 }

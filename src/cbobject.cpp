@@ -7,8 +7,29 @@
 
 static bool defaultVisible = true;
 
-CBObject::CBObject(bool floor):visible(defaultVisible),posX(0),posY(0),angle(0),alphablend(255),startframe(0),maxframes(0),frameWidth(0),frameHeight(0),currentframe(0),painted(false),floor(floor),imgtex(0),texture(0),copied(false),sizeX(0),sizeY(0){
+CBObject::CBObject(bool floor):
+	visible(defaultVisible),
+	posX(0),
+	posY(0),
+	angle(0),
+	alphablend(255),
+	startframe(0),
+	maxframes(0),
+	frameWidth(0),
+	frameHeight(0),
+	currentframe(0),
+	painted(false),
+	floor(floor),
+	imgtex(0),
+	texture(0),
+	copied(false),
+	sizeX(0),
+	sizeY(0),
+	usinglife(0),
+	life(0)
+{
 }
+
 CBObject::~CBObject() {
 	if (!copied)
 	{
@@ -36,7 +57,7 @@ bool CBObject::load(string file)
 	startframe = 0;
 	maxframes = 0;
 	alphablend = 255;
-    angle = 0;
+	angle = 0;
 	painted = true;
 	return true;
 }
@@ -67,6 +88,7 @@ bool CBObject::load(string file, const sf::Color &mask)
 
 
 bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
+	INFO("%s, %u, %u, %u, %u", file.c_str(), fw, fh, startf, framecount)
 	if (imgtex) delete imgtex;
 	imgtex = new sf::Image;
 	if (!imgtex->LoadFromFile(file)) return false;
@@ -75,11 +97,26 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 
 	if (texture) delete texture;
 	texture = new sf::Texture;
-	texture->LoadFromImage(*imgtex);
+	bool success = texture->LoadFromImage(*imgtex);
+	INFO("Image copying: %u", success)
 
-	if(fw > texture->GetWidth()) return false;
-	if(fh > texture->GetHeight()) return false;
-	if(framecount > (texture->GetWidth()/frameWidth)*(texture->GetHeight()/frameHeight)) return false;
+
+	INFO("Texture exists")
+	INFO("Texture sizes(w, h): %u, %u", texture->GetWidth(), texture->GetHeight())
+
+
+	if((int)fw > texture->GetWidth()){
+		INFO("Frame width %u is more than texture width: %u", fw, texture->GetWidth());
+		return false;
+	}
+	if((int)fh > texture->GetHeight()){
+		INFO("Frame height %u is more than texture height: %u", fh, texture->GetHeight());
+		return false;
+	}
+	if(framecount > (texture->GetWidth()/fw)*(texture->GetHeight()/fh)){
+		FIXME("Too much frames!")
+		return false;
+	}
 
 	frameWidth = fw;
 	frameHeight = fh;
@@ -88,8 +125,9 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	startframe = startf;
 	maxframes = framecount;
 	alphablend = 255;
-    angle = 0;
+	angle = 0;
 	painted = true;
+	INFO("Everything ok!")
 	return true;
 }
 
@@ -117,6 +155,27 @@ void CBObject::paintObject(const CBObject &obj){
 	painted = true;
 }
 
+void CBObject::setFrame(uint16_t frame){
+	currentframe = frame;
+}
+
+void CBObject::setFrames(uint16_t startf, uint16_t endf, float spd, uint8_t looping){
+	if(currentframe < startf && currentframe > endf) currentframe = startf;
+	animStartFrame = startf;
+	animEndingFrame = endf;
+	animSpeed = spd;
+	animLooping = looping;
+}
+
+void CBObject::playObject(){
+	if((int)currentframe > animEndingFrame && animLooping == 0) currentframe = animStartFrame;
+	if((int)currentframe < animStartFrame && animLooping == 0) currentframe = animEndingFrame;
+	if(animStartFrame < animEndingFrame){
+		currentframe = currentframe + animSpeed;
+	}else{
+		currentframe = currentframe - animSpeed;
+	}
+}
 
 void CBObject::ghostObject(uint8_t ab){
 	alphablend = ab;
@@ -173,8 +232,13 @@ void CBObject::render(RenderTarget &target){
 		} else {
 			sprite.SetPosition(posX, posY);
 			if(maxframes!=0){
-				int16_t copyY = (currentframe % texture->GetWidth());
-				int16_t copyX = (currentframe / texture->GetHeight());
+				int32_t frame = (int)ceil(currentframe);
+				INFO("%i", frame)
+				int32_t framesX = texture->GetWidth() / frameWidth;
+				int32_t framesY = texture->GetHeight() / frameHeight;
+				int32_t copyX = frame % framesX;
+				int32_t copyY = frame / framesY;
+				INFO("X, Y: %i,%i", copyX, copyY)
 				sprite.SetTextureRect(sf::IntRect(copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
 				sprite.SetOrigin(frameWidth*0.5,frameHeight*0.5);
 			}
@@ -224,3 +288,19 @@ CBObject *CBObject::copyObject() const {
 	obj->visible = true;
 	return obj;
 }
+
+
+void CBObject::setLife(uint32_t energy){
+	usinglife = 1;
+	life = energy;
+}
+
+uint32_t CBObject::getLife(){
+	return life;
+}
+
+uint8_t CBObject::isLife(){
+	return usinglife;
+}
+
+

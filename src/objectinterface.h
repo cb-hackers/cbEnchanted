@@ -76,9 +76,11 @@ class ObjectInterface {
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
 
+		void updateLifes();
 		int32_t addMap(CBMap *mapObj);
 
 		void drawObjects(RenderTarget &target);
+		void animateObjects();
         inline CBObject *getObject(int32_t key){return objectMap[key];}
 	private:
 		CBEnchanted *cb;

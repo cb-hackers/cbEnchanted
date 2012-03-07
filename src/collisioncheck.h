@@ -7,10 +7,10 @@ class CollisionCheck
 {
 public:
 	enum CollisionType {
-		Box,
+		Box = 1,
 		Circle,
-		Map,
-		Pixel
+		Pixel,
+		Map
 	};
 
 	CollisionCheck();

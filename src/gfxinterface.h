@@ -3,8 +3,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
-
+#include "cbmap.h"
+#include "animationPlayer.h"
 class CBEnchanted;
+
 
 class GfxInterface {
 	public:
@@ -57,7 +59,8 @@ class GfxInterface {
 		void setCurrentRenderTarget(RenderTarget *t);
 
 		void initializeGfx();
-
+		static void addAnimation(CBObject* obj, uint16_t startf, uint16_t endf, float speed, uint8_t looping);
+		void compileAnimations();
 	private:
 		CBEnchanted *cb;
 		
