@@ -60,6 +60,7 @@ bool CBObject::load(string file)
 	alphaBlend = 255;
 	angle = 0;
 	painted = true;
+	sprite.SetScale(1.0,-1.0);
 	return true;
 }
 
@@ -85,6 +86,7 @@ bool CBObject::load(string file, const sf::Color &mask)
 	angle = 0;
 	currentFrame = 0;
 	painted = true;
+	sprite.SetScale(1.0,-1.0);
 	return true;
 }
 
@@ -132,6 +134,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	currentFrame = 0;
 	playing = false;
 	INFO("Everything ok!")
+	sprite.SetScale(1.0,-1.0);
 	return true;
 }
 
@@ -164,7 +167,7 @@ void CBObject::setFrame(uint16_t frame){
 }
 
 void CBObject::startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous){
-	if (!continuous || (continuous &&(currentFrame < startf || currentFrame > endf))) currentFrame = startf;
+	if ((!continuous && !playing) || (continuous &&(currentFrame < startf || currentFrame > endf))) currentFrame = startf;
 	animStartFrame = startf;
 	animEndingFrame = endf;
 	animSpeed = spd;

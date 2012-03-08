@@ -150,7 +150,9 @@ bool CBMap::loadMap(string file){
 
 
 bool CBMap::loadTileset(string path){
-	return load(path,sf::Color(maskR,maskG,maskB));
+	bool success =  load(path,sf::Color(maskR,maskG,maskB));
+	sprite.SetScale(1.0,1.0);
+	return success;
 }
 
 void CBMap::setLayers(uint8_t back, uint8_t over){
