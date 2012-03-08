@@ -63,7 +63,7 @@ class GfxInterface {
 		void compileAnimations();
 	private:
 		CBEnchanted *cb;
-		
+		float windowScaleX,windowScaleY;
 		string windowTitle;
 		sf::RenderWindow window;
 		sf::Color clearColor;

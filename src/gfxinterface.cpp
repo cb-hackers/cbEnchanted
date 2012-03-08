@@ -40,6 +40,7 @@ void GfxInterface::initializeGfx()
 
 	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
 	currentRenderTarget = &windowRenderTarget;
+	windowScaleX = windowScaleY = 1.0f;
 }
 
 void GfxInterface::commandScreen(void) {
@@ -60,8 +61,16 @@ void GfxInterface::commandScreen(void) {
 			style = sf::Style::Close | sf::Style::Resize;
 			break;
 	}
-	window.Create(sf::VideoMode(width, height, depth), windowTitle, style,window.GetSettings());
+	if (state != 2) {
+		window.Create(sf::VideoMode(width, height, depth), windowTitle, style,window.GetSettings());
+	}
+	else {
+		window.Create(sf::VideoMode(window.GetWidth(), window.GetHeight(), depth), windowTitle, style,window.GetSettings());
+	}
+
 	windowRenderTarget.create(width, height);
+	windowScaleX = (float)window.GetWidth()/(float)windowRenderTarget.width();
+	windowScaleY = (float)window.GetHeight()/(float)windowRenderTarget.height();
 
 }
 
@@ -120,6 +129,7 @@ void GfxInterface::commandDrawScreen(void) {
 			//TODO: Inputs
 			case sf::Event::KeyPressed:
 				if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
+
 			default:
 				break;
 		}
@@ -135,7 +145,7 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 	windowRenderTarget.display();
 	sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
-	sprite.SetScale((float)window.GetWidth()/(float)windowRenderTarget.width(),(float)window.GetHeight()/(float)windowRenderTarget.height());
+	sprite.SetScale(windowScaleX,windowScaleY);
 	window.Draw(sprite);
 	window.Display();
 	if (cls) {
