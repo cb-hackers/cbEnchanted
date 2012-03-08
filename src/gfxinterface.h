@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
 #include "cbmap.h"
-#include "animationPlayer.h"
+//#include "animationPlayer.h"
 class CBEnchanted;
 
 
@@ -77,6 +77,8 @@ class GfxInterface {
 		bool drawDrawCommandToWorld;
 		bool drawImageToWorld;
 		bool drawTextToWorld;
+		bool gameDrawn; //Game has already been drawn in DrawGame
+		bool gameUpdated; //Game has already been updated in UpdateGame
 
 		std::map <int32_t, RenderTarget*> bufferMap;
 };

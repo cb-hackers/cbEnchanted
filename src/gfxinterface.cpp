@@ -17,7 +17,8 @@ GfxInterface::GfxInterface() :
 	drawDrawCommandToWorld(false),
 	drawImageToWorld(false),
 	drawTextToWorld(false),
-	currentRenderTarget(0)
+	currentRenderTarget(0),
+	gameDrawn(false)
 {
 	fpsCounter = 0;
 	currentFPS = 0;
@@ -106,9 +107,10 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
-	cb->animateObjects();
-	cb->drawObjects(windowRenderTarget);
-
+	if (!gameUpdated) cb->updateObjects();
+	if (!gameDrawn) cb->drawObjects(windowRenderTarget);
+	gameUpdated = false;
+	gameDrawn = false;
 	sf::Event e;
 	while (window.PollEvent(e)) {
 		switch (e.Type) {
@@ -118,12 +120,12 @@ void GfxInterface::commandDrawScreen(void) {
 			//TODO: Inputs
 			case sf::Event::KeyPressed:
 				if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
-				cb->setKeyStates();
 			default:
 				break;
 		}
 	}
-	cb->updateLifes();
+	cb->setKeyStates();
+
 	fpsCounter++;
 	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)
 	{
@@ -243,11 +245,15 @@ void GfxInterface::commandScreenShot(void) {
 }
 
 void GfxInterface::commandUpdateGame(void) {
-	STUB;
+	cb->updateObjects();
+	gameUpdated = true;
 }
 
 void GfxInterface::commandDrawGame(void) {
-	STUB;
+	if (!gameUpdated) cb->updateObjects();
+	cb->drawObjects(windowRenderTarget);
+	gameDrawn = true;
+	gameUpdated = true;
 }
 
 void GfxInterface::functionSCREEN(void) {

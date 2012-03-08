@@ -6,6 +6,12 @@
 
 class CBObject{
 	public:
+		enum Type {
+			Object,
+			Map,
+			ParticleEmitter
+		};
+
 		CBObject(bool floor = false);
 		~CBObject();
 		bool load(string file);
@@ -24,6 +30,7 @@ class CBObject{
 		void ghostObject(uint8_t ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
 		virtual bool isMap()const{return false;}
+		virtual Type type()const{return Object;}
 		float getX();
 		float getY();
 		void showObject(bool t) {visible = t;}
@@ -39,7 +46,6 @@ class CBObject{
 		void setObjectFloat(float f){objectFloatData = f;}
 		void setObjectString(const string &s){objectStringData = s;}
 		void setFrame(uint16_t frame);
-		void playObject();
 		CBObject *copyObject()const;
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
@@ -47,12 +53,16 @@ class CBObject{
 		bool isFloorObject()const{return floor;}
 		void setLife(uint32_t energy);
 
-		void setFrames(uint16_t startf, uint16_t endf, float spd, uint8_t looping);
-		inline uint8_t isAnimated()const{return (maxframes > 0);};
-		inline float getCurrentFrame(){return currentframe;};
+		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
+		void setLooping(bool t){animLooping = t;}
+		bool isLooping()const{return animLooping;}
+		inline uint8_t isAnimated()const{return (maxFrames > 0);}
+		inline float getCurrentFrame(){return currentFrame;}
 
-		uint32_t getLife(); //<- lol "Get a life" asd
-		uint8_t isLife();
+		virtual bool updateObject(float timestep);
+
+		uint32_t getLife();
+		bool isLife();
 	protected:
 		//Created using copy
 		bool copied;
@@ -66,24 +76,25 @@ class CBObject{
 		sf::Image *imgtex; //Kuva tekstuurille. Värimaskin takia pitää tehdä näin vitun vaikeasti. -.-
 		sf::Texture *texture; //Tekstuurin "välittäjä"
 		sf::Sprite sprite; //Ja itse piirtäjä.
-		uint8_t alphablend;
+		uint8_t alphaBlend;
 		uint16_t frameWidth;
 		uint16_t frameHeight;
-		uint16_t startframe;
-		uint16_t maxframes;
-		float currentframe;
+		uint16_t startFrame;
+		uint16_t maxFrames;
+		float currentFrame;
 		uint8_t picksTyle;
 		//CB: ObjectInteger, ObjectFloat, ObjectString
 		int32_t objectIntData;
 		string objectStringData;
 		float objectFloatData;
-		uint8_t usinglife; //Elämä käytössä?
+		bool usingLife; //Elämä käytössä?
 		uint32_t life;
 
 		uint16_t animStartFrame;
 		uint16_t animEndingFrame;
 		float animSpeed;
-		uint8_t animLooping;
+		bool animLooping;
+		bool playing;
 		std::vector<Collision> collisionList;
 };
 

@@ -10,6 +10,7 @@
 	#include <unistd.h>
 	#include <sys/time.h>
 #endif
+#include "util.h"
 
 SysInterface::SysInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -105,16 +106,7 @@ void SysInterface::functionTime(void) {
 }
 
 void SysInterface::functionTimer(void) {
-#ifdef WIN32	
-	cb->pushValue((int32_t)clock());
-#else
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-
-	//mtime = (tiemz.tv_sec * 1000 + tiemz.tv_usec / 1000.0) + 0.5;
-	cb->pushValue((int32_t)(tv.tv_sec * 1000 + tv.tv_usec / 1000));
-#endif
+	cb->pushValue((int32_t)mtimer());
 }
 
 void SysInterface::functionCommandLine(void) {

@@ -7,9 +7,9 @@
 class CBMap : public CBObject{
 
 
-		int32_t *layer[4];
+		int32_t *layers[4];
 
-		int32_t tilecount;
+		int32_t tileCount;
 		int32_t mapWidth;
 		int32_t mapHeight;
 		int32_t tileWidth;
@@ -28,13 +28,13 @@ class CBMap : public CBObject{
 
 		~CBMap();
 
-
+		Type type()const{return Map;}
 		bool loadMap(string path);
 		bool loadTileset(string path);
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
 
-		void drawTile(RenderTarget &target, int32_t tile,float x,float y, uint16_t frame = 0);
+		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
 		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t MapY);
@@ -49,9 +49,9 @@ class CBMap : public CBObject{
 		int32_t getTileHeight(){return tileWidth;}
 
 		void setLayers(uint8_t back, uint8_t over);
-		void playObject();
 		void setTile(uint32_t tile, uint32_t lenght, uint32_t slowness);
 		void paintObject(const sf::Texture &txt);
+		bool updateObject(float timestep);
 };
 
 

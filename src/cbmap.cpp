@@ -10,7 +10,7 @@ CBMap::CBMap():CBObject(){
 
 CBMap::~CBMap(){
 	for(int i = 0; i < 4; ++i){
-		delete [] layer[i];
+		delete [] layers[i];
 	}
 	delete [] animLenght;
 	delete [] animSlowness;
@@ -23,7 +23,7 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 	tileWidth = tileW;
 	tileHeight = tileH;
 	for(int i = 0; i < 4; ++i){
-		layer[i] = new int32_t[mapWidth*mapHeight];
+		layers[i] = new int32_t[mapWidth*mapHeight];
 	}
 	return true;
 }
@@ -39,16 +39,10 @@ bool CBMap::loadMap(string file){
 	if(mapStream.is_open()){
 
 		//Tarkistustavut...
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
-		if(checkNum[0] != 23  &&
-		   checkNum[1] != 179 &&
-		   checkNum[2] != 243 &&
-		   checkNum[3] != 56){
-			FIXME("Incorrect magic numbers!")
+		if(checkNum[0] != 40  || checkNum[1] != 192 || checkNum[2] != 13 || checkNum[3] != 139){
+			FIXME("Map: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 		}
 
 
@@ -58,31 +52,25 @@ bool CBMap::loadMap(string file){
 		}
 
 
-		for(int i = 0; i < 512; ++i)
-			mapStream.read((char*)&empty, 1);
+		mapStream.seekg(520);
 
 		mapStream.read((char*)&maskR, 1);
 		mapStream.read((char*)&maskG, 1);
 		mapStream.read((char*)&maskB, 1);
 		mapStream.read((char*)&empty, 1);
 
-		for(int i = 0; i < 40; ++i)
-				mapStream.read((char*)&empty, 1);
-		for(int i = 0; i < 256; ++i)
-				mapStream.read((char*)&empty, 1);
+		mapStream.seekg(820);
 
 
-		mapStream.read((char*)&tilecount, 4);
+		mapStream.read((char*)&tileCount, 4);
 
-		if(tilecount < 0)
+		if(tileCount < 0)
 				return false;
 
-		animLenght = new int32_t [tilecount];
-		animSlowness = new int32_t [tilecount];
-		currentFrame = new float [tilecount];
-		for(uint16_t i = 0; i < tilecount; i++){
-			currentFrame[i] = 0;
-		}
+		animLenght = new int32_t [tileCount];
+		animSlowness = new int32_t [tileCount];
+		currentFrame = new float [tileCount];
+		memset(currentFrame,0,sizeof(float)*tileCount);
 
 		mapStream.read((char*)&tileWidth, 4);
 		mapStream.read((char*)&tileHeight, 4);
@@ -91,94 +79,60 @@ bool CBMap::loadMap(string file){
 		mapStream.read((char*)&mapHeight, 4);
 
 		for(int i = 0; i < 4; ++i){
-			layer[i] = new int32_t[mapWidth*mapHeight];
+			layers[i] = new int32_t[mapWidth*mapHeight];
 		}
 
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
 		//Karttadata alkaa
-		if(checkNum[0] != 254  &&
-		   checkNum[1] != 45   &&
-		   checkNum[2] != 12   &&
+		if(checkNum[0] != 254  ||
+		   checkNum[1] != 45   ||
+		   checkNum[2] != 12   ||
 		   checkNum[3] != 166)
-			FIXME("Incorrect magic nums!")
+			FIXME("Map layer0: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
-		for(int32_t y = 0; y < mapHeight; ++y){
-			for(int32_t x = 0; x < mapWidth; ++x){
-				int32_t position = y * mapWidth + x;
-				mapStream.read((char*)&layer[0][position], 4);
-			}
-		}
+		mapStream.read((char*)layers[0], 4*mapHeight*mapWidth);
 
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
-		if(checkNum[0] != 253  &&
-		   checkNum[1] != 44   &&
-		   checkNum[2] != 11   &&
+		if(checkNum[0] != 253  ||
+		   checkNum[1] != 44   ||
+		   checkNum[2] != 11   ||
 		   checkNum[3] != 165)
-				FIXME("Incorrect magic nums!");
+				FIXME("Map layer1: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
-		for(int32_t y = 0; y < mapHeight; ++y){
-			for(int32_t x = 0; x < mapWidth; ++x){
-				int32_t position = y * mapWidth + x;
-				mapStream.read((char*)&layer[1][position], 4);
-			}
-		}
+		//Collision layer
+		mapStream.read((char*)layers[2], 4*mapHeight*mapWidth);
 
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
-		if(checkNum[0] != 252  &&
-		   checkNum[1] != 43   &&
-		   checkNum[2] != 10   &&
+		if(checkNum[0] != 252  ||
+		   checkNum[1] != 43   ||
+		   checkNum[2] != 10   ||
 		   checkNum[3] != 164)
-				FIXME("Check nums aren't correct!");
+				FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
-		for(int32_t y = 0; y < mapHeight; ++y){
-			for(int32_t x = 0; x < mapWidth; ++x){
-				int32_t position = y * mapWidth + x;
-				mapStream.read((char*)&layer[2][position], 4);
-			}
-		}
+		mapStream.read((char*)layers[1], 4*mapHeight*mapWidth);
 
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
 		if(checkNum[0] != 251  &&
 		   checkNum[1] != 42   &&
 		   checkNum[2] != 9    &&
 		   checkNum[3] != 163)
-				FIXME("Incorrect magic nums!");
+				FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
-		for(int32_t y = 0; y < mapHeight; ++y){
-			for(int32_t x = 0; x < mapWidth; ++x){
-				int32_t position = y * mapWidth + x;
-				mapStream.read((char*)&layer[3][position], 4);
-			}
-		}
+		mapStream.read((char*)layers[3], 4*mapHeight*mapWidth);
 
-		mapStream.read((char*)&checkNum[0], 1);
-		mapStream.read((char*)&checkNum[1], 1);
-		mapStream.read((char*)&checkNum[2], 1);
-		mapStream.read((char*)&checkNum[3], 1);
+		mapStream.read((char*)checkNum, 4);
 
-		if(checkNum[0] != 250  &&
-		   checkNum[1] != 41   &&
-		   checkNum[2] != 8    &&
+		if(checkNum[0] != 250  ||
+		   checkNum[1] != 41   ||
+		   checkNum[2] != 8    ||
 		   checkNum[3] != 162)
-				FIXME("Incorrect magic nums!");
+				FIXME("Tiles: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
-		for(int32_t i = 1; i < tilecount; ++i){
+		for(int32_t i = 1; i < tileCount; ++i){
 			mapStream.read((char*)&animLenght[i], 4);
 			mapStream.read((char*)&animSlowness[i], 4);
 		}
@@ -205,12 +159,12 @@ void CBMap::setLayers(uint8_t back, uint8_t over){
 }
 
 void CBMap::drawLayer(uint8_t level, RenderTarget &target){
-	if(level > 2)
+	if(level > 1)
 			return;
 	if(layerShowing[level] < 1)
 			return;
 
-	float camX = CBEnchanted::instance()->getCameraX()-posX;
+	float camX = CBEnchanted::instance()->getCameraX()-posX+tileWidth;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
@@ -229,7 +183,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 			if (getX >= mapWidth) break;
 			int32_t tileNum = getMap(level, getX, tile_y);
 			if(tileNum > 0){
-				drawTile(target, tileNum, jarjestys_x, jarjestys_y,(int)currentFrame[tileNum]);
+				drawTile(target, tileNum+(int)currentFrame[tileNum], jarjestys_x, jarjestys_y);
 			}
 			tile_x++;
 			jarjestys_x+=tileWidth;
@@ -242,7 +196,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 }
 
 
-void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y, uint16_t frame) {
+void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 	if(tile == 0)
 		return;
 	tile--;
@@ -251,8 +205,6 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y, uint1
 	int32_t fY = 0;
 	int32_t framesX = texture->GetWidth() / tileWidth;
 	int32_t framesY = texture->GetHeight() / tileHeight;
-	if(animLenght[tile] != 0)
-		tile+=frame;
 	fX = (tile % framesX);
 	fY = (tile / framesY);
 
@@ -266,33 +218,34 @@ void CBMap::paintObject(const sf::Texture &txt){
 	STUB;
 }
 
+bool CBMap::updateObject(float timestep) {
+	if (playing) {
+		for(uint16_t tiles = 0; tiles < tileCount; tiles++){
+			if(animLenght[tiles]){
+				currentFrame[tiles] = currentFrame[tiles] + timestep /((float)animSlowness[tiles]*animSpeed);
+				if((int32_t)currentFrame[tiles] > animLenght[tiles]) {
+					currentFrame[tiles] = 0;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 
 void CBMap::setTile(uint32_t tile, uint32_t lenght, uint32_t slowness){
 	animLenght[tile] = lenght;
 	animSlowness[tile] = slowness;
 }
 
-void CBMap::playObject(){
-	for(uint16_t tiles = 0; tiles < tilecount; tiles++){
-		if(animLenght[tiles]){
-			if(currentFrame[tiles] > animLenght[tiles])
-				currentFrame[tiles] = 0;
-			if(currentFrame[tiles] < animLenght[tiles]){
-				currentFrame[tiles] = currentFrame[tiles] + 1.0 /(animSlowness[tiles]*animSpeed);
-				INFO("%f", currentFrame[tiles]);
-			}
-		}
-	}
-}
-
 void CBMap::edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile){
 	int32_t position = MapY * mapWidth + MapX;
-	layer[maplayer][position] = tile;
+	layers[maplayer][position] = tile;
 }
 
 int32_t CBMap::getMap(uint8_t maplayer, int32_t MapX, int32_t MapY){
 	if(MapX < 0 || MapX >= mapWidth || MapY < 0 || MapY >= mapHeight)
 		return 0;
 	int32_t position = MapY * mapWidth + MapX;
-	return layer[maplayer][position];
+	return layers[maplayer][position];
 }

@@ -5,8 +5,9 @@
 #include "cbenchanted.h"
 #include "mapinterface.h"
 #include "gfxinterface.h"
+#include "util.h"
 
-ObjectInterface::ObjectInterface() {
+ObjectInterface::ObjectInterface():lastUpdate(0) {
 	cb = static_cast<CBEnchanted*>(this);
 }
 
@@ -217,18 +218,27 @@ void ObjectInterface::commandObjectLife(void) {
 }
 
 void ObjectInterface::commandPlayObject(void) {
-	uint8_t looping = cb->popValue().toInt();
+	bool continuous = cb->popValue().toInt();
 	float speed = cb->popValue().toFloat();
 	uint16_t endf = cb->popValue().toInt();
 	uint16_t startf = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
 	CBObject *object = objectMap[id];
 
-	object->setFrames(startf, endf, speed, looping);
+	object->startPlaying(startf, endf, speed, continuous);
+	object->setLooping(false);
 }
 
 void ObjectInterface::commandLoopObject(void) {
-	STUB;
+	bool continuous = cb->popValue().toInt();
+	float speed = cb->popValue().toFloat();
+	uint16_t endf = cb->popValue().toInt();
+	uint16_t startf = cb->popValue().toInt();
+	int32_t id = cb->popValue().toInt();
+	CBObject *object = objectMap[id];
+
+	object->startPlaying(startf, endf, speed, continuous);
+	object->setLooping(true);
 }
 
 void ObjectInterface::commandStopObject(void) {
@@ -453,15 +463,6 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-
-
-    target.setViewTo(false);
-    for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
-        --i;
-        (*i)->render(target);
-    }
-    target.setViewTo(true);
-
 	target.setViewTo(false);
 	for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
 		--i;
@@ -469,11 +470,11 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
 	target.setViewTo(true);
-
 	for (std::vector<CBObject*>::iterator i = objectDrawOrder.begin();i != objectDrawOrder.end();i++) {
 		(*i)->render(target);
 	}
-	if (cb->getTileMap()) cb->getTileMap()->drawLayer(2, target);
+	target.setViewTo(false);
+	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
 }
 
 
@@ -484,26 +485,17 @@ int32_t ObjectInterface::addMap(CBMap *mapObj){
 }
 
 
-void ObjectInterface::updateLifes(){
+void ObjectInterface::updateObjects(){
+	int64_t currentTime = mtimer();
+	float updateTime = (float)(currentTime-lastUpdate)/1000.0f;
+	lastUpdate = currentTime;
 	std::map<int32_t,CBObject*>::iterator i;
 	for (i = objectMap.begin(); i != objectMap.end(); i++) {
-		if((*i).second -> isLife() && (*i).second ->getLife() < 0){
+		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
 			std::vector<CBObject*>::const_iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
 			objectDrawOrder.erase(draw);
 			delete (*i).second;
 			objectMap.erase(i);
-		}
-		if((*i).second ->isLife()){
-			(*i).second->setLife((*i).second->getLife()-1);
-		}
-	}
-}
-
-void ObjectInterface::animateObjects(){
-	std::map<int32_t, CBObject*>::iterator i;
-	for(i = objectMap.begin(); i != objectMap.end(); i++){
-		if((*i).second -> isAnimated()){
-			(*i).second -> playObject();
 		}
 	}
 }

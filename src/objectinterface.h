@@ -76,13 +76,13 @@ class ObjectInterface {
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
 
-		void updateLifes();
+		void updateObjects();
 		int32_t addMap(CBMap *mapObj);
 
 		void drawObjects(RenderTarget &target);
-		void animateObjects();
-        inline CBObject *getObject(int32_t key){return objectMap[key];}
+		inline CBObject *getObject(int32_t key){return objectMap[key];}
 	private:
+		int64_t lastUpdate;
 		CBEnchanted *cb;
 		std::map<int32_t,CBObject*> objectMap;
 		std::map<int32_t, CBObject*>::iterator iter;

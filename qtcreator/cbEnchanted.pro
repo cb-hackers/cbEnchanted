@@ -38,7 +38,8 @@ HEADERS += \
     ../src/rendertarget.h \
     ../src/cbmap.h \
     ../src/collisioncheck.h \
-    ../src/collision.h
+    ../src/collision.h \
+    ../src/util.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -65,7 +66,7 @@ SOURCES += \
     ../src/cbimage.cpp \
     ../src/rendertarget.cpp \
     ../src/cbmap.cpp \
-    ../src/collisioncheck.cpp
+	../src/collisioncheck.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
@@ -73,22 +74,25 @@ DEFINES += SFML_STATIC
 DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 
 win32{
-    CONFIG(release, debug|release){
-        LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
+	CONFIG(release, debug|release){
+		LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
 		PRE_TARGETDEPS += "$$(SFML_LIB)/release/sfml-main.lib" "$$(SFML_LIB)/release/sfml-window-s.lib" "$$(SFML_LIB)/release/sfml-audio-s.lib" "$$(SFML_LIB)/release/sfml-graphics-s.lib"
 		DEFINES += NDEBUG
 	}
-    else {
-        LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
+	else {
+		LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
 		PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
 	}
 	LIBS += -L"$$(BOOST_LIB)"
-    LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
-    INCLUDEPATH += "$$(SFML_INCLUDE)"
-    DEPENDPATH += "$$(SFML_INCLUDE)"
-    INCLUDEPATH += "$$(BOOST_INCLUDE)"
-    DEPENDPATH += "$$(BOOST_INCLUDE)"
-
+	LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
+	INCLUDEPATH += "$$(SFML_INCLUDE)"
+	DEPENDPATH += "$$(SFML_INCLUDE)"
+	INCLUDEPATH += "$$(BOOST_INCLUDE)"
+	DEPENDPATH += "$$(BOOST_INCLUDE)"
+	SOURCES += ../src/utilwin.cpp
+}
+else {
+	SOURCES += ../src/utillinux.cpp
 }
 
 
