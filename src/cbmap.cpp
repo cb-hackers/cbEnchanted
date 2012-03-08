@@ -166,7 +166,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	if(layerShowing[level] < 1)
 			return;
 
-	float camX = CBEnchanted::instance()->getCameraX()-posX+tileWidth;
+	float camX = CBEnchanted::instance()->getCameraX()-posX;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;
 
 
