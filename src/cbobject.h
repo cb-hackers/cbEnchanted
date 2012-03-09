@@ -13,7 +13,7 @@ class CBObject{
 		};
 
 		CBObject(bool floor = false);
-		~CBObject();
+		virtual ~CBObject();
 		bool load(string file);
 		bool load(string file,const sf::Color &mask);
 		bool loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
@@ -24,9 +24,9 @@ class CBObject{
 		void positionObject(const sf::Vector2f &p) {posX = p.x;posY = p.y;}
 		void translateObject(float hor, float ver, float depth);
 		void turnObject(float speed);
-		void render(RenderTarget &target);
+		virtual void render(RenderTarget &target);
 		void setPosition(float x, float y);
-		void rotateObject(float a){angle = 180.0+a;}
+		void rotateObject(float a){angle = 180.0f+a;}
 		void ghostObject(uint8_t ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
 		virtual bool isMap()const{return false;}

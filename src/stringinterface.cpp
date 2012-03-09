@@ -12,8 +12,6 @@ void StringInterface::functionStr(void) {
 	{
 	case Any::Int: cb->pushValue(lexical_cast<string>(a.getInt()));return;
 	case Any::Float: cb->pushValue(lexical_cast<string>(a.getFloat()));return;
-	case Any::Short: cb->pushValue(lexical_cast<string>(a.getShort()));return;
-	case Any::Byte: cb->pushValue(lexical_cast<string>(a.getByte()));return;
 	default:cb->pushValue(a);
 	}
 

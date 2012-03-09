@@ -81,31 +81,31 @@ void FileInterface::commandExecute(void) {
 }
 
 void FileInterface::commandWriteByte(void) {
-	uint8_t byte = cb->popValue().getByte();
-	fputc((int) byte, filestrs[cb->popValue().getInt()]);
+	uint8_t byte = cb->popValue().toByte();
+	fputc((int) byte, filestrs[cb->popValue().toInt()]);
 }
 
 void FileInterface::commandWriteShort(void) {
-	uint16_t sh = cb->popValue().getShort();
+	uint16_t sh = cb->popValue().toShort();
 	fwrite(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
 
 }
 
 void FileInterface::commandWriteInt(void) {
-	int32_t i = cb->popValue().getInt();
-	fwrite(&i, sizeof(int32_t), 1, filestrs[cb->popValue().getInt()]);
+	int32_t i = cb->popValue().toInt();
+	fwrite(&i, sizeof(int32_t), 1, filestrs[cb->popValue().toInt()]);
 }
 
 void FileInterface::commandWriteFloat(void) {
-	float fl = cb->popValue().getFloat();
-	fwrite(&fl, sizeof(float), 1, filestrs[cb->popValue().getInt()]);
+	float fl = cb->popValue().toFloat();
+	fwrite(&fl, sizeof(float), 1, filestrs[cb->popValue().toInt()]);
 }
 
 void FileInterface::commandWriteString(void) {
 	string sstring = cb->popValue().toString();
 
 	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
+	file2 = filestrs[cb->popValue().toInt()];
 
 	int l = int(sstring.length());
 	char * str;

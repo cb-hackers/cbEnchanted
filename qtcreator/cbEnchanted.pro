@@ -39,7 +39,9 @@ HEADERS += \
     ../src/cbmap.h \
     ../src/collisioncheck.h \
     ../src/collision.h \
-    ../src/util.h
+    ../src/util.h \
+    ../src/cbparticleemitter.h \
+    ../src/particle.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -66,7 +68,9 @@ SOURCES += \
     ../src/cbimage.cpp \
     ../src/rendertarget.cpp \
     ../src/cbmap.cpp \
-	../src/collisioncheck.cpp
+	../src/collisioncheck.cpp \
+    ../src/cbparticleemitter.cpp \
+    ../src/debug.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h

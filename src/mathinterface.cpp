@@ -3,6 +3,7 @@
 #include "mathinterface.h"
 #include <math.h>
 #include "mathoperations.h"
+#include "util.h"
 
 MathInterface::MathInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -106,13 +107,15 @@ void MathInterface::functionLog10(void) {
 void MathInterface::functionRnd(void) {
 	float high = cb->popValue().toFloat();
 	float low = cb->popValue().toFloat();
-	cb->pushValue(low + ((float)rand() / RAND_MAX) * (high - low)); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
+	if (high < low) {cb->pushValue(randf()*low);return;}
+	cb->pushValue(low + (randf() * (high - low)));
 }
 
 void MathInterface::functionRand(void) {
 	int32_t high = cb->popValue().toInt();
 	int32_t low = cb->popValue().toInt();
-	cb->pushValue(low + rand() % (high - low)); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
+	if (high < low) {cb->pushValue(rand(low)); return;}
+	cb->pushValue(low + rand(high - low));
 }
 
 void MathInterface::functionMin(void) {
@@ -185,15 +188,6 @@ void MathInterface::functionWrapAngle(void) {
 		}
 		while (angle < 0) {
 			angle += 360;
-		}
-		cb->pushValue(angle);
-		return;
-	}
-	if (a.type() == Any::Short)
-	{
-		uint16_t angle = a.getShort();
-		while (angle > 360) {
-			angle -= 360;
 		}
 		cb->pushValue(angle);
 		return;

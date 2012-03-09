@@ -40,10 +40,57 @@ class VariableScope {
 };
 
 struct Array {
+	void init(uint32_t size, int32_t t) {
+		switch (t){
+			case 3:
+				type = 3;
+				data = (char*)new int32_t[size];
+				memset(data,0,sizeof(int32_t)*size);
+				break;
+			case 7:
+				type = 7;
+				data = (char*)new uint16_t[size];
+				memset(data,0,sizeof(uint16_t)*size);
+				break;
+			case 8:
+				type = 8;
+				data = (char*)new uint8_t[size];
+				memset(data,0,sizeof(uint8_t)*size);
+				break;
+			case 4: {
+				type = 4;
+				float *fdata = new float[size];
+				for (int32_t i = 0; i != size;++i) {
+					fdata[i] = 0.0f;
+				}
+				data = (char*)fdata;
+				break;}
+			case 6:{
+				type = 6;
+				string *sdata = new string[size];
+				for (int32_t i = 0; i != size;++i) {
+					sdata[i] = "";
+				}
+				data = (char*)sdata;
+				break;
+			}
+		}
+	}
+
 	map<uint32_t, uint32_t> dimensions;
 	uint32_t type;
-	
-	Any *data;
+	int32_t getInt(uint32_t index)const{return ((int32_t*)data)[index];}
+	float getFloat(uint32_t index)const{return ((float*)data)[index];}
+	uint16_t getShort(uint32_t index)const{return ((uint16_t*)data)[index];}
+	uint8_t getByte(uint32_t index)const{return ((uint8_t*)data)[index];}
+	string getString(uint32_t index)const{return ((string*)data)[index];}
+	void setInt(uint32_t index,int32_t v){((int32_t*)data)[index] = v;}
+	void setFloat(uint32_t index,float v){((float*)data)[index] = v;}
+	void setShort(uint32_t index,uint16_t v){((uint16_t*)data)[index] = v;}
+	void setByte(uint32_t index,uint8_t v){((uint8_t*)data)[index] = v;}
+	void setString(uint32_t index,const string &v){((string*)data)[index] = v;}
+
+	char *data;
 };
 
 class CBVariableHolder {

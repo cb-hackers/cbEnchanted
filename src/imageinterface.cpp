@@ -21,12 +21,12 @@ void ImageInterface::commandSaveImage(void) {
 
 void ImageInterface::commandDrawImage(void) {
 	cb->getCurrentRenderTarget()->setViewTo(cb->getDrawImageToWorld());
-	bool mask = cb->popValue().getInt();
+	int32_t mask = cb->popValue().toInt();
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->draw(x,y);
+	img->draw(x,y,mask);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {

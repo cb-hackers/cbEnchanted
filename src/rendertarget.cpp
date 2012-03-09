@@ -1,10 +1,12 @@
 #include "rendertarget.h"
 #include "cbenchanted.h"
 #include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Shader.hpp>
 #define CIRCLE_VERTEX_COUNT 100
 #ifndef GL_COMBINE
 	#define GL_COMBINE 0x8570
 #endif
+sf::Shader *imageMaskShader;
 
 RenderTarget *currentRenderContext = 0;
 inline void setCurrentRenderContext(RenderTarget *t) {
@@ -122,6 +124,25 @@ void RenderTarget::draw(const sf::Vertex *vertices, unsigned int vertexCount, sf
 void RenderTarget::clear(const sf::Color &c) {
 	target.Clear(c);
 	changedSinceDisplay = true;
+}
+const char * imageMaskFragmentShaderCode =
+		"uniform sampler2D texture;\n"
+		"uniform vec4 maskColor;\n"
+		"const float offset = 0.00196078431372549019607843137255;\n"
+		"void main(void)\n"
+		"{\n"
+		"    vec4 color = texture2D(texture,gl_TexCoord[0].st);"
+		"    vec4 div = abs(maskColor - color);\n"
+		"    if ((div.r <= offset) && (div.g <= offset) && (div.b <= offset) && (div.a <= offset)) color = vec4(0.0);\n"
+		"    gl_FragColor = color;"
+		"}\n"
+		"";
+
+void RenderTarget::init()
+{
+	imageMaskShader = new sf::Shader;
+	bool shaderLoadingFailed =imageMaskShader->LoadFromMemory(string(imageMaskFragmentShaderCode),sf::Shader::Fragment);
+	assert(shaderLoadingFailed);
 }
 
 void RenderTarget::display() const {
@@ -267,6 +288,11 @@ void RenderTarget::drawDot(float x, float y) {
 	changedSinceDisplay = true;
 }
 
+void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime)
+{
+
+}
+
 void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y) {
 	/*enableSFMLDrawMode();
 	sf::Sprite sprite(rt.getSurface()->GetTexture());
@@ -289,6 +315,30 @@ void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y) {
 		glTexCoord2f(0.0f, 1.0f);
 		glVertex2f(x, y + h);
 	glEnd();
+	changedSinceDisplay = true;
+}
+
+void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y, const sf::Color &mask)
+{
+	setDrawingMode(DM_Textures);
+	rt.display();
+	int h = rt.height();
+	if (drawToWorldViewOn) h = -h;
+	int w = rt.width();
+	imageMaskShader->Bind();
+	imageMaskShader->SetParameter("maskColor",mask);
+	rt.getSurface()->GetTexture().Bind();
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex2f(x, y);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(x + w, y);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(x + w, y + h);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(x, y + h);
+	glEnd();
+	imageMaskShader->Unbind();
 	changedSinceDisplay = true;
 }
 

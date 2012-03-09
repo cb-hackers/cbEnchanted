@@ -41,6 +41,8 @@ void GfxInterface::initializeGfx()
 	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
 	currentRenderTarget = &windowRenderTarget;
 	windowScaleX = windowScaleY = 1.0f;
+
+	RenderTarget::init();
 }
 
 void GfxInterface::commandScreen(void) {

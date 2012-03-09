@@ -86,11 +86,6 @@ Any operator + (Any &l, Any &r) {
 			return boost::lexical_cast<string>(l.getInt()) + r.getString();
 		}
 	}
-	if (l.type() == Any::Short) {
-		if (r.type() == Any::Int) {
-			return l.getShort() + r.getInt();
-		}
-	}
 	if (l.type() == Any::String) {
 		if (r.type() == Any::Float) {
 			return l.getString() + boost::lexical_cast<string>(r.getFloat());

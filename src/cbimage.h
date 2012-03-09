@@ -2,6 +2,7 @@
 #define CBIMAGE_H
 #include "precomp.h"
 #include "rendertarget.h"
+class CBParticleEmitter;
 class CBImage
 {
 public:
@@ -15,10 +16,12 @@ public:
 	void makeImage(int32_t w, int32_t h);
 	void setHotspot(float x,float y) {hotspotX = x;hotspotY = y;}
 	RenderTarget *getRenderTarget(){return &renderTarget;}
-	void draw(float x,float y);
+	void draw(float x,float y,bool useMask);
+	void maskImage(const sf::Color &c){maskColor = c;}
 private:
 	float hotspotX,hotspotY;
 	RenderTarget renderTarget;
+	sf::Color maskColor;
 };
 
 #endif // CBIMAGE_H

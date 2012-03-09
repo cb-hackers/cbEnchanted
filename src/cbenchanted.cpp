@@ -603,6 +603,7 @@ void CBEnchanted::commandDim(void) {
 		a.dimensions[i] = dim;
 		size *= dim;
 	}
+
 	
 	cpos += 1;
 	uint32_t type = *(uint32_t *)(code + cpos);
@@ -610,8 +611,7 @@ void CBEnchanted::commandDim(void) {
 	cpos += 1;
 	uint32_t arrId = *(uint32_t *)(code + cpos); // Array ID
 	cpos += 4;
-	a.type = type;
-	a.data = new Any [size];
+	a.init(size,type);
 	setArray(arrId, a);
 }
 
@@ -636,7 +636,21 @@ void CBEnchanted::commandArrayAssign(void) {
 			pos += popValue().getInt();
 		}
 	}
-	getArray(id).data[pos] = popValue();
+	type = getArray(id).type;
+	switch (type){
+		case 3:
+			getArray(id).setInt(pos,popValue().toInt());break;
+		case 4:
+			getArray(id).setFloat(pos,popValue().toFloat());break;
+			break;
+		case 7:
+			getArray(id).setShort(pos,popValue().toShort());break;
+		case 8:
+			getArray(id).setByte(pos,popValue().toByte());break;
+
+		case 6:
+			getArray(id).setString(pos,popValue().toString());break;
+	}
 }
 
 /*
@@ -674,6 +688,41 @@ void CBEnchanted::handlePushSomething(void) {
 			cpos += 4;
 			
 			pushValue(value);
+			break;
+		}
+		case 3: //Integer array
+		case 4: //Float array
+		case 6:
+		case 7:
+		case 8:
+		{
+			uint32_t id = *(uint32_t *)(code + cpos);
+			cpos += 4;
+			uint32_t pos = 0;
+			int32_t dimensions = popValue().getInt();
+			for (int32_t i = dimensions - 1; i >= 0; --i) {
+				if (i != dimensions - 1) {
+					pos += popValue().getInt() * getArray(id).dimensions[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			type = getArray(id).type;
+			switch (type){
+				case 3:
+					pushValue(getArray(id).getInt(pos));break;
+				case 4:
+					pushValue(getArray(id).getFloat(pos));break;
+					break;
+				case 7:
+					pushValue((int32_t)getArray(id).getShort(pos));break;
+				case 8:
+					pushValue((int32_t)getArray(id).getByte(pos));break;
+
+				case 6:
+					pushValue(getArray(id).getString(pos));break;
+			}
 			break;
 		}
 		case 5: { // String
@@ -889,19 +938,19 @@ void CBEnchanted::commandGoto(void) {
 }
 
 void CBEnchanted::commandDelete(void) {
-	
+	STUB;
 }
 
 void CBEnchanted::commandInsert(void) {
-	
+	STUB;
 }
 
 void CBEnchanted::commandClearArray(void) {
-	
+	STUB;
 }
 
 void CBEnchanted::commandReDim(void) {
-	
+	STUB;
 }
 
 void CBEnchanted::commandReturn(void) {
