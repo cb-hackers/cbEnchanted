@@ -1,7 +1,9 @@
+#ifdef __linux
+
 #include "util.h"
 #include <unistd.h>
 #include <sys/time.h>
-#include <stdlib>
+#include <cstdlib>
 int64_t mtimer() {
 	struct timeval tv;
 
@@ -18,3 +20,5 @@ float randf() {
 int32_t rand(int32_t max) {
 	return rand() % max;
 }
+
+#endif // __linux

@@ -18,7 +18,7 @@ ObjectInterface::~ObjectInterface() {
 void ObjectInterface::commandDeleteObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
-	std::vector<CBObject*>::const_iterator i = objectDrawOrder.cbegin() + object->getDrawOrderNumber();
+	std::vector<CBObject*>::iterator i = objectDrawOrder.begin() + object->getDrawOrderNumber();
 	objectDrawOrder.erase(i);
 	delete object;
 	objectMap.erase(id);
@@ -494,7 +494,7 @@ void ObjectInterface::updateObjects(){
 	std::map<int32_t,CBObject*>::iterator i;
 	for (i = objectMap.begin(); i != objectMap.end(); i++) {
 		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
-			std::vector<CBObject*>::const_iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
+			std::vector<CBObject*>::iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
 			objectDrawOrder.erase(draw);
 			delete (*i).second;
 			objectMap.erase(i);
