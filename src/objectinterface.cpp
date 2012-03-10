@@ -18,6 +18,11 @@ ObjectInterface::~ObjectInterface() {
 void ObjectInterface::commandDeleteObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
+	if (object->type() == CBObject::ParticleEmitter) {
+		objectMap.erase(id);
+		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
+		return;
+	}
 	std::vector<CBObject*>::iterator i = objectDrawOrder.begin() + object->getDrawOrderNumber();
 	objectDrawOrder.erase(i);
 	delete object;
@@ -69,8 +74,8 @@ void ObjectInterface::commandScreenPositionObject(void) {
 
 void ObjectInterface::commandTurnObject(void) {
 	//Random shit...
-	cb->popValue().toFloat();
-	cb->popValue().toInt();
+	cb->popValue();
+	cb->popValue();
 
 	float a = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
@@ -492,12 +497,15 @@ void ObjectInterface::updateObjects(){
 	float updateTime = (float)(currentTime-lastUpdate)/1000.0f;
 	lastUpdate = currentTime;
 	std::map<int32_t,CBObject*>::iterator i;
-	for (i = objectMap.begin(); i != objectMap.end(); i++) {
+	for (i = objectMap.begin(); i != objectMap.end();) {
 		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
-			std::vector<CBObject*>::iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
-			objectDrawOrder.erase(draw);
+			removeFromDrawOrder((*i).second->getDrawOrderNumber());
 			delete (*i).second;
-			objectMap.erase(i);
+			i = objectMap.erase(i);
+		}
+		else {
+			++i;
 		}
 	}
+	cb->updateRogueParticles();
 }

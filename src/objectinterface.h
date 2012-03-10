@@ -82,7 +82,8 @@ class ObjectInterface {
 		void drawObjects(RenderTarget &target);
 		inline CBObject *getObject(int32_t key){return objectMap[key];}
 		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
-		inline void addToDrawOrder(CBObject *o){objectDrawOrder.push_back(o);}
+		inline void addToDrawOrder(CBObject *o){o->setDrawOrderNumber(objectDrawOrder.size());objectDrawOrder.push_back(o);}
+		inline void removeFromDrawOrder(int32_t place) {std::vector<CBObject*>::iterator draw = objectDrawOrder.begin() + place;objectDrawOrder.erase(draw);}
 	private:
 		int64_t lastUpdate;
 		CBEnchanted *cb;

@@ -263,7 +263,7 @@ void GfxInterface::commandUpdateGame(void) {
 
 void GfxInterface::commandDrawGame(void) {
 	if (!gameUpdated) cb->updateObjects();
-	cb->drawObjects(windowRenderTarget);
+	cb->drawObjects(*currentRenderTarget);
 	gameDrawn = true;
 	gameUpdated = true;
 }
