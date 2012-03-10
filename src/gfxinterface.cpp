@@ -8,6 +8,28 @@
 #endif
 #include "cbimage.h"
 
+
+const char *screenGammaFragmentShaderCode =
+		"uniform sampler2D screenBuf; \n"
+		"uniform vec4 windowGamma; \n"
+		"void main(void) \n"
+		"{ \n"
+		"	vec4 color = texture2D(screenBuf, gl_TexCoord[0].xy); \n"
+		"	vec4 nyCol; \n"
+		"	if (windowGamma.r > 0) nyCol.r = color.r + (1.0-color.r)*windowGamma.r; else nyCol.r = color.r + color.r*windowGamma.r; \n"
+		"	if (windowGamma.g > 0) nyCol.g = color.g + (1.0-color.g)*windowGamma.g; else nyCol.g = color.g + color.g*windowGamma.g; \n"
+		"	if (windowGamma.b > 0) nyCol.b = color.b + (1.0-color.b)*windowGamma.b; else nyCol.b = color.b + color.b*windowGamma.b; \n"
+		"	if (nyCol.r > 1.0)  nyCol.r = 1.0; \n"
+		"	if (nyCol.r < 0.0)  nyCol.r = 0.0; \n"
+		"	if (nyCol.g > 1.0)  nyCol.g = 1.0; \n"
+		"	if (nyCol.g < 0.0)  nyCol.g = 0.0; \n"
+		"	if (nyCol.b > 1.0)  nyCol.b = 1.0; \n"
+		"	if (nyCol.b < 0.0)  nyCol.b = 0.0; \n"
+		"	nyCol.a = 1.0; \n"
+		"	gl_FragColor = nyCol; \n"
+		"} \n";
+
+
 GfxInterface::GfxInterface() :
 	cb(static_cast <CBEnchanted *> (this)),
 	windowTitle(""),
@@ -41,8 +63,14 @@ void GfxInterface::initializeGfx()
 	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
 	currentRenderTarget = &windowRenderTarget;
 	windowScaleX = windowScaleY = 1.0f;
-
+	windowGammaR = 0;
+	windowGammaG = 0;
+	windowGammaB = 0;
 	RenderTarget::init();
+
+	screenGammaShader = new sf::Shader;
+	bool scrGamShadFail = screenGammaShader->LoadFromMemory(string(screenGammaFragmentShaderCode), sf::Shader::Fragment);
+	assert(scrGamShadFail);
 }
 
 void GfxInterface::commandScreen(void) {
@@ -145,11 +173,18 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
+
 	windowRenderTarget.display();
 	sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
 	sprite.SetScale(windowScaleX,windowScaleY);
-	window.Draw(sprite);
+	INFO("Gamma RGB: %f, %f, %f", windowGammaR, windowGammaG, windowGammaB)
+
+	screenGammaShader->Bind();
+	screenGammaShader->SetParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
+	window.Draw(sprite, sf::RenderStates(screenGammaShader));
+	screenGammaShader->Unbind();
 	window.Display();
+
 	if (cls) {
 		windowRenderTarget.clear(clearColor);
 	}
@@ -233,7 +268,12 @@ void GfxInterface::commandPickColor(void) {
 }
 
 void GfxInterface::commandScreenGamma(void) {
-	STUB;
+	float blue = cb->popValue().toInt();
+	float green = cb->popValue().toInt();
+	float red = cb->popValue().toInt();
+	windowGammaR = red/255;
+	windowGammaG = green/255;
+	windowGammaB = blue/255;
 }
 
 void GfxInterface::commandDrawToImage(void) {
