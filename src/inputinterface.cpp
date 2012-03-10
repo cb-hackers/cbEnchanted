@@ -216,7 +216,21 @@ void InputInterface::functionWaitKey(void) {
 }
 
 void InputInterface::functionMouseDown(void) {
-	STUB;
+	int32_t button = cb->popValue().toInt();
+	switch (button) {
+		case 1:
+			cb->pushValue((int32_t)sf::Mouse::IsButtonPressed(sf::Mouse::Left));break;
+		case 2:
+			cb->pushValue((int32_t)sf::Mouse::IsButtonPressed(sf::Mouse::Right));break;
+		case 3:
+			cb->pushValue((int32_t)sf::Mouse::IsButtonPressed(sf::Mouse::Middle));break;
+		case 4:
+			cb->pushValue((int32_t)sf::Mouse::IsButtonPressed(sf::Mouse::XButton1));break;
+		case 5:
+			cb->pushValue((int32_t)sf::Mouse::IsButtonPressed(sf::Mouse::XButton2));break;
+		default:
+			cb->pushValue(0);
+	}
 }
 
 void InputInterface::functionMouseHit(void) {
@@ -247,10 +261,12 @@ void InputInterface::functionMouseY(void) {
 
 void InputInterface::functionMouseWX(void) {
 	sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
+	cb->pushValue(cb->screenCoordToWorld(static_cast<sf::Vector2f>(pos)).x);
 }
 
 void InputInterface::functionMouseWY(void) {
 	sf::Vector2i pos = sf::Mouse::GetPosition(*cb->getWindow());
+	cb->pushValue(cb->screenCoordToWorld(static_cast<sf::Vector2f>(pos)).y);
 }
 
 void InputInterface::functionMouseZ(void) {

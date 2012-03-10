@@ -61,7 +61,7 @@ void EffectInterface::updateRogueParticles()
 {
 	for (vector<CBParticleEmitter*>::iterator i = rogueEmitters.begin();i != rogueEmitters.end();) {
 		if((*i)->updateObject(0)){ //updateObject returns true if object should be deleted
-			cb->removeFromDrawOrder((*i)->getDrawOrderNumber());
+			cb->removeFromDrawOrder(*i);
 			delete (*i);
 			i = rogueEmitters.erase(i);
 		}
