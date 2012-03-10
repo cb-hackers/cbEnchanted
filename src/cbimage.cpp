@@ -3,7 +3,16 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
-CBImage::CBImage() : hotspotX(0), hotspotY(0),maskColor(0,0,0), renderTarget() {
+CBImage::CBImage() :
+	hotspotX(0),
+	hotspotY(0),
+	maskColor(0,0,0),
+	renderTarget(),
+	frameWidth(0),
+	frameHeight(0),
+	animBegin(0),
+	animLength(0)
+{
 
 }
 
@@ -24,6 +33,34 @@ void CBImage::draw(float x, float y, bool useMask) {
 	}
 	else {
 		CBEnchanted::instance()->getCurrentRenderTarget()->drawRenderTarget(renderTarget, x - hotspotX, y - hotspotY);
+	}
+}
+
+void CBImage::draw(float x, float y, int frame, bool useMask)
+{
+	if (animLength == 0) {draw(x,y,useMask);return;} //Not anim image
+	sf::FloatRect frameArea;
+	//INFO("%i", frame)
+	int32_t framesX = renderTarget.width() / frameWidth;
+	int32_t framesY = renderTarget.height() / frameHeight;
+	int32_t copyX = frame % framesX;
+	int32_t copyY = (frame-copyX) / framesY;
+
+	frameArea.Left = (copyX*frameWidth)/(float)renderTarget.width();
+	frameArea.Top = (copyY*frameWidth)/(float)renderTarget.height();
+	frameArea.Height = frameHeight/(float)renderTarget.height();
+	frameArea.Width = frameWidth/(float)renderTarget.width();
+
+	sf::FloatRect drawArea;
+	drawArea.Left = x - hotspotX;
+	drawArea.Top = y - hotspotY;
+	drawArea.Width = frameWidth;
+	drawArea.Height = frameHeight;
+	if (useMask) {
+		CBEnchanted::instance()->getCurrentRenderTarget()->drawRenderTarget(renderTarget,drawArea,frameArea,maskColor);
+	}
+	else {
+		CBEnchanted::instance()->getCurrentRenderTarget()->drawRenderTarget(renderTarget, drawArea,frameArea);
 	}
 }
 

@@ -26,7 +26,7 @@ void ImageInterface::commandDrawImage(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->draw(x,y,mask);
+	img->draw(x,y,frame,mask);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -40,7 +40,13 @@ void ImageInterface::commandDrawImageBox(void) {
 }
 
 void ImageInterface::commandMaskImage(void) {
-	STUB;
+	sf::Color mask;
+	mask.r = cb->popValue().toByte();
+	mask.g = cb->popValue().toByte();
+	mask.b = cb->popValue().toByte();
+	mask.a = 255;
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	img->maskImage(mask);
 }
 
 void ImageInterface::commandDefaultMask(void) {
@@ -91,10 +97,26 @@ void ImageInterface::functionLoadImage(void) {
 }
 
 void ImageInterface::functionLoadAnimImage(void) {
-	STUB;
+	int32_t animL = cb->popValue().toInt();
+	int32_t startF = cb->popValue().toInt();
+	int32_t frameH = cb->popValue().toInt();
+	int32_t frameW = cb->popValue().toInt();
+	string path = cb->popValue().getString();
+	CBImage *image = new CBImage;
+	if (!image->load(path))
+	{
+		delete image;
+		FIXME("Loading image %s failed.",path.c_str());
+		cb->pushValue(0);
+	}
+	image->setAnimParams(frameW,frameH,startF,animL);
+	int32_t id = nextId();
+	cbImages[id] = image;
+	cb->pushValue(id);
 }
 
 void ImageInterface::functionMakeImage(void) {
+	int32_t frameCount = cb->popValue().toInt();
 	int32_t h = cb->popValue().toInt();
 	int32_t w = cb->popValue().toInt();
 	CBImage *image = new CBImage;

@@ -81,6 +81,8 @@ class ObjectInterface {
 
 		void drawObjects(RenderTarget &target);
 		inline CBObject *getObject(int32_t key){return objectMap[key];}
+		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
+		inline void addToDrawOrder(CBObject *o){objectDrawOrder.push_back(o);}
 	private:
 		int64_t lastUpdate;
 		CBEnchanted *cb;

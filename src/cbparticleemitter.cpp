@@ -2,6 +2,7 @@
 #include "util.h"
 
 CBParticleEmitter::CBParticleEmitter():
+	CBObject(),
 	particleLifeTime(0),
 	particleSpeed(0),
 	particleGravity(0),
@@ -9,12 +10,19 @@ CBParticleEmitter::CBParticleEmitter():
 	particleDensity(1),
 	particleSpread(0),
 	particleCount(1),
-	particleSpawnCounter(0)
+	particleSpawnCounter(0),
+	frameCount(0)
 {
 }
 
 CBParticleEmitter::~CBParticleEmitter() {
 
+}
+
+void CBParticleEmitter::create(CBImage *image, int32_t lifeTime)
+{
+	particleTexture = image;
+	particleLifeTime = lifeTime;
 }
 
 void CBParticleEmitter::setParticleMovement(float speed, float gravity, float accel) {
@@ -31,12 +39,18 @@ void CBParticleEmitter::setParticleEmission(float density, int count, float spre
 
 bool CBParticleEmitter::updateObject(float timestep) {
 	particleSpawnCounter += 1.0f;
-	for (vector<Particle>::iterator i = particles.begin();i != particles.end();++i)
+	for (vector<Particle>::iterator i = particles.begin();i != particles.end();)
 	{
 		i->x += i->velX;
 		i->y += i->velY;
 		i->velX *= particleAcceleration;
-		i->velY = i->velY *particleAcceleration + particleGravity;
+		i->velY = i->velY *particleAcceleration - particleGravity;
+		if (--i->lifeTime<0) {
+			i = particles.erase(i);
+		}
+		else {
+			++i;
+		}
 	}
 	if (usingLife) {
 		--life;
@@ -47,18 +61,20 @@ bool CBParticleEmitter::updateObject(float timestep) {
 	}
 	while (particleSpawnCounter > particleDensity) {//Spawn particles
 		particleSpawnCounter -= particleDensity;
-		Particle newParticle;
-		newParticle.lifeTime = particleLifeTime;
-		float pa = angle + particleSpread*0.5f-randf()*particleSpread;
-		newParticle.velX = randf()*cos(pa)*particleSpeed;
-		newParticle.velY = randf()*sin(pa)*particleSpeed;
-		newParticle.x = posX + newParticle.velX*particleSpawnCounter;
-		newParticle.y = posY + newParticle.velY*particleSpawnCounter;
-		particles.push_back(newParticle);
+		for (int32_t i = 0; i < particleCount;++i) {
+			Particle newParticle;
+			newParticle.lifeTime = particleLifeTime;
+			float pa = (angle + particleSpread-randf()*particleSpread*2.0f)*M_PI/180.0f;
+			newParticle.velX = cos(pa)*particleSpeed;
+			newParticle.velY = sin(pa)*particleSpeed;
+			newParticle.x = posX + newParticle.velX*particleSpawnCounter;
+			newParticle.y = posY + newParticle.velY*particleSpawnCounter;
+			particles.push_back(newParticle);
+		}
 	}
 	return false;
 }
 
 void CBParticleEmitter::render(RenderTarget &target) {
-	target.drawParticles(particleTexture,particles,particleLifeTime);
+	target.drawParticles(particleTexture,particles,particleLifeTime,frameCount);
 }

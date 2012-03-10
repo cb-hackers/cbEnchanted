@@ -25,10 +25,12 @@ class RenderTarget : public sf::NonCopyable
 		void drawEllipse(float x,float y,float w,float h,bool fill);
 		void drawRenderTarget(const RenderTarget &rt,float x,float y);
 		void drawRenderTarget(const RenderTarget &rt,float x,float y,const sf::Color &mask);
+		void drawRenderTarget(const RenderTarget &rt,sf::FloatRect pos,sf::FloatRect area,const sf::Color &mask);
+		void drawRenderTarget(const RenderTarget &rt,sf::FloatRect pos,sf::FloatRect area);
 		void drawTexture(const sf::Texture &tex,float x, float y);
 		void drawDot(float cx,float cy);
 		void setColor(const sf::Color &c) {target.SetActive();glColor4ub(c.r,c.g,c.b,c.a);}
-		void drawParticles(CBImage *tex,const vector<Particle> &particles, int32_t particleLifeTime);
+		void drawParticles(CBImage *tex,const vector<Particle> &particles, int32_t particleLifeTime, int32_t animLength);
 
 		int32_t getPixel(int x,int y);
 		int32_t getPixel2(int x,int y);

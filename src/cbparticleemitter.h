@@ -11,6 +11,7 @@ class CBParticleEmitter : public CBObject
 		void create(CBImage *image,int32_t lifeTime);
 		void setParticleMovement(float speed, float gravity,float accel);
 		void setParticleEmission(float density,int count,float spread);
+		void setParticleAnimation(int32_t frames){frameCount = frames;}
 		void render(RenderTarget &target);
 		bool updateObject(float timestep);
 		Type type()const{return ParticleEmitter;}
@@ -22,6 +23,7 @@ class CBParticleEmitter : public CBObject
 		float particleSpawnCounter;
 		CBImage *particleTexture;
 		vector<Particle> particles;
+		int32_t frameCount;
 };
 
 #endif // CBPARTICLEEMITTER_H

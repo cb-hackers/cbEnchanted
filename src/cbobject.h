@@ -26,7 +26,7 @@ class CBObject{
 		void turnObject(float speed);
 		virtual void render(RenderTarget &target);
 		void setPosition(float x, float y);
-		void rotateObject(float a){angle = 180.0f+a;}
+		void rotateObject(float a){angle = a;}
 		void ghostObject(uint8_t ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
 		virtual bool isMap()const{return false;}

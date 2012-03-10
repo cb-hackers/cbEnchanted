@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Shader.hpp>
+#include "cbimage.h"
 #define CIRCLE_VERTEX_COUNT 100
 #ifndef GL_COMBINE
 	#define GL_COMBINE 0x8570
@@ -288,9 +289,64 @@ void RenderTarget::drawDot(float x, float y) {
 	changedSinceDisplay = true;
 }
 
-void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime)
+void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime,int32_t animLength)
 {
+	setDrawingMode(DM_Textures);
+	tex->getRenderTarget()->display();
+	imageMaskShader->Bind();
+	imageMaskShader->SetParameter("maskColor",tex->getMaskColor());
+	tex->getRenderTarget()->getSurface()->GetTexture().Bind();
+	if (animLength == 0 || tex->animLength == 0) {
+		float w = tex->getRenderTarget()->getSurface()->GetTexture().GetWidth();
+		float h = tex->getRenderTarget()->getSurface()->GetTexture().GetHeight();
+		glBegin(GL_QUADS);
+		for (vector<Particle>::const_iterator i = particles.begin();i != particles.end();i++) {
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex2f(i->x-w*0.5f-tex->hotspotX, i->y+h*0.5f-tex->hotspotY);
+			glTexCoord2f(1.0f, 0.0f);
+			glVertex2f(i->x+w*0.5f-tex->hotspotX, i->y+h*0.5f-tex->hotspotY);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex2f(i->x+w*0.5f-tex->hotspotX, i->y-h*0.5f-tex->hotspotY);
+			glTexCoord2f(0.0f, 1.0f);
+			glVertex2f(i->x-w*0.5f-tex->hotspotX, i->y-h*0.5f-tex->hotspotY);
+		}
+		glEnd();
+	}
+	else {
+		float pLifeTime = static_cast<float>(particleLifeTime);
+		glBegin(GL_QUADS);
+		sf::FloatRect frameArea;
+		sf::FloatRect drawArea;
+		drawArea.Width = tex->frameWidth;
+		drawArea.Height = tex->frameHeight;
+		for (vector<Particle>::const_iterator i = particles.begin();i != particles.end();i++) {
+			int32_t frame = ((float)i->lifeTime/pLifeTime)*animLength;
+			if (frame >= animLength) frame = animLength-1;
+			frame += tex->animBegin;
+			int32_t framesX = tex->renderTarget.width() / tex->frameWidth;
+			int32_t framesY = tex->renderTarget.height() / tex->frameHeight;
+			int32_t copyX = frame % framesX;
+			int32_t copyY = (frame-copyX) / framesY;
 
+			frameArea.Left = ((framesX-copyX-1)*tex->frameWidth)/(float)tex->renderTarget.width();
+			frameArea.Top = (copyY*tex->frameWidth)/(float)tex->renderTarget.height();
+			frameArea.Height = tex->frameHeight/(float)tex->renderTarget.height();
+			frameArea.Width = tex->frameWidth/(float)tex->renderTarget.width();
+			drawArea.Left = i->x - tex->hotspotX;
+			drawArea.Top = i->y - tex->hotspotY;
+			glTexCoord2f(frameArea.Left, frameArea.Top);
+			glVertex2f(drawArea.Left, drawArea.Top);
+			glTexCoord2f(frameArea.Left+frameArea.Width, frameArea.Top);
+			glVertex2f(drawArea.Left + drawArea.Width, drawArea.Top);
+			glTexCoord2f(frameArea.Left+frameArea.Width, frameArea.Top+frameArea.Height);
+			glVertex2f(drawArea.Left + drawArea.Width, drawArea.Top -drawArea.Height);
+			glTexCoord2f(frameArea.Left, frameArea.Top+frameArea.Height);
+			glVertex2f(drawArea.Left, drawArea.Top -drawArea.Height);
+		}
+		glEnd();
+	}
+	imageMaskShader->Unbind();
+	changedSinceDisplay = true;
 }
 
 void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y) {
@@ -339,6 +395,49 @@ void RenderTarget::drawRenderTarget(const RenderTarget &rt, float x, float y, co
 		glVertex2f(x, y + h);
 	glEnd();
 	imageMaskShader->Unbind();
+	changedSinceDisplay = true;
+}
+
+void RenderTarget::drawRenderTarget(const RenderTarget &rt, sf::FloatRect pos, sf::FloatRect area, const sf::Color &mask)
+{
+	setDrawingMode(DM_Textures);
+	rt.display();
+	int h = pos.Height;
+	if (drawToWorldViewOn) h = -h;
+	imageMaskShader->Bind();
+	imageMaskShader->SetParameter("maskColor",mask);
+	rt.getSurface()->GetTexture().Bind();
+	glBegin(GL_QUADS);
+		glTexCoord2f(area.Left, area.Top);
+		glVertex2f(pos.Left, pos.Top);
+		glTexCoord2f(area.Left+area.Width, area.Top);
+		glVertex2f(pos.Left + pos.Width, pos.Top);
+		glTexCoord2f(area.Left+area.Width, area.Top+area.Height);
+		glVertex2f(pos.Left + pos.Width, pos.Top + h);
+		glTexCoord2f(area.Left, area.Top+area.Height);
+		glVertex2f(pos.Left, pos.Top + h);
+	glEnd();
+	imageMaskShader->Unbind();
+	changedSinceDisplay = true;
+}
+
+void RenderTarget::drawRenderTarget(const RenderTarget &rt, sf::FloatRect pos, sf::FloatRect area)
+{
+	setDrawingMode(DM_Textures);
+	rt.display();
+	int h = pos.Height;
+	if (drawToWorldViewOn) h = -h;
+	rt.getSurface()->GetTexture().Bind();
+	glBegin(GL_QUADS);
+	glTexCoord2f(area.Left, area.Top);
+	glVertex2f(pos.Left, pos.Top);
+	glTexCoord2f(area.Left+area.Width, area.Top);
+	glVertex2f(pos.Left + pos.Width, pos.Top);
+	glTexCoord2f(area.Left+area.Width, area.Top+area.Height);
+	glVertex2f(pos.Left + pos.Width, pos.Top + h);
+	glTexCoord2f(area.Left, area.Top+area.Height);
+	glVertex2f(pos.Left, pos.Top + h);
+	glEnd();
 	changedSinceDisplay = true;
 }
 

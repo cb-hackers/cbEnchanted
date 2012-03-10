@@ -79,6 +79,8 @@ void ObjectInterface::commandTurnObject(void) {
 }
 
 void ObjectInterface::commandRotateObject(void) {
+	cb->popValue(); //Something?
+	cb->popValue(); //Something?
 	float a = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];

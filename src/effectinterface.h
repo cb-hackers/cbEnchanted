@@ -3,7 +3,7 @@
 #include "precomp.h"
 #include "cbobject.h"
 
-
+class CBEnchanted;
 
 class EffectInterface {
 	public:
@@ -16,7 +16,7 @@ class EffectInterface {
 		
 		void functionMakeEmitter(void);
 	private:
-
+		CBEnchanted *cb;
 };
 
 #endif
