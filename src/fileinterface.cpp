@@ -205,12 +205,16 @@ void FileInterface::functionOpenToEdit(void) {
 	string file_s = cb->popValue().toString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(file_s.c_str(), "r+");
+	if(exists(file_s))
+	{
+		filestrs[id] = fopen(file_s.c_str(), "r+");
+	} else {
+		filestrs[id] = fopen(file_s.c_str(), "w");
+	}
 	if (filestrs[id] == NULL) {
 		FIXME("OpenToEdit failed.");
 		cb->pushValue(0);
 	}
-
 	cb->pushValue(id);
 }
 
