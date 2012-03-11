@@ -50,25 +50,25 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	current_path(path(cb->popValue().toString()));
+	current_path(path(cb->popValue().toString().getStdString()));
 }
 
 void FileInterface::commandMakeDir(void) {
-	create_directory(path(cb->popValue().toString()));
+	create_directory(path(cb->popValue().toString().getStdString()));
 }
 
 void FileInterface::commandCopyFile(void) {
-	string file_s2 = cb->popValue().toString();
-	string file_s1 = cb->popValue().toString();
+	string file_s2 = cb->popValue().toString().getStdString();
+	string file_s1 = cb->popValue().toString().getStdString();
 	copy_file(path(file_s1), path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
-	remove(path(cb->popValue().toString()));
+	remove(path(cb->popValue().toString().getStdString()));
 }
 
 void FileInterface::commandExecute(void) {
-	string cmd = cb->popValue().toString();
+	const string &cmd = cb->popValue().toString().getStdString();
 	string scmd;
 
 	#ifdef WIN32
@@ -102,7 +102,7 @@ void FileInterface::commandWriteFloat(void) {
 }
 
 void FileInterface::commandWriteString(void) {
-	string sstring = cb->popValue().toString();
+	const string &sstring = cb->popValue().toString().getStdString();
 
 	FILE *file2;
 	file2 = filestrs[cb->popValue().toInt()];
@@ -118,7 +118,7 @@ void FileInterface::commandWriteString(void) {
 }
 
 void FileInterface::commandWriteLine(void) {
-	string line = cb->popValue().toString();
+	string line = cb->popValue().toString().getStdString();
 	FILE *file2;
 	file2 = filestrs[cb->popValue().getInt()];
 
@@ -176,7 +176,7 @@ void FileInterface::commandReadLine(void) {
 }
 
 void FileInterface::functionOpenToRead(void) {
-	string file_s = cb->popValue().toString();
+	const string &file_s = cb->popValue().toString().getStdString();
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "r");;
@@ -189,7 +189,7 @@ void FileInterface::functionOpenToRead(void) {
 }
 
 void FileInterface::functionOpenToWrite(void) {
-	string file_s = cb->popValue().toString();
+	const string &file_s = cb->popValue().toString().getStdString();
 	int32_t id = ++idC;
 
 	filestrs[id] = fopen(file_s.c_str(), "w");
@@ -202,7 +202,7 @@ void FileInterface::functionOpenToWrite(void) {
 }
 
 void FileInterface::functionOpenToEdit(void) {
-	string file_s = cb->popValue().toString();
+	const string &file_s = cb->popValue().toString().getStdString();
 	int32_t id = ++idC;
 
 	if(exists(file_s))
@@ -255,15 +255,15 @@ void FileInterface::functionCurrentDir(void) {
 }
 
 void FileInterface::functionFileExists(void) {
-	cb->pushValue(exists(cb->popValue().toString()));
+	cb->pushValue(exists(cb->popValue().toString().getStdString()));
 }
 
 void FileInterface::functionIsDirectory(void) {
-	cb->pushValue(is_directory(cb->popValue().toString()));
+	cb->pushValue(is_directory(cb->popValue().toString().getStdString()));
 }
 
 void FileInterface::functionFileSize(void) {
-	cb->pushValue(int32_t(file_size(cb->popValue().toString())));
+	cb->pushValue(int32_t(file_size(cb->popValue().toString().getStdString())));
 }
 
 void FileInterface::functionEOF(void) {

@@ -86,7 +86,7 @@ class ObjectInterface {
 		inline void removeFromDrawOrder(CBObject *o) {
 			if (o == lastObject) {
 				if (o == firstObject) {
-					lastObject == firstObject == 0;
+					lastObject = firstObject = 0;
 					return;
 				}
 				o->lastObj->nextObj = 0;

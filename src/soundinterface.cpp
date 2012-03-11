@@ -32,7 +32,7 @@ void SoundInterface::commandPlaySound(void) {
 		}
 	}
 	else {
-		string filepath = any.toString();
+		const string &filepath = any.toString().getStdString();
 		CBSound *music = new CBSound;
 		music->music = new sf::Music;
 		if (!music->music->OpenFromFile(filepath)) {
@@ -107,7 +107,7 @@ void SoundInterface::commandDeleteSound(void) {
 }
 
 void SoundInterface::functionLoadSound(void) {
-	string filepath = cb->popValue().toString();
+	const string &filepath = cb->popValue().toString().getStdString();
 	CBSound *sound = new CBSound;
 	sound->isMusic = false;
 	sound->file = filepath;
@@ -149,7 +149,7 @@ void SoundInterface::functionPlaySound(void) {
 		cb->pushValue(id);
 	}
 	else {
-		string filepath = any.toString();
+		const string filepath = any.toString().getStdString();
 		CBSound *music = new CBSound;
 		music->music = new sf::Music;
 		if (!music->music->OpenFromFile(filepath)) {

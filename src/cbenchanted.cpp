@@ -1004,7 +1004,7 @@ void CBEnchanted::commandSetVariable(void) {
 	switch (type) {
 		case 1: { // String
 			int32_t id = popValue().getInt();
-			string value = popValue().toString();
+			ISString value = popValue().toString();
 
 			setStringVariable(id, value);
 			break;
@@ -1029,7 +1029,7 @@ void CBEnchanted::commandSetVariable(void) {
 		default:
 			FIXME("Unimplemented SetVariable. Type: %i", type);
 	}
-	INFO("Push value, type: %i", type);
+	HCDEBUG("Push value, type: %i", type);
 }
 
 void CBEnchanted::commandSetGlobalVariable() {

@@ -27,7 +27,7 @@ void SysInterface::commandWait(void) {
 
 void SysInterface::commandMakeError(void) {
 #ifdef WIN32
-	MessageBoxA(NULL,cb->popValue().toString().c_str(), "Error", MB_OK);
+	MessageBoxA(NULL,cb->popValue().toString().getStdString().c_str(), "Error", MB_OK);
 #else
 	assert("Linux MakeError uncomplete" != 0);
 #endif
@@ -66,9 +66,9 @@ void SysInterface::commandErrors(void) {
 }
 
 void SysInterface::commandSetWindow(void) {
-	string quit = cb->popValue().toString();
+	string quit = cb->popValue().toString().getStdString();
 	uint32_t mode = cb->popValue().toInt();
-	string caption = "CBEnchanted: " + cb->popValue().toString();
+    const string &caption = cb->popValue().toString().getStdString();
 	
 	if (quit != "") {
 		FIXME("FIXME: setWindow quitmsg");

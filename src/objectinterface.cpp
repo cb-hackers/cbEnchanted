@@ -335,7 +335,7 @@ void ObjectInterface::commandInitObjectList(void) {
 
 void ObjectInterface::functionLoadObject(void) {
 	cb->popValue(); //Rotation...
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBObject *obj = new CBObject;
 	if (!obj->load(path)) {
 		FIXME("Can't load object: %s",path.c_str());
@@ -354,7 +354,7 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	uint16_t startf = cb->popValue().toInt();
 	uint16_t frameH = cb->popValue().toInt();
 	uint16_t frameW = cb->popValue().toInt();
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBObject *obj = new CBObject;
 	if(!obj->loadAnimObject(path, frameW, frameH, startf, frames)){
 		FIXME("Can't load object: %s", path.c_str());
