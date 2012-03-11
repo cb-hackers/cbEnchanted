@@ -177,7 +177,6 @@ void GfxInterface::commandDrawScreen(void) {
 	windowRenderTarget.display();
 	sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
 	sprite.SetScale(windowScaleX,windowScaleY);
-	INFO("Gamma RGB: %f, %f, %f", windowGammaR, windowGammaG, windowGammaB)
 
 	screenGammaShader->Bind();
 	screenGammaShader->SetParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
