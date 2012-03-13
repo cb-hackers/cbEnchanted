@@ -36,8 +36,6 @@ class CBObject{
 		void showObject(bool t) {visible = t;}
 		sf::Vector2f getPos()const{return sf::Vector2f(posX,posY);}
 		float getAngle(); //Funktion nimi on nyt vähän harhaanjohtava, mutta se nyt saa luvan kelvata koska se on luokan sisällä.
-		void setDrawOrderNumber(int32_t n){drawOrderNumber = n;}
-		int32_t getDrawOrderNumber()const{return drawOrderNumber;}
 		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
 		float getObjectFloat()const{return objectFloatData;}
@@ -52,7 +50,7 @@ class CBObject{
 		float getObjectSizeY()const{return sizeY;}
 		bool isFloorObject()const{return floor;}
 		void setLife(uint32_t energy);
-
+		bool isPlaying()const{return playing;}
 		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
 		void setLooping(bool t){animLooping = t;}
 		bool isLooping()const{return animLooping;}
@@ -63,12 +61,14 @@ class CBObject{
 
 		uint32_t getLife();
 		bool isLife();
+		//Draw order
+		CBObject *nextObj;
+		CBObject *lastObj;
 	protected:
 		//Created using copy
 		bool copied;
 		bool floor;
 		bool painted;
-		int32_t drawOrderNumber;
 		float posX, posY;
 		float sizeX,sizeY;
 		float angle;

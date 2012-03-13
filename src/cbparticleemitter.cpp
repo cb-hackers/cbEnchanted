@@ -11,7 +11,8 @@ CBParticleEmitter::CBParticleEmitter():
 	particleSpread(0),
 	particleCount(1),
 	particleSpawnCounter(0),
-	frameCount(0)
+	frameCount(0),
+	stop(false)
 {
 }
 
@@ -52,24 +53,29 @@ bool CBParticleEmitter::updateObject(float timestep) {
 			++i;
 		}
 	}
-	if (usingLife) {
-		--life;
-		if (life <= 0) {
-			life = 0;
-			return true; //Delete object
-		}
+	if (stop) {
+		if (particles.size() == 0) return true;
 	}
-	while (particleSpawnCounter > particleDensity) {//Spawn particles
-		particleSpawnCounter -= particleDensity;
-		for (int32_t i = 0; i < particleCount;++i) {
-			Particle newParticle;
-			newParticle.lifeTime = particleLifeTime;
-			float pa = (angle + particleSpread-randf()*particleSpread*2.0f)*M_PI/180.0f;
-			newParticle.velX = cos(pa)*particleSpeed;
-			newParticle.velY = sin(pa)*particleSpeed;
-			newParticle.x = posX + newParticle.velX*particleSpawnCounter;
-			newParticle.y = posY + newParticle.velY*particleSpawnCounter;
-			particles.push_back(newParticle);
+	else {
+		if (usingLife) {
+			--life;
+			if (life <= 0) {
+				life = 0;
+				return true; //Delete object
+			}
+		}
+		while (particleSpawnCounter > particleDensity) {//Spawn particles
+			particleSpawnCounter -= particleDensity;
+			for (int32_t i = 0; i < particleCount;++i) {
+				Particle newParticle;
+				newParticle.lifeTime = particleLifeTime;
+				float pa = (angle + particleSpread-randf()*particleSpread*2.0f)*M_PI/180.0f;
+				newParticle.velX = cos(pa)*particleSpeed;
+				newParticle.velY = sin(pa)*particleSpeed;
+				newParticle.x = posX + newParticle.velX*particleSpawnCounter;
+				newParticle.y = posY + newParticle.velY*particleSpawnCounter;
+				particles.push_back(newParticle);
+			}
 		}
 	}
 	return false;

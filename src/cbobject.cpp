@@ -27,6 +27,8 @@ CBObject::CBObject(bool floor):
 	sizeY(0),
 	usingLife(false),
 	life(0),
+	lastObj(0),
+	nextObj(0),
 	playing(false)
 {
 }

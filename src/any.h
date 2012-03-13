@@ -3,6 +3,7 @@
 
 #include "debug.h"
 #include <assert.h>
+#include "isstring.h"
 
 class Any {
 	public:
@@ -14,10 +15,11 @@ class Any {
 		};
 	private:
 		int32_t typeId;
+
 		union { //Data
 			float d_float;
 			int32_t d_int;
-			string *d_string_ptr;
+			ISString::SharedData *d_string;
 			void *d_ptr;
 		};
 
@@ -25,21 +27,35 @@ class Any {
 		inline Any() : typeId(Empty) {}
 		inline Any(int32_t a) : typeId(Int), d_int(a) { }
 		inline Any(float a) : typeId(Float), d_float(a) { }
-		inline Any(const string &a) : typeId(String), d_string_ptr(new string(a)) { }
+		inline Any(const string &a) : typeId(String) {
+			if (a.length() != 0) {
+				d_string = new ISString::SharedData(a);
+				return;
+			}
+			d_string = 0;
+		}
+		inline Any(const ISString &a):typeId(String),d_string(a.data) {
+			if (d_string != 0) {
+				++d_string->refCounter;
+				return;
+			}
+		}
+
 		inline Any(const Any &a) : typeId(a.typeId) {
 			if (a.typeId == String) {
-				d_string_ptr = new string(*a.d_string_ptr);
+				this->d_string = a.d_string;
+				if (this->d_string) this->d_string->increaseRefCount();
 				return;
 			}
 			d_int = a.d_int; //Don't have to worry about data type.
 		}
 		inline ~Any() {
 			if (typeId == String) {
-				delete d_string_ptr;
+				if (d_string) d_string->decreaseRefCount();
 			}
 		}
 
-		inline const string &getString() const { assert(typeId == String); return *d_string_ptr; }
+		inline ISString getString() const { assert(typeId == String); return ISString(d_string); }
 		inline int32_t getInt() const { assert(typeId == Int); return d_int; }
 		inline float getFloat() const { assert(typeId == Float); return d_float; }
 		inline bool empty() const { return typeId == Empty; }
@@ -52,30 +68,30 @@ class Any {
 				case Float:
 					return typeid(float);
 				case String:
-					return typeid(string);
+					return typeid(ISString);
 				default:
 					return typeid(void);
 			}
 		}
 
-		inline string toString() const{
+		inline ISString toString() const{
 			assert(!empty());
 			try {
 				if (type() == Any::String) {
-					return getString();
+					return ISString(d_string);
 				}
 				if (type() == Any::Float) {
-					return boost::lexical_cast<string>(getFloat());
+					return ISString(boost::lexical_cast<string>(getFloat()));
 				}
 				if (type() == Any::Int) {
-					return boost::lexical_cast<string>(getInt());
+					return ISString(boost::lexical_cast<string>(getInt()));
 				}
 			}
-            catch (boost::bad_lexical_cast &) {
-				return "";
+			catch (boost::bad_lexical_cast &) {
+				return ISString();
 			}
 			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(string).name());
-			return "";
+			return ISString();
 		}
 
 		inline int32_t toInt() const {
@@ -87,10 +103,11 @@ class Any {
 				return ((int32_t)getFloat());
 			}
 			if (type() == Any::String) {
+				if (d_string == 0) return 0;
 				try {
-					return (boost::lexical_cast<int32_t>(getString()));
+					return boost::lexical_cast<int32_t>(d_string->str);
 				}
-				catch (boost::bad_lexical_cast &error) {
+				catch (boost::bad_lexical_cast &) {
 					return 0;
 				}
 			}
@@ -107,11 +124,12 @@ class Any {
 				return ((float)getInt());
 			}
 			if (type() == Any::String) {
+				if (d_string == 0) return 0;
 				try {
-					return (boost::lexical_cast<float>(getString()));
+					return boost::lexical_cast<float>(d_string->str);
 				}
-				catch (boost::bad_lexical_cast &error) {
-					return 0.0f;
+				catch (boost::bad_lexical_cast &) {
+					return 0;
 				}
 			}
 			FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(float).name());
@@ -127,10 +145,11 @@ class Any {
 				return ((uint16_t)getInt());
 			}
 			if (type() == Any::String) {
+				if (d_string == 0) return 0;
 				try {
-					return (boost::lexical_cast<uint16_t>(getString()));
+					return boost::lexical_cast<uint16_t>(d_string->str);
 				}
-				catch (boost::bad_lexical_cast &error) {
+				catch (boost::bad_lexical_cast &) {
 					return 0;
 				}
 			}
@@ -147,10 +166,11 @@ class Any {
 				return ((uint8_t)getInt());
 			}
 			if (type() == Any::String) {
+				if (d_string == 0) return 0;
 				try {
-					return (boost::lexical_cast<uint8_t>(getString()));
+					return boost::lexical_cast<uint8_t>(d_string->str);
 				}
-				catch (boost::bad_lexical_cast &error) {
+				catch (boost::bad_lexical_cast &) {
 					return 0;
 				}
 			}

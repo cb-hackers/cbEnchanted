@@ -38,9 +38,9 @@ void MapInterface::commandSetTile(void) {
 }
 
 void MapInterface::functionLoadMap(void) {
-	string tilesetpath = cb->popValue().toString();
+	const string &tilesetpath = cb->popValue().toString().getStdString();
 	INFO(tilesetpath.c_str());
-	string mappath = cb->popValue().toString();
+	const string &mappath = cb->popValue().toString().getStdString();
 	INFO(mappath.c_str());
 	if (tileMap) delete tileMap;
 	tileMap = new CBMap();

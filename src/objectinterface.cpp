@@ -7,7 +7,13 @@
 #include "gfxinterface.h"
 #include "util.h"
 
-ObjectInterface::ObjectInterface():lastUpdate(0) {
+ObjectInterface::ObjectInterface():
+	lastUpdate(0),
+	firstObject(0),
+	firstFloorObject(0),
+	lastObject(0),
+	lastFloorObject(0)
+{
 	cb = static_cast<CBEnchanted*>(this);
 }
 
@@ -18,8 +24,12 @@ ObjectInterface::~ObjectInterface() {
 void ObjectInterface::commandDeleteObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
-	std::vector<CBObject*>::const_iterator i = objectDrawOrder.cbegin() + object->getDrawOrderNumber();
-	objectDrawOrder.erase(i);
+	if (object->type() == CBObject::ParticleEmitter) {
+		objectMap.erase(id);
+		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
+		return;
+	}
+	removeFromDrawOrder(object);
 	delete object;
 	objectMap.erase(id);
 }
@@ -52,6 +62,7 @@ void ObjectInterface::commandTranslateObject(void) {
 }
 
 void ObjectInterface::commandPositionObject(void) {
+	cb->popValue(); //Z?
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
@@ -69,8 +80,8 @@ void ObjectInterface::commandScreenPositionObject(void) {
 
 void ObjectInterface::commandTurnObject(void) {
 	//Random shit...
-	cb->popValue().toFloat();
-	cb->popValue().toInt();
+	cb->popValue();
+	cb->popValue();
 
 	float a = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
@@ -116,26 +127,85 @@ void ObjectInterface::commandObjectOrder(void) {
 	int32_t select = cb->popValue().toInt();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
-	int32_t oldPlace = object->getDrawOrderNumber();
-	if (select == 1) {//move to first
-		std::vector<CBObject*>::iterator it = --objectDrawOrder.end();
-		for (int32_t i = (*it)->getDrawOrderNumber(); i != oldPlace;)
-		{
-			(*it)->setDrawOrderNumber(--i);
-			--it;
+	if (object->isFloorObject()) {
+		if (select == 1) {//Move to top
+			if (object == firstFloorObject) return;
+			if (object == lastFloorObject) {
+				object->lastObj->nextObj = 0;
+				lastFloorObject = object->lastObj;
+				firstFloorObject->lastObj = object;
+				object->nextObj = firstFloorObject;
+				object->lastObj = 0;
+				firstFloorObject = object;
+
+				return;
+			}
+
+			object->nextObj->lastObj = object->lastObj;
+			object->lastObj->nextObj = object->nextObj;
+			firstFloorObject->lastObj = object;
+			object->nextObj = firstFloorObject;
+			object->lastObj = 0;
 		}
-		objectDrawOrder.erase(it);//remove old
-		objectDrawOrder.push_back(object);//insert to end
+		else if (select == -1) { //Move to last
+			if (object == lastObject) return;
+			if (object == firstObject) {
+				object->nextObj->lastObj = 0;
+				firstFloorObject = object->nextObj;
+
+				lastFloorObject->nextObj = object;
+				object->nextObj = 0;
+				object->lastObj = lastFloorObject;
+				lastFloorObject = object;
+				return;
+			}
+			object->nextObj->lastObj = object->lastObj;
+			object->lastObj->nextObj = object->nextObj;
+			lastFloorObject->nextObj = object;
+			object->lastObj = lastFloorObject;
+			object->nextObj = 0;
+			lastFloorObject = object;
+		}
 	}
-	else if (select == -1) {
-		std::vector<CBObject*>::iterator it = objectDrawOrder.begin();
-		for (int32_t i = 0; i != oldPlace;)
-		{
-			(*it)->setDrawOrderNumber(++i);
-			--it;
+	else {
+		if (select == 1) {//Move to top
+			if (object == firstObject) return;
+			if (object == lastObject) {
+				object->lastObj->nextObj = 0;
+				firstObject->lastObj = object;
+				object->nextObj = firstObject;
+				object->lastObj = 0;
+				firstObject = object;
+
+				return;
+			}
+
+			object->nextObj->lastObj = object->lastObj;
+			object->lastObj->nextObj = object->nextObj;
+			firstObject->lastObj = object;
+			object->nextObj = firstObject;
+			object->lastObj = 0;
 		}
-		objectDrawOrder.erase(it);//remove old
-		objectDrawOrder.insert(objectDrawOrder.begin(),object);//insert to begin
+		else if (select == -1) { //Move to last
+			if (object == lastObject) return;
+			if (object == firstObject) {
+				object->nextObj->lastObj = 0;
+				lastObject = object->lastObj;
+				firstObject = object->nextObj;
+
+				lastObject->nextObj = object;
+				object->nextObj = 0;
+				object->lastObj = lastObject;
+				lastObject = object;
+				return;
+			}
+			object->nextObj->lastObj = object->lastObj;
+			object->lastObj->nextObj = object->nextObj;
+			lastObject->nextObj = object;
+			object->lastObj = lastObject;
+			object->nextObj = 0;
+			lastObject = object;
+		}
 	}
 }
 
@@ -265,15 +335,14 @@ void ObjectInterface::commandInitObjectList(void) {
 
 void ObjectInterface::functionLoadObject(void) {
 	cb->popValue(); //Rotation...
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBObject *obj = new CBObject;
 	if (!obj->load(path)) {
 		FIXME("Can't load object: %s",path.c_str());
 		cb->pushValue(0);
 		return;
 	}
-	obj->setDrawOrderNumber(objectDrawOrder.size());
-	objectDrawOrder.push_back(obj);
+	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	cb->pushValue(id);
@@ -285,15 +354,14 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	uint16_t startf = cb->popValue().toInt();
 	uint16_t frameH = cb->popValue().toInt();
 	uint16_t frameW = cb->popValue().toInt();
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBObject *obj = new CBObject;
 	if(!obj->loadAnimObject(path, frameW, frameH, startf, frames)){
 		FIXME("Can't load object: %s", path.c_str());
 		cb->pushValue(0);
 		return;
 	}
-	obj->setDrawOrderNumber(objectDrawOrder.size());
-	objectDrawOrder.push_back(obj);
+	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	cb->pushValue(id);
@@ -301,8 +369,7 @@ void ObjectInterface::functionLoadAnimObject(void) {
 
 void ObjectInterface::functionMakeObject(void) {
 	CBObject *obj = new CBObject;
-	obj->setDrawOrderNumber(objectDrawOrder.size());
-	objectDrawOrder.push_back(obj);
+	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	cb->pushValue(id);
@@ -310,8 +377,7 @@ void ObjectInterface::functionMakeObject(void) {
 
 void ObjectInterface::functionMakeObjectFloor(void) {
 	CBObject *obj = new CBObject(true);
-    obj->setDrawOrderNumber(floorObjectDrawOrder.size());
-    floorObjectDrawOrder.push_back(obj);
+	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	cb->pushValue(id);
@@ -321,8 +387,7 @@ void ObjectInterface::functionCloneObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
 	CBObject *obj = object->copyObject();
-	obj->setDrawOrderNumber(objectDrawOrder.size());
-	objectDrawOrder.push_back(obj);
+	addToDrawOrder(obj);
 	int32_t id2 = nextObjectId();
 	objectMap[id2] = obj;
 	cb->pushValue(id2);
@@ -420,7 +485,9 @@ void ObjectInterface::functionObjectSizeY(void) {
 }
 
 void ObjectInterface::functionObjectPlaying(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	cb->pushValue((int32_t)object->isPlaying());
 }
 
 void ObjectInterface::functionObjectFrame(void) {
@@ -469,14 +536,17 @@ void ObjectInterface::functionNextObject(void) {
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
 	target.setViewTo(false);
-	for (std::vector<CBObject*>::iterator i = floorObjectDrawOrder.end();i != floorObjectDrawOrder.begin();) {
-		--i;
-		(*i)->render(target);
+	CBObject *currentObject = firstFloorObject;
+	while (currentObject != 0) {
+		currentObject->render(target);
+		currentObject = currentObject->nextObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
 	target.setViewTo(true);
-	for (std::vector<CBObject*>::iterator i = objectDrawOrder.begin();i != objectDrawOrder.end();i++) {
-		(*i)->render(target);
+	currentObject = firstObject;
+	while (currentObject != 0) {
+		currentObject->render(target);
+		currentObject = currentObject->nextObj;
 	}
 	target.setViewTo(false);
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
@@ -495,12 +565,15 @@ void ObjectInterface::updateObjects(){
 	float updateTime = (float)(currentTime-lastUpdate)/1000.0f;
 	lastUpdate = currentTime;
 	std::map<int32_t,CBObject*>::iterator i;
-	for (i = objectMap.begin(); i != objectMap.end(); i++) {
+	for (i = objectMap.begin(); i != objectMap.end();) {
 		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
-			std::vector<CBObject*>::const_iterator draw = objectDrawOrder.begin() + (*i).second->getDrawOrderNumber();
-			objectDrawOrder.erase(draw);
+			removeFromDrawOrder((*i).second);
 			delete (*i).second;
-			objectMap.erase(i);
+			i = objectMap.erase(i);
+		}
+		else {
+			++i;
 		}
 	}
+	cb->updateRogueParticles();
 }

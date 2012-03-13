@@ -83,7 +83,7 @@ void ImageInterface::commandDeleteImage(void) {
 }
 
 void ImageInterface::functionLoadImage(void) {
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBImage *image = new CBImage;
 	if (!image->load(path))
 	{
@@ -101,7 +101,7 @@ void ImageInterface::functionLoadAnimImage(void) {
 	int32_t startF = cb->popValue().toInt();
 	int32_t frameH = cb->popValue().toInt();
 	int32_t frameW = cb->popValue().toInt();
-	string path = cb->popValue().getString();
+	const string &path = cb->popValue().getString().getStdString();
 	CBImage *image = new CBImage;
 	if (!image->load(path))
 	{

@@ -2,6 +2,7 @@
 #define EFFECTINTERFACE_H
 #include "precomp.h"
 #include "cbobject.h"
+#include "cbparticleemitter.h"
 
 class CBEnchanted;
 
@@ -15,8 +16,11 @@ class EffectInterface {
 		void commandParticleEmission(void);
 		
 		void functionMakeEmitter(void);
+		void deleteParticleEmitter(CBParticleEmitter *p);
+		void updateRogueParticles(void);
 	private:
 		CBEnchanted *cb;
+		vector<CBParticleEmitter*> rogueEmitters;
 };
 
 #endif

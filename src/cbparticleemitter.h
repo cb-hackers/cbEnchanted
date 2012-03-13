@@ -15,6 +15,7 @@ class CBParticleEmitter : public CBObject
 		void render(RenderTarget &target);
 		bool updateObject(float timestep);
 		Type type()const{return ParticleEmitter;}
+		void stopEmitting(){stop = true;}
 	private:
 		int32_t particleLifeTime;
 		float particleSpeed, particleGravity, particleAcceleration;
@@ -24,6 +25,7 @@ class CBParticleEmitter : public CBObject
 		CBImage *particleTexture;
 		vector<Particle> particles;
 		int32_t frameCount;
+		bool stop;
 };
 
 #endif // CBPARTICLEEMITTER_H

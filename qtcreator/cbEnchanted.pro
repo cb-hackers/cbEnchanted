@@ -41,7 +41,8 @@ HEADERS += \
     ../src/collision.h \
     ../src/util.h \
     ../src/cbparticleemitter.h \
-    ../src/particle.h
+    ../src/particle.h \
+    ../src/isstring.h
 
 SOURCES += \
     ../src/textinterface.cpp \
