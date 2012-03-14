@@ -83,11 +83,14 @@ class CBEnchanted :
 		void handleJump(void);
 		void handleIncVar(void);
 		void handleIncGlobalVar(void);
+		void handlePushTypeMemberVariable(void);
 	
 		void commandFunction(void);
 		void commandSetGlobalVariable(void); //80
 		void commandSetArrayNumbers(void); //97
 		void commandSetGlobalVariableNumbers(void); //98
+		void commandType(void);
+		void setTypeMemberField(void);
 		void commandSetVariableNumbers(void);
 		void commandGoto(void);
 		void commandGosub(void);

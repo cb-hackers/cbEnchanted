@@ -11,7 +11,8 @@ class Any {
 			Empty = 0,
 			Float = 1,
 			Int = 2,
-			String = 3
+			String = 3,
+			TypePtr = 4
 		};
 	private:
 		int32_t typeId;
@@ -27,6 +28,7 @@ class Any {
 		inline Any() : typeId(Empty) {}
 		inline Any(int32_t a) : typeId(Int), d_int(a) { }
 		inline Any(float a) : typeId(Float), d_float(a) { }
+		inline Any(void *ptr) :typeId(TypePtr), d_ptr(ptr) { }
 		inline Any(const string &a) : typeId(String) {
 			if (a.length() != 0) {
 				d_string = new ISString::SharedData(a);
@@ -58,6 +60,7 @@ class Any {
 		inline ISString getString() const { assert(typeId == String); return ISString(d_string); }
 		inline int32_t getInt() const { assert(typeId == Int); return d_int; }
 		inline float getFloat() const { assert(typeId == Float); return d_float; }
+		inline void *getTypePtr() { assert(typeId == TypePtr); return d_ptr;}
 		inline bool empty() const { return typeId == Empty; }
 		inline int32_t type() const{ return typeId; }
 

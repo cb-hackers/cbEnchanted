@@ -30,6 +30,70 @@ class VariableCollection {
 		vector <T> variables;
 };
 
+class Type {
+public:
+	Type(int32_t fields):sizeOfMember((fields+3)*sizeof(void*)),firstMember(0),lastMember(0) {}
+	void *newMember() {
+		void ** m = (void**)new char[sizeOfMember];
+		memset(m,0,sizeOfMember);
+		m[0] = lastMember;
+		m[1] = 0;
+		m[2] = this;
+		lastMember = m;
+		if (firstMember == 0) firstMember = m;
+		return (void*)m;
+	}
+	void deleteMember(void *m) {
+		void ** before = (void**)((void**)m)[0];
+		void ** after = (void**)((void**)m)[1];
+		if (before) { //Not first member
+			before[1] = after;
+			if (after == 0) {
+				lastMember = before;
+			}
+			else {
+				after[0] = before;
+			}
+		}
+		else {
+			firstMember = after;
+			if (after) {
+				after[0] = 0;
+			}
+			else {
+				lastMember = 0;
+			}
+		}
+		delete m;
+	}
+	static Type *getMembersType(void * m){return ((Type**)m)[2];}
+	static int32_t &getIntField(void *m,int32_t field) {
+		return *(int32_t*)(((void**)m)+3+field);
+	}
+	static float getFloatField(void *m,int32_t field) {
+		return *(float*)(((void**)m)+3+field);
+	}
+	static ISString &getStringField(void *m,int32_t field) {
+		return *(ISString*)(((void**)m)+3+field);
+	}
+	static void setField(void *m,int32_t field,int32_t value) {
+		*(int32_t*)(((void**)m)+3+field) = value;
+	}
+	static void setField(void *m,int32_t field,float value) {
+		*(float*)(((void**)m)+3+field) = value;
+	}
+	static void setField(void *m,int32_t field,const ISString &value) {
+		*(ISString*)(((void**)m)+3+field) = value;
+	}
+
+	void *getFirst(){return firstMember;}
+	void *getLast(){return lastMember;}
+private:
+	int32_t sizeOfMember;
+	void *firstMember;
+	void *lastMember;
+};
+
 class VariableScope {
 	public:
 		VariableCollection <uint8_t> byteVariables;
@@ -37,6 +101,7 @@ class VariableScope {
 		VariableCollection <int32_t> integerVariables;
 		VariableCollection <float> floatVariables;
 		VariableCollection <ISString> stringVariables;
+		VariableCollection <void*> typePointerVariables;
 };
 
 struct Array {
@@ -57,14 +122,19 @@ struct Array {
 				data = (char*)new uint8_t[size];
 				memset(data,0,sizeof(uint8_t)*size);
 				break;
-			case 4: {
+			case 4:
+				type = 4;
+				data = (char*)new float[size];
+				memset(data,0,sizeof(float)*size);
+				break;
+				/*{
 				type = 4;
 				float *fdata = new float[size];
 				for (int32_t i = 0; i != size;++i) {
 					fdata[i] = 0.0f;
 				}
 				data = (char*)fdata;
-				break;}
+				break;}*/
 			case 6:{
 				type = 6;
 				data = (char*)new ISString[size];
@@ -127,6 +197,7 @@ class CBVariableHolder {
 		int32_t getIntegerVariable(uint32_t id) { return scopes.top().integerVariables.get(id); }
 		float getFloatVariable(uint32_t id) { return scopes.top().floatVariables.get(id); }
 		ISString getStringVariable(uint32_t id) { return scopes.top().stringVariables.get(id); }
+		void *getTypePointerVariable(uint32_t id) { return scopes.top().typePointerVariables.get(id);}
 		
 		uint8_t getGlobalByteVariable(uint32_t id) { return globalByteVariables.get(id); }
 		uint16_t getGlobalShortVariable(uint32_t id) { return globalShortVariables.get(id); }
@@ -143,6 +214,7 @@ class CBVariableHolder {
 		void setIntegerVariable(uint32_t id, int32_t value) { scopes.top().integerVariables.set(id, value); }
 		void setFloatVariable(uint32_t id, float value) { scopes.top().floatVariables.set(id, value); }
 		void setStringVariable(uint32_t id, const ISString &value) { scopes.top().stringVariables.set(id, value); }
+		void setTypePointerVariale(uint32_t id,void *value) { scopes.top().typePointerVariables.set(id,value);}
 		
 		void setGlobalByteVariable(uint32_t id, uint8_t value) { globalByteVariables.set(id, value); }
 		void setGlobalShortVariable(uint32_t id, uint16_t value) { globalShortVariables.set(id, value); }
@@ -153,6 +225,10 @@ class CBVariableHolder {
 		void setArray(uint32_t id, Array value) { arrays.set(id, value); }
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }
+
+		void addType(int32_t fields) {types.push_back(Type(fields));}
+		Type *getType(int32_t id){return &types[--id];}
+
 	private:
 		stack <Any> internalStack;
 		stack <VariableScope> scopes;
@@ -172,6 +248,8 @@ class CBVariableHolder {
 		VariableCollection <Array> arrays;
 		
 		VariableCollection <ISString> strings;
+
+		std::vector<Type> types;
 		
 		//vector <sf::Texture> images;
 };
