@@ -74,12 +74,15 @@ class GfxInterface {
 		RenderTarget *currentRenderTarget;
 
 		RenderTarget windowRenderTarget;
+		float windowGammaR;
+		float windowGammaG;
+		float windowGammaB;
 		bool drawDrawCommandToWorld;
 		bool drawImageToWorld;
 		bool drawTextToWorld;
 		bool gameDrawn; //Game has already been drawn in DrawGame
 		bool gameUpdated; //Game has already been updated in UpdateGame
-
+		sf::Shader *screenGammaShader;
 		std::map <int32_t, RenderTarget*> bufferMap;
 };
 

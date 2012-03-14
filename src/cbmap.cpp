@@ -212,6 +212,7 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 
 	sprite.SetTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
 	sprite.SetPosition(x, y);
+	sprite.SetColor(sf::Color(255, 255,255, alphaBlend));
 	target.draw(sprite);
 
 }

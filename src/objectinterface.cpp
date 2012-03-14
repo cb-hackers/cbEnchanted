@@ -412,7 +412,10 @@ void ObjectInterface::functionObjectString(void) {
 }
 
 void ObjectInterface::functionObjectLife(void) {
-	STUB;
+	int32_t life = cb->popValue().getInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = objectMap[id];
+	object->setLife(life);
 }
 
 void ObjectInterface::functionPickedObject(void) {
