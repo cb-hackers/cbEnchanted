@@ -11,6 +11,9 @@ Any operator ! (Any &l) {
 	if (l.type() == Any::Int) {
 		return !l.getInt();
 	}
+	if (l.type() == Any::TypePtr) {
+		return !l.getTypePtr();
+	}
 	FIXME("Unsupported operation !%s", l.typeInfo().name());
 }
 
@@ -200,6 +203,11 @@ int32_t operator != (Any &l, Any &r) {
 			return l.getString() != r.getString();
 		}
 	}
+	if (l.type() == Any::TypePtr) {
+		if (r.type() == Any::TypePtr) {
+			return r.getTypePtr() != l.getTypePtr();
+		}
+	}
 	FIXME("Unsupported operation %s != %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
@@ -218,6 +226,11 @@ int32_t operator && (Any &l, Any &r) {
 		}
 		if (r.type() == Any::Int) {
 			return l.getInt() && r.getInt();
+		}
+	}
+	if (l.type() == Any::TypePtr) {
+		if (r.type() == Any::TypePtr) {
+			return r.getTypePtr() && l.getTypePtr();
 		}
 	}
 	FIXME("Unsupported operation %s && %s", l.typeInfo().name(), r.typeInfo().name());
@@ -297,6 +310,11 @@ int32_t operator == (Any &l, Any &r) {
 			}
 		}
 	}
+	if (l.type() == Any::TypePtr) {
+		if (r.type() == Any::TypePtr) {
+			return r.getTypePtr() == l.getTypePtr();
+		}
+	}
 	FIXME("Unsupported operation %s == %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
@@ -335,6 +353,11 @@ int32_t operator || (Any &l, Any &r) {
 		}
 		if (r.type() == Any::Int) {
 			return l.getInt() || r.getInt();
+		}
+	}
+	if (l.type() == Any::TypePtr) {
+		if (r.type() == Any::TypePtr) {
+			return r.getTypePtr() || l.getTypePtr();
 		}
 	}
 	FIXME("Unsupported operation %s || %s", l.typeInfo().name(), r.typeInfo().name());

@@ -676,7 +676,7 @@ void CBEnchanted::handlePushVariable(void) {
 		case 8: pushValue(int32_t(getByteVariable(var))); break;
 		case 9: pushValue(int32_t(getGlobalShortVariable(var))); break;
 		case 10: pushValue(int32_t(getGlobalByteVariable(var))); break;
-		case 11: pushValue(getTypePointerVariable(var)); break;
+		case 11: if (var == 0) {pushValue(reinterpret_cast<void*>(0));break;}pushValue(getTypePointerVariable(var)); break;
 		default: FIXME("Unimplemented variable push: %i", type);
 	}
 }
@@ -991,19 +991,23 @@ void CBEnchanted::functionNew(void) {
 }
 
 void CBEnchanted::functionFirst(void) {
-	
+	int32_t typeId = popValue().getInt();
+	pushValue(getType(typeId)->getFirst());
 }
 
 void CBEnchanted::functionLast(void) {
-	
+	int32_t typeId = popValue().getInt();
+	pushValue(getType(typeId)->getFirst());
 }
 
 void CBEnchanted::functionBefore(void) {
-
+	void *typeMember = popValue().getTypePtr();
+	pushValue(Type::getBefore(typeMember));
 }
 
 void CBEnchanted::functionAfter(void) {
-	
+	void *typeMember = popValue().getTypePtr();
+	pushValue(Type::getAfter(typeMember));
 }
 
 void CBEnchanted::functionRead(void) {
