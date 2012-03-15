@@ -53,11 +53,11 @@ GfxInterface::~GfxInterface() {
 void GfxInterface::initializeGfx()
 {
 	sf::ContextSettings windowSettings;
-	windowSettings.AntialiasingLevel = 0;
-	windowSettings.DepthBits = 0;
-	window.EnableVerticalSync(true);
-	window.Create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
-	windowSettings = window.GetSettings();
+	windowSettings.antialiasingLevel = 0;
+	windowSettings.depthBits = 0;
+	window.setVerticalSyncEnabled(true);
+	window.create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
+	windowSettings = window.getSettings();
 	windowRenderTarget.create(400, 300);
 
 	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
@@ -69,7 +69,7 @@ void GfxInterface::initializeGfx()
 	RenderTarget::init();
 
 	screenGammaShader = new sf::Shader;
-	bool scrGamShadFail = screenGammaShader->LoadFromMemory(string(screenGammaFragmentShaderCode), sf::Shader::Fragment);
+	bool scrGamShadFail = screenGammaShader->loadFromMemory(string(screenGammaFragmentShaderCode), sf::Shader::Fragment);
 	assert(scrGamShadFail);
 }
 
@@ -92,15 +92,15 @@ void GfxInterface::commandScreen(void) {
 			break;
 	}
 	if (state != 2) {
-		window.Create(sf::VideoMode(width, height, depth), windowTitle, style,window.GetSettings());
+		window.create(sf::VideoMode(width, height, depth), windowTitle, style, window.getSettings());
 	}
 	else {
-		window.Create(sf::VideoMode(window.GetWidth(), window.GetHeight(), depth), windowTitle, style,window.GetSettings());
+		window.create(sf::VideoMode(window.getSize().x, window.getSize().y, depth), windowTitle, style,window.getSettings());
 	}
 
 	windowRenderTarget.create(width, height);
-	windowScaleX = (float)window.GetWidth()/(float)windowRenderTarget.width();
-	windowScaleY = (float)window.GetHeight()/(float)windowRenderTarget.height();
+	windowScaleX = (float)window.getSize().x / (float)windowRenderTarget.width();
+	windowScaleY = (float)window.getSize().y / (float)windowRenderTarget.height();
 
 }
 
@@ -151,14 +151,14 @@ void GfxInterface::commandDrawScreen(void) {
 	gameUpdated = false;
 	gameDrawn = false;
 	sf::Event e;
-	while (window.PollEvent(e)) {
-		switch (e.Type) {
+	while (window.pollEvent(e)) {
+		switch (e.type) {
 			case sf::Event::Closed:
 				cb->stop();
 				break;
 			//TODO: Inputs
 			case sf::Event::KeyPressed:
-				if (cb->isSafeExit() && e.Key.Code == sf::Keyboard::Escape) cb->stop(); //Safe exit
+				if (cb->isSafeExit() && e.key.code == sf::Keyboard::Escape) cb->stop(); //Safe exit
 
 			default:
 				break;
@@ -175,14 +175,14 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 
 	windowRenderTarget.display();
-	sf::Sprite sprite(windowRenderTarget.getSurface()->GetTexture());
-	sprite.SetScale(windowScaleX,windowScaleY);
+	sf::Sprite sprite(windowRenderTarget.getSurface()->getTexture());
+	sprite.setScale(windowScaleX,windowScaleY);
 
-	screenGammaShader->Bind();
-	screenGammaShader->SetParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
-	window.Draw(sprite, sf::RenderStates(screenGammaShader));
-	screenGammaShader->Unbind();
-	window.Display();
+	screenGammaShader->bind();
+	screenGammaShader->setParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
+	window.draw(sprite, sf::RenderStates(screenGammaShader));
+	screenGammaShader->unbind();
+	window.display();
 
 	if (cls) {
 		windowRenderTarget.clear(clearColor);
@@ -346,11 +346,11 @@ void GfxInterface::functionGetRGB(void) {
 }
 
 void GfxInterface::functionScreenWidth(void) {
-	cb->pushValue((int32_t)window.GetWidth());
+	cb->pushValue((int32_t)window.getSize().x);
 }
 
 void GfxInterface::functionScreenHeight(void) {
-	cb->pushValue((int32_t)window.GetHeight());
+	cb->pushValue((int32_t)window.getSize().y);
 }
 
 void GfxInterface::functionScreenDepth(void) {

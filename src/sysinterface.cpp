@@ -46,7 +46,7 @@ void SysInterface::commandGotoSavedLocation(void) {
 }
 
 void SysInterface::commandFrameLimit(void) {
-	cb->getWindow()->SetFramerateLimit(cb->popValue().toInt());
+	cb->getWindow()->setFramerateLimit(cb->popValue().toInt());
 }
 
 void SysInterface::commandEncrypt(void) {
@@ -74,7 +74,7 @@ void SysInterface::commandSetWindow(void) {
 		FIXME("FIXME: setWindow quitmsg");
 	}
 	
-	cb->getWindow()->SetTitle(caption);
+	cb->getWindow()->setTitle(caption);
 }
 
 void SysInterface::commandEnd(void) {

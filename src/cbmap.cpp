@@ -151,7 +151,7 @@ bool CBMap::loadMap(string file){
 
 bool CBMap::loadTileset(string path){
 	bool success =  load(path,sf::Color(maskR,maskG,maskB));
-	sprite.SetScale(1.0,1.0);
+	sprite.setScale(1.0,1.0);
 	return success;
 }
 
@@ -205,14 +205,14 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 
 	int32_t fX = 0;
 	int32_t fY = 0;
-	int32_t framesX = texture->GetWidth() / tileWidth;
-	int32_t framesY = texture->GetHeight() / tileHeight;
+	int32_t framesX = texture->getWidth() / tileWidth;
+	int32_t framesY = texture->getHeight() / tileHeight;
 	fX = (tile % framesX);
 	fY = (tile / framesY);
 
-	sprite.SetTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
-	sprite.SetPosition(x, y);
-	sprite.SetColor(sf::Color(255, 255,255, alphaBlend));
+	sprite.setTextureRect(sf::IntRect(fX*tileWidth, fY*tileHeight, tileWidth, tileHeight));
+	sprite.setPosition(x, y);
+	sprite.setColor(sf::Color(255, 255,255, alphaBlend));
 	target.draw(sprite);
 
 }

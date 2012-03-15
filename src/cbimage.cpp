@@ -22,7 +22,7 @@ CBImage::~CBImage() {
 
 bool CBImage::load(const string &path) {
 	sf::Texture texture;
-	if (!texture.LoadFromFile(path)) return false;
+	if (!texture.loadFromFile(path)) return false;
 	renderTarget.create(texture);
 	return true;
 }
@@ -46,16 +46,16 @@ void CBImage::draw(float x, float y, int frame, bool useMask)
 	int32_t copyX = frame % framesX;
 	int32_t copyY = (frame-copyX) / framesY;
 
-	frameArea.Left = (copyX*frameWidth)/(float)renderTarget.width();
-	frameArea.Top = (copyY*frameWidth)/(float)renderTarget.height();
-	frameArea.Height = frameHeight/(float)renderTarget.height();
-	frameArea.Width = frameWidth/(float)renderTarget.width();
+	frameArea.left = (copyX*frameWidth)/(float)renderTarget.width();
+	frameArea.top = (copyY*frameWidth)/(float)renderTarget.height();
+	frameArea.height = frameHeight/(float)renderTarget.height();
+	frameArea.width = frameWidth/(float)renderTarget.width();
 
 	sf::FloatRect drawArea;
-	drawArea.Left = x - hotspotX;
-	drawArea.Top = y - hotspotY;
-	drawArea.Width = frameWidth;
-	drawArea.Height = frameHeight;
+	drawArea.left = x - hotspotX;
+	drawArea.top = y - hotspotY;
+	drawArea.width = frameWidth;
+	drawArea.height = frameHeight;
 	if (useMask) {
 		CBEnchanted::instance()->getCurrentRenderTarget()->drawRenderTarget(renderTarget,drawArea,frameArea,maskColor);
 	}

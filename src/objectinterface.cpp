@@ -241,7 +241,7 @@ void ObjectInterface::commandPaintObject(void) {
 	}
 	else { //Image
 		CBImage *img = cb->getImage(p);
-		object->paintObject(img->getRenderTarget()->getSurface()->GetTexture());
+		object->paintObject(img->getRenderTarget()->getSurface()->getTexture());
 	}
 }
 
@@ -569,7 +569,7 @@ void ObjectInterface::updateObjects(){
 		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
 			removeFromDrawOrder((*i).second);
 			delete (*i).second;
-			i = objectMap.erase(i);
+			//i = objectMap.erase(i);
 		}
 		else {
 			++i;

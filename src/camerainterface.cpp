@@ -90,9 +90,9 @@ void CameraInterface::functionCameraAngle(void) {
 }
 
 sf::Vector2f CameraInterface::screenCoordToWorld(const sf::Vector2f &v) {
-	return sf::Vector2f(v.x-cb->getWindow()->GetWidth()/2.0f+cameraX,-v.y+cb->getWindow()->GetHeight()/2.0f+cameraY);
+	return sf::Vector2f(v.x-cb->getWindow()->getSize().x / 2.0f+cameraX,-v.y+cb->getWindow()->getSize().y / 2.0f+cameraY);
 }
 
 sf::Vector2f CameraInterface::worldCoordToScreen(const sf::Vector2f &v) {
-	return sf::Vector2f(v.x+cb->getWindow()->GetWidth()/2.0f-cameraX,-v.y+cb->getWindow()->GetHeight()/2.0f+cameraY);
+	return sf::Vector2f(v.x+cb->getWindow()->getSize().x / 2.0f-cameraX,-v.y+cb->getWindow()->getSize().y / 2.0f+cameraY);
 }

@@ -19,7 +19,7 @@
 
 TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
 	currentFont = new CBFont;
-	currentFont->font.LoadFromFile(DEFAULT_FONT);
+	currentFont->font.loadFromFile(DEFAULT_FONT);
 	currentFont->fontSize = 12;
 	currentFont->style = sf::Text::Regular;
 	fontMap[0] = currentFont;
@@ -45,9 +45,9 @@ void TextInterface::commandText(void) {
 	float x = cb->popValue().toFloat();
 
 	sf::Text text(txt, currentFont->font, currentFont->fontSize);
-	text.SetStyle(currentFont->style);
-	text.SetColor(cb->getDrawColor());
-	text.SetPosition(x, y);
+	text.setStyle(currentFont->style);
+	text.setColor(cb->getDrawColor());
+	text.setPosition(x, y);
 
 	cb->getCurrentRenderTarget()->draw(text);
 }
@@ -103,7 +103,7 @@ void TextInterface::functionLoadFont(void) {
 	}
 
 	CBFont *font = new CBFont;
-	font->font.LoadFromFile(path);
+	font->font.loadFromFile(path);
 	font->fontSize = size;
 	font->style = (sf::Text::Style)styles;
 

@@ -29,7 +29,7 @@ class RenderTarget : public sf::NonCopyable
 		void drawRenderTarget(const RenderTarget &rt,sf::FloatRect pos,sf::FloatRect area);
 		void drawTexture(const sf::Texture &tex,float x, float y);
 		void drawDot(float cx,float cy);
-		void setColor(const sf::Color &c) {target.SetActive();glColor4ub(c.r,c.g,c.b,c.a);}
+		void setColor(const sf::Color &c) {target.setActive(); glColor4ub(c.r,c.g,c.b,c.a);}
 		void drawParticles(CBImage *tex,const vector<Particle> &particles, int32_t particleLifeTime, int32_t animLength);
 
 		int32_t getPixel(int x,int y);
@@ -44,8 +44,8 @@ class RenderTarget : public sf::NonCopyable
 		void clear(const sf::Color &c);
 		static void init();
 		void display() const;
-		int width()const{return target.GetWidth();}
-		int height()const{return target.GetHeight();}
+		int width()const{return target.getSize().x;}
+		int height()const{return target.getSize().y;}
 		void setup();
 		void setDrawingMode(DrawingMode mode);
 		int32_t getId()const{return id;}
