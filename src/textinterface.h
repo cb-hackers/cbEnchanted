@@ -12,6 +12,14 @@ struct CBFont
 	uint32_t fontSize;
 };
 
+struct addTexts{
+	string txt;
+	CBFont *font;
+	int32_t txtX;
+	int32_t txtY;
+	sf::Color col;
+};
+
 class TextInterface {
 	public:
 		TextInterface();
@@ -31,11 +39,15 @@ class TextInterface {
 		void functionLoadFont(void);
 		void functionTextWidth(void);
 		void functionTextHeight(void);
+		void renderAddTexts();
 		CBFont *GetCurrentFont() { return currentFont; }
 	private:
 		CBEnchanted *cb;
 		map<int32_t, CBFont*> fontMap;
 		CBFont *currentFont;
+		int32_t locationX;
+		int32_t locationY;
+		std::vector<addTexts*> texts;
 };		inline int32_t nextfontid(){static int32_t fontID = 0; return ++fontID;}
 
 #endif

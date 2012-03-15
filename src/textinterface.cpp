@@ -17,7 +17,7 @@
 #define FONT_PATH "/usr/share/fonts/"
 #endif
 
-TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)) {
+TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)), locationX(0), locationY(0) {
 	currentFont = new CBFont;
 	currentFont->font.loadFromFile(DEFAULT_FONT);
 	currentFont->fontSize = 12;
@@ -74,11 +74,26 @@ void TextInterface::commandLocate(void) {
 }
 
 void TextInterface::commandAddText(void) {
-	STUB;
+	string str = cb->popValue().toString().getRef();
+	addTexts *newtxt = new addTexts;
+	newtxt->font = currentFont;
+	newtxt->txt = str;
+	newtxt->txtX = locationX;
+	newtxt->txtY = locationY;
+	newtxt->col = cb->getDrawColor();
+	texts.push_back(newtxt);
+	bool bold = (newtxt->font->style == 1 << 0);
+	locationY+=currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.height;
 }
 
 void TextInterface::commandClearText(void) {
-	STUB;
+	locationX = 0;
+	locationY = 0;
+	vector<addTexts*>::iterator i;
+	for(i = texts.begin(); i != texts.end(); i++){
+		delete (*i);
+	}
+	texts.clear();
 }
 
 void TextInterface::functionLoadFont(void) {
@@ -109,6 +124,23 @@ void TextInterface::functionLoadFont(void) {
 
 	int32_t keyId = nextfontid();
 	fontMap[keyId] = font;
+}
+
+void TextInterface::renderAddTexts(){
+	vector<addTexts*>::iterator i;
+	for(i = texts.begin(); i != texts.end(); i++){
+		int32_t x = (*i)->txtX;
+		int32_t y = (*i)->txtY;
+		string str = (*i)->txt;
+
+
+		sf::Text text(str, (*i)->font->font, (*i)->font->fontSize);
+		text.setStyle((*i)->font->style);
+		text.setColor((*i)->col);
+		text.setPosition(x, y);
+
+		cb->getCurrentRenderTarget()->draw(text);
+	}
 }
 
 void TextInterface::functionTextWidth(void) {
