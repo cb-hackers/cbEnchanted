@@ -40,7 +40,7 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-	string txt = cb->popValue().toString().getStdString();
+	string txt = cb->popValue().toString().getRef();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 
@@ -62,7 +62,7 @@ void TextInterface::commandVerticalText(void) {
 
 void TextInterface::commandPrint(void) {
 	STUB;
-	string s = cb->popValue().getString().getStdString();
+	string s = cb->popValue().toString().getRef();
 }
 
 void TextInterface::commandWrite(void) {
@@ -82,7 +82,7 @@ void TextInterface::commandClearText(void) {
 }
 
 void TextInterface::functionLoadFont(void) {
-	string file = cb->popValue().toString().getStdString();
+	string file = cb->popValue().toString().getRef();
 	uint16_t size = cb->popValue().toInt();
 	uint8_t bold = cb->popValue().toInt();
 	uint8_t italic = cb->popValue().toInt();
