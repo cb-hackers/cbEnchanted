@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "collisioncheck.h"
 #include <cmath>
 #include "cbmap.h"
@@ -36,6 +37,7 @@ bool CollisionCheck::testCollision(){
 					return CircleRectTest();
 				break;
 				case Map:
+				{
 					CBMap *map = static_cast<CBMap*>(mObject2);
 					int32_t x, y, left, up, right, down;
 
@@ -48,21 +50,23 @@ bool CollisionCheck::testCollision(){
 
 					if(map->getHit(left, y)){
 						handleCollision();
-						return 1;
+						return true;
 					}
 					if(map->getHit(x, up)){
 						handleCollision();
-						return 1;
+						return true;
 					}
 					if(map->getHit(right, y)){
 						handleCollision();
-						return 1;
+						return true;
 					}
 					if(map->getHit(x, down)){
 						handleCollision();
-						return 1;
+						return true;
 					}
-					return 0;
+
+					return false;
+				}
 				break;
 				case Pixel:
 
@@ -73,10 +77,6 @@ bool CollisionCheck::testCollision(){
 			switch(mCollisionType2){
 				case Box:
 					return CircleRectTest();
-				break;
-				case Circle:
-
-					return true;
 				break;
 				case Circle:
 
@@ -129,42 +129,6 @@ bool CollisionCheck::testCollision(){
 			}
 		break;
 	}
-
-			break;
-			case Circle:
-				switch(mCollisionType2){
-					case Box:
-
-					break;
-					case Circle:
-
-					break;
-					case Map:
-
-					break;
-					case Pixel:
-
-					break;
-				}
-			break;
-			case Pixel:
-				switch(mCollisionType2){
-					case Box:
-
-					break;
-					case Circle:
-
-					break;
-					case Map:
-
-					break;
-					case Pixel:
-
-					break;
-				}
-			break;
-        }
-
 }
 
 bool CollisionCheck::CircleRectTest(){
@@ -191,5 +155,5 @@ bool CollisionCheck::CircleRectTest(){
 }
 
 void CollisionCheck::handleCollision(){
-	INFO("Collision true")
+
 }
