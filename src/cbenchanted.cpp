@@ -676,7 +676,7 @@ void CBEnchanted::handlePushVariable(void) {
 		case 8: pushValue(int32_t(getByteVariable(var))); break;
 		case 9: pushValue(int32_t(getGlobalShortVariable(var))); break;
 		case 10: pushValue(int32_t(getGlobalByteVariable(var))); break;
-		case 11: pushValue(getTypePointerVariable(var)); break;
+		case 11: if (var == 0) {pushValue(reinterpret_cast<void*>(0));break;}pushValue(getTypePointerVariable(var)); break;
 		default: FIXME("Unimplemented variable push: %i", type);
 	}
 }
@@ -938,7 +938,7 @@ void CBEnchanted::handlePushTypeMemberVariable()
 	void * typePtr = getTypePointerVariable(*((int32_t*)(code+cpos)));
 	cpos += 4;
 	int32_t varType = popValue().getInt();
-	int32_t field = (popValue().getInt()-16)/4;
+	int32_t field = (popValue().getInt()-12)/4;
 	switch (varType) {
 		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr,field));break;
 		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr,field));break;
@@ -956,7 +956,10 @@ void CBEnchanted::commandGoto(void) {
 }
 
 void CBEnchanted::commandDelete(void) {
-	STUB;
+	int32_t memberId = *(int32_t*)(code+cpos-9);
+	void *typeMember = popValue().getTypePtr();
+
+	setTypePointerVariable(memberId,Type::getMembersType(typeMember)->deleteMember(typeMember));
 }
 
 void CBEnchanted::commandInsert(void) {
@@ -991,19 +994,23 @@ void CBEnchanted::functionNew(void) {
 }
 
 void CBEnchanted::functionFirst(void) {
-	
+	int32_t typeId = popValue().getInt();
+	pushValue(getType(typeId)->getFirst());
 }
 
 void CBEnchanted::functionLast(void) {
-	
+	int32_t typeId = popValue().getInt();
+	pushValue(getType(typeId)->getFirst());
 }
 
 void CBEnchanted::functionBefore(void) {
-
+	void *typeMember = popValue().getTypePtr();
+	pushValue(Type::getBefore(typeMember));
 }
 
 void CBEnchanted::functionAfter(void) {
-	
+	void *typeMember = popValue().getTypePtr();
+	pushValue(Type::getAfter(typeMember));
 }
 
 void CBEnchanted::functionRead(void) {
@@ -1047,7 +1054,7 @@ void CBEnchanted::commandSetVariable(void) {
 			int32_t id = popValue().getInt();
 			void * ptr = popValue().getTypePtr();
 
-			setTypePointerVariale(id,ptr);
+			setTypePointerVariable(id,ptr);
 			break;
 		}
 		default:
@@ -1095,7 +1102,7 @@ void CBEnchanted::setTypeMemberField()
 {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
-	int32_t field = (popValue().getInt()-16)/4;
+	int32_t field = (popValue().getInt()-12)/4;
 	switch (varType) {
 		case 1: Type::getMembersType(typePtr)->setField(typePtr,field,popValue().toInt());break;
 		case 2: Type::getMembersType(typePtr)->setField(typePtr,field,popValue().toFloat());break;

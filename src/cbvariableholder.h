@@ -32,63 +32,85 @@ class VariableCollection {
 
 class Type {
 public:
-	Type(int32_t fields):sizeOfMember((fields+3)*sizeof(void*)),firstMember(0),lastMember(0) {}
-	void *newMember() {
-		void ** m = (void**)new char[sizeOfMember];
+		Type(int32_t fields):sizeOfMember((fields+3)*sizeof(void*)),firstMember(0),lastMember(0) {dummyFirst[0] = dummyFirst[1] = 0;}
+	inline void *newMember() {
+		void * m = new char[sizeOfMember];
 		memset(m,0,sizeOfMember);
-		m[0] = lastMember;
-		m[1] = 0;
-		m[2] = this;
+		if (lastMember) setAfter(lastMember,m);
+		setBefore(m,lastMember);
+		setAfter(m,0);
+		setType(m,this);
 		lastMember = m;
-		if (firstMember == 0) firstMember = m;
-		return (void*)m;
+		if (firstMember == 0) {firstMember = m;setAfter(dummyFirst,firstMember);}
+		return m;
 	}
-	void deleteMember(void *m) {
-		void ** before = (void**)((void**)m)[0];
-		void ** after = (void**)((void**)m)[1];
+	inline void *deleteMember(void *m) {
+		void * before = getBefore(m);
+		void * after = getAfter(m);
 		if (before) { //Not first member
-			before[1] = after;
+			setAfter(before,after);
 			if (after == 0) {
 				lastMember = before;
 			}
 			else {
-				after[0] = before;
+				setBefore(after,before);
 			}
+			return before;
 		}
 		else {
 			firstMember = after;
+			setAfter(dummyFirst,firstMember);
 			if (after) {
-				after[0] = 0;
+				setBefore(after,0);
 			}
 			else {
 				lastMember = 0;
 			}
+			return dummyFirst;
 		}
 		delete[] (void**)m;
 	}
-	static Type *getMembersType(void * m){return ((Type**)m)[2];}
-	static int32_t &getIntField(void *m,int32_t field) {
+	inline static Type *getMembersType(void * m){return ((Type**)m)[2];}
+	inline static int32_t &getIntField(void *m,int32_t field) {
 		return *(int32_t*)(((void**)m)+3+field);
 	}
-	static float getFloatField(void *m,int32_t field) {
+	inline static float getFloatField(void *m,int32_t field) {
 		return *(float*)(((void**)m)+3+field);
 	}
-	static ISString &getStringField(void *m,int32_t field) {
+	inline static ISString &getStringField(void *m,int32_t field) {
 		return *(ISString*)(((void**)m)+3+field);
 	}
-	static void setField(void *m,int32_t field,int32_t value) {
+	inline static void setField(void *m,int32_t field,int32_t value) {
 		*(int32_t*)(((void**)m)+3+field) = value;
 	}
-	static void setField(void *m,int32_t field,float value) {
+	inline static void setField(void *m,int32_t field,float value) {
 		*(float*)(((void**)m)+3+field) = value;
 	}
-	static void setField(void *m,int32_t field,const ISString &value) {
+	inline static void setField(void *m,int32_t field,const ISString &value) {
 		*(ISString*)(((void**)m)+3+field) = value;
+	}
+	inline static void *getBefore(void *m) {
+		if (m == 0) return 0;
+		return ((void**)m)[0];
+	}
+	inline static void *getAfter(void *m) {
+		if (m == 0) return 0;
+		return ((void**)m)[1];
+	}
+	inline void setBefore(void *m,void *v) {
+		((void**)m)[0] = v;
+	}
+	inline void setAfter(void *m,void *v) {
+		((void**)m)[1] = v;
 	}
 
 	void *getFirst(){return firstMember;}
 	void *getLast(){return lastMember;}
 private:
+	inline static void setType(void *m,Type *t) {
+		((Type**)m)[2] = t;
+	}
+	void *dummyFirst[2];
 	int32_t sizeOfMember;
 	void *firstMember;
 	void *lastMember;
@@ -214,7 +236,7 @@ class CBVariableHolder {
 		void setIntegerVariable(uint32_t id, int32_t value) { scopes.top().integerVariables.set(id, value); }
 		void setFloatVariable(uint32_t id, float value) { scopes.top().floatVariables.set(id, value); }
 		void setStringVariable(uint32_t id, const ISString &value) { scopes.top().stringVariables.set(id, value); }
-		void setTypePointerVariale(uint32_t id,void *value) { scopes.top().typePointerVariables.set(id,value);}
+		void setTypePointerVariable(uint32_t id,void *value) { scopes.top().typePointerVariables.set(id,value);}
 		
 		void setGlobalByteVariable(uint32_t id, uint8_t value) { globalByteVariables.set(id, value); }
 		void setGlobalShortVariable(uint32_t id, uint16_t value) { globalShortVariables.set(id, value); }
@@ -226,8 +248,8 @@ class CBVariableHolder {
 		
 		void setString(uint32_t id, string value) { strings.set(id, value); }
 
-		void addType(int32_t fields) {types.push_back(Type(fields));}
-		Type *getType(int32_t id){return &types[--id];}
+		void addType(int32_t fields) {types.push_back(new Type(fields));}
+		Type *getType(int32_t id){return types[--id];}
 
 	private:
 		stack <Any> internalStack;
@@ -249,7 +271,7 @@ class CBVariableHolder {
 		
 		VariableCollection <ISString> strings;
 
-		std::vector<Type> types;
+		std::vector<Type*> types;
 		
 		//vector <sf::Texture> images;
 };

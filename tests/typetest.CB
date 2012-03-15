@@ -1,28 +1,31 @@
 Type TestType
     Field field1
-    Field field2
+    Field field2#
     Field field3
 EndType
 
-Type TestType2
-    Field field1
-    Field field2
-    Field field3 As String
-EndType
 
 member.TestType = New(TestType)
 member\field1 = 545
 member\field2 = 15
 member\field3 = 41
 
-member3.TestType = member
+member2.TestType = New(TestType)
+member2\field1 = 30
+member2\field2 = 746
+member2\field3 = 56
+
+member3.TestType = New(TestType)
 member3\field1 = 500
 member3\field2 = 746
 member3\field3 = 0
+Delete member2
 
-member2.TestType = New(TestType)
-member2\field1 = 500
-member2\field2 = 746
-member2\field3 = 0
-SetWindow "member2\field2:"+member2\field2+" member3\field1:"+member3\field1
-WaitKey
+Repeat
+y = 10
+For m.TestType = Each TestType
+    Text 0,y,"F1:"+m\field1+" F2:"+m\field2+" F3:"+m\field3
+    y + 10
+Next m
+DrawScreen
+Forever
