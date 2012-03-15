@@ -27,6 +27,7 @@ private:
 	float mCollisionX, mCollisionY;
 	float mCollisionAngle;
 	uint16_t collisionCount;
+	bool CircleRectTest();
 };
 
 #endif // COLLISIONCHECK_H
