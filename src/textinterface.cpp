@@ -53,16 +53,63 @@ void TextInterface::commandText(void) {
 }
 
 void TextInterface::commandCenterText(void) {
-	STUB;
+	uint8_t style = cb->popValue().toInt();
+	string str = cb->popValue().getString().getRef();
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+	bool bold = (currentFont->style == 1 << 0);
+	uint16_t fontW = currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.width;
+	uint16_t fontH = currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.height;
+	uint32_t textW = str.length()*fontW;
+	switch(style){
+		case 0:{
+			sf::Text text(str, currentFont->font, currentFont->fontSize);
+			text.setStyle(currentFont->style);
+			text.setColor(cb->getDrawColor());
+			text.setPosition(x - textW/2, y);
+
+			cb->getCurrentRenderTarget()->draw(text);
+		}
+		break;
+		case 1:{
+
+			sf::Text text(str, currentFont->font, currentFont->fontSize);
+			text.setStyle(currentFont->style);
+			text.setColor(cb->getDrawColor());
+			text.setPosition(x, y - fontH/2);
+
+			cb->getCurrentRenderTarget()->draw(text);
+		}
+		case 2:{
+			sf::Text text(str, currentFont->font, currentFont->fontSize);
+			text.setStyle(currentFont->style);
+			text.setColor(cb->getDrawColor());
+			text.setPosition(x - textW/2, y - fontH/2);
+
+			cb->getCurrentRenderTarget()->draw(text);
+		}
+		break;
+	}
 }
 
 void TextInterface::commandVerticalText(void) {
-	STUB;
+	string str = cb->popValue().toString().getRef();
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+	uint16_t chars = str.length();
+	bool bold = (currentFont->style == 1 << 0);
+	uint16_t fontH = currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.height;
+	for(uint16_t i = 0; i < chars; i++){
+		sf::Text text(str[i], currentFont->font, currentFont->fontSize);
+		text.setStyle(currentFont->style);
+		text.setColor(cb->getDrawColor());
+		text.setPosition(x, y+i*fontH);
+		cb->getCurrentRenderTarget()->draw(text);
+	}
 }
 
 void TextInterface::commandPrint(void) {
 	STUB;
-	string s = cb->popValue().toString().getRef();
 }
 
 void TextInterface::commandWrite(void) {
@@ -70,7 +117,8 @@ void TextInterface::commandWrite(void) {
 }
 
 void TextInterface::commandLocate(void) {
-	STUB;
+	locationY = cb->popValue().toInt();
+	locationX = cb->popValue().toInt();
 }
 
 void TextInterface::commandAddText(void) {
@@ -144,9 +192,16 @@ void TextInterface::renderAddTexts(){
 }
 
 void TextInterface::functionTextWidth(void) {
-	STUB;
+	string txt = cb->popValue().getString().getRef();
+	bool bold = (currentFont->style == 1 << 0);
+	uint16_t charLen = currentFont->font.getGlyph((char)txt[0], currentFont->fontSize, bold).textureRect.width;
+	uint16_t width = txt.length()*charLen;
+	cb->pushValue(width);
 }
 
 void TextInterface::functionTextHeight(void) {
-	STUB;
+	string txt = cb->popValue().getString().getRef();
+	bool bold = (currentFont->style == 1 << 0);
+	uint16_t charHeight = currentFont->font.getGlyph((char)txt[0], currentFont->fontSize, bold).textureRect.height;
+	cb->pushValue(charHeight);
 }
