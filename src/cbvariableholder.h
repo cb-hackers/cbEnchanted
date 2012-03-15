@@ -64,7 +64,7 @@ public:
 				lastMember = 0;
 			}
 		}
-		delete m;
+		delete[] (void**)m;
 	}
 	static Type *getMembersType(void * m){return ((Type**)m)[2];}
 	static int32_t &getIntField(void *m,int32_t field) {

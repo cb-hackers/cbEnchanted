@@ -241,7 +241,7 @@ void ObjectInterface::commandPaintObject(void) {
 	}
 	else { //Image
 		CBImage *img = cb->getImage(p);
-		object->paintObject(img->getRenderTarget()->getSurface()->GetTexture());
+		object->paintObject(img->getRenderTarget()->getSurface()->getTexture());
 	}
 }
 
@@ -335,7 +335,7 @@ void ObjectInterface::commandInitObjectList(void) {
 
 void ObjectInterface::functionLoadObject(void) {
 	cb->popValue(); //Rotation...
-	const string &path = cb->popValue().getString().getStdString();
+	string path = cb->popValue().getString().getRef();
 	CBObject *obj = new CBObject;
 	if (!obj->load(path)) {
 		FIXME("Can't load object: %s",path.c_str());
@@ -354,7 +354,7 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	uint16_t startf = cb->popValue().toInt();
 	uint16_t frameH = cb->popValue().toInt();
 	uint16_t frameW = cb->popValue().toInt();
-	const string &path = cb->popValue().getString().getStdString();
+	string path = cb->popValue().getString().getRef();
 	CBObject *obj = new CBObject;
 	if(!obj->loadAnimObject(path, frameW, frameH, startf, frames)){
 		FIXME("Can't load object: %s", path.c_str());
@@ -571,7 +571,7 @@ void ObjectInterface::updateObjects(){
 		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
 			removeFromDrawOrder((*i).second);
 			delete (*i).second;
-			i = objectMap.erase(i);
+			//i = objectMap.erase(i);
 		}
 		else {
 			++i;

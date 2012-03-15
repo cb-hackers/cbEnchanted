@@ -50,25 +50,25 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	current_path(path(cb->popValue().toString().getStdString()));
+	current_path(path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandMakeDir(void) {
-	create_directory(path(cb->popValue().toString().getStdString()));
+	create_directory(path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandCopyFile(void) {
-	string file_s2 = cb->popValue().toString().getStdString();
-	string file_s1 = cb->popValue().toString().getStdString();
+	string file_s2 = cb->popValue().toString().getRef();
+	string file_s1 = cb->popValue().toString().getRef();
 	copy_file(path(file_s1), path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
-	remove(path(cb->popValue().toString().getStdString()));
+	remove(path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandExecute(void) {
-	const string &cmd = cb->popValue().toString().getStdString();
+	string cmd = cb->popValue().toString().getRef();
 	string scmd;
 
 	#ifdef WIN32
@@ -102,7 +102,7 @@ void FileInterface::commandWriteFloat(void) {
 }
 
 void FileInterface::commandWriteString(void) {
-	const string &sstring = cb->popValue().toString().getStdString();
+	string sstring = cb->popValue().toString().getRef();
 
 	FILE *file2;
 	file2 = filestrs[cb->popValue().toInt()];
@@ -118,7 +118,7 @@ void FileInterface::commandWriteString(void) {
 }
 
 void FileInterface::commandWriteLine(void) {
-	string line = cb->popValue().toString().getStdString();
+	string line = cb->popValue().toString().getRef();
 	FILE *file2;
 	file2 = filestrs[cb->popValue().getInt()];
 
@@ -176,10 +176,9 @@ void FileInterface::commandReadLine(void) {
 }
 
 void FileInterface::functionOpenToRead(void) {
-	const string &file_s = cb->popValue().toString().getStdString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(file_s.c_str(), "r");;
+	filestrs[id] = fopen(cb->popValue().toString().getRef().c_str(), "r");;
 	if (filestrs[id] == NULL) {
 		FIXME("OpenToRead failed.");
 		cb->pushValue(0);
@@ -189,10 +188,9 @@ void FileInterface::functionOpenToRead(void) {
 }
 
 void FileInterface::functionOpenToWrite(void) {
-	const string &file_s = cb->popValue().toString().getStdString();
 	int32_t id = ++idC;
 
-	filestrs[id] = fopen(file_s.c_str(), "w");
+	filestrs[id] = fopen(cb->popValue().getString().getRef().c_str(), "w");
 	if (filestrs[id] == NULL) {
 		FIXME("OpenToWrite failed.");
 		cb->pushValue(0);
@@ -202,7 +200,7 @@ void FileInterface::functionOpenToWrite(void) {
 }
 
 void FileInterface::functionOpenToEdit(void) {
-	const string &file_s = cb->popValue().toString().getStdString();
+	string file_s = cb->popValue().toString().getRef();
 	int32_t id = ++idC;
 
 	if(exists(file_s))
@@ -255,15 +253,15 @@ void FileInterface::functionCurrentDir(void) {
 }
 
 void FileInterface::functionFileExists(void) {
-	cb->pushValue(exists(cb->popValue().toString().getStdString()));
+	cb->pushValue(exists(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::functionIsDirectory(void) {
-	cb->pushValue(is_directory(cb->popValue().toString().getStdString()));
+	cb->pushValue(is_directory(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::functionFileSize(void) {
-	cb->pushValue(int32_t(file_size(cb->popValue().toString().getStdString())));
+	cb->pushValue(int32_t(file_size(cb->popValue().toString().getRef())));
 }
 
 void FileInterface::functionEOF(void) {

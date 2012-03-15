@@ -2,6 +2,7 @@
 #define CAMERAINTERFACE_H
 class CBEnchanted;
 #include "precomp.h"
+
 class CameraInterface {
 	public:
 		CameraInterface();
@@ -32,7 +33,6 @@ class CameraInterface {
 		float cameraY;
 		float cameraZ;
 		float cameraAngle;
-
 };
 
 #endif

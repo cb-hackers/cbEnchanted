@@ -29,6 +29,7 @@ bool CollisionCheck::testCollision(){
 					if(left1 < left2) return false;
 					if(right1 > right2) return false;
 
+
 					return true;
 				break;
 				case Circle:
@@ -75,6 +76,32 @@ bool CollisionCheck::testCollision(){
 				break;
 				case Circle:
 
+					return true;
+				break;
+				case Circle:
+
+					float circleRad;
+					float circleDistX;
+					float circleDistY;
+					float cornerDist;
+					circleRad = 0.5*(mObject2->getObjectSizeX() + mObject2->getObjectSizeY());
+					circleDistX = abs(mObject2->getX() - mObject1->getX()-mObject1->getObjectSizeX()/2);
+					circleDistY = abs(mObject2->getY() - mObject1->getY()-mObject1->getObjectSizeY()/2);
+
+					if (circleDistX > (mObject1->getObjectSizeX()/2 + circleRad))
+							return false;
+					if (circleDistY > (mObject1->getObjectSizeY()/2 + circleRad))
+							return false;
+
+					if (circleDistX <= (mObject1->getObjectSizeX()/2))
+							return true;
+					if (circleDistY <= (mObject1->getObjectSizeY()/2))
+							return true;
+
+					cornerDist = ((circleDistX - mObject1->getObjectSizeX()/2)*(circleDistX - mObject1->getObjectSizeX()/2)+(circleDistY - mObject1->getObjectSizeY()/2)*(circleDistY - mObject1->getObjectSizeY()/2));
+					return (cornerDist <= circleRad*circleRad);
+
+
 				break;
 				case Map:
 
@@ -83,6 +110,7 @@ bool CollisionCheck::testCollision(){
 
 				break;
 			}
+
 		break;
 		case Pixel:
 			switch(mCollisionType2){
@@ -101,6 +129,41 @@ bool CollisionCheck::testCollision(){
 			}
 		break;
 	}
+
+			break;
+			case Circle:
+				switch(mCollisionType2){
+					case Box:
+
+					break;
+					case Circle:
+
+					break;
+					case Map:
+
+					break;
+					case Pixel:
+
+					break;
+				}
+			break;
+			case Pixel:
+				switch(mCollisionType2){
+					case Box:
+
+					break;
+					case Circle:
+
+					break;
+					case Map:
+
+					break;
+					case Pixel:
+
+					break;
+				}
+			break;
+        }
 
 }
 

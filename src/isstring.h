@@ -11,8 +11,9 @@ public:
 	friend class Any;
 
 	ISString() : data(0){
+
 	}
-	ISString(const char *str){data = new SharedData(string(str));}
+	ISString(const char *str):data(0){if (str[0] != '\0') data = new SharedData(string(str));}
 	ISString(const string &str):data(0){
 		if (str.length() != 0) data = new SharedData(str);
 	}
@@ -32,7 +33,11 @@ public:
 		if (data != 0) data->increaseRefCount();
 		return *this;
 	}
-	const string &getStdString()const{
+	string getStdString()const{
+		if (data == 0) return "";
+		return data->str;
+	}
+	const string &getRef()const{
 		static string nullStdString;
 		if (data == 0) return nullStdString;
 		return data->str;
@@ -63,6 +68,17 @@ public:
 		}
 		return ISString(data->str+o.data->str);
 	}
+	ISString operator+(const string &o) const{
+		if (data == 0) {
+			return o;
+		}
+		return ISString(data->str+o);
+	}
+	static ISString add(const string&a,const ISString &b) {
+		if (b.data == 0) return a;
+		return a+b.data->str;
+	}
+
 	ISString operator +(const string & o) {
 		if (this->data == 0) return o;
 		return ISString(data->str + o);
@@ -124,5 +140,6 @@ private:
 	ISString(SharedData *d):data(d){if (data) data->increaseRefCount();}
 	SharedData *data;
 };
+inline ISString operator +(const string &a,const ISString&b) { return ISString::add(a,b);}
 
 #endif // ISSTRING_H

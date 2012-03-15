@@ -72,7 +72,7 @@ Any operator + (Any &l, Any &r) {
 			return l.getFloat() + r.getInt();
 		}
 		if (r.type() == Any::String) {
-			return boost::lexical_cast<string>(l.getFloat()) + r.getString().getStdString();
+			return boost::lexical_cast<string>(l.getFloat()) + r.getString();
 		}
 	}
 	if (l.type() == Any::Int) {
@@ -83,7 +83,7 @@ Any operator + (Any &l, Any &r) {
 			return l.getInt() + r.getInt();
 		}
 		if (r.type() == Any::String) {
-			return boost::lexical_cast<string>(l.getInt()) + r.getString().getStdString();
+			return boost::lexical_cast<string>(l.getInt()) + r.getString();
 		}
 	}
 	if (l.type() == Any::String) {
@@ -253,7 +253,7 @@ int32_t operator == (Any &l, Any &r) {
 		}
 		if (r.type() == Any::String) {
 			try {
-				return l.getFloat() == boost::lexical_cast<float>(r.getString().getStdString());
+				return l.getFloat() == boost::lexical_cast<float>(r.getString().getRef());
 			}
 			catch( boost::bad_lexical_cast &error) {
 				return 0;
@@ -269,7 +269,7 @@ int32_t operator == (Any &l, Any &r) {
 		}
 		if (r.type() == Any::String) {
 			try {
-				return l.getInt() == boost::lexical_cast<int32_t>(r.getString().getStdString());
+				return l.getInt() == boost::lexical_cast<int32_t>(r.getString().getRef());
 			}
 			catch( boost::bad_lexical_cast &error) {
 				return 0;
@@ -282,7 +282,7 @@ int32_t operator == (Any &l, Any &r) {
 		}
 		if (r.type() == Any::Int) {
 			try {
-				return boost::lexical_cast<int32_t>(l.getString().getStdString()) == r.getInt();
+				return boost::lexical_cast<int32_t>(l.getString().getRef()) == r.getInt();
 			}
 			catch( boost::bad_lexical_cast &error) {
 				return 0;
@@ -290,7 +290,7 @@ int32_t operator == (Any &l, Any &r) {
 		}
 		if (r.type() == Any::Float) {
 			try {
-				return boost::lexical_cast<float>(l.getString().getStdString()) == r.getFloat();
+				return boost::lexical_cast<float>(l.getString().getRef()) == r.getFloat();
 			}
 			catch( boost::bad_lexical_cast &error) {
 				return 0;

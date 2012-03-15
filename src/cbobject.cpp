@@ -41,20 +41,21 @@ CBObject::~CBObject() {
 	}
 }
 
-bool CBObject::load(string file)
-{
+bool CBObject::load(string file) {
 	if (imgtex) delete imgtex;
-	imgtex = new sf::Image;
-	if (!imgtex->LoadFromFile(file)) return false;
 
-	imgtex->CreateMaskFromColor(sf::Color(0, 0, 0));
+	imgtex = new sf::Image;
+	if (!imgtex->loadFromFile(file)) return false;
+
+	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
 
 	if (texture) delete texture;
 	texture = new sf::Texture;
-	texture->LoadFromImage(*imgtex);
-	sprite.SetTexture(*texture);
-	sizeX = texture->GetWidth();
-	sizeY = texture->GetHeight();
+	texture->loadFromImage(*imgtex);
+	sprite.setTexture(*texture);
+	sizeX = texture->getWidth();
+	sizeY = texture->getHeight();
+
 	frameWidth = 0;
 	frameHeight = 0;
 	startFrame = 0;
@@ -62,24 +63,24 @@ bool CBObject::load(string file)
 	alphaBlend = 255;
 	angle = 0;
 	painted = true;
-	sprite.SetScale(1.0,-1.0);
+	sprite.setScale(1.0,-1.0);
+
 	return true;
 }
 
-bool CBObject::load(string file, const sf::Color &mask)
-{
+bool CBObject::load(string file, const sf::Color &mask) {
 	if (imgtex) delete imgtex;
 	imgtex = new sf::Image;
-	if (!imgtex->LoadFromFile(file)) return false;
+	if (!imgtex->loadFromFile(file)) return false;
 
-	imgtex->CreateMaskFromColor(mask);
+	imgtex->createMaskFromColor(mask);
 
 	if (texture) delete texture;
 	texture = new sf::Texture;
-	texture->LoadFromImage(*imgtex);
-	sprite.SetTexture(*texture);
-	sizeX = texture->GetWidth();
-	sizeY = texture->GetHeight();
+	texture->loadFromImage(*imgtex);
+	sprite.setTexture(*texture);
+	sizeX = texture->getWidth();
+	sizeY = texture->getHeight();
 	frameWidth = 0;
 	frameHeight = 0;
 	startFrame = 0;
@@ -88,7 +89,7 @@ bool CBObject::load(string file, const sf::Color &mask)
 	angle = 0;
 	currentFrame = 0;
 	painted = true;
-	sprite.SetScale(1.0,-1.0);
+	sprite.setScale(1.0,-1.0);
 	return true;
 }
 
@@ -97,33 +98,33 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	INFO("%s, %u, %u, %u, %u", file.c_str(), fw, fh, startf, framecount)
 	if (imgtex) delete imgtex;
 	imgtex = new sf::Image;
-	if (!imgtex->LoadFromFile(file)) return false;
+	if (!imgtex->loadFromFile(file)) return false;
 
-	imgtex->CreateMaskFromColor(sf::Color(0, 0, 0));
+	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
 
 	if (texture) delete texture;
 	texture = new sf::Texture;
-	bool success = texture->LoadFromImage(*imgtex);
+	bool success = texture->loadFromImage(*imgtex);
 	INFO("Image copying: %u", success)
 
 
 	INFO("Texture exists")
-	INFO("Texture sizes(w, h): %u, %u", texture->GetWidth(), texture->GetHeight())
+	INFO("Texture sizes(w, h): %u, %u", texture->getWidth(), texture->getHeight())
 
 
-	if((int)fw > texture->GetWidth()){
-		INFO("Frame width %u is more than texture width: %u", fw, texture->GetWidth());
+	if((int)fw > texture->getWidth()){
+		INFO("Frame width %u is more than texture width: %u", fw, texture->getWidth());
 		return false;
 	}
-	if((int)fh > texture->GetHeight()){
-		INFO("Frame height %u is more than texture height: %u", fh, texture->GetHeight());
+	if((int)fh > texture->getHeight()){
+		INFO("Frame height %u is more than texture height: %u", fh, texture->getHeight());
 		return false;
 	}
-	if(framecount > (texture->GetWidth()/fw)*(texture->GetHeight()/fh)){
+	if(framecount > (texture->getWidth()/fw)*(texture->getHeight()/fh)){
 		FIXME("Too much frames!")
 		return false;
 	}
-	sprite.SetTexture(*texture);
+	sprite.setTexture(*texture);
 	frameWidth = fw;
 	frameHeight = fh;
 	sizeX = frameWidth;
@@ -136,7 +137,7 @@ bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t st
 	currentFrame = 0;
 	playing = false;
 	INFO("Everything ok!")
-	sprite.SetScale(1.0,-1.0);
+	sprite.setScale(1.0,-1.0);
 	return true;
 }
 
@@ -148,10 +149,10 @@ void CBObject::positionObject(float x, float y){
 void CBObject::paintObject(const sf::Texture &txt){
     if (!imgtex) imgtex = new sf::Image;
     if (!texture) texture = new sf::Texture;
-	*imgtex = txt.CopyToImage();
-	imgtex->CreateMaskFromColor(sf::Color(0, 0, 0));
-	texture->LoadFromImage(*imgtex);
-	sprite.SetTexture(*texture);
+	*imgtex = txt.copyToImage();
+	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
+	texture->loadFromImage(*imgtex);
+	sprite.setTexture(*texture);
 	painted = true;
 }
 
@@ -160,7 +161,7 @@ void CBObject::paintObject(const CBObject &obj){
     if (!texture) texture = new sf::Texture;
 	imgtex = obj.imgtex;
 	texture = obj.texture;
-	sprite.SetTexture(*texture);
+	sprite.setTexture(*texture);
 	painted = true;
 }
 
@@ -212,9 +213,9 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 		FIXME("Masking object without texture");
 		return;
 	}
-	imgtex->CreateMaskFromColor(sf::Color(r, g, b));
-	texture->LoadFromImage(*imgtex);
-	sprite.SetTexture(*texture);
+	imgtex->createMaskFromColor(sf::Color(r, g, b));
+	texture->loadFromImage(*imgtex);
+	sprite.setTexture(*texture);
 }
 
 void CBObject::moveObject(float fwrd, float sdwrd){
@@ -236,44 +237,44 @@ void CBObject::turnObject(float speed){
 	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
 		if (floor) {
-		    sprite.SetOrigin(0,0);
+		    sprite.setOrigin(0,0);
 				//Drawing floor objects
 
-			float snappedx=floorf(camX/texture->GetWidth());
-			float snappedy=floorf(camY/texture->GetHeight());
+			float snappedx=floorf(camX/texture->getWidth());
+			float snappedy=floorf(camY/texture->getHeight());
 
-			float ekax= camX+snappedx*texture->GetWidth();
-			float ekay=-camY-snappedy*texture->GetHeight();
+			float ekax= camX+snappedx*texture->getWidth();
+			float ekay=-camY-snappedy*texture->getHeight();
 
 			float xx=ekax;
 			while (xx<target.width()) {
 			float yy=ekay;
 			while (yy<target.height()) {
-				sprite.SetPosition(xx,yy);
+				sprite.setPosition(xx,yy);
 				target.draw(sprite);
-				yy=yy+texture->GetHeight();
+				yy=yy+texture->getHeight();
 			}
-			xx=xx+texture->GetWidth();
+			xx=xx+texture->getWidth();
 			}
 		} else {
 			if(maxFrames!=0){
 				int32_t frame = (int)currentFrame;
 				//INFO("%i", frame)
-				int32_t framesX = texture->GetWidth() / frameWidth;
-				int32_t framesY = texture->GetHeight() / frameHeight;
+				int32_t framesX = texture->getWidth() / frameWidth;
+				int32_t framesY = texture->getHeight() / frameHeight;
 				int32_t copyX = frame % framesX;
 				int32_t copyY = (frame-copyX) / framesY;
 				//INFO("X, Y: %i,%i", copyX, copyY)
-				sprite.SetTextureRect(sf::IntRect(((angle == 0) ? 1.0f:0.0f)+copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
-				sprite.SetOrigin((float)frameWidth*0.5f,(float)frameHeight*0.5f);
+				sprite.setTextureRect(sf::IntRect(((angle == 0) ? 1.0f:0.0f)+copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
+				sprite.setOrigin((float)frameWidth*0.5f,(float)frameHeight*0.5f);
 			}
 			else {
-				sprite.SetOrigin(texture->GetWidth()*0.5,texture->GetHeight()*0.5);
+				sprite.setOrigin(texture->getWidth()*0.5,texture->getHeight()*0.5);
 			}
-			sprite.SetPosition(posX, posY);
-			sprite.SetRotation(angle);
+			sprite.setPosition(posX, posY);
+			sprite.setRotation(angle);
 			if(alphaBlend!=255){
-				sprite.SetColor(sf::Color(255, 255, 255, alphaBlend));
+				sprite.setColor(sf::Color(255, 255, 255, alphaBlend));
 
 			}
 			target.draw(sprite);
