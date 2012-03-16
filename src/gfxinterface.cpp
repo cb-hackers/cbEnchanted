@@ -146,6 +146,7 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
+
 	if (!gameUpdated) cb->updateObjects();
 	if (!gameDrawn) cb->drawObjects(windowRenderTarget);
 	gameUpdated = false;
@@ -173,7 +174,7 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
-
+	cb->renderAddTexts();
 	windowRenderTarget.display();
 	sf::Sprite sprite(windowRenderTarget.getSurface()->getTexture());
 	sprite.setScale(windowScaleX,windowScaleY);
