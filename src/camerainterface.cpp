@@ -19,7 +19,7 @@ void CameraInterface::commandCloneCameraPosition(void) {
 	cameraY = obj->getY();
 
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->setViewTo(true, true);
+		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
 	}
 }
 
@@ -60,7 +60,7 @@ void CameraInterface::commandMoveCamera(void) {
 	cameraY += sinf(cameraAngle * M_PI / 180.0) * fwrd;
 
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->setViewTo(true, true);
+		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
 	}
 }
 
@@ -70,7 +70,7 @@ void CameraInterface::commandTranslateCamera(void) {
 	cameraX += cb->popValue().toFloat();
 
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->setViewTo(true, true);
+		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
 	}
 }
 
@@ -80,7 +80,7 @@ void CameraInterface::commandPositionCamera(void) {
 	cameraX = cb->popValue().toFloat();
 
 	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->setViewTo(true, true);
+		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
 	}
 }
 
@@ -95,11 +95,18 @@ void CameraInterface::functionCameraY(void) {
 void CameraInterface::functionCameraAngle(void) {
 	cb->pushValue(cameraAngle);
 }
-
-sf::Vector2f CameraInterface::screenCoordToWorld(const sf::Vector2f &v) {
-	return sf::Vector2f(v.x - cb->getWindow()->getSize().x / 2.0f + cameraX, -v.y + cb->getWindow()->getSize().y / 2.0f + cameraY);
+float CameraInterface::screenCoordToWorldX(float a) {
+	return a - al_get_display_width(cb->getWindow()) *0.5f + cameraX;
 }
 
-sf::Vector2f CameraInterface::worldCoordToScreen(const sf::Vector2f &v) {
-	return sf::Vector2f(v.x + cb->getWindow()->getSize().x / 2.0f - cameraX, -v.y + cb->getWindow()->getSize().y / 2.0f + cameraY);
+float CameraInterface::screenCoordToWorldY(float a) {
+	return -a + al_get_display_height(cb->getWindow()) / 2.0f + cameraY;
+}
+
+float CameraInterface::worldCoordToScreenX(float a) {
+	return a + al_get_display_width(cb->getWindow()) / 2.0f - cameraX;
+}
+
+float CameraInterface::worldCoordToScreenY(float a) {
+	return -a + al_get_display_height(cb->getWindow()) / 2.0f + cameraY;
 }

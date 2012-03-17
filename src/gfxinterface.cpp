@@ -2,11 +2,11 @@
 #include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "objectinterface.h"
-#include <SFML/Graphics/Shape.hpp>
 #ifdef WIN32
 #include <Windows.h>
 #endif
 #include "cbimage.h"
+#include <allegro5/allegro_image.h>
 
 
 const char *screenGammaFragmentShaderCode =
@@ -33,15 +33,14 @@ const char *screenGammaFragmentShaderCode =
 GfxInterface::GfxInterface() :
 	cb(static_cast <CBEnchanted *> (this)),
 	windowTitle(""),
-	clearColor(0, 0, 0, 255),
-	drawColor(255, 255, 255, 255),
 	window(),
 	drawDrawCommandToWorld(false),
 	drawImageToWorld(false),
 	drawTextToWorld(false),
-	currentRenderTarget(0),
 	gameDrawn(false)
 {
+	drawColor = al_map_rgb(255,255,255);
+	clearColor = al_map_rgb(0,0,0);
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -52,114 +51,122 @@ GfxInterface::~GfxInterface() {
 
 void GfxInterface::initializeGfx()
 {
-	sf::ContextSettings windowSettings;
-	windowSettings.antialiasingLevel = 0;
-	windowSettings.depthBits = 0;
-	window.setVerticalSyncEnabled(true);
-	window.create(sf::VideoMode(400, 300, 32), "", sf::Style::Close,windowSettings);
-	windowSettings = window.getSettings();
-	windowRenderTarget.create(400, 300);
+	al_init_image_addon();
+	al_init_primitives_addon();
+	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
+	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP,1,ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP,1,ALLEGRO_REQUIRE);
+	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY,1,ALLEGRO_REQUIRE);
+	window = al_create_display(400,300);
+	registerWindow();
+	al_set_window_title(window,"");
+	windowRenderTarget = new RenderTarget;
+	windowRenderTarget->create(400,300);
+	windowRenderTarget->clear(clearColor);
 
-	bufferMap[windowRenderTarget.getId()] = &windowRenderTarget;
-	currentRenderTarget = &windowRenderTarget;
-	windowScaleX = windowScaleY = 1.0f;
+	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
 	windowGammaG = 0;
 	windowGammaB = 0;
-	RenderTarget::init();
-
-	screenGammaShader = new sf::Shader;
-	bool scrGamShadFail = screenGammaShader->loadFromMemory(string(screenGammaFragmentShaderCode), sf::Shader::Fragment);
-	assert(scrGamShadFail);
 }
 
 void GfxInterface::commandScreen(void) {
+
+	//TODO use al_resize_window
 	uint32_t state = cb->popValue().toInt();
 	uint32_t depth = cb->popValue().toInt();
 	uint32_t height = cb->popValue().toInt();
 	uint32_t width = cb->popValue().toInt();
-	uint32_t style;
+	uint32_t flags;
 	if (depth == 0) depth = 32;
 	switch (state) {
 		case 0: //cbFullscreen
-			style = sf::Style::Fullscreen;
+			flags = ALLEGRO_OPENGL | ALLEGRO_FULLSCREEN;
 			break;
 		case 1: // default
-			style = sf::Style::Close;
+			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED;
 			break;
 		case 2: //cbSizable
-			style = sf::Style::Close | sf::Style::Resize;
+			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
 			break;
 	}
-	if (state != 2) {
-		window.create(sf::VideoMode(width, height, depth), windowTitle, style, window.getSettings());
+	if ((al_get_display_flags(window) & flags) == flags) {
+		if (state != 2) {
+			al_resize_display(window,width,height);
+		}
 	}
 	else {
-		window.create(sf::VideoMode(window.getSize().x, window.getSize().y, depth), windowTitle, style,window.getSettings());
+		al_set_new_display_flags(flags);
+		if (state != 2) {
+			al_destroy_display(window);
+			window = al_create_display(width,height);
+		}
+		else {
+			int32_t w = al_get_display_width(window);
+			int32_t h = al_get_display_height(window);
+			al_destroy_display(window);
+			window = al_create_display(w,h);
+		}
 	}
 
-	windowRenderTarget.create(width, height);
-	windowScaleX = (float)window.getSize().x / (float)windowRenderTarget.width();
-	windowScaleY = (float)window.getSize().y / (float)windowRenderTarget.height();
+	windowRenderTarget->create(width,height);
 
 }
 
 void GfxInterface::commandClsColor(void) {
-	uint8_t b = cb->popValue().toByte();
-	uint8_t g = cb->popValue().toByte();
-	uint8_t r = cb->popValue().toByte();
+	float b = cb->popValue().toFloat()/255.0f;
+	float g = cb->popValue().toFloat()/255.0f;
+	float r = cb->popValue().toFloat()/255.0f;
 	clearColor.r = r;
 	clearColor.g = g;
 	clearColor.b = b;
 }
 
 void GfxInterface::commandColor(void) {
-	uint8_t b = cb->popValue().toByte();
-	uint8_t g = cb->popValue().toByte();
-	uint8_t r = cb->popValue().toByte();
+	float b = cb->popValue().toFloat()/255.0f;
+	float g = cb->popValue().toFloat()/255.0f;
+	float r = cb->popValue().toFloat()/255.0f;
 	drawColor.r = r;
 	drawColor.g = g;
 	drawColor.b = b;
-	currentRenderTarget->setColor(drawColor);
 }
-#define CIRCLE_SEGMENT_COUNT 100
 
 void GfxInterface::commandCircle(void) {
-	currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
 	float r = cb->popValue().toFloat()*0.5;
 	float cy = cb->popValue().toFloat() + r;
 	float cx = cb->popValue().toFloat() + r;
-	currentRenderTarget->drawCircle(cx,cy,r,fill);
+	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
 }
 
 void GfxInterface::commandLine(void){
-	currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	float y2 = cb->popValue().toFloat();
 	float x2 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
 
-	currentRenderTarget->drawLine(x1,y1,x2,y2);
+	currentRenderTarget->drawLine(x1,y1,x2,y2,drawColor);
 }
 
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
+
+	windowRenderTarget->setAsCurrent();
+
 	if (!gameUpdated) cb->updateObjects();
-	if (!gameDrawn) cb->drawObjects(windowRenderTarget);
+	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 	gameUpdated = false;
 	gameDrawn = false;
-	sf::Event e;
-	while (window.pollEvent(e)) {
+	ALLEGRO_EVENT e;
+	while (al_get_next_event(cb->getEventQueue(),&e)) {
 		switch (e.type) {
-			case sf::Event::Closed:
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 				break;
-			//TODO: Inputs
-			case sf::Event::KeyPressed:
-				if (cb->isSafeExit() && e.key.code == sf::Keyboard::Escape) cb->stop(); //Safe exit
-
 			default:
 				break;
 		}
@@ -173,26 +180,16 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
-	windowRenderTarget.display();
-	sf::Sprite sprite(windowRenderTarget.getSurface()->getTexture());
-	sprite.setScale(windowScaleX,windowScaleY);
+	cb->renderAddTexts(*windowRenderTarget);
+	al_set_target_backbuffer(window);
+	al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),0,0,al_get_bitmap_width(windowRenderTarget->getBitmap()),al_get_bitmap_height(windowRenderTarget->getBitmap()),0,0,al_get_display_width(window),al_get_display_height(window),0);
 
-	if (windowGammaR == 0 && windowGammaG == 0 && windowGammaB  == 0) {
-		window.draw(sprite, sf::RenderStates(screenGammaShader));
-	}
-	else {
-		screenGammaShader->bind();
-		screenGammaShader->setParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
-		window.draw(sprite, sf::RenderStates(screenGammaShader));
-		screenGammaShader->unbind();
-	}
-	cb->renderAddTexts();
-	window.display();
+	al_flip_display();
 
 	if (cls) {
-		windowRenderTarget.clear(clearColor);
+		windowRenderTarget->clear(clearColor);
 	}
-	currentRenderTarget->setup();
+	bindRenderTarget = 0;
 }
 
 void GfxInterface::commandLock(void) {
@@ -225,10 +222,10 @@ void GfxInterface::commandPutPixel2(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	if (id == 0) {
-		currentRenderTarget->putPixel2(x,y,pixel);
+		currentRenderTarget->putPixel(x,y,al_map_rgb((pixel&&0xFF0000)>>16,(pixel&&0xFF00)>>8,pixel&&0xFF));
 	}
 	else {
-		bufferMap[id]->putPixel2(x,y,pixel);
+		bufferMap[id]->putPixel(x,y,al_map_rgb((pixel&&0xFF0000)>>16,(pixel&&0xFF00)>>8,pixel&&0xFF));
 	}
 }
 
@@ -241,30 +238,30 @@ void GfxInterface::commandCls(void) {
 }
 
 void GfxInterface::commandDot(void) {
-	currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
-	currentRenderTarget->drawDot(x,y);
+	currentRenderTarget->drawDot(x,y,drawColor);
 }
 
 void GfxInterface::commandBox(void) {
-	currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
-	currentRenderTarget->drawBox(x,y,w,h,fill);
+	currentRenderTarget->drawBox(x,y,w,h,fill,drawColor);
 }
 
 void GfxInterface::commandEllipse(void) {
-	currentRenderTarget->setViewTo(drawDrawCommandToWorld);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
-	currentRenderTarget->drawEllipse(x,y,w,h,fill);
+	currentRenderTarget->drawEllipse(x,y,w,h,fill,drawColor);
 }
 
 void GfxInterface::commandPickColor(void) {
@@ -286,10 +283,13 @@ void GfxInterface::commandDrawToImage(void) {
 }
 
 void GfxInterface::commandDrawToScreen(void) {
-	setCurrentRenderTarget(&windowRenderTarget);
+	setCurrentRenderTarget(windowRenderTarget);
 }
 
 void GfxInterface::commandDrawToWorld(void) {
+	drawTextToWorld = (bool)cb->popValue().toInt();
+	drawImageToWorld = (bool)cb->popValue().toInt();
+	drawDrawCommandToWorld = (bool)cb->popValue().toInt();
 }
 
 void GfxInterface::commandSmooth2D(void) {
@@ -313,7 +313,7 @@ void GfxInterface::commandDrawGame(void) {
 }
 
 void GfxInterface::functionSCREEN(void) {
-	cb->pushValue(windowRenderTarget.getId());
+	cb->pushValue(windowRenderTarget->getId());
 }
 
 void GfxInterface::functionImage(void) {
@@ -332,30 +332,34 @@ void GfxInterface::functionGetPixel2(void) {
 	int32_t id = cb->popValue().getInt();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
-	sf::Color color;
+	ALLEGRO_COLOR color;
 	if (id == 0) {
-		cb->pushValue(currentRenderTarget->getPixel2(x,y));
+		color = currentRenderTarget->getPixel(x,y);
 	}
 	else {
-		cb->pushValue(bufferMap[id]->getPixel2(x,y));
+		color = bufferMap[id]->getPixel(x,y);
 	}
+	int32_t pixel;
+	al_unmap_rgba(color,((unsigned char*)&pixel)+2,((unsigned char*)&pixel)+1,((unsigned char*)&pixel),((unsigned char*)&pixel)+3);
+	cb->pushValue(pixel);
 }
 
 void GfxInterface::functionGetRGB(void) {
 	switch (cb->popValue().toInt()) {
-		case 0: cb->pushValue((int32_t)drawColor.r); break;
-		case 1: cb->pushValue((int32_t)drawColor.g); break;
-		case 2: cb->pushValue((int32_t)drawColor.b); break;
+		case 0: cb->pushValue((int32_t)(drawColor.r*255.0)); break;
+		case 1: cb->pushValue((int32_t)(drawColor.g*255.0)); break;
+		case 2: cb->pushValue((int32_t)(drawColor.b*255.0)); break;
+		case 3: cb->pushValue((int32_t)(drawColor.a*255.0)); break;
 		default: cb->pushValue(0); break;
 	}
 }
 
 void GfxInterface::functionScreenWidth(void) {
-	cb->pushValue((int32_t)window.getSize().x);
+	cb->pushValue(al_get_display_width(window));
 }
 
 void GfxInterface::functionScreenHeight(void) {
-	cb->pushValue((int32_t)window.getSize().y);
+	cb->pushValue(al_get_display_height(window));
 }
 
 void GfxInterface::functionScreenDepth(void) {
@@ -367,9 +371,14 @@ void GfxInterface::functionGFXModeExists(void) {
 }
 
 void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
-	currentRenderTarget->display(); //Check if works without.
 	currentRenderTarget = t;
-	t->setup();
 }
 
+void GfxInterface::registerWindow() {
+	al_register_event_source(cb->getEventQueue(),al_get_display_event_source(window));
+}
+
+void GfxInterface::unregisterWindow() {
+	al_unregister_event_source(cb->getEventQueue(),al_get_display_event_source(window));
+}
 

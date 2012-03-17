@@ -5,7 +5,9 @@ TEMPLATE = app
 CONFIG += thread console
 !contains(CBE_CONFIG,full_optimization) {
 	CONFIG += precompiled_header
+	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 }
+
 
 QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
 QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t
@@ -35,14 +37,14 @@ HEADERS += \
     ../src/camerainterface.h \
     ../src/cbobject.h \
     ../src/cbimage.h \
-    ../src/rendertarget.h \
     ../src/cbmap.h \
     ../src/collisioncheck.h \
     ../src/collision.h \
     ../src/util.h \
     ../src/cbparticleemitter.h \
     ../src/particle.h \
-    ../src/isstring.h
+    ../src/isstring.h \
+    ../src/rendertarget.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -67,33 +69,28 @@ SOURCES += \
     ../src/camerainterface.cpp \
     ../src/cbobject.cpp \
     ../src/cbimage.cpp \
-    ../src/rendertarget.cpp \
     ../src/cbmap.cpp \
 	../src/collisioncheck.cpp \
     ../src/cbparticleemitter.cpp \
-    ../src/debug.cpp
+    ../src/debug.cpp \
+    ../src/rendertarget.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
-DEFINES += SFML_STATIC
-DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
+DEFINES += ALLEGRO_STATICLINK
+
 
 win32{
 	CONFIG(release, debug|release){
-		LIBS += -L"$$(SFML_LIB)/Release" -lsfml-main -lsfml-window-s -lsfml-audio-s -lsfml-graphics-s -lsfml-system-s
-		PRE_TARGETDEPS += "$$(SFML_LIB)/release/sfml-main.lib" "$$(SFML_LIB)/release/sfml-window-s.lib" "$$(SFML_LIB)/release/sfml-audio-s.lib" "$$(SFML_LIB)/release/sfml-graphics-s.lib"
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-monolith-static-md -llibvorbisfile-1.3.2-static-md -lzlib-1.2.5-static-md -llibogg-1.2.1-static-md -llibFLAC-1.2.1-static-md -lfreetype-2.4.8-static-md -ldumb-0.9.3-static-md -llibvorbis-1.3.2-static-md
 		DEFINES += NDEBUG
 	}
 	else {
-		LIBS += -L"$$(SFML_LIB)/Debug" -lsfml-main-d -lsfml-window-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-system-s-d
-		PRE_TARGETDEPS += "$$(SFML_LIB)/debug/sfml-main-d.lib" "$$(SFML_LIB)/debug/sfml-window-s-d.lib" "$$(SFML_LIB)/debug/sfml-audio-s-d.lib" "$$(SFML_LIB)/debug/sfml-graphics-s-d.lib"
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-monolith-static-md-debug -llibvorbisfile-1.3.2-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
 	}
 	LIBS += -L"$$(BOOST_LIB)"
-	LIBS += -lkernel32 -luser32 #-lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
-	INCLUDEPATH += "$$(SFML_INCLUDE)"
-	DEPENDPATH += "$$(SFML_INCLUDE)"
-	INCLUDEPATH += "$$(BOOST_INCLUDE)"
-	DEPENDPATH += "$$(BOOST_INCLUDE)"
+	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
+	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"
 	SOURCES += ../src/utilwin.cpp
 }
 else {

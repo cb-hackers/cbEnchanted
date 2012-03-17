@@ -20,13 +20,13 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
-	cb->getCurrentRenderTarget()->setViewTo(cb->getDrawImageToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
 	int32_t mask = cb->popValue().toInt();
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->draw(x,y,frame,mask);
+	img->draw(*cb->getCurrentRenderTarget(),x,y,frame,mask);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -40,13 +40,12 @@ void ImageInterface::commandDrawImageBox(void) {
 }
 
 void ImageInterface::commandMaskImage(void) {
-	sf::Color mask;
-	mask.r = cb->popValue().toByte();
-	mask.g = cb->popValue().toByte();
-	mask.b = cb->popValue().toByte();
-	mask.a = 255;
+
+	float b = cb->popValue().toFloat()/255.0f;
+	float g= cb->popValue().toFloat()/255.0f;
+	float r = cb->popValue().toFloat()/255.0f;
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->maskImage(mask);
+	img->maskImage(al_map_rgb_f(r,g,b));
 }
 
 void ImageInterface::commandDefaultMask(void) {

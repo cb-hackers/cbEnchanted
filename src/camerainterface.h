@@ -25,8 +25,10 @@ class CameraInterface {
 
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }
-		sf::Vector2f screenCoordToWorld(const sf::Vector2f &v);
-		sf::Vector2f worldCoordToScreen(const sf::Vector2f &v);
+		float screenCoordToWorldX(float a);
+		float screenCoordToWorldY(float a);
+		float worldCoordToScreenX(float a);
+		float worldCoordToScreenY(float a);
 	private:
 		CBEnchanted *cb;
 		float cameraX;

@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
 		cb.run();
 		cb.cleanup();
 	}
+	al_uninstall_system();
 	
 	return 0;
 }

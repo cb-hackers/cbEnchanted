@@ -4,7 +4,7 @@
 
 InputInterface::InputInterface() {
 	cb = static_cast <CBEnchanted *> (this);
-	key[1] = sf::Keyboard::Escape;
+	/*key[1] = sf::Keyboard::Escape;
 	key[2] = sf::Keyboard::Num1;
 	key[3] = sf::Keyboard::Num2;
 	key[4] = sf::Keyboard::Num4;
@@ -107,7 +107,7 @@ InputInterface::InputInterface() {
 	key[211] = sf::Keyboard::Delete;
 	key[219] = sf::Keyboard::LSystem;
 	key[220] = sf::Keyboard::RSystem;
-	key[221] = sf::Keyboard::Menu;
+	key[221] = sf::Keyboard::Menu;*/
 	for(uint8_t i = 0; i < 221; i++){
 		keyState[i] = 0;
 	}
@@ -122,15 +122,17 @@ void InputInterface::commandCloseInput(void) {
  * InputInterface::commandWaitKey - Wait for key press
  */
 void InputInterface::commandWaitKey(void) {
-	sf::Event e;
-	while(true) {
-		cb->getWindow()->waitEvent(e);
-		switch (e.type) {
-			case sf::Event::KeyPressed:
-				return;
-			case sf::Event::Closed:
-				cb->stop();
-				return;
+	ALLEGRO_EVENT e;
+	while(true)
+	{
+		al_wait_for_event(cb->getEventQueue(),&e);
+		switch (e.type)
+		{
+		case ALLEGRO_EVENT_KEY_DOWN:
+			return;
+		case ALLEGRO_EVENT_DISPLAY_CLOSE:
+			cb->stop();
+			return;
 		}
 	}
 }
@@ -143,7 +145,7 @@ void InputInterface::commandPositionMouse(void) {
 	int32_t mouseY = cb->popValue().toInt();
 	int32_t mouseX = cb->popValue().toInt();
 
-	sf::Mouse::setPosition(sf::Vector2i(mouseX, mouseY), *cb->getWindow());
+	al_set_mouse_xy(cb->getWindow(),mouseX,mouseY);
 }
 
 void InputInterface::commandWaitMouse(void) {
@@ -199,17 +201,18 @@ void InputInterface::functionGetKey(void) {
  *  InputInterface::funtionWaitKey - Wait for key press and return pressed key
  */
 void InputInterface::functionWaitKey(void) {
-	sf::Event e;
+	ALLEGRO_EVENT e;
 	while(true)
 	{
-		cb->getWindow()->waitEvent(e);
+		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type)
 		{
-		case sf::Event::KeyPressed:
-			cb->pushValue((int32_t)e.key.code);
+		case ALLEGRO_EVENT_KEY_DOWN:
+			cb->pushValue((int32_t)e.keyboard.keycode);
 			return;
-		case sf::Event::Closed:
+		case ALLEGRO_EVENT_DISPLAY_CLOSE:
 			cb->stop();
+			cb->pushValue(0);
 			return;
 		}
 	}
@@ -217,20 +220,7 @@ void InputInterface::functionWaitKey(void) {
 
 void InputInterface::functionMouseDown(void) {
 	int32_t button = cb->popValue().toInt();
-	switch (button) {
-		case 1:
-			cb->pushValue((int32_t)sf::Mouse::isButtonPressed(sf::Mouse::Left));break;
-		case 2:
-			cb->pushValue((int32_t)sf::Mouse::isButtonPressed(sf::Mouse::Right));break;
-		case 3:
-			cb->pushValue((int32_t)sf::Mouse::isButtonPressed(sf::Mouse::Middle));break;
-		case 4:
-			cb->pushValue((int32_t)sf::Mouse::isButtonPressed(sf::Mouse::XButton1));break;
-		case 5:
-			cb->pushValue((int32_t)sf::Mouse::isButtonPressed(sf::Mouse::XButton2));break;
-		default:
-			cb->pushValue(0);
-	}
+
 }
 
 void InputInterface::functionMouseHit(void) {
@@ -250,23 +240,19 @@ void InputInterface::functionWaitMouse(void) {
 }
 
 void InputInterface::functionMouseX(void) {
-	sf::Vector2i pos = sf::Mouse::getPosition(*cb->getWindow());
-	cb->pushValue(pos.x);
+
 }
 
 void InputInterface::functionMouseY(void) {
-	sf::Vector2i pos = sf::Mouse::getPosition(*cb->getWindow());
-	cb->pushValue(pos.y);
+
 }
 
 void InputInterface::functionMouseWX(void) {
-	sf::Vector2i pos = sf::Mouse::getPosition(*cb->getWindow());
-	cb->pushValue(cb->screenCoordToWorld(static_cast<sf::Vector2f>(pos)).x);
+	STUB;
 }
 
 void InputInterface::functionMouseWY(void) {
-	sf::Vector2i pos = sf::Mouse::getPosition(*cb->getWindow());
-	cb->pushValue(cb->screenCoordToWorld(static_cast<sf::Vector2f>(pos)).y);
+	STUB;
 }
 
 void InputInterface::functionMouseZ(void) {
@@ -286,32 +272,34 @@ void InputInterface::functionMouseMoveZ(void) {
 }
 
 void InputInterface::functionLeftKey(void) {
-	int32_t press = int(sf::Keyboard::isKeyPressed(sf::Keyboard::Left));
-	cb->pushValue(press);
+
 }
 
 void InputInterface::functionRightKey(void) {
-	int32_t press = int(sf::Keyboard::isKeyPressed(sf::Keyboard::Right));
-	cb->pushValue(press);
+
 }
 
 void InputInterface::functionUpKey(void) {
-	int32_t press = int(sf::Keyboard::isKeyPressed(sf::Keyboard::Up));
-	cb->pushValue(press);
+
 }
 
 void InputInterface::functionDownKey(void) {
-	int32_t press = int(sf::Keyboard::isKeyPressed(sf::Keyboard::Down));
-	cb->pushValue(press);
+
 }
 
 void InputInterface::functionEscapeKey(void) {
-	cb->pushValue(int(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)));
+
+}
+
+bool InputInterface::initializeInputs()
+{
+	if (!al_install_keyboard()) return false;
+	if (!al_install_mouse()) return false;
+	return true;
 }
 
 
 void InputInterface::setKeyStates(){
-	for(uint8_t i = 0; i < 221; i++)
-		keyState[i] = sf::Keyboard::isKeyPressed(key[i]);
+
 }
 

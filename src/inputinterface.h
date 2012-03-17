@@ -42,11 +42,12 @@ class InputInterface {
 		void functionUpKey(void);
 		void functionDownKey(void);
 		void functionEscapeKey(void);
+		bool initializeInputs(void);
 
 		void setKeyStates();
 	private:
 		CBEnchanted *cb;
-		sf::Keyboard::Key key[221];
+		//sf::Keyboard::Key key[221];
 		int32_t keyState[221];
 };
 

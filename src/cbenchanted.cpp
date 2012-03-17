@@ -142,6 +142,20 @@ bool CBEnchanted::init(string file) {
 		
 	}
 
+	if (!al_init()) return false;
+	eventQueue = al_create_event_queue();
+	if (!initializeInputs()) {
+		INFO("InitializeInputs failed");
+		return false;
+	}
+	if (!initializeSounds()){
+		INFO("InitializeSounds failed");
+		return false;
+	}
+	if (!initializeFonts()) {
+		INFO("initializeFonts failed");
+		return false;
+	}
 	//Create screen
 	initializeGfx();
 

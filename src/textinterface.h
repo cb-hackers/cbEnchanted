@@ -3,21 +3,14 @@
 
 class CBEnchanted;
 #include "precomp.h"
-#include <SFML/Graphics/Font.hpp>
+#include "rendertarget.h"
 
-struct CBFont
-{
-	sf::Font font;
-	sf::Text::Style style;
-	uint32_t fontSize;
-};
-
-struct addTexts{
+struct AddText{
 	string txt;
-	CBFont *font;
+	ALLEGRO_FONT *font;
 	int32_t txtX;
 	int32_t txtY;
-	sf::Color col;
+	ALLEGRO_COLOR col;
 };
 
 class TextInterface {
@@ -39,15 +32,16 @@ class TextInterface {
 		void functionLoadFont(void);
 		void functionTextWidth(void);
 		void functionTextHeight(void);
-		void renderAddTexts();
-		CBFont *GetCurrentFont() { return currentFont; }
+		void renderAddTexts(RenderTarget &r);
+		bool initializeFonts();
+		ALLEGRO_FONT *getCurrentFont() { return currentFont; }
 	private:
 		CBEnchanted *cb;
-		map<int32_t, CBFont*> fontMap;
-		CBFont *currentFont;
+		map<int32_t, ALLEGRO_FONT*> fontMap;
+		ALLEGRO_FONT *currentFont;
 		int32_t locationX;
 		int32_t locationY;
-		std::vector<addTexts*> texts;
+		std::vector<AddText*> texts;
 };		inline int32_t nextfontid(){static int32_t fontID = 0; return ++fontID;}
 
 #endif

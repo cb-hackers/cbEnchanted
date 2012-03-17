@@ -1,7 +1,6 @@
 #ifndef GFXINTERFACE_H
 #define GFXINTERFACE_H
 
-#include <SFML/Graphics.hpp>
 #include "rendertarget.h"
 #include "cbmap.h"
 //#include "animationPlayer.h"
@@ -50,8 +49,8 @@ class GfxInterface {
 
 		int32_t getFPS()const{return currentFPS;}
 
-		sf::RenderWindow *getWindow(void) { return &this->window; }
-		sf::Color getDrawColor() { return drawColor; }
+		ALLEGRO_DISPLAY *getWindow(void) { return window; }
+		const ALLEGRO_COLOR &getDrawColor() { return drawColor; }
 		inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
 		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
@@ -59,21 +58,22 @@ class GfxInterface {
 		void setCurrentRenderTarget(RenderTarget *t);
 
 		void initializeGfx();
-		static void addAnimation(CBObject* obj, uint16_t startf, uint16_t endf, float speed, uint8_t looping);
-		void compileAnimations();
 	private:
+		void registerWindow();
+		void unregisterWindow();
+
 		CBEnchanted *cb;
 		float windowScaleX,windowScaleY;
 		string windowTitle;
-		sf::RenderWindow window;
-		sf::Color clearColor;
-		sf::Color drawColor;
+		ALLEGRO_DISPLAY *window;
+		ALLEGRO_COLOR clearColor;
+		ALLEGRO_COLOR drawColor;
 		int32_t fpsCounter;
 		int32_t currentFPS;
 		clock_t lastSecTimer;
 		RenderTarget *currentRenderTarget;
 
-		RenderTarget windowRenderTarget;
+		RenderTarget *windowRenderTarget;
 		float windowGammaR;
 		float windowGammaG;
 		float windowGammaB;
@@ -82,8 +82,8 @@ class GfxInterface {
 		bool drawTextToWorld;
 		bool gameDrawn; //Game has already been drawn in DrawGame
 		bool gameUpdated; //Game has already been updated in UpdateGame
-		sf::Shader *screenGammaShader;
-		std::map <int32_t, RenderTarget*> bufferMap;
+
+		std::map<int32_t,RenderTarget*> bufferMap;
 };
 
 #endif

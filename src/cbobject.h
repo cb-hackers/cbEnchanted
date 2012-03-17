@@ -15,13 +15,12 @@ class CBObject{
 		CBObject(bool floor = false);
 		virtual ~CBObject();
 		bool load(const string &file);
-		bool load(const string &file,const sf::Color &mask);
+		bool load(const string &file,const ALLEGRO_COLOR &mask);
 		bool loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
-		void paintObject(const sf::Texture &txt);
+		void paintObject(const RenderTarget &tex);
 		void paintObject(const CBObject &obj);
 		void moveObject(float fwrd, float sdwrd);
 		void positionObject(float x, float y);
-		void positionObject(const sf::Vector2f &p) {posX = p.x;posY = p.y;}
 		void translateObject(float hor, float ver, float depth);
 		void turnObject(float speed);
 		virtual void render(RenderTarget &target);
@@ -34,7 +33,6 @@ class CBObject{
 		float getX();
 		float getY();
 		void showObject(bool t) {visible = t;}
-		sf::Vector2f getPos()const{return sf::Vector2f(posX,posY);}
 		float getAngle(); //Funktion nimi on nyt v‰h‰n harhaanjohtava, mutta se nyt saa luvan kelvata koska se on luokan sis‰ll‰.
 		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
@@ -73,9 +71,9 @@ class CBObject{
 		float sizeX,sizeY;
 		float angle;
 		bool visible;
-		sf::Image *imgtex; //Kuva tekstuurille. V‰rimaskin takia pit‰‰ tehd‰ n‰in vitun vaikeasti. -.-
-		sf::Texture *texture; //Tekstuurin "v‰litt‰j‰"
-		sf::Sprite sprite; //Ja itse piirt‰j‰.
+		RenderTarget *renderTarget;
+		ALLEGRO_BITMAP *texture;
+		ALLEGRO_COLOR maskColor;
 		uint8_t alphaBlend;
 		uint16_t frameWidth;
 		uint16_t frameHeight;

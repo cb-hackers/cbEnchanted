@@ -50,7 +50,6 @@ class CBMap : public CBObject{
 
 		void setLayers(uint8_t back, uint8_t over);
 		void setTile(uint32_t tile, uint32_t lenght, uint32_t slowness);
-		void paintObject(const sf::Texture &txt);
 		bool updateObject(float timestep);
 };
 

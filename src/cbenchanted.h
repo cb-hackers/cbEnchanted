@@ -52,11 +52,12 @@ class CBEnchanted :
 		~CBEnchanted();
 	
 		static CBEnchanted *instance();
-        bool init(string file);
+		bool init(string file);
 		void run();
 		void stop();
 		void cleanup();
 		bool isSafeExit(){ return safeExit; }
+		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
 	private:
 		
 		char *code;
@@ -111,6 +112,9 @@ class CBEnchanted :
 		void functionRead(void);
 		void functionConvertToInteger(void);
 		void functionConvertToType(void);
+
+		ALLEGRO_EVENT_QUEUE * eventQueue;
+
 };
 
 #endif

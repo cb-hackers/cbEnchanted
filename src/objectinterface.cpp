@@ -75,7 +75,7 @@ void ObjectInterface::commandScreenPositionObject(void) {
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
-	object->positionObject(cb->screenCoordToWorld(sf::Vector2f(x,y)));
+	object->positionObject(cb->screenCoordToWorldX(x),cb->screenCoordToWorldY(y));
 }
 
 void ObjectInterface::commandTurnObject(void) {
@@ -112,7 +112,7 @@ void ObjectInterface::commandCloneObjectPosition(void) {
 	CBObject *object2 = objectMap[id2];
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
-	object1->positionObject(object2->getPos());
+	object1->positionObject(object2->getX(),object2->getY());
 }
 
 void ObjectInterface::commandCloneObjectOrientation(void) {
@@ -241,7 +241,7 @@ void ObjectInterface::commandPaintObject(void) {
 	}
 	else { //Image
 		CBImage *img = cb->getImage(p);
-		object->paintObject(img->getRenderTarget()->getSurface()->getTexture());
+		object->paintObject(*img->getRenderTarget());
 	}
 }
 
@@ -542,21 +542,23 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-	target.setViewTo(false);
+	al_hold_bitmap_drawing(true); //Little speed up
+	target.useWorldCoords(false);
 	CBObject *currentObject = firstFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->nextObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
-	target.setViewTo(true,true);
+	target.useWorldCoords(true);
 	currentObject = lastObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->lastObj;
 	}
-	target.setViewTo(false,true);
+	target.useWorldCoords(false);
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
+	al_hold_bitmap_drawing(false);
 }
 
 

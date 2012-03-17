@@ -20,10 +20,10 @@ CBObject::CBObject(bool floor):
 	currentFrame(0),
 	painted(false),
 	floor(floor),
-	imgtex(0),
 	texture(0),
 	copied(false),
 	sizeX(0),
+	renderTarget(0),
 	sizeY(0),
 	usingLife(false),
 	life(0),
@@ -31,33 +31,31 @@ CBObject::CBObject(bool floor):
 	nextObj(0),
 	playing(false)
 {
+	maskColor = al_map_rgba_f(0,0,0,1);
 }
 
 CBObject::~CBObject() {
 	if (!copied)
 	{
-		if (imgtex) delete imgtex;
-		if (texture) delete texture;
+		if (renderTarget) delete renderTarget;
+		if (texture) al_destroy_bitmap(texture);
 	}
 }
 
 bool CBObject::load(const string &file) {
-	return load(file,sf::Color(0,0,0));
+	return load(file,maskColor);
 }
 
-bool CBObject::load(const string &file, const sf::Color &mask) {
-	if (imgtex) delete imgtex;
-	imgtex = new sf::Image;
-	if (!imgtex->loadFromFile(file)) return false;
+bool CBObject::load(const string &file, const ALLEGRO_COLOR &mask) {
+	if (renderTarget) delete renderTarget;
+	renderTarget = new RenderTarget;
+	if (!renderTarget->load(file)) return false;
 
-	imgtex->createMaskFromColor(mask);
-
-	if (texture) delete texture;
-	texture = new sf::Texture;
-	texture->loadFromImage(*imgtex);
-	sprite.setTexture(*texture);
-	sizeX = texture->getWidth();
-	sizeY = texture->getHeight();
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture,mask);
+	maskColor = mask;
+	sizeX = renderTarget->width();
+	sizeY = renderTarget->height();
 	frameWidth = 0;
 	frameHeight = 0;
 	startFrame = 0;
@@ -66,42 +64,25 @@ bool CBObject::load(const string &file, const sf::Color &mask) {
 	angle = 0;
 	currentFrame = 0;
 	painted = true;
-	sprite.setScale(1.0,-1.0);
 	return true;
 }
 
 
 bool CBObject::loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
-	INFO("%s, %u, %u, %u, %u", file.c_str(), fw, fh, startf, framecount)
-	if (imgtex) delete imgtex;
-	imgtex = new sf::Image;
-	if (!imgtex->loadFromFile(file)) return false;
+	if (!load(file)) return false;
 
-	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
-
-	if (texture) delete texture;
-	texture = new sf::Texture;
-	bool success = texture->loadFromImage(*imgtex);
-	INFO("Image copying: %u", success)
-
-
-	INFO("Texture exists")
-	INFO("Texture sizes(w, h): %u, %u", texture->getWidth(), texture->getHeight())
-
-
-	if((int)fw > texture->getWidth()){
-		INFO("Frame width %u is more than texture width: %u", fw, texture->getWidth());
+	if((int)fw > renderTarget->width()){
+		INFO("Frame width %u is more than texture width: %u", fw, renderTarget->width());
 		return false;
 	}
-	if((int)fh > texture->getHeight()){
-		INFO("Frame height %u is more than texture height: %u", fh, texture->getHeight());
+	if((int)fh > renderTarget->height()){
+		INFO("Frame height %u is more than texture height: %u", fh, renderTarget->height());
 		return false;
 	}
-	if(framecount > (texture->getWidth()/fw)*(texture->getHeight()/fh)){
+	if(framecount > (renderTarget->width()/fw)*(renderTarget->height()/fh)){
 		FIXME("Too much frames!")
 		return false;
 	}
-	sprite.setTexture(*texture);
 	frameWidth = fw;
 	frameHeight = fh;
 	sizeX = frameWidth;
@@ -113,8 +94,6 @@ bool CBObject::loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint
 	painted = true;
 	currentFrame = 0;
 	playing = false;
-	INFO("Everything ok!")
-	sprite.setScale(1.0,-1.0);
 	return true;
 }
 
@@ -123,22 +102,21 @@ void CBObject::positionObject(float x, float y){
 	posY = y;
 }
 
-void CBObject::paintObject(const sf::Texture &txt){
-    if (!imgtex) imgtex = new sf::Image;
-    if (!texture) texture = new sf::Texture;
-	*imgtex = txt.copyToImage();
-	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
-	texture->loadFromImage(*imgtex);
-	sprite.setTexture(*texture);
+void CBObject::paintObject(const RenderTarget &tex){
+	if (!renderTarget) renderTarget = new RenderTarget;
+	if (texture) al_destroy_bitmap(texture);
+	renderTarget->copy(&tex);
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture,maskColor);
 	painted = true;
 }
 
 void CBObject::paintObject(const CBObject &obj){
-    if (!imgtex) imgtex = new sf::Image;
-    if (!texture) texture = new sf::Texture;
-	imgtex = obj.imgtex;
-	texture = obj.texture;
-	sprite.setTexture(*texture);
+	if (!renderTarget) renderTarget = new RenderTarget;
+	if (texture) al_destroy_bitmap(texture);
+	renderTarget->copy(obj.renderTarget);
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture,maskColor);
 	painted = true;
 }
 
@@ -190,14 +168,14 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b){
 		FIXME("Masking object without texture");
 		return;
 	}
-	imgtex->createMaskFromColor(sf::Color(r, g, b));
-	texture->loadFromImage(*imgtex);
-	sprite.setTexture(*texture);
+	al_destroy_bitmap(texture);
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture,al_map_rgb(r,g,b));
 }
 
 void CBObject::moveObject(float fwrd, float sdwrd){
-    posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90.0) / 180.0 * M_PI)*sdwrd;
-    posY+=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90.0) / 180.0 * M_PI)*sdwrd;
+	posX+=cos(angle / 180.0 * M_PI) * fwrd + cos((angle-90.0) / 180.0 * M_PI)*sdwrd;
+	posY+=sin(angle / 180.0 * M_PI) * fwrd + sin((angle-90.0) / 180.0 * M_PI)*sdwrd;
 }
 
 void CBObject::translateObject(float hor, float ver, float depth){
@@ -214,47 +192,40 @@ void CBObject::turnObject(float speed){
 	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
 		if (floor) {
-		    sprite.setOrigin(0,0);
 				//Drawing floor objects
 
-			float snappedx=floorf(camX/texture->getWidth());
-			float snappedy=floorf(camY/texture->getHeight());
+			float snappedx=floorf(camX/renderTarget->width());
+			float snappedy=floorf(camY/renderTarget->height());
 
-			float ekax= camX+snappedx*texture->getWidth();
-			float ekay=-camY-snappedy*texture->getHeight();
+			float ekax= camX+snappedx*renderTarget->width();
+			float ekay=-camY-snappedy*renderTarget->height();
 
 			float xx=ekax;
 			while (xx<target.width()) {
 			float yy=ekay;
 			while (yy<target.height()) {
-				sprite.setPosition(xx,yy);
-				target.draw(sprite);
-				yy=yy+texture->getHeight();
+				target.drawBitmap(texture,xx,yy);
+				yy=yy+renderTarget->height();
 			}
-			xx=xx+texture->getWidth();
+			xx=xx+renderTarget->width();
 			}
 		} else {
 			if(maxFrames!=0){
 				int32_t frame = (int)currentFrame;
 				//INFO("%i", frame)
-				int32_t framesX = texture->getWidth() / frameWidth;
-				int32_t framesY = texture->getHeight() / frameHeight;
+				int32_t framesX = renderTarget->width() / frameWidth;
+				int32_t framesY = renderTarget->height()/ frameHeight;
 				int32_t copyX = frame % framesX;
 				int32_t copyY = (frame-copyX) / framesY;
 				//INFO("X, Y: %i,%i", copyX, copyY)
-				sprite.setTextureRect(sf::IntRect(((angle == 0) ? 1.0f:0.0f)+copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight));
-				sprite.setOrigin((float)frameWidth*0.5f,(float)frameHeight*0.5f);
+				target.drawBitmapRegion(texture,copyX*frameWidth, copyY*frameHeight, frameWidth, frameHeight,al_map_rgba(255,255,255,alphaBlend),posX,posY,angle*M_PI/180.0f);
+				return;
 			}
-			else {
-				sprite.setOrigin(texture->getWidth()*0.5,texture->getHeight()*0.5);
-			}
-			sprite.setPosition(posX, posY);
-			sprite.setRotation(angle);
 			if(alphaBlend!=255){
-				sprite.setColor(sf::Color(255, 255, 255, alphaBlend));
-
+				target.drawBitmap(texture,posX,posY,angle*M_PI*0.5f,al_map_rgba(255,255,255,alphaBlend));
+				return;
 			}
-			target.draw(sprite);
+			target.drawBitmap(texture,posX,posY,angle*M_PI*0.5f);
 		}
 	}
 }
@@ -273,7 +244,7 @@ float CBObject::getY(){
 }
 
 float CBObject::getAngle(){
-    return angle;
+	return angle;
 }
 
 void CBObject::setDefaultVisible(bool t) {
@@ -283,9 +254,8 @@ void CBObject::setDefaultVisible(bool t) {
 CBObject *CBObject::copyObject() const {
 	CBObject *obj = new CBObject(floor);
 	obj->texture = texture;
-	obj->imgtex = imgtex;
+	obj->renderTarget = renderTarget;
 	obj->copied = true;
-	obj->sprite = sprite;
 	obj->frameHeight = frameHeight;
 	obj->frameWidth = frameWidth;
 	obj->visible = true;

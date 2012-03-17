@@ -46,7 +46,7 @@ void SysInterface::commandGotoSavedLocation(void) {
 }
 
 void SysInterface::commandFrameLimit(void) {
-	cb->getWindow()->setFramerateLimit(cb->popValue().toInt());
+	int32_t fps_limit = cb->popValue().toInt();
 }
 
 void SysInterface::commandEncrypt(void) {
@@ -73,8 +73,7 @@ void SysInterface::commandSetWindow(void) {
 	if (quit != "") {
 		FIXME("FIXME: setWindow quitmsg");
 	}
-	
-	cb->getWindow()->setTitle(caption);
+	al_set_window_title(cb->getWindow(),caption.c_str());
 }
 
 void SysInterface::commandEnd(void) {
