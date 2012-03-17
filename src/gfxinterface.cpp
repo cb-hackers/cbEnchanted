@@ -173,15 +173,20 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
-
 	windowRenderTarget.display();
 	sf::Sprite sprite(windowRenderTarget.getSurface()->getTexture());
 	sprite.setScale(windowScaleX,windowScaleY);
 
-	screenGammaShader->bind();
-	screenGammaShader->setParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
-	window.draw(sprite, sf::RenderStates(screenGammaShader));
-	screenGammaShader->unbind();
+	if (windowGammaR == 0 && windowGammaG == 0 && windowGammaB  == 0) {
+		window.draw(sprite, sf::RenderStates(screenGammaShader));
+	}
+	else {
+		screenGammaShader->bind();
+		screenGammaShader->setParameter("windowGamma", windowGammaR, windowGammaG, windowGammaB, 1.0);
+		window.draw(sprite, sf::RenderStates(screenGammaShader));
+		screenGammaShader->unbind();
+	}
+	cb->renderAddTexts();
 	window.display();
 
 	if (cls) {

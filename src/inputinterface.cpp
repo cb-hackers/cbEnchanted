@@ -31,7 +31,7 @@ InputInterface::InputInterface() {
 	key[26] = sf::Keyboard::LBracket;
 	key[27] = sf::Keyboard::RBracket;
 	key[28] = sf::Keyboard::Return;
-	key[29] = sf::Keyboard::LAlt;
+	key[29] = sf::Keyboard::LControl;
 	key[30] = sf::Keyboard::A;
 	key[31] = sf::Keyboard::S;
 	key[32] = sf::Keyboard::D;
@@ -90,7 +90,7 @@ InputInterface::InputInterface() {
 	key[87] = sf::Keyboard::F11;
 	key[88] = sf::Keyboard::F12;
 	//key[156] = sf::Keyboard::;
-	key[157] = sf::Keyboard::LControl;
+	key[157] = sf::Keyboard::RControl;
 	key[181] = sf::Keyboard::Divide;
 	//key[182] = sf::Keyboard::;
 	key[182] = sf::Keyboard::RAlt;

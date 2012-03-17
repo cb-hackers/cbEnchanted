@@ -83,24 +83,48 @@ class ObjectInterface {
 		inline CBObject *getObject(int32_t key){return objectMap[key];}
 		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
 		inline void addToDrawOrder(CBObject *o){if (lastObject == 0) {lastObject = firstObject = o;o->lastObj = o->nextObj = 0;return;} lastObject->nextObj = o;o->nextObj = 0;o->lastObj = lastObject;lastObject = o;}
+		inline void addToFloorDrawOrder(CBObject *o){if (lastFloorObject == 0) {lastFloorObject = firstFloorObject = o;o->lastObj = o->nextObj = 0;return;} lastObject->nextObj = o;o->nextObj = 0;o->lastObj = lastFloorObject;lastFloorObject = o;}
+
+
 		inline void removeFromDrawOrder(CBObject *o) {
-			if (o == lastObject) {
-				if (o == firstObject) {
-					lastObject = firstObject = 0;
+			if (o->isFloorObject()) {
+				if (o == lastFloorObject) {
+					if (o == firstFloorObject) {
+						lastFloorObject = firstFloorObject = 0;
+						return;
+					}
+					o->lastObj->nextObj = 0;
+					lastFloorObject = o->lastObj;
 					return;
 				}
-				o->lastObj->nextObj = 0;
-				lastObject = o->lastObj;
-				return;
-			}
-			if (o == firstObject) {
-				firstObject = o->nextObj;
-				o->nextObj->lastObj = 0;
-				return;
-			}
+				if (o == firstFloorObject) {
+					firstFloorObject = o->nextObj;
+					o->nextObj->lastObj = 0;
+					return;
+				}
 
-			o->nextObj->lastObj = o->lastObj;
-			o->lastObj->nextObj = o->nextObj;
+				o->nextObj->lastObj = o->lastObj;
+				o->lastObj->nextObj = o->nextObj;
+			}
+			else {
+				if (o == lastObject) {
+					if (o == firstObject) {
+						lastObject = firstObject = 0;
+						return;
+					}
+					o->lastObj->nextObj = 0;
+					lastObject = o->lastObj;
+					return;
+				}
+				if (o == firstObject) {
+					firstObject = o->nextObj;
+					o->nextObj->lastObj = 0;
+					return;
+				}
+
+				o->nextObj->lastObj = o->lastObj;
+				o->lastObj->nextObj = o->nextObj;
+			}
 		}
 	private:
 		CBObject *lastObject;

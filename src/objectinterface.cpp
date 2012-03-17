@@ -387,7 +387,12 @@ void ObjectInterface::functionCloneObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
 	CBObject *obj = object->copyObject();
-	addToDrawOrder(obj);
+	if (obj->isFloorObject()) {
+
+	}
+	else {
+		addToDrawOrder(obj);
+	}
 	int32_t id2 = nextObjectId();
 	objectMap[id2] = obj;
 	cb->pushValue(id2);
@@ -544,13 +549,13 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 		currentObject = currentObject->nextObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
-	target.setViewTo(true);
-	currentObject = firstObject;
+	target.setViewTo(true,true);
+	currentObject = lastObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
-		currentObject = currentObject->nextObj;
+		currentObject = currentObject->lastObj;
 	}
-	target.setViewTo(false);
+	target.setViewTo(false,true);
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
 }
 

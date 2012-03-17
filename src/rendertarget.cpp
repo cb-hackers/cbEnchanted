@@ -76,6 +76,7 @@ void RenderTarget::setup(){
 void RenderTarget::setDrawingMode(RenderTarget::DrawingMode mode) {
 	setCurrentRenderContext(this);
 	if (drawingMode == mode) return;
+	drawingMode = mode;
 	switch(mode) {
 		case DM_Textures:
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE); //Enable combining of glColor and texture color.
@@ -90,7 +91,7 @@ void RenderTarget::setDrawingMode(RenderTarget::DrawingMode mode) {
 }
 
 void RenderTarget::setViewTo(bool drawtoworld, bool force) {
-    if (drawToWorldViewOn == drawtoworld && !force) return; //Useless to update view
+	if (drawToWorldViewOn == drawtoworld && !force) return; //Useless to update view
 	if (drawtoworld) {
 		sf::View view;
 		view.setSize(target.getSize().x, target.getSize().y);
@@ -100,6 +101,7 @@ void RenderTarget::setViewTo(bool drawtoworld, bool force) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(target.getView().getTransform().getMatrix());
 		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 		glScalef(1.0,-1.0,1.0);
 	}
 	else {
@@ -108,6 +110,7 @@ void RenderTarget::setViewTo(bool drawtoworld, bool force) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(target.getView().getTransform().getMatrix());
 		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 	}
 }
 

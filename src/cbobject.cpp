@@ -41,34 +41,11 @@ CBObject::~CBObject() {
 	}
 }
 
-bool CBObject::load(string file) {
-	if (imgtex) delete imgtex;
-
-	imgtex = new sf::Image;
-	if (!imgtex->loadFromFile(file)) return false;
-
-	imgtex->createMaskFromColor(sf::Color(0, 0, 0));
-
-	if (texture) delete texture;
-	texture = new sf::Texture;
-	texture->loadFromImage(*imgtex);
-	sprite.setTexture(*texture);
-	sizeX = texture->getWidth();
-	sizeY = texture->getHeight();
-
-	frameWidth = 0;
-	frameHeight = 0;
-	startFrame = 0;
-	maxFrames = 0;
-	alphaBlend = 255;
-	angle = 0;
-	painted = true;
-	sprite.setScale(1.0,-1.0);
-
-	return true;
+bool CBObject::load(const string &file) {
+	return load(file,sf::Color(0,0,0));
 }
 
-bool CBObject::load(string file, const sf::Color &mask) {
+bool CBObject::load(const string &file, const sf::Color &mask) {
 	if (imgtex) delete imgtex;
 	imgtex = new sf::Image;
 	if (!imgtex->loadFromFile(file)) return false;
@@ -94,7 +71,7 @@ bool CBObject::load(string file, const sf::Color &mask) {
 }
 
 
-bool CBObject::loadAnimObject(string file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
+bool CBObject::loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount){
 	INFO("%s, %u, %u, %u, %u", file.c_str(), fw, fh, startf, framecount)
 	if (imgtex) delete imgtex;
 	imgtex = new sf::Image;

@@ -83,7 +83,7 @@ void TextInterface::commandAddText(void) {
 	newtxt->col = cb->getDrawColor();
 	texts.push_back(newtxt);
 	bool bold = (newtxt->font->style == 1 << 0);
-	locationY+=currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.height;
+	locationY+=currentFont->font.getGlyph('A', currentFont->fontSize, bold).textureRect.height;
 }
 
 void TextInterface::commandClearText(void) {
@@ -139,7 +139,7 @@ void TextInterface::renderAddTexts(){
 		text.setColor((*i)->col);
 		text.setPosition(x, y);
 
-		cb->getCurrentRenderTarget()->draw(text);
+		cb->getWindow()->draw(text);
 	}
 }
 
