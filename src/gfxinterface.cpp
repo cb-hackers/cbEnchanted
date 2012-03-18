@@ -39,8 +39,10 @@ GfxInterface::GfxInterface() :
 	drawTextToWorld(false),
 	gameDrawn(false)
 {
-	drawColor = al_map_rgb(255,255,255);
-	clearColor = al_map_rgb(0,0,0);
+	ALLEGRO_COLOR  test = al_map_rgba_f(1,0,1,1);
+
+	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
+	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -98,6 +100,7 @@ void GfxInterface::commandScreen(void) {
 	}
 	else {
 		al_set_new_display_flags(flags);
+		unregisterWindow();
 		if (state != 2) {
 			al_destroy_display(window);
 			window = al_create_display(width,height);
@@ -108,6 +111,7 @@ void GfxInterface::commandScreen(void) {
 			al_destroy_display(window);
 			window = al_create_display(w,h);
 		}
+		registerWindow();
 	}
 
 	windowRenderTarget->create(width,height);
@@ -155,8 +159,6 @@ void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
 
-	windowRenderTarget->setAsCurrent();
-
 	if (!gameUpdated) cb->updateObjects();
 	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 	gameUpdated = false;
@@ -185,11 +187,11 @@ void GfxInterface::commandDrawScreen(void) {
 	al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),0,0,al_get_bitmap_width(windowRenderTarget->getBitmap()),al_get_bitmap_height(windowRenderTarget->getBitmap()),0,0,al_get_display_width(window),al_get_display_height(window),0);
 
 	al_flip_display();
-
+	bindRenderTarget = 0;
 	if (cls) {
 		windowRenderTarget->clear(clearColor);
 	}
-	bindRenderTarget = 0;
+
 }
 
 void GfxInterface::commandLock(void) {

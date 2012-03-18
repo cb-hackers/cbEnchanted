@@ -96,6 +96,7 @@ inline void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,
 }
 
 inline void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLEGRO_COLOR &color) {
+	if (r <= 0) return;
 	setAsCurrent();
 	if (fill) {
 		al_draw_filled_circle(cx,cy,r,color);

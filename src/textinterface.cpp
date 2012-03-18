@@ -17,6 +17,7 @@
 #define FONT_PATH "/usr/share/fonts/"
 #endif
 #include <allegro5/allegro_ttf.h>
+#include <iostream>
 
 TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)), locationX(0), locationY(0) {
 
@@ -89,11 +90,11 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-	cout << cb->popValue().toString().getRef() << std::endl;
+	std::cout << cb->popValue().toString().getRef() << std::endl;
 }
 
 void TextInterface::commandWrite(void) {
-	cout << cb->popValue().toString().getRef();
+	std::cout << cb->popValue().toString().getRef();
 }
 
 void TextInterface::commandLocate(void) {
