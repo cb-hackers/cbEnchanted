@@ -6,6 +6,7 @@ RenderTarget *bindRenderTarget = 0;
 
 void RenderTarget::useWorldCoords(bool t, bool force) {
 	if (t == worldMatrixEnabled && !force) return;
+	setAsCurrent();
 	worldMatrixEnabled = t;
 	ALLEGRO_TRANSFORM trans;
 	if (t) al_build_transform(&trans,al_get_display_width(CBEnchanted::instance()->getWindow())*0.5f-CBEnchanted::instance()->getCameraX(),al_get_display_height(CBEnchanted::instance()->getWindow())*0.5f+CBEnchanted::instance()->getCameraY(),1.0f,-1.0f,0.0f);

@@ -140,7 +140,8 @@ void TextInterface::functionLoadFont(void) {
 }
 
 void TextInterface::renderAddTexts(RenderTarget &r){
-	//r.setAsCurrent();
+	if (texts.empty()) return;
+	r.setAsCurrent();
 	//al_hold_bitmap_drawing(true);
 
 	vector<AddText*>::iterator i;

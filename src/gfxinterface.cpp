@@ -160,8 +160,8 @@ void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
 
-	//if (!gameUpdated) cb->updateObjects();
-	//if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
+	if (!gameUpdated) cb->updateObjects();
+	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 
 	gameUpdated = false;
 	gameDrawn = false;
@@ -184,7 +184,7 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
-	//cb->renderAddTexts(*windowRenderTarget);
+	cb->renderAddTexts(*windowRenderTarget);
 	al_set_target_backbuffer(window);
 	al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),0,0,al_get_bitmap_width(windowRenderTarget->getBitmap()),al_get_bitmap_height(windowRenderTarget->getBitmap()),0,0,al_get_display_width(window),al_get_display_height(window),0);
 
