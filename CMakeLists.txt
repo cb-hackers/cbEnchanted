@@ -2,7 +2,7 @@ project(CBEnchanted CXX C)
 cmake_minimum_required(VERSION 2.8)
 
 set(EXE_NAME "CBEnchanted")
-set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "")
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -19,7 +19,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Set default compile flags for GCC
 if(CMAKE_COMPILER_IS_GNUCXX)
 	message(STATUS "GCC detected, adding compile flags")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wno-int-to-pointer-cast -fpermissive")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wno-int-to-pointer-cast -fpermissive -g")
 endif()
 
 add_definitions(-DLOG_LEVEL_STUB -DLOG_LEVEL_FIXME -DLOG_LEVEL_DEBUG -DLOG_LEVEL_INFO)
@@ -32,9 +32,21 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # Libraries
 
-find_package(SFML 2 COMPONENTS graphics system window audio REQUIRED)
-include_directories(${SFML_INCLUDE_DIR})
-list(APPEND LIBS ${SFML_LIBRARIES})
+#find_package(SFML 2 COMPONENTS graphics system window audio REQUIRED)
+#include_directories(${SFML_INCLUDE_DIR})
+#list(APPEND LIBS ${SFML_LIBRARIES})
+
+#find_package(allegro REQUIRED)
+include_directories("/usr/include/allegro5")
+list(APPEND LIBS "allegro")
+list(APPEND LIBS "allegro_font")
+list(APPEND LIBS "allegro_ttf")
+list(APPEND LIBS "allegro_primitives")
+list(APPEND LIBS "allegro_audio")
+list(APPEND LIBS "allegro_acodec")
+list(APPEND LIBS "allegro_image")
+
+list(APPEND LIBS "png")
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})

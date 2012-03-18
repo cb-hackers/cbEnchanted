@@ -140,13 +140,15 @@ void TextInterface::functionLoadFont(void) {
 }
 
 void TextInterface::renderAddTexts(RenderTarget &r){
-	al_hold_bitmap_drawing(true);
+	//r.setAsCurrent();
+	//al_hold_bitmap_drawing(true);
+
 	vector<AddText*>::iterator i;
 	r.useWorldCoords(false);
 	for(i = texts.begin(); i != texts.end(); i++){
 		r.drawText((*i)->font,(*i)->txt,(*i)->txtX,(*i)->txtY,(*i)->col);
 	}
-	al_hold_bitmap_drawing(false);
+	//al_hold_bitmap_drawing(false);
 }
 
 void TextInterface::functionTextWidth(void) {

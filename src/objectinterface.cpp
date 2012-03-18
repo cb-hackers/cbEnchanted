@@ -542,7 +542,8 @@ void ObjectInterface::functionNextObject(void) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-	al_hold_bitmap_drawing(true); //Little speed up
+	target.setAsCurrent();
+	//al_hold_bitmap_drawing(true); //Little speed up
 	target.useWorldCoords(false);
 	CBObject *currentObject = firstFloorObject;
 	while (currentObject != 0) {
@@ -558,7 +559,7 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	}
 	target.useWorldCoords(false);
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
-	al_hold_bitmap_drawing(false);
+	//al_hold_bitmap_drawing(false);
 }
 
 
