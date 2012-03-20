@@ -18,6 +18,12 @@ build/
 qtcreator/*
 !qtcreator/cbEnchanted.pro
 
+# Same for cbkey mapping, plus some extra
+tools/cbkeys_mapping/qtcreator/*
+!tools/cbkeys_mapping/qtcreator/cbkeys_mapping.pro
+tools/cbkeys_mapping/out.txt
+tools/cbkeys_mapping/keys_allegro.cb
+
 tools/cbcompiler/IDE/CompileLog.txt
 tools/cbcompiler/IDE/Compiler
 tools/cbcompiler/IDE/Editor.out

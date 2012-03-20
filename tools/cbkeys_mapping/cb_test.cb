@@ -1,0 +1,21 @@
+Include "keys_coolbasic.cb"
+Include "keys_allegro.cb"
+
+font = LoadFont("Arial", 16)
+SetFont font
+
+ClsColor 0, 0, 128
+Cls
+
+Text 20, 20, "Press any key..."
+DrawScreen
+
+txt$ = ""
+
+Repeat
+    key = WaitKey()
+    Text 10, 20, "Keycode is: " + key
+    Text 10, 40, "Conversion to allegro is: " + allegro(key)
+    Text 10, 60, "In CB constants it is: " + coolbasickeys(key)
+    DrawScreen
+Forever 
