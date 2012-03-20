@@ -14,7 +14,9 @@ test.exe
 CMakeLists.txt.user*
 build/
 
-qtcreator/cbEnchanted.pro.user
+# Ignore Qt stuff, but not the cbEnchanted.pro file which is needed for the project
+qtcreator/*
+!qtcreator/cbEnchanted.pro
 
 tools/cbcompiler/IDE/CompileLog.txt
 tools/cbcompiler/IDE/Compiler
