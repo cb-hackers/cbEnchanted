@@ -11,8 +11,6 @@ MapInterface::MapInterface() {
 }
 
 MapInterface::~MapInterface() {
-	if(tileMap!=NULL)
-		delete tileMap;
 }
 
 void MapInterface::commandEditMap(void) {

@@ -72,6 +72,7 @@ void GfxInterface::initializeGfx()
 	windowGammaR = 0;
 	windowGammaG = 0;
 	windowGammaB = 0;
+	cb->updateInputs();
 }
 
 void GfxInterface::commandScreen(void) {
@@ -175,7 +176,7 @@ void GfxInterface::commandDrawScreen(void) {
 				break;
 		}
 	}
-	cb->setKeyStates();
+	cb->updateInputs();
 
 	fpsCounter++;
 	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)

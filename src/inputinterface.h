@@ -44,11 +44,17 @@ class InputInterface {
 		void functionEscapeKey(void);
 		bool initializeInputs(void);
 
-		void setKeyStates();
+		void updateInputs();
 	private:
 		CBEnchanted *cb;
-		//sf::Keyboard::Key key[221];
-		int32_t keyState[221];
+		int32_t cbKeyMap[222];
+		ALLEGRO_KEYBOARD_STATE *currentKeyboardState;
+		ALLEGRO_KEYBOARD_STATE *lastKeyboardState;
+		ALLEGRO_MOUSE_STATE *currentMouseState;
+		ALLEGRO_MOUSE_STATE *lastMouseState;
+
+		//For MouseMove*
+		int32_t lastMouseX,lastMouseY,lastMouseZ;
 };
 
 #endif

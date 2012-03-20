@@ -2,115 +2,118 @@
 #include "cbenchanted.h"
 #include "inputinterface.h"
 
-InputInterface::InputInterface() {
+InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0){
 	cb = static_cast <CBEnchanted *> (this);
-	/*key[1] = sf::Keyboard::Escape;
-	key[2] = sf::Keyboard::Num1;
-	key[3] = sf::Keyboard::Num2;
-	key[4] = sf::Keyboard::Num4;
-	key[5] = sf::Keyboard::Num5;
-	key[6] = sf::Keyboard::Num6;
-	key[7] = sf::Keyboard::Num7;
-	key[8] = sf::Keyboard::Num8;
-	key[10] = sf::Keyboard::Num9;
-	key[11] = sf::Keyboard::Num0;
-	key[12] = sf::Keyboard::Subtract;
-	key[13] = sf::Keyboard::Insert;
-	key[14] = sf::Keyboard::Back;
-	key[15] = sf::Keyboard::Tab;
-	key[16] = sf::Keyboard::Q;
-	key[17] = sf::Keyboard::W;
-	key[18] = sf::Keyboard::E;
-	key[19] = sf::Keyboard::R;
-	key[20] = sf::Keyboard::T;
-	key[21] = sf::Keyboard::Y;
-	key[22] = sf::Keyboard::U;
-	key[23] = sf::Keyboard::I;
-	key[24] = sf::Keyboard::O;
-	key[25] = sf::Keyboard::P;
-	key[26] = sf::Keyboard::LBracket;
-	key[27] = sf::Keyboard::RBracket;
-	key[28] = sf::Keyboard::Return;
-	key[29] = sf::Keyboard::LControl;
-	key[30] = sf::Keyboard::A;
-	key[31] = sf::Keyboard::S;
-	key[32] = sf::Keyboard::D;
-	key[33] = sf::Keyboard::F;
-	key[34] = sf::Keyboard::G;
-	key[35] = sf::Keyboard::H;
-	key[36] = sf::Keyboard::J;
-	key[37] = sf::Keyboard::K;
-	key[38] = sf::Keyboard::L;
-	key[39] = sf::Keyboard::SemiColon;
-	key[40] = sf::Keyboard::Quote;
-	key[41] = sf::Keyboard::Tilde;
-	key[42] = sf::Keyboard::LShift;
-	key[43] = sf::Keyboard::BackSlash;
-	key[44] = sf::Keyboard::Z;
-	key[45] = sf::Keyboard::X;
-	key[46] = sf::Keyboard::C;
-	key[47] = sf::Keyboard::V;
-	key[48] = sf::Keyboard::B;
-	key[49] = sf::Keyboard::N;
-	key[50] = sf::Keyboard::M;
-	key[51] = sf::Keyboard::Comma;
-	key[52] = sf::Keyboard::Period;
-	key[53] = sf::Keyboard::Slash;
-	key[54] = sf::Keyboard::RShift;
-	key[55] = sf::Keyboard::Multiply;
-	key[56] = sf::Keyboard::LAlt;
-	key[57] = sf::Keyboard::Space;
-	//key[58] = sf::Keyboard::; <= Caps Lock
-	key[59] = sf::Keyboard::F1;
-	key[60] = sf::Keyboard::F2;
-	key[61] = sf::Keyboard::F3;
-	key[62] = sf::Keyboard::F4;
-	key[63] = sf::Keyboard::F5;
-	key[64] = sf::Keyboard::F6;
-	key[65] = sf::Keyboard::F7;
-	key[66] = sf::Keyboard::F8;
-	key[67] = sf::Keyboard::F9;
-	key[68] = sf::Keyboard::F10;
-	//key[69] = sf::Keyboard::; <= Num Lock
-	//key[70] = sf::Keyboard::; <= Scroll Lock
-	key[71] = sf::Keyboard::Numpad7;
-	key[72] = sf::Keyboard::Numpad8;
-	key[73] = sf::Keyboard::Numpad9;
-	key[74] = sf::Keyboard::Subtract;
-	key[75] = sf::Keyboard::Numpad4;
-	key[76] = sf::Keyboard::Numpad5;
-	key[77] = sf::Keyboard::Numpad6;
-	key[78] = sf::Keyboard::Add;
-	key[79] = sf::Keyboard::Numpad1;
-	key[80] = sf::Keyboard::Numpad2;
-	key[81] = sf::Keyboard::Numpad3;
-	key[82] = sf::Keyboard::Numpad0;
-	//key[83] = sf::Keyboard::;
-	//key[86] = sf::Keyboard::;
-	key[87] = sf::Keyboard::F11;
-	key[88] = sf::Keyboard::F12;
-	//key[156] = sf::Keyboard::;
-	key[157] = sf::Keyboard::RControl;
-	key[181] = sf::Keyboard::Divide;
-	//key[182] = sf::Keyboard::;
-	key[182] = sf::Keyboard::RAlt;
-	key[197] = sf::Keyboard::Pause;
-	key[199] = sf::Keyboard::Home;
-	key[200] = sf::Keyboard::Up;
-	key[201] = sf::Keyboard::PageUp;
-	key[203] = sf::Keyboard::Left;
-	key[205] = sf::Keyboard::Right;
-	key[207] = sf::Keyboard::End;
-	key[208] = sf::Keyboard::Down;
-	key[209] = sf::Keyboard::PageDown;
-	key[210] = sf::Keyboard::Insert;
-	key[211] = sf::Keyboard::Delete;
-	key[219] = sf::Keyboard::LSystem;
-	key[220] = sf::Keyboard::RSystem;
-	key[221] = sf::Keyboard::Menu;*/
-	for(uint8_t i = 0; i < 221; i++){
-		keyState[i] = 0;
-	}
+	currentKeyboardState = new ALLEGRO_KEYBOARD_STATE;
+	lastKeyboardState = new ALLEGRO_KEYBOARD_STATE;
+	currentMouseState = new ALLEGRO_MOUSE_STATE;
+	lastMouseState = new ALLEGRO_MOUSE_STATE;
+
+	cbKeyMap[1] = ALLEGRO_KEY_ESCAPE;
+	cbKeyMap[2] = ALLEGRO_KEY_1;
+	cbKeyMap[3] = ALLEGRO_KEY_2;
+	cbKeyMap[4] = ALLEGRO_KEY_3;
+	cbKeyMap[5] = ALLEGRO_KEY_4;
+	cbKeyMap[6] = ALLEGRO_KEY_5;
+	cbKeyMap[7] = ALLEGRO_KEY_6;
+	cbKeyMap[8] = ALLEGRO_KEY_7;
+	cbKeyMap[9] = ALLEGRO_KEY_8;
+	cbKeyMap[10] = ALLEGRO_KEY_9;
+	cbKeyMap[11] = ALLEGRO_KEY_0;
+	cbKeyMap[12] = ALLEGRO_KEY_EQUALS;
+	cbKeyMap[13] = ALLEGRO_KEY_OPENBRACE;
+	cbKeyMap[14] = ALLEGRO_KEY_BACKSPACE;
+	cbKeyMap[15] = ALLEGRO_KEY_TAB;
+	cbKeyMap[16] = ALLEGRO_KEY_Q;
+	cbKeyMap[17] = ALLEGRO_KEY_W;
+	cbKeyMap[18] = ALLEGRO_KEY_E;
+	cbKeyMap[19] = ALLEGRO_KEY_R;
+	cbKeyMap[20] = ALLEGRO_KEY_T;
+	cbKeyMap[21] = ALLEGRO_KEY_Y;
+	cbKeyMap[22] = ALLEGRO_KEY_U;
+	cbKeyMap[23] = ALLEGRO_KEY_I;
+	cbKeyMap[24] = ALLEGRO_KEY_O;
+	cbKeyMap[25] = ALLEGRO_KEY_P;
+	cbKeyMap[26] = ALLEGRO_KEY_CLOSEBRACE;
+	cbKeyMap[27] = ALLEGRO_KEY_SEMICOLON;
+	cbKeyMap[28] = ALLEGRO_KEY_ENTER;
+	cbKeyMap[29] = ALLEGRO_KEY_LCTRL;
+	cbKeyMap[30] = ALLEGRO_KEY_A;
+	cbKeyMap[31] = ALLEGRO_KEY_S;
+	cbKeyMap[32] = ALLEGRO_KEY_D;
+	cbKeyMap[33] = ALLEGRO_KEY_F;
+	cbKeyMap[34] = ALLEGRO_KEY_G;
+	cbKeyMap[35] = ALLEGRO_KEY_H;
+	cbKeyMap[36] = ALLEGRO_KEY_J;
+	cbKeyMap[37] = ALLEGRO_KEY_K;
+	cbKeyMap[38] = ALLEGRO_KEY_L;
+	cbKeyMap[39] = ALLEGRO_KEY_TILDE;
+	cbKeyMap[40] = ALLEGRO_KEY_QUOTE;
+	cbKeyMap[41] = ALLEGRO_KEY_BACKSLASH;
+	cbKeyMap[42] = ALLEGRO_KEY_LSHIFT;
+	cbKeyMap[43] = ALLEGRO_KEY_SLASH;
+	cbKeyMap[44] = ALLEGRO_KEY_Z;
+	cbKeyMap[45] = ALLEGRO_KEY_X;
+	cbKeyMap[46] = ALLEGRO_KEY_C;
+	cbKeyMap[47] = ALLEGRO_KEY_V;
+	cbKeyMap[48] = ALLEGRO_KEY_B;
+	cbKeyMap[49] = ALLEGRO_KEY_N;
+	cbKeyMap[50] = ALLEGRO_KEY_M;
+	cbKeyMap[51] = ALLEGRO_KEY_COMMA;
+	cbKeyMap[52] = ALLEGRO_KEY_FULLSTOP;
+	cbKeyMap[53] = ALLEGRO_KEY_MINUS;
+	cbKeyMap[54] = ALLEGRO_KEY_RSHIFT;
+	cbKeyMap[55] = ALLEGRO_KEY_PAD_ASTERISK;
+	cbKeyMap[56] = ALLEGRO_KEY_ALT;
+	cbKeyMap[57] = ALLEGRO_KEY_SPACE;
+	cbKeyMap[58] = ALLEGRO_KEY_CAPSLOCK;
+	cbKeyMap[59] = ALLEGRO_KEY_F1;
+	cbKeyMap[60] = ALLEGRO_KEY_F2;
+	cbKeyMap[61] = ALLEGRO_KEY_F3;
+	cbKeyMap[62] = ALLEGRO_KEY_F4;
+	cbKeyMap[63] = ALLEGRO_KEY_F5;
+	cbKeyMap[64] = ALLEGRO_KEY_F6;
+	cbKeyMap[65] = ALLEGRO_KEY_F7;
+	cbKeyMap[66] = ALLEGRO_KEY_F8;
+	cbKeyMap[67] = ALLEGRO_KEY_F9;
+	cbKeyMap[68] = ALLEGRO_KEY_F10;
+	cbKeyMap[69] = ALLEGRO_KEY_PAUSE;
+	cbKeyMap[70] = ALLEGRO_KEY_SCROLLLOCK;
+	cbKeyMap[71] = ALLEGRO_KEY_PAD_7;
+	cbKeyMap[72] = ALLEGRO_KEY_PAD_8;
+	cbKeyMap[73] = ALLEGRO_KEY_PAD_9;
+	cbKeyMap[74] = ALLEGRO_KEY_PAD_MINUS;
+	cbKeyMap[75] = ALLEGRO_KEY_PAD_4;
+	cbKeyMap[76] = ALLEGRO_KEY_PAD_5;
+	cbKeyMap[77] = ALLEGRO_KEY_PAD_6;
+	cbKeyMap[78] = ALLEGRO_KEY_PAD_PLUS;
+	cbKeyMap[79] = ALLEGRO_KEY_PAD_1;
+	cbKeyMap[80] = ALLEGRO_KEY_PAD_2;
+	cbKeyMap[81] = ALLEGRO_KEY_PAD_3;
+	cbKeyMap[82] = ALLEGRO_KEY_PAD_0;
+	cbKeyMap[83] = ALLEGRO_KEY_PAD_DELETE;
+	cbKeyMap[86] = ALLEGRO_KEY_BACKSLASH2;
+	cbKeyMap[87] = ALLEGRO_KEY_F11;
+	cbKeyMap[88] = ALLEGRO_KEY_F12;
+	cbKeyMap[156] = ALLEGRO_KEY_PAD_ENTER;
+	cbKeyMap[157] = ALLEGRO_KEY_RCTRL;
+	cbKeyMap[181] = ALLEGRO_KEY_PAD_SLASH;
+	cbKeyMap[183] = ALLEGRO_KEY_PRINTSCREEN;
+	cbKeyMap[184] = ALLEGRO_KEY_ALTGR;
+	cbKeyMap[197] = ALLEGRO_KEY_NUMLOCK;
+	cbKeyMap[199] = ALLEGRO_KEY_HOME;
+	cbKeyMap[200] = ALLEGRO_KEY_UP;
+	cbKeyMap[201] = ALLEGRO_KEY_PGUP;
+	cbKeyMap[203] = ALLEGRO_KEY_LEFT;
+	cbKeyMap[205] = ALLEGRO_KEY_RIGHT;
+	cbKeyMap[207] = ALLEGRO_KEY_END;
+	cbKeyMap[208] = ALLEGRO_KEY_DOWN;
+	cbKeyMap[209] = ALLEGRO_KEY_PGDN;
+	cbKeyMap[210] = ALLEGRO_KEY_INSERT;
+	cbKeyMap[211] = ALLEGRO_KEY_DELETE;
+	cbKeyMap[219] = ALLEGRO_KEY_LWIN;
+	cbKeyMap[220] = ALLEGRO_KEY_RWIN;
+	cbKeyMap[221] = ALLEGRO_KEY_MENU;
 
  }
 
@@ -138,7 +141,8 @@ void InputInterface::commandWaitKey(void) {
 }
 
 void InputInterface::commandClearKeys(void) {
-	STUB;
+	memset(currentKeyboardState->__key_down__internal__,0,((ALLEGRO_KEY_MAX + 31) / 32)*4);
+	memset(lastKeyboardState->__key_down__internal__,0,((ALLEGRO_KEY_MAX + 31) / 32)*4);
 }
 
 void InputInterface::commandPositionMouse(void) {
@@ -157,7 +161,8 @@ void InputInterface::commandShowMouse(void) {
 }
 
 void InputInterface::commandClearMouse(void) {
-	STUB;
+	currentMouseState->buttons = 0;
+	lastMouseState->buttons = 0;
 }
 
 void InputInterface::commandSAFEEXIT(void) {
@@ -169,28 +174,18 @@ void InputInterface::functionInput(void) {
 }
 
 void InputInterface::functionKeyDown(void) {
-	int32_t keyC = cb->popValue().toInt();
-	cb->pushValue(keyState[keyC]);
+	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
+	cb->pushValue(al_key_down(currentKeyboardState,keyC));
 }
 
 void InputInterface::functionKeyHit(void) {
-	/*
-	int32_t keyC = cb->popValue().toInt();
-	if(keyState[keyC] != 0)
-		return;
-
-	if(keyState[keyC] = 0)
-		cb->pushValue(1);*/
+	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
+	cb->pushValue(al_key_down(currentKeyboardState,keyC) && !al_key_down(lastKeyboardState,keyC));
 }
 
 void InputInterface::functionKeyUp(void) {
-	/*
-	int32_t keyC = cb->popValue().toInt();
-	if(keyState[keyC] != 1)
-		return;
-
-	if(keyState[keyC] = 1)
-		cb->pushValue(1);*/
+	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
+	cb->pushValue(!al_key_down(currentKeyboardState,keyC) && al_key_down(lastKeyboardState,keyC));
 }
 
 void InputInterface::functionGetKey(void) {
@@ -220,15 +215,17 @@ void InputInterface::functionWaitKey(void) {
 
 void InputInterface::functionMouseDown(void) {
 	int32_t button = cb->popValue().toInt();
-
+	cb->pushValue(al_mouse_button_down(currentMouseState,button));
 }
 
 void InputInterface::functionMouseHit(void) {
-	STUB;
+	int32_t button = cb->popValue().toInt();
+	cb->pushValue(al_mouse_button_down(currentMouseState,button) && !al_mouse_button_down(lastMouseState,button));
 }
 
 void InputInterface::functionMouseUp(void) {
-	STUB;
+	int32_t button = cb->popValue().toInt();
+	cb->pushValue(!al_mouse_button_down(currentMouseState,button) && al_mouse_button_down(lastMouseState,button));
 }
 
 void InputInterface::functionGetMouse(void) {
@@ -236,63 +233,82 @@ void InputInterface::functionGetMouse(void) {
 }
 
 void InputInterface::functionWaitMouse(void) {
-	STUB;
+	ALLEGRO_EVENT e;
+	while(true)
+	{
+		al_wait_for_event(cb->getEventQueue(),&e);
+		switch (e.type)
+		{
+		case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			cb->pushValue((int32_t)e.mouse.button);
+			return;
+		case ALLEGRO_EVENT_DISPLAY_CLOSE:
+			cb->stop();
+			cb->pushValue(0);
+			return;
+		}
+	}
 }
 
 void InputInterface::functionMouseX(void) {
-
+	cb->pushValue(al_get_mouse_state_axis(currentMouseState,0));
 }
 
 void InputInterface::functionMouseY(void) {
-
+	cb->pushValue(al_get_mouse_state_axis(currentMouseState,1));
 }
 
 void InputInterface::functionMouseWX(void) {
-	STUB;
+	cb->pushValue(cb->screenCoordToWorldX(al_get_mouse_state_axis(currentMouseState,0)));
 }
 
 void InputInterface::functionMouseWY(void) {
-	STUB;
+	cb->pushValue(cb->screenCoordToWorldY(al_get_mouse_state_axis(currentMouseState,1)));
 }
 
 void InputInterface::functionMouseZ(void) {
-	STUB;
+	cb->pushValue(al_get_mouse_state_axis(currentMouseState,2));
 }
 
 void InputInterface::functionMouseMoveX(void) {
-	STUB;
+	int32_t a = al_get_mouse_state_axis(currentMouseState,0);
+	cb->pushValue(a-lastMouseX);
+	lastMouseX = a;
 }
 
 void InputInterface::functionMouseMoveY(void) {
-	STUB;
+	int32_t a = al_get_mouse_state_axis(currentMouseState,1);
+	cb->pushValue(a-lastMouseY);
+	lastMouseY = a;
 }
 
 void InputInterface::functionMouseMoveZ(void) {
-	STUB;
+	int32_t a = al_get_mouse_state_axis(currentMouseState,2);
+	cb->pushValue(a-lastMouseZ);
+	lastMouseZ = a;
 }
 
 void InputInterface::functionLeftKey(void) {
-
+	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_LEFT));
 }
 
 void InputInterface::functionRightKey(void) {
-
+	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_RIGHT));
 }
 
 void InputInterface::functionUpKey(void) {
-
+	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_UP));
 }
 
 void InputInterface::functionDownKey(void) {
-
+	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_DOWN));
 }
 
 void InputInterface::functionEscapeKey(void) {
-
+	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_ESCAPE));
 }
 
-bool InputInterface::initializeInputs()
-{
+bool InputInterface::initializeInputs() {
 	if (!al_install_keyboard()) return false;
 	if (!al_install_mouse()) return false;
 	al_register_event_source(cb->getEventQueue(),al_get_keyboard_event_source());
@@ -300,7 +316,14 @@ bool InputInterface::initializeInputs()
 }
 
 
-void InputInterface::setKeyStates(){
-
+void InputInterface::updateInputs(){
+	ALLEGRO_KEYBOARD_STATE *temp1 = lastKeyboardState;
+	lastKeyboardState = currentKeyboardState;
+	currentKeyboardState = temp1;
+	al_get_keyboard_state(currentKeyboardState);
+	ALLEGRO_MOUSE_STATE *temp2 = lastMouseState;
+	lastMouseState = currentMouseState;
+	currentMouseState = temp2;
+	al_get_mouse_state(currentMouseState);
 }
 
