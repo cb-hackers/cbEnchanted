@@ -282,10 +282,19 @@ str += '---\n';
 str += '\nHere\'s your pretty array, young boy:\n--- --- ---\n';
 for (i = 0; i < arr.length; i++) {
   if (arr[i]) {
-    str += 'KEYMAP[' + i + '] = ' + arr[i] + '\n';
+    str += 'KEYMAP[' + i + '] = ' + arr[i] + ';\n';
   }
 }
-str += '--- --- ---';
+str += '--- --- ---\n\n';
+
+// Aaand create an array that's the one above, but reversed
+str += '\nHere\'s your pretty array reversed:\n--- REV ---\n';
+for (i = 0; i < arr.length; i++) {
+  if (arr[i]) {
+    str += 'KEYMAP_REVERSED[' + arr[i] + '] = ' + i + ';\n';
+  }
+}
+str += '--- REV ---';
 
 // Write what we found out to out.txt
 console.log('\nWriting to file out.txt');
