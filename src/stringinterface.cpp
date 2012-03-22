@@ -3,9 +3,9 @@
 #include "stringinterface.h"
 
 StringInterface::StringInterface() : cb(static_cast <CBEnchanted *> (this)) {
-	
+
 }
-		
+
 void StringInterface::functionStr(void) {
 	Any a = cb->popValue();
 	switch (a.type())
@@ -28,7 +28,7 @@ void StringInterface::functionLeft(void) {
 void StringInterface::functionRight(void) {
 	int32_t n = cb->popValue().toInt();
 	string s = cb->popValue().getString().getRef();
-	
+
 	cb->pushValue(s.substr(s.length() - n));
 }
 

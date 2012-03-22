@@ -18,4 +18,4 @@ Repeat
     Text 10, 40, "Conversion to allegro is: " + allegro(key)
     Text 10, 60, "In CB constants it is: " + coolbasickeys(key)
     DrawScreen
-Forever 
+Forever

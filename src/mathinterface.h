@@ -6,9 +6,9 @@ class CBEnchanted;
 class MathInterface {
 	public:
 		MathInterface();
-		
+
 		void commandRandomize(void);
-		
+
 		void functionInt(void);
 		void functionFloat(void);
 		void functionRoundUp(void);

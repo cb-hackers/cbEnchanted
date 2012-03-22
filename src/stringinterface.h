@@ -6,7 +6,7 @@ class CBEnchanted;
 class StringInterface {
 	public:
 		StringInterface();
-		
+
 		void functionStr(void);
 		void functionLeft(void);
 		void functionRight(void);

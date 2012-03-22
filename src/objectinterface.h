@@ -44,7 +44,7 @@ class ObjectInterface {
 		void commandSetupCollision(void);
 		void commandClearCollisions(void);
 		void commandInitObjectList(void);
-		
+
 		void functionLoadObject(void);
 		void functionLoadAnimObject(void);
 		void functionMakeObject(void);

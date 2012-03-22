@@ -3,11 +3,11 @@
 #include "debug.h"
 
 AnimInterface::AnimInterface() {
-	
+
 }
 
 AnimInterface::~AnimInterface() {
-	
+
 }
 
 void AnimInterface::commandStopAnimation(void) {

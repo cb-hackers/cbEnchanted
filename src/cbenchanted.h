@@ -50,7 +50,7 @@ class CBEnchanted :
 	public:
 		CBEnchanted();
 		~CBEnchanted();
-	
+
 		static CBEnchanted *instance();
 		bool init(string file);
 		void run();
@@ -61,20 +61,20 @@ class CBEnchanted :
 		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
 	private:
-		
+
 		char *code;
 		uint32_t cpos;
 		vector <uint32_t> pos;
-	
+
 		bool initialized;
 		bool running;
-		
+
 		bool safeExit;
 		float framesMs;
 
 		std::map <uint32_t, uint32_t> offsets;
 		std::map <uint32_t, uint32_t> roffsets;
-		
+
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
 		void handleSetFloat(void);
@@ -88,7 +88,7 @@ class CBEnchanted :
 		void handleIncVar(void);
 		void handleIncGlobalVar(void);
 		void handlePushTypeMemberVariable(void);
-	
+
 		void commandFunction(void);
 		void commandSetGlobalVariable(void); //80
 		void commandSetArrayNumbers(void); //97
@@ -106,7 +106,7 @@ class CBEnchanted :
 		void commandDelete(void);
 		void commandSetVariable(void);
 		void commandArrayAssign(void);
-		
+
 		void functionNew(void);
 		void functionFirst(void);
 		void functionLast(void);

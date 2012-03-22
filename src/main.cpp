@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 		cb.cleanup();
 	}
 	al_uninstall_system();
-	
+
 	return 0;
 }
 

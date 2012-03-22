@@ -4,11 +4,11 @@
 #include "cbobject.h"
 
 CameraInterface::CameraInterface(): cb(static_cast<CBEnchanted*>(this)),cameraX(0),cameraY(0),cameraAngle(0){
-	
+
 }
 
 CameraInterface::~CameraInterface() {
-	
+
 }
 
 void CameraInterface::commandCloneCameraPosition(void) {

@@ -30,7 +30,7 @@ class FileInterface {
 		void commandReadFloat(void);
 		void commandReadString(void);
 		void commandReadLine(void);
-		
+
 		void functionOpenToRead(void);
 		void functionOpenToWrite(void);
 		void functionOpenToEdit(void);

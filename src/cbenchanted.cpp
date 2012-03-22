@@ -62,8 +62,8 @@ void CBEnchanted::run() {
 	}
 }
 
-/* 
- * CBEnchanted::init - Initialize the interpreter 
+/*
+ * CBEnchanted::init - Initialize the interpreter
  */
 bool CBEnchanted::init(string file) {
 	INFO("Initializing");
@@ -119,7 +119,7 @@ bool CBEnchanted::init(string file) {
 	while (i < size) {
 		offsets[ncmd] = i;
 		roffsets[i] = ncmd;
-		
+
 		uint8_t cmd = *(uint8_t *)(code + i);
 		ncmd++;
 		i++;
@@ -139,7 +139,7 @@ bool CBEnchanted::init(string file) {
 			case 79: i ++; break;
 			default: FIXME("Unhandled preparsing: %i", (uint32_t) cmd);
 		}
-		
+
 	}
 
 	if (!al_init()) return false;
@@ -175,7 +175,7 @@ void CBEnchanted::cleanup() {
 void CBEnchanted::handlePushFuncptr(void) {
 	int32_t ptr = *(int32_t *)(code + cpos);
 	cpos += 4;
-	
+
 	pos.push_back(cpos);
 
 	pushScope();
@@ -214,7 +214,7 @@ void CBEnchanted::handleSetInt(void) {
 void CBEnchanted::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
-	
+
 	setFloatVariable(var, popValue().getFloat());
 }
 
@@ -224,7 +224,7 @@ void CBEnchanted::handleSetFloat(void) {
 void CBEnchanted::handleCommand(void) {
 	uint32_t command = *(uint32_t *)(code + cpos);
 	cpos += 4;
-	
+
 	HCDEBUG("Command: %i", command);
 
 	switch (command) {
@@ -613,7 +613,7 @@ void CBEnchanted::commandDim(void) {
 	cpos ++;
 	uint32_t n = *(uint32_t *)(code + cpos); // Number of dimensions
 	cpos += 4;
-	
+
 	uint32_t size = 1;
 	Array a;
 	for (int32_t i = n - 1; i >= 0; --i) {
@@ -622,7 +622,7 @@ void CBEnchanted::commandDim(void) {
 		size *= dim;
 	}
 
-	
+
 	cpos += 1;
 	uint32_t type = *(uint32_t *)(code + cpos);
 	cpos += 4;
@@ -704,7 +704,7 @@ void CBEnchanted::handlePushSomething(void) {
 		case 2: { // Float
 			float value = *(float *)(code + cpos);
 			cpos += 4;
-			
+
 			pushValue(value);
 			break;
 		}
@@ -746,7 +746,7 @@ void CBEnchanted::handlePushSomething(void) {
 		case 5: { // String
 			uint32_t strId = *(uint32_t *)(code + cpos);
 			cpos += 4;
-			
+
 			// Push empty string
 			if (strId == 0) {
 				pushValue(string(""));
@@ -772,139 +772,139 @@ void CBEnchanted::handleMathOperation(void) {
 	switch (op) {
 		case 1: {
 			Any r = popValue();
-			
+
 			pushValue(-r);
 			break;
 		}
 		case 2: {
 			Any r = popValue();
-			
+
 			pushValue(+r);
 			break;
 		}
 		case 3: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l ^ r);
 			break;
 		}
 		case 4: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l + r);
 			break;
 		}
 		case 5: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l - r);
 			break;
 		}
 		case 6: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l * r);
 			break;
 		}
 		case 7: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l / r);
 			break;
 		}
 		case 8: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l % r);
 			break;
 		}
 		case 9: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l << r);
 			break;
 		}
 		case 10: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l >> r);
 			break;
 		}
 		case 11: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l >> r);
 			break;
 		}
 		case 12: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l < r);
 			break;
 		}
 		case 13: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l > r);
 			break;
 		}
 		case 14: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l == r);
 			break;
 		}
 		case 15: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l != r);
 			break;
 		}
 		case 16: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l <= r);
 			break;
 		}
 		case 17: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l >= r);
 			break;
 		}
 		case 18: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l && r);
 			break;
 		}
 		case 19: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue(l || r);
 			break;
 		}
 		case 20: {
 			Any r = popValue();
 			Any l = popValue();
-			
+
 			pushValue((l || r) && !(r && l));
 			break;
 		}
@@ -998,7 +998,7 @@ void CBEnchanted::commandReturn(void) {
 }
 
 void CBEnchanted::commandGosub(void) {
-	
+
 }
 
 void CBEnchanted::functionNew(void) {
@@ -1028,16 +1028,16 @@ void CBEnchanted::functionAfter(void) {
 }
 
 void CBEnchanted::functionRead(void) {
-	
+
 }
 
 void CBEnchanted::functionConvertToInteger(void) {
-	
+
 }
 
 void CBEnchanted::functionConvertToType(void) {
-	
-}		
+
+}
 
 void CBEnchanted::commandSetVariable(void) {
 	int32_t type = popValue().getInt();

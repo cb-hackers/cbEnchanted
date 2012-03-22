@@ -15,7 +15,7 @@ do
 	echo "Building $i"
 	name=`echo $i|cut -d'.' -f1`
 	wine $CB $i
-	
+
 	mv "$DIR/cbcompiler/$name.exe" "$OUTDIR"
 done
 
