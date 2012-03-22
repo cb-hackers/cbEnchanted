@@ -34,7 +34,7 @@ bool TextInterface::initializeFonts() {
 	fontMap[0] = currentFont;
 	return true;
 }
-	
+
 void TextInterface::commandSetFont(void) {
 	int32_t id = cb->popValue().toInt();
 	currentFont = fontMap[id];

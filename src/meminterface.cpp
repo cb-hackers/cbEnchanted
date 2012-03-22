@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 MemInterface::MemInterface() {
-	
+
 }
 
 MemInterface::~MemInterface() {
-	
+
 }
 
 //DeleteMEMBlock

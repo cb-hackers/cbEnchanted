@@ -11,7 +11,7 @@ EffectInterface::EffectInterface():
 }
 
 EffectInterface::~EffectInterface() {
-	
+
 }
 
 void EffectInterface::commandParticleMovement(void) {

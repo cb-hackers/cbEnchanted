@@ -11,7 +11,7 @@ class GfxInterface {
 	public:
 		GfxInterface();
 		~GfxInterface();
-		
+
 		void commandScreen(void);
 		void commandLock(void);
 		void commandUnlock(void);

@@ -18,7 +18,7 @@ ObjectInterface::ObjectInterface():
 }
 
 ObjectInterface::~ObjectInterface() {
-	
+
 }
 
 void ObjectInterface::commandDeleteObject(void) {

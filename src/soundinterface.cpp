@@ -6,11 +6,11 @@
 #include <allegro5/allegro_audio.h>
 
 SoundInterface::SoundInterface() : cb(static_cast <CBEnchanted *> (this)),idCounter(0) {
-	
+
 }
 
 SoundInterface::~SoundInterface() {
-	
+
 }
 
 void SoundInterface::commandPlaySound(void) {

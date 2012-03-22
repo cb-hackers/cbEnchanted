@@ -19,10 +19,10 @@ WaitKey
 Function G(z As Integer, o As Byte, i As Integer)
 	Dim q As Integer
 	Dim c As Integer
-	
+
 	c = 5124
 	q = c * 2
-	
+
 	q = q + z + o + i
 	Text 0, 60, q
 	Return q

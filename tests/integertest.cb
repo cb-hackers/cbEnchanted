@@ -5,11 +5,11 @@ img = LoadImage("Media\grass.bmp")
 floor = MakeObjectFloor()
 PaintObject floor,-img
 
-Repeat 
+Repeat
 
 
     PositionCamera Cos(ang)*400, -Sin(ang)*400
 
 
     DrawScreen
-Forever 
+Forever

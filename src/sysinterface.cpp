@@ -69,7 +69,7 @@ void SysInterface::commandSetWindow(void) {
 	string quit = cb->popValue().toString().getRef();
 	uint32_t mode = cb->popValue().toInt();
 	string caption = cb->popValue().toString().getRef();
-	
+
 	if (quit != "") {
 		FIXME("FIXME: setWindow quitmsg");
 	}

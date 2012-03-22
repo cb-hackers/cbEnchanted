@@ -7,7 +7,7 @@ class ImageInterface {
 	public:
 		ImageInterface();
 		~ImageInterface();
-		
+
 		void commandSaveImage(void);
 		void commandDrawImage(void);
 		void commandDrawGhostImage(void);
@@ -20,7 +20,7 @@ class ImageInterface {
 		void commandPickImageColor2(void);
 		void commandHotSpot(void);
 		void commandDeleteImage(void);
-		
+
 		void functionLoadImage(void);
 		void functionLoadAnimImage(void);
 		void functionMakeImage(void);

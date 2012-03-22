@@ -6,7 +6,7 @@ class CBEnchanted;
 class SysInterface {
 	public:
 		SysInterface();
-		
+
 		void commandWait(void);
 		void commandSetWindow(void);
 		void commandMakeError(void);
@@ -18,9 +18,9 @@ class SysInterface {
 		void commandDecrypt(void);
 		void commandCallDLL(void);
 		void commandErrors(void);
-		
+
 		void commandEnd(void);
-		
+
 		void functionDate(void);
 		void functionTime(void);
 		void functionTimer(void);

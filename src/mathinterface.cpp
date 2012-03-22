@@ -56,13 +56,13 @@ void MathInterface::functionSqrt(void) {
 
 void MathInterface::functionSin(void) {
 	float angle = cb->popValue().toFloat();
-	
+
 	cb->pushValue(float(sin(angle / 180.0 * 3.14159265358979323)));
 }
 
 void MathInterface::functionCos(void) {
 	float angle = cb->popValue().toFloat();
-	
+
 	cb->pushValue(float(cos(angle / 180.0 * 3.14159265358979323)));
 }
 

@@ -8,7 +8,7 @@ class CBEnchanted;
 class InputInterface {
 	public:
 		InputInterface();
-		
+
 		void commandCloseInput(void);
 		void commandWaitKey(void);
 		void commandClearKeys(void);
@@ -17,7 +17,7 @@ class InputInterface {
 		void commandShowMouse(void);
 		void commandClearMouse(void);
 		void commandSAFEEXIT(void);
-		
+
 		void functionInput(void);
 		void functionKeyDown(void);
 		void functionKeyHit(void);

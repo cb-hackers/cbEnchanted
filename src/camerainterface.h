@@ -7,7 +7,7 @@ class CameraInterface {
 	public:
 		CameraInterface();
 		~CameraInterface();
-		
+
 		void commandCloneCameraPosition(void);
 		void commandCloneCameraOrientation(void);
 		void commandCameraFollow(void);
@@ -18,7 +18,7 @@ class CameraInterface {
 		void commandMoveCamera(void);
 		void commandTranslateCamera(void);
 		void commandPositionCamera(void);
-		
+
 		void functionCameraX(void);
 		void functionCameraY(void);
 		void functionCameraAngle(void);

@@ -12,7 +12,7 @@ For i = 200000000 To 999999999
 	If i Mod 13 Then Goto ohi
 	If i Mod 12 Then Goto ohi
 	If i Mod 11 Then Goto ohi
-	
+
 	s = i
 	Goto valmis
 ohi:

@@ -10,11 +10,11 @@ class MapInterface {
 	public:
 		MapInterface();
 		~MapInterface();
-		
+
 		void commandEditMap(void);
 		void commandSetMap(void);
 		void commandSetTile(void);
-		
+
 		void functionLoadMap(void);
 		void functionMakeMap(void);
 		void functionGetMap(void);

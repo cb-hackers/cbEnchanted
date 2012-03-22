@@ -7,7 +7,7 @@ class MemInterface {
 	public:
 		MemInterface();
 		~MemInterface();
-		
+
 		void commandDeleteMEMBlock(void);
 		void commandResizeMEMBlock(void);
 		void commandMemCopy(void);
@@ -15,7 +15,7 @@ class MemInterface {
 		void commandPokeShort(void);
 		void commandPokeInt(void);
 		void commandPokeFloat(void);
-		
+
 		void functionMakeMEMBlock(void);
 		void functionMEMBlockSize(void);
 		void functionPeekByte(void);
@@ -24,7 +24,7 @@ class MemInterface {
 		void functionPeekFloat(void);
 	private:
 		CBEnchanted *cb;
-	
+
 };
 
 #endif
