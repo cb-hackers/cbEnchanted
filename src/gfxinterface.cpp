@@ -7,7 +7,7 @@
 #endif
 #include "cbimage.h"
 #include <allegro5/allegro_image.h>
-
+#include "util.h"
 
 const char *screenGammaFragmentShaderCode =
 		"uniform sampler2D screenBuf; \n"
@@ -47,6 +47,7 @@ GfxInterface::GfxInterface() :
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
+	lastFrameTime = mtimer();
 }
 
 GfxInterface::~GfxInterface() {
@@ -160,7 +161,10 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
-
+	if ((mtimer()-lastFrameTime)<=cb->getFrameLimit()){
+		sleep(cb->getFrameLimit()-(mtimer()-lastFrameTime));
+	}
+	lastFrameTime = mtimer();
 	if (!gameUpdated) cb->updateObjects();
 	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 
@@ -386,3 +390,10 @@ void GfxInterface::unregisterWindow() {
 	al_unregister_event_source(cb->getEventQueue(),al_get_display_event_source(window));
 }
 
+void GfxInterface::sleep(int64_t time){
+	int64_t start = mtimer();
+	while(!((start+time)<mtimer())){
+
+	}
+	return;
+}

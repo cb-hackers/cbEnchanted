@@ -48,6 +48,7 @@ class GfxInterface {
 		void functionGFXModeExists(void);
 
 		int32_t getFPS()const{return currentFPS;}
+		void sleep(int64_t time);
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }
 		const ALLEGRO_COLOR &getDrawColor() { return drawColor; }
@@ -71,6 +72,7 @@ class GfxInterface {
 		int32_t fpsCounter;
 		int32_t currentFPS;
 		clock_t lastSecTimer;
+		int64_t lastFrameTime;
 		RenderTarget *currentRenderTarget;
 
 		RenderTarget *windowRenderTarget;

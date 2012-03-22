@@ -47,6 +47,7 @@ void SysInterface::commandGotoSavedLocation(void) {
 
 void SysInterface::commandFrameLimit(void) {
 	int32_t fps_limit = cb->popValue().toInt();
+	cb->setFrameLimit(fps_limit);
 }
 
 void SysInterface::commandEncrypt(void) {

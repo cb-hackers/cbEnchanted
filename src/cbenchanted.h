@@ -57,6 +57,8 @@ class CBEnchanted :
 		void stop();
 		void cleanup();
 		bool isSafeExit(){ return safeExit; }
+		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;INFO("%f", framesMs);}
+		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
 	private:
 		
@@ -68,6 +70,7 @@ class CBEnchanted :
 		bool running;
 		
 		bool safeExit;
+		float framesMs;
 
 		std::map <uint32_t, uint32_t> offsets;
 		std::map <uint32_t, uint32_t> roffsets;
