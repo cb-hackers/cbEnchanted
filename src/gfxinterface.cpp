@@ -392,7 +392,7 @@ void GfxInterface::unregisterWindow() {
 
 void GfxInterface::sleep(int64_t time){
 	int64_t start = mtimer();
-	while(!((start+time)<mtimer())){
+	while(!((start+time)<=mtimer())){
 
 	}
 	return;

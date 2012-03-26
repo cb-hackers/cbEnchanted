@@ -185,6 +185,16 @@ void CBObject::translateObject(float hor, float ver, float depth){
 
 void CBObject::turnObject(float speed){
 	angle+=speed;
+	if(angle < 0){
+		while(angle < 0){
+			angle+=360;
+		}
+	}else if(angle > 360){
+		while(angle > 360){
+			angle-=360;
+		}
+	}
+
 }
 
  void CBObject::render(RenderTarget &target){
@@ -222,10 +232,11 @@ void CBObject::turnObject(float speed){
 				return;
 			}
 			if(alphaBlend!=255){
-				target.drawBitmap(texture,posX,posY,angle*M_PI*0.5f,al_map_rgba(255,255,255,alphaBlend));
+				target.drawBitmap(texture,posX,posY,angle+180,al_map_rgba(255,255,255,alphaBlend));
 				return;
 			}
-			target.drawBitmap(texture,posX,posY,angle*M_PI*0.5f);
+
+			target.drawBitmap(texture,posX,posY,angle+180);
 		}
 	}
 }
