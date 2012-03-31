@@ -132,8 +132,7 @@ void CBObject::startPlaying(uint16_t startf, uint16_t endf, float spd, bool cont
 	playing = true;
 }
 
-bool CBObject::updateObject(float timestep)
-{
+bool CBObject::updateObject(float timestep) {
 	if (playing) {
 		if(animStartFrame < animEndingFrame){
 			currentFrame = currentFrame + animSpeed;

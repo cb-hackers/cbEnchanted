@@ -44,17 +44,12 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 	float frameAreaTop = (copyY*frameWidth);
 	float frameAreaHeight = frameHeight;
 	float frameAreaWidth = frameWidth;
-
-	float drawAreaLeft = x - hotspotX;
-	float drawAreaTop = y - hotspotY;
-	float drawAreaWidth = frameWidth;
-	float drawAreaHeight = frameHeight;
 	if (useMask) {
 		//TODO MASKING
-		r.drawBitmapRegion(renderTarget.getBitmap(),frameAreaLeft,frameAreaTop,frameAreaWidth,frameAreaWidth,x,y);
+		r.drawBitmapRegion(renderTarget.getBitmap(),frameAreaLeft,frameAreaTop,frameAreaWidth,frameAreaHeight,x-hotspotX,y-hotspotY);
 	}
 	else {
-		r.drawBitmapRegion(renderTarget.getBitmap(),frameAreaLeft,frameAreaTop,frameAreaWidth,frameAreaWidth,x,y);
+		r.drawBitmapRegion(renderTarget.getBitmap(),frameAreaLeft,frameAreaTop,frameAreaWidth,frameAreaHeight,x-hotspotX,y-hotspotY);
 	}
 }
 

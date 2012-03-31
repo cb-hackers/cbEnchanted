@@ -73,7 +73,8 @@ SOURCES += \
 	../src/collisioncheck.cpp \
     ../src/cbparticleemitter.cpp \
     ../src/debug.cpp \
-    ../src/rendertarget.cpp
+    ../src/rendertarget.cpp \
+    ../src/any.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
