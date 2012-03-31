@@ -30,7 +30,7 @@ class ImageInterface {
 		void functionImagesOverlap(void);
 		void functionImagesCollide(void);
 
-		CBImage *getImage(int32_t id) { return cbImages[id]; }
+		CBImage *getImage(int32_t id) { CBImage *img = cbImages[id];assert(img);return img; }
 	private:
 		CBEnchanted *cb;
 		int32_t idCounter;

@@ -40,8 +40,6 @@ GfxInterface::GfxInterface() :
 	gameDrawn(false),
 	gameUpdated(false)
 {
-	ALLEGRO_COLOR  test = al_map_rgba_f(1,0,1,1);
-
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
 	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;
@@ -68,6 +66,7 @@ void GfxInterface::initializeGfx()
 	windowRenderTarget = new RenderTarget;
 	windowRenderTarget->create(400,300);
 	windowRenderTarget->clear(clearColor);
+	bufferMap[windowRenderTarget->getId()] = windowRenderTarget;
 
 	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
@@ -118,7 +117,6 @@ void GfxInterface::commandScreen(void) {
 	}
 
 	windowRenderTarget->create(width,height);
-
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -194,7 +192,7 @@ void GfxInterface::commandDrawScreen(void) {
 	al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),0,0,al_get_bitmap_width(windowRenderTarget->getBitmap()),al_get_bitmap_height(windowRenderTarget->getBitmap()),0,0,al_get_display_width(window),al_get_display_height(window),0);
 
 	al_flip_display();
-	bindRenderTarget = 0;
+	windowRenderTarget->setAsCurrent(true);
 	if (cls) {
 		windowRenderTarget->clear(clearColor);
 	}
@@ -221,20 +219,20 @@ void GfxInterface::commandUnlock(void) {
 }
 
 void GfxInterface::commandPutPixel(void) {
-	STUB;
-}
-
-void GfxInterface::commandPutPixel2(void) {
 	int32_t id = cb->popValue().getInt();
 	int32_t pixel = cb->popValue().getInt();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	if (id == 0) {
-		currentRenderTarget->putPixel(x,y,al_map_rgb((pixel&&0xFF0000)>>16,(pixel&&0xFF00)>>8,pixel&&0xFF));
+		currentRenderTarget->putPixel(x,y,al_map_rgb_f(((pixel&0xFF0000)>>16)/255.0f,((pixel&0xFF00)>>8)/255.0f,(pixel&0xFF)/255.0f));
 	}
 	else {
-		bufferMap[id]->putPixel(x,y,al_map_rgb((pixel&&0xFF0000)>>16,(pixel&&0xFF00)>>8,pixel&&0xFF));
+		bufferMap[id]->putPixel(x,y,al_map_rgb_f(((pixel&0xFF0000)>>16)/255.0f,((pixel&0xFF00)>>8)/255.0f,(pixel&0xFF)/255.0f));
 	}
+}
+
+void GfxInterface::commandPutPixel2(void) {
+	commandPutPixel();
 }
 
 void GfxInterface::commandCopyBox(void) {
@@ -325,18 +323,16 @@ void GfxInterface::functionSCREEN(void) {
 }
 
 void GfxInterface::functionImage(void) {
+	cb->popValue(); //???
 	int32_t id = cb->popValue().getInt();
-	RenderTarget *rt = cb->getImage(id)->getRenderTarget();
+	CBImage *img = cb->getImage(id);
+	RenderTarget *rt = img->getRenderTarget();
 
 	bufferMap[rt->getId()] = rt;
 	cb->pushValue(rt->getId());
 }
 
 void GfxInterface::functionGetPixel(void) {
-	STUB;
-}
-
-void GfxInterface::functionGetPixel2(void) {
 	int32_t id = cb->popValue().getInt();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
@@ -347,9 +343,14 @@ void GfxInterface::functionGetPixel2(void) {
 	else {
 		color = bufferMap[id]->getPixel(x,y);
 	}
+
 	int32_t pixel;
 	al_unmap_rgba(color,((unsigned char*)&pixel)+2,((unsigned char*)&pixel)+1,((unsigned char*)&pixel),((unsigned char*)&pixel)+3);
 	cb->pushValue(pixel);
+}
+
+void GfxInterface::functionGetPixel2(void) {
+	functionGetPixel();
 }
 
 void GfxInterface::functionGetRGB(void) {

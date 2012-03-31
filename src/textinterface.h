@@ -4,9 +4,10 @@
 class CBEnchanted;
 #include "precomp.h"
 #include "rendertarget.h"
+#include "isstring.h"
 
 struct AddText{
-	string txt;
+	ISString txt;
 	ALLEGRO_FONT *font;
 	int32_t txtX;
 	int32_t txtY;

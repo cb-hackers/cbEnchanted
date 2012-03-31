@@ -10,7 +10,7 @@ CBImage::CBImage() :
 	animBegin(0),
 	animLength(0)
 {
-	maskColor = al_map_rgb(0,0,0);
+	maskColor = al_map_rgb_f(0,0,0);
 }
 
 CBImage::~CBImage() {
@@ -55,5 +55,5 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
-	renderTarget.clear(al_map_rgb_f(1.0f,1.0f,1.0f));
+	renderTarget.clear(al_map_rgb_f(0,0,0));
 }

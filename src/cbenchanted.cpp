@@ -20,7 +20,7 @@ CBEnchanted::CBEnchanted() {
 }
 
 CBEnchanted::~CBEnchanted() {
-	delete[] code;
+    //delete[] code;
 }
 
 CBEnchanted *CBEnchanted::instance() {
@@ -71,7 +71,7 @@ bool CBEnchanted::init(string file) {
 	int32_t endPos; // End of the executable
 
 	int32_t nStrings; // Number of strings
-	int32_t size; // Length of CoolBasic data
+    uint32_t size; // Length of CoolBasic data
 
 	// Open file for reading
 	ifstream input(file.c_str(), ios::binary);
@@ -1091,7 +1091,7 @@ void CBEnchanted::commandSetGlobalVariable() {
 
 void CBEnchanted::commandSetArrayNumbers() {
 	int32_t byteArrayCount = popValue().getInt();
-	int32_t shortArrayCount = popValue().getInt();
+    int32_t shortArrayCount = popValue().getInt();
 	int32_t stringArrayCount = popValue().getInt();
 	int32_t floatArrayCount = popValue().getInt();
 	int32_t integerArrayCount = popValue().getInt();

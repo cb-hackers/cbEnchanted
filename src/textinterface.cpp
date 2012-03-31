@@ -103,10 +103,9 @@ void TextInterface::commandLocate(void) {
 }
 
 void TextInterface::commandAddText(void) {
-	string str = cb->popValue().toString().getRef();
 	AddText *newtxt = new AddText;
 	newtxt->font = currentFont;
-	newtxt->txt = str;
+	newtxt->txt = cb->popValue().toString();
 	newtxt->txtX = locationX;
 	newtxt->txtY = locationY;
 	newtxt->col = cb->getDrawColor();
@@ -147,7 +146,7 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 	vector<AddText*>::iterator i;
 	r.useWorldCoords(false);
 	for(i = texts.begin(); i != texts.end(); i++){
-		r.drawText((*i)->font,(*i)->txt,(*i)->txtX,(*i)->txtY,(*i)->col);
+		r.drawText((*i)->font,(*i)->txt.getRef(),(*i)->txtX,(*i)->txtY,(*i)->col);
 	}
 	//al_hold_bitmap_drawing(false);
 }
