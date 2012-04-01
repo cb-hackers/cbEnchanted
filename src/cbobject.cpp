@@ -231,11 +231,11 @@ void CBObject::turnObject(float speed){
 				return;
 			}
 			if(alphaBlend!=255){
-				target.drawBitmap(texture,posX,posY,angle+180,al_map_rgba(255,255,255,alphaBlend));
+				target.drawBitmap(texture,posX,posY,((angle+180.0) / 180.0) * PI,al_map_rgba(255,255,255,alphaBlend));
 				return;
 			}
 
-			target.drawBitmap(texture,posX,posY,angle+180);
+			target.drawBitmap(texture,posX,posY,((angle+180.0) / 180.0) * PI);
 		}
 	}
 }

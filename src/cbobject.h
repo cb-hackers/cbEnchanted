@@ -1,5 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
+
+#define PI 3.14159265
+
 #include "precomp.h"
 #include "rendertarget.h"
 #include "collision.h"
