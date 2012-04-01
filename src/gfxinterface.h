@@ -52,6 +52,7 @@ class GfxInterface {
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }
 		const ALLEGRO_COLOR &getDrawColor() { return drawColor; }
+		void setDrawColor(const ALLEGRO_COLOR &c){drawColor = c;}
 		inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
 		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}

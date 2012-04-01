@@ -24,13 +24,13 @@ void MathInterface::functionFloat(void) {
 }
 
 void MathInterface::functionRoundUp(void) {
-	float v = cb->popValue().getFloat();
-	cb->pushValue(ceil(v));
+	float v = cb->popValue().toFloat();
+	cb->pushValue((int32_t)ceil(v));
 }
 
 void MathInterface::functionRoundDown(void) {
-	float v = cb->popValue().getFloat();
-	cb->pushValue(floor(v));
+	float v = cb->popValue().toFloat();
+	cb->pushValue((int32_t)floor(v));
 }
 
 void MathInterface::functionAbs(void)

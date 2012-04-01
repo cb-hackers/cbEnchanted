@@ -88,6 +88,7 @@ bool CBEnchanted::init(string file) {
 	input.read((char *)(&nStrings), 4);
 
 	// Read and decrypt strings
+	initStrings(nStrings);
 	string key = "Mark Sibly is my idol!";
 	for (uint32_t i = 1; i <= nStrings; i++) {
 		uint32_t len;
@@ -178,7 +179,6 @@ void CBEnchanted::handlePushFuncptr(void) {
 
 	pos.push_back(cpos);
 
-	pushScope();
 	cpos = offsets[ptr];
 }
 
@@ -205,7 +205,7 @@ void CBEnchanted::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
-	setIntegerVariable(var, popValue().getInt());
+	setIntegerVariable(var, popValue().toInt());
 }
 
 /*
@@ -215,7 +215,7 @@ void CBEnchanted::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
-	setFloatVariable(var, popValue().getFloat());
+	setFloatVariable(var, popValue().toFloat());
 }
 
 /*
@@ -250,10 +250,14 @@ void CBEnchanted::handleCommand(void) {
 		case 69: commandEnd(); break;
 		case 70: popValue(); break;
 		case 77: commandSetVariable(); break;
+		case 78: commandArrayAssign(); break;
 		case 79: commandFunction(); break;
 		case 80: commandSetGlobalVariable(); break;
-		case 81: setTypeMemberField(); break;
+		case 81: commandSetTypeMemberField(); break;
 		case 95: commandType(); break;
+		case 97: commandSetArrayNumbers(); break;
+		case 98: commandSetGlobalVariableNumbers(); break;
+		case 99: commandSetVariableNumbers(); break;
 		case 125: commandRandomize(); break;
 		case 201: commandSetFont(); break;
 		case 202: commandDeleteFont(); break;
@@ -401,10 +405,6 @@ void CBEnchanted::handleCommand(void) {
 		case 797: commandMirrorObject(); break;
 		case 798: commandPixelPick(); break;
 		case 799: commandClearObjects(); break;
-		case 78: commandArrayAssign(); break;
-		case 97: commandSetArrayNumbers(); break;
-		case 98: commandSetGlobalVariableNumbers(); break;
-		case 99: commandSetVariableNumbers(); break;
 		default: FIXME("Unimplemented command: %i", command);
 	}
 }
@@ -613,24 +613,48 @@ void CBEnchanted::commandDim(void) {
 	cpos ++;
 	uint32_t n = *(uint32_t *)(code + cpos); // Number of dimensions
 	cpos += 4;
-
-	uint32_t size = 1;
-	Array a;
-	for (int32_t i = n - 1; i >= 0; --i) {
-		int32_t dim = popValue().getInt() + 1; // Size of dimension
-		a.dimensions[i] = dim;
-		size *= dim;
-	}
-
-
 	cpos += 1;
 	uint32_t type = *(uint32_t *)(code + cpos);
 	cpos += 4;
 	cpos += 1;
 	uint32_t arrId = *(uint32_t *)(code + cpos); // Array ID
 	cpos += 4;
-	a.init(size,type);
-	setArray(arrId, a);
+	uint32_t size = 1;
+
+	map<uint32_t, uint32_t> *dimensions = new map<uint32_t, uint32_t>();
+	for (int32_t i = n - 1; i >= 0; --i) {
+		int32_t dim = popValue().toInt() + 1; // Size of dimension
+		(*dimensions)[i] = dim;
+		size *= dim;
+	}
+
+	switch (type){
+		case 3: {
+			Array<int32_t> a;
+			a.init(size,dimensions);
+			setArray(arrId, a);
+			break; }
+		case 7: {
+			Array<uint16_t> a;
+			a.init(size,dimensions);
+			setArray(arrId, a);
+			break; }
+		case 8: {
+			Array<uint8_t> a;
+			a.init(size,dimensions);
+			setArray(arrId, a);
+			break; }
+		case 4: {
+			Array<float> a;
+			a.init(size,dimensions);
+			setArray(arrId, a);
+			break; }
+		case 6:{
+			Array<ISString> a;
+			a.init(size,dimensions);
+			setArray(arrId, a);
+			break; }
+	}
 }
 
 /*
@@ -645,29 +669,21 @@ void CBEnchanted::commandArrayAssign(void) {
 	uint32_t id = *(uint32_t *)(code + cpos);
 	cpos += 4;
 
-	uint32_t pos = 0;
-	for (int32_t i = n - 1; i >= 0; --i) {
-		if (i != n - 1) {
-			pos += popValue().getInt() * getArray(id).dimensions[i + 1];
-		}
-		else {
-			pos += popValue().getInt();
-		}
-	}
-	type = getArray(id).type;
+	uint32_t pos = popArrayDimensions1(id,n,type);
 	switch (type){
-		case 3:
-			getArray(id).setInt(pos,popValue().toInt());break;
+		case 1:
+			getIntegerArray(id).set(pos,popValue().toInt());break;
+		case 2:
+			getFloatArray(id).set(pos,popValue().toFloat());break;
 		case 4:
-			getArray(id).setFloat(pos,popValue().toFloat());break;
-			break;
-		case 7:
-			getArray(id).setShort(pos,popValue().toShort());break;
-		case 8:
-			getArray(id).setByte(pos,popValue().toByte());break;
+			getShortArray(id).set(pos,popValue().toShort());break;
+		case 5:
+			getByteArray(id).set(pos,popValue().toByte());break;
 
-		case 6:
-			getArray(id).setString(pos,popValue().toString());break;
+		case 3:
+			getStringArray(id).set(pos,popValue().toString());break;
+		default:
+			FIXME("commandArrayAssing: Undefined array type %i",type);
 	}
 }
 
@@ -716,30 +732,25 @@ void CBEnchanted::handlePushSomething(void) {
 		{
 			uint32_t id = *(uint32_t *)(code + cpos);
 			cpos += 4;
-			uint32_t pos = 0;
+
 			int32_t dimensions = popValue().getInt();
-			for (int32_t i = dimensions - 1; i >= 0; --i) {
-				if (i != dimensions - 1) {
-					pos += popValue().getInt() * getArray(id).dimensions[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
-			}
-			type = getArray(id).type;
+			uint32_t pos = popArrayDimensions2(id,dimensions,type);
+
 			switch (type){
 				case 3:
-					pushValue(getArray(id).getInt(pos));break;
+					pushValue(getIntegerArray(id).get(pos));break;
 				case 4:
-					pushValue(getArray(id).getFloat(pos));break;
+					pushValue(getFloatArray(id).get(pos));break;
 					break;
 				case 7:
-					pushValue((int32_t)getArray(id).getShort(pos));break;
+					pushValue((int32_t)getShortArray(id).get(pos));break;
 				case 8:
-					pushValue((int32_t)getArray(id).getByte(pos));break;
+					pushValue((int32_t)getByteArray(id).get(pos));break;
 
 				case 6:
-					pushValue(getArray(id).getString(pos));break;
+					pushValue(getStringArray(id).get(pos));break;
+				default:
+					FIXME("handlePushSomething: Undefined array type %i",type);
 			}
 			break;
 		}
@@ -835,14 +846,14 @@ void CBEnchanted::handleMathOperation(void) {
 			Any r = popValue();
 			Any l = popValue();
 
-			pushValue(l >> r);
+			pushValue(shr(l ,r));
 			break;
 		}
 		case 11: {
 			Any r = popValue();
 			Any l = popValue();
 
-			pushValue(l >> r);
+			pushValue(sar(l ,r));
 			break;
 		}
 		case 12: {
@@ -1039,6 +1050,132 @@ void CBEnchanted::functionConvertToType(void) {
 
 }
 
+uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t type)
+{
+	uint32_t pos = 0;
+	switch (type){
+		case 1: {
+			Array<int32_t> &a = getIntegerArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 4: {
+			Array<uint16_t> &a = getShortArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 5: {
+			Array<uint8_t> &a = getByteArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 2: {
+			Array<float> &a = getFloatArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 3:{
+			Array<ISString> &a = getStringArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+	}
+	return pos;
+}
+
+uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n,int32_t type)
+{
+	uint32_t pos = 0;
+	switch (type){
+		case 3: {
+			Array<int32_t> &a = getIntegerArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 7: {
+			Array<uint16_t> &a = getShortArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 8: {
+			Array<uint8_t> &a = getByteArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 4: {
+			Array<float> &a = getFloatArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+		case 6:{
+			Array<ISString> &a = getStringArray(arrayId);
+			for (int32_t i = n - 1; i >= 0; --i) {
+				if (i != n - 1) {
+					pos += popValue().getInt() * (*a.dimensions)[i + 1];
+				}
+				else {
+					pos += popValue().getInt();
+				}
+			}
+			break; }
+	}
+	return pos;
+}
+
 void CBEnchanted::commandSetVariable(void) {
 	int32_t type = popValue().getInt();
 
@@ -1090,19 +1227,23 @@ void CBEnchanted::commandSetGlobalVariable() {
 }
 
 void CBEnchanted::commandSetArrayNumbers() {
-	int32_t byteArrayCount = popValue().getInt();
-    int32_t shortArrayCount = popValue().getInt();
-	int32_t stringArrayCount = popValue().getInt();
-	int32_t floatArrayCount = popValue().getInt();
-	int32_t integerArrayCount = popValue().getInt();
-}
-
-void CBEnchanted::commandSetGlobalVariableNumbers() {
-	int32_t byteCount = popValue().getInt();
 	int32_t shortCount = popValue().getInt();
+	int32_t byteCount = popValue().getInt();
 	int32_t stringCount = popValue().getInt();
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
+	initArrays(byteCount,shortCount,stringCount,floatCount,integerCount);
+}
+
+void CBEnchanted::commandSetGlobalVariableNumbers() {
+
+
+	int32_t shortCount = popValue().getInt();
+	int32_t byteCount = popValue().getInt();
+	int32_t stringCount = popValue().getInt();
+	int32_t floatCount = popValue().getInt();
+	int32_t integerCount = popValue().getInt();
+	initGlobalVars(byteCount,shortCount,stringCount,floatCount,integerCount);
 }
 
 void CBEnchanted::commandType(void)
@@ -1112,7 +1253,7 @@ void CBEnchanted::commandType(void)
 	//cpos += 5;
 }
 
-void CBEnchanted::setTypeMemberField()
+void CBEnchanted::commandSetTypeMemberField()
 {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
@@ -1127,10 +1268,11 @@ void CBEnchanted::setTypeMemberField()
 
 void CBEnchanted::commandSetVariableNumbers() {
 	//TODO: Check if right order
-	int32_t byteCount = popValue().getInt();
+	int32_t typePtrCount = popValue().getInt();
 	int32_t shortCount = popValue().getInt();
+	int32_t byteCount = popValue().getInt();
 	int32_t stringCount = popValue().getInt();
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
-	int32_t typePtrCount = popValue().getInt();
+	pushScope(byteCount,shortCount,stringCount,floatCount,integerCount,typePtrCount);
 }

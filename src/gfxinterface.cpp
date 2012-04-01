@@ -224,10 +224,10 @@ void GfxInterface::commandPutPixel(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	if (id == 0) {
-		currentRenderTarget->putPixel(x,y,al_map_rgb_f(((pixel&0xFF0000)>>16)/255.0f,((pixel&0xFF00)>>8)/255.0f,(pixel&0xFF)/255.0f));
+		currentRenderTarget->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
 	}
 	else {
-		bufferMap[id]->putPixel(x,y,al_map_rgb_f(((pixel&0xFF0000)>>16)/255.0f,((pixel&0xFF00)>>8)/255.0f,(pixel&0xFF)/255.0f));
+		bufferMap[id]->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
 	}
 }
 

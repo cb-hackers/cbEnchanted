@@ -38,11 +38,7 @@ Any operator - (Any &l) {
 }
 
 Any operator % (Any &l, Any &r) {
-	if (l.type() == Any::Int) {
-		if (r.type() == Any::Int) {
-			return l.getInt() % r.getInt();
-		}
-	}
+	return l.toInt() % r.toInt();
 	FIXME("Unsupported operation %s % %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
@@ -146,16 +142,31 @@ Any operator / (Any &l, Any &r) {
 Any operator << (Any &l, Any &r) {
 	if (l.type() == Any::Int) {
 		if (r.type() == Any::Int) {
-			return l.getInt() << r.getInt();
+			int32_t a = l.getInt();
+			int32_t b = r.getInt();
+			uint32_t ret = *reinterpret_cast<uint32_t*>( &a ) << *reinterpret_cast<uint32_t*>( &b );
+			return *reinterpret_cast<int32_t*>( &ret );
 		}
 	}
 	FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
-Any operator >> (Any &l, Any &r) {
+Any sar (Any &l, Any &r) {
 	if (l.type() == Any::Int) {
 		if (r.type() == Any::Int) {
-			return l.getInt() >> r.getInt();
+			return l.getInt() >> l.getInt();
+		}
+	}
+	FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
+}
+
+Any shr (Any &l, Any &r) {
+	if (l.type() == Any::Int) {
+		if (r.type() == Any::Int) {
+			int32_t a = l.getInt();
+			int32_t b = r.getInt();
+			uint32_t ret = *reinterpret_cast<uint32_t*>( &a ) >> *reinterpret_cast<uint32_t*>( &b );
+			return *reinterpret_cast<int32_t*>( &ret );
 		}
 	}
 	FIXME("Unsupported operation %s >> %s", l.typeInfo().name(), r.typeInfo().name());

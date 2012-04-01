@@ -94,7 +94,7 @@ class CBEnchanted :
 		void commandSetArrayNumbers(void); //97
 		void commandSetGlobalVariableNumbers(void); //98
 		void commandType(void);
-		void setTypeMemberField(void);
+		void commandSetTypeMemberField(void);
 		void commandSetVariableNumbers(void);
 		void commandGoto(void);
 		void commandGosub(void);
@@ -116,6 +116,8 @@ class CBEnchanted :
 		void functionConvertToInteger(void);
 		void functionConvertToType(void);
 
+		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
+		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 
 };

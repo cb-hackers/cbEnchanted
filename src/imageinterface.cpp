@@ -61,11 +61,19 @@ void ImageInterface::commandRotateImage(void) {
 }
 
 void ImageInterface::commandPickImageColor(void) {
-	STUB;
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+	int32_t imgId = cb->popValue().toInt();
+	CBImage *image = getImage(imgId);
+	cb->setDrawColor(image->getRenderTarget()->getPixel(x,y));
 }
 
 void ImageInterface::commandPickImageColor2(void) {
-	STUB;
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+	int32_t imgId = cb->popValue().toInt();
+	CBImage *image = getImage(imgId);
+	cb->setDrawColor(image->getRenderTarget()->getPixel(x,y));
 }
 
 void ImageInterface::commandHotSpot(void) {
