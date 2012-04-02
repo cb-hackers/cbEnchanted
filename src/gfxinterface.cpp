@@ -236,7 +236,17 @@ void GfxInterface::commandPutPixel2(void) {
 }
 
 void GfxInterface::commandCopyBox(void) {
-	STUB;
+	int32_t destId = cb->popValue().toInt();
+	int32_t srcId = cb->popValue().toInt();
+	int32_t destY = cb->popValue().toInt();
+	int32_t destX = cb->popValue().toInt();
+	int32_t height = cb->popValue().toInt();
+	int32_t width = cb->popValue().toInt();
+	int32_t sourceY = cb->popValue().toInt();
+	int32_t sourceX = cb->popValue().toInt();
+	RenderTarget *dest = getBuffer(destId);
+	RenderTarget *source = getBuffer(srcId);
+	dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
 }
 
 void GfxInterface::commandCls(void) {

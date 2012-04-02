@@ -60,6 +60,7 @@ class GfxInterface {
 		void setCurrentRenderTarget(RenderTarget *t);
 
 		void initializeGfx();
+		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
 	private:
 		void registerWindow();
 		void unregisterWindow();

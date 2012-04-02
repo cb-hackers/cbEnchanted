@@ -15,6 +15,7 @@ Any operator ! (Any &l) {
 		return !l.getTypePtr();
 	}
 	FIXME("Unsupported operation !%s", l.typeInfo().name());
+	return 0;
 }
 
 Any operator + (Any &l) {
@@ -25,6 +26,7 @@ Any operator + (Any &l) {
 		return +l.getInt();
 	}
 	FIXME("Unsupported operation +%s", l.typeInfo().name());
+	return 0;
 }
 
 Any operator - (Any &l) {
@@ -35,6 +37,7 @@ Any operator - (Any &l) {
 		return -l.getInt();
 	}
 	FIXME("Unsupported operation -%s", l.typeInfo().name());
+	return 0;
 }
 
 Any operator % (Any &l, Any &r) {
@@ -60,6 +63,7 @@ Any operator * (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s * %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any operator + (Any &l, Any &r) {
@@ -97,6 +101,7 @@ Any operator + (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s + %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any operator - (Any &l, Any &r) {
@@ -117,6 +122,7 @@ Any operator - (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s - %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any operator / (Any &l, Any &r) {
@@ -137,6 +143,7 @@ Any operator / (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s / %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any operator << (Any &l, Any &r) {
@@ -149,6 +156,7 @@ Any operator << (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any sar (Any &l, Any &r) {
@@ -158,6 +166,7 @@ Any sar (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any shr (Any &l, Any &r) {
@@ -170,6 +179,7 @@ Any shr (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s >> %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any operator ^ (Any &l, Any &r) {
@@ -190,6 +200,7 @@ Any operator ^ (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s ^ %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator != (Any &l, Any &r) {
@@ -220,6 +231,7 @@ int32_t operator != (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s != %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator && (Any &l, Any &r) {
@@ -245,6 +257,7 @@ int32_t operator && (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s && %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator <= (Any &l, Any &r) {
@@ -265,6 +278,7 @@ int32_t operator <= (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s <= %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator == (Any &l, Any &r) {
@@ -327,6 +341,7 @@ int32_t operator == (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s == %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator >= (Any &l, Any &r) {
@@ -347,6 +362,7 @@ int32_t operator >= (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator || (Any &l, Any &r) {
@@ -372,6 +388,7 @@ int32_t operator || (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s || %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator > (Any &l, Any &r) {
@@ -392,6 +409,7 @@ int32_t operator > (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 int32_t operator < (Any &l, Any &r) {
@@ -412,5 +430,6 @@ int32_t operator < (Any &l, Any &r) {
 		}
 	}
 	FIXME("Unsupported operation %s >= %s", l.typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 

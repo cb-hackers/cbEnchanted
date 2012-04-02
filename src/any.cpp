@@ -28,7 +28,7 @@ Any::Any(const Any &a) : typeId(a.typeId) {
 		if ( this->dString ) { this->dString->increaseRefCount(); }
 		return;
 	}
-	dPtr = a.dPtr;
+	this->dPtr = a.dPtr;
 }
 
 Any::~Any() {

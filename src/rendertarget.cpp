@@ -119,6 +119,16 @@ void RenderTarget::putPixel(int32_t x, int32_t y, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
 	al_put_pixel(x,y,color);
 }
+
+void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t tx, int32_t ty) {
+	setAsCurrent();
+	int32_t a,b,c;
+	al_get_blender(&a,&b,&c);
+	al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+	al_draw_bitmap_region(src->getBitmap(),sx,sy,w,h,tx,tx,0);
+	al_set_blender(a,b,c);
+}
+
 ALLEGRO_COLOR RenderTarget::getPixel(int32_t x, int32_t y) {
 	return al_get_pixel(bitmap,x,y);
 }
