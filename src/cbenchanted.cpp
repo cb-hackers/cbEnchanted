@@ -70,7 +70,7 @@ bool CBEnchanted::init(string file) {
 	int32_t startPos; // Beginning of the CoolBasic data
 	int32_t endPos; // End of the executable
 
-	int32_t nStrings; // Number of strings
+	uint32_t nStrings; // Number of strings
     uint32_t size; // Length of CoolBasic data
 
 	// Open file for reading
