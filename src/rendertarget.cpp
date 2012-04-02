@@ -71,7 +71,9 @@ bool RenderTarget::load(const string &path) {
 }
 
 void RenderTarget::setAsCurrent(bool force) {
-	if (bindRenderTarget != this || force) {al_set_target_bitmap(bitmap);bindRenderTarget = this;}
+	if (bindRenderTarget != this || force) {
+		al_set_target_bitmap(bitmap);
+		bindRenderTarget = this;}
 }
 
 void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
@@ -96,6 +98,7 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLE
 }
 
 void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
+	if (w < 0 || h < 0) return;
 	setAsCurrent();
 	if (fill) {
 		al_draw_filled_ellipse(x,y,w*0.5f,h*0.5f,color);
@@ -125,7 +128,7 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 	int32_t a,b,c;
 	al_get_blender(&a,&b,&c);
 	al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-	al_draw_bitmap_region(src->getBitmap(),sx,sy,w,h,tx,tx,0);
+	al_draw_bitmap_region(src->getBitmap(),sx,sy,w,h,tx,ty,0);
 	al_set_blender(a,b,c);
 }
 

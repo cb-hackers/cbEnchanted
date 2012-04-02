@@ -19,7 +19,7 @@ class VariableCollection {
 		}
 		VariableCollection &operator =(const VariableCollection<T> &o) {
 			if (this->variables) delete[] this->variables;
-			this->size = vc.size;
+			this->size = o.size;
 			if (size == 0) {this->variables = 0;return;}
 			this->variables = new T[size];
 			memcpy(this->variables,vc.variables,this->size*sizeof(T));
