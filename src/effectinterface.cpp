@@ -6,8 +6,8 @@
 #include "cbparticleemitter.h"
 
 
-EffectInterface::EffectInterface():
-	cb(static_cast <CBEnchanted *> (this)){
+EffectInterface::EffectInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 EffectInterface::~EffectInterface() {

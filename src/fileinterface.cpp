@@ -2,8 +2,8 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 
-FileInterface::FileInterface() : cb(static_cast <CBEnchanted *> (this)) {
-
+FileInterface::FileInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 FileInterface::~FileInterface() {

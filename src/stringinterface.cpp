@@ -2,8 +2,8 @@
 #include "cbenchanted.h"
 #include "stringinterface.h"
 
-StringInterface::StringInterface() : cb(static_cast <CBEnchanted *> (this)) {
-
+StringInterface::StringInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 void StringInterface::functionStr(void) {

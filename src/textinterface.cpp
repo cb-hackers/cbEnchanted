@@ -19,8 +19,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 
-TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)), locationX(0), locationY(0) {
-
+TextInterface::TextInterface() : locationX(0), locationY(0) {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 TextInterface::~TextInterface() {

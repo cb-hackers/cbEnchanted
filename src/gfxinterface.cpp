@@ -31,7 +31,6 @@ const char *screenGammaFragmentShaderCode =
 
 
 GfxInterface::GfxInterface() :
-	cb(static_cast <CBEnchanted *> (this)),
 	windowTitle(""),
 	window(),
 	drawDrawCommandToWorld(false),
@@ -40,6 +39,7 @@ GfxInterface::GfxInterface() :
 	gameDrawn(false),
 	gameUpdated(false)
 {
+	cb = static_cast <CBEnchanted *> (this);
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
 	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;

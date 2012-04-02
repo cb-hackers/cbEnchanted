@@ -5,8 +5,8 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
-SoundInterface::SoundInterface() : cb(static_cast <CBEnchanted *> (this)),idCounter(0) {
-
+SoundInterface::SoundInterface() : idCounter(0) {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 SoundInterface::~SoundInterface() {
@@ -36,7 +36,6 @@ void SoundInterface::commandSetSound(void) {
 
 void SoundInterface::commandStopSound(void) {
 	int32_t id = cb->popValue().getInt();
-
 }
 
 void SoundInterface::commandDeleteSound(void) {
@@ -78,7 +77,7 @@ void SoundInterface::updateAudio(void) {
 
 //Deletes all sounds.
 void SoundInterface::cleanupSoundInterface() {
-/*	for (map<int32_t, CBSound*>::iterator i = cbSounds.begin(); i != cbSounds.end(); i++) {
+	/*for (map<int32_t, CBSound*>::iterator i = cbSounds.begin(); i != cbSounds.end(); i++) {
 		delete i->second;
 	}*/
 }
