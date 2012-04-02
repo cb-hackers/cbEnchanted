@@ -141,17 +141,17 @@ void GfxInterface::commandCircle(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
 	float r = cb->popValue().toFloat()*0.5;
-	float cy = cb->popValue().toFloat() + r;
-	float cx = cb->popValue().toFloat() + r;
+	float cy = cb->popValue().toFloat() + r+0.5f;
+	float cx = cb->popValue().toFloat() + r+0.5f;
 	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
 }
 
 void GfxInterface::commandLine(void){
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
-	float y2 = cb->popValue().toFloat();
-	float x2 = cb->popValue().toFloat();
-	float y1 = cb->popValue().toFloat();
-	float x1 = cb->popValue().toFloat();
+	float y2 = cb->popValue().toFloat()+0.5f;
+	float x2 = cb->popValue().toFloat()+0.5f;
+	float y1 = cb->popValue().toFloat()+0.5f;
+	float x1 = cb->popValue().toFloat()+0.5f;
 
 	currentRenderTarget->drawLine(x1,y1,x2,y2,drawColor);
 }
@@ -245,8 +245,8 @@ void GfxInterface::commandCls(void) {
 
 void GfxInterface::commandDot(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
-	float y = cb->popValue().toFloat();
-	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat()+0.5f;
+	float x = cb->popValue().toFloat()+0.5f;
 	currentRenderTarget->drawDot(x,y,drawColor);
 }
 
@@ -255,8 +255,8 @@ void GfxInterface::commandBox(void) {
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
-	float y = cb->popValue().toFloat();
-	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat()+0.5f;
+	float x = cb->popValue().toFloat()+0.5f;
 	currentRenderTarget->drawBox(x,y,w,h,fill,drawColor);
 }
 
@@ -265,8 +265,8 @@ void GfxInterface::commandEllipse(void) {
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
-	float y = cb->popValue().toFloat();
-	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat()+0.5f;
+	float x = cb->popValue().toFloat()+0.5f;
 	currentRenderTarget->drawEllipse(x,y,w,h,fill,drawColor);
 }
 
