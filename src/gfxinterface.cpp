@@ -87,13 +87,13 @@ void GfxInterface::commandScreen(void) {
 	switch (state) {
 		case 0: //cbFullscreen
 			flags = ALLEGRO_OPENGL | ALLEGRO_FULLSCREEN;
-			break;
+		break;
 		case 1: // default
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED;
-			break;
+		break;
 		case 2: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
-			break;
+		break;
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
 		if (state != 2) {
@@ -173,9 +173,7 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
-				break;
-			default:
-				break;
+			break;
 		}
 	}
 	cb->updateInputs();

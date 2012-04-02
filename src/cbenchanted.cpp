@@ -20,7 +20,7 @@ CBEnchanted::CBEnchanted() {
 }
 
 CBEnchanted::~CBEnchanted() {
-    //delete[] code;
+	//delete[] code;
 }
 
 CBEnchanted *CBEnchanted::instance() {
@@ -71,13 +71,13 @@ bool CBEnchanted::init(string file) {
 	int32_t endPos; // End of the executable
 
 	uint32_t nStrings; // Number of strings
-    uint32_t size; // Length of CoolBasic data
+	uint32_t size; // Length of CoolBasic data
 
 	// Open file for reading
 	ifstream input(file.c_str(), ios::binary);
 
 	if (!input.is_open()) {
-		FIXME("Can't open exe! %s",file.c_str());
+		FIXME("Can't open exe! %s", file.c_str());
 		return false;
 	}
 
@@ -631,29 +631,34 @@ void CBEnchanted::commandDim(void) {
 	switch (type){
 		case 3: {
 			Array<int32_t> a;
-			a.init(size,dimensions);
+			a.init(size, dimensions);
 			setArray(arrId, a);
-			break; }
+			break;
+		}
 		case 7: {
 			Array<uint16_t> a;
-			a.init(size,dimensions);
+			a.init(size, dimensions);
 			setArray(arrId, a);
-			break; }
+			break;
+		}
 		case 8: {
 			Array<uint8_t> a;
-			a.init(size,dimensions);
+			a.init(size, dimensions);
 			setArray(arrId, a);
-			break; }
+			break;
+		}
 		case 4: {
 			Array<float> a;
-			a.init(size,dimensions);
+			a.init(size, dimensions);
 			setArray(arrId, a);
-			break; }
-		case 6:{
+			break;
+		}
+		case 6: {
 			Array<ISString> a;
-			a.init(size,dimensions);
+			a.init(size, dimensions);
 			setArray(arrId, a);
-			break; }
+			break;
+		}
 	}
 }
 
@@ -670,20 +675,13 @@ void CBEnchanted::commandArrayAssign(void) {
 	cpos += 4;
 
 	uint32_t pos = popArrayDimensions1(id,n,type);
-	switch (type){
-		case 1:
-			getIntegerArray(id).set(pos,popValue().toInt());break;
-		case 2:
-			getFloatArray(id).set(pos,popValue().toFloat());break;
-		case 4:
-			getShortArray(id).set(pos,popValue().toShort());break;
-		case 5:
-			getByteArray(id).set(pos,popValue().toByte());break;
-
-		case 3:
-			getStringArray(id).set(pos,popValue().toString());break;
-		default:
-			FIXME("commandArrayAssing: Undefined array type %i",type);
+	switch (type) {
+		case 1: getIntegerArray(id).set(pos, popValue().toInt()); break;
+		case 2: getFloatArray(id).set(pos, popValue().toFloat()); break;
+		case 4: getShortArray(id).set(pos, popValue().toShort()); break;
+		case 5: getByteArray(id).set(pos, popValue().toByte()); break;
+		case 3: getStringArray(id).set(pos, popValue().toString()); break;
+		default: FIXME("commandArrayAssing: Undefined array type %i", type);
 	}
 }
 
@@ -706,7 +704,12 @@ void CBEnchanted::handlePushVariable(void) {
 		case 8: pushValue(int32_t(getByteVariable(var))); break;
 		case 9: pushValue(int32_t(getGlobalShortVariable(var))); break;
 		case 10: pushValue(int32_t(getGlobalByteVariable(var))); break;
-		case 11: if (var == 0) {pushValue(reinterpret_cast<void*>(0));break;}pushValue(getTypePointerVariable(var)); break;
+		case 11:
+			if (var == 0) {
+				pushValue(reinterpret_cast<void*>(0));
+				break;
+			}
+			pushValue(getTypePointerVariable(var)); break;
 		default: FIXME("Unimplemented variable push: %i", type);
 	}
 }
@@ -734,14 +737,14 @@ void CBEnchanted::handlePushSomething(void) {
 			cpos += 4;
 
 			int32_t dimensions = popValue().getInt();
-			uint32_t pos = popArrayDimensions2(id,dimensions,type);
+			uint32_t pos = popArrayDimensions2(id, dimensions, type);
 
 			switch (type){
 				case 3:
 					pushValue(getIntegerArray(id).get(pos));break;
 				case 4:
 					pushValue(getFloatArray(id).get(pos));break;
-					break;
+				break;
 				case 7:
 					pushValue((int32_t)getShortArray(id).get(pos));break;
 				case 8:
@@ -750,7 +753,7 @@ void CBEnchanted::handlePushSomething(void) {
 				case 6:
 					pushValue(getStringArray(id).get(pos));break;
 				default:
-					FIXME("handlePushSomething: Undefined array type %i",type);
+					FIXME("handlePushSomething: Undefined array type %i", type);
 			}
 			break;
 		}
@@ -846,14 +849,14 @@ void CBEnchanted::handleMathOperation(void) {
 			Any r = popValue();
 			Any l = popValue();
 
-			pushValue(shr(l ,r));
+			pushValue(shr(l, r));
 			break;
 		}
 		case 11: {
 			Any r = popValue();
 			Any l = popValue();
 
-			pushValue(sar(l ,r));
+			pushValue(sar(l, r));
 			break;
 		}
 		case 12: {
@@ -960,15 +963,15 @@ void CBEnchanted::handleIncGlobalVar(void) {
 
 void CBEnchanted::handlePushTypeMemberVariable()
 {
-	void * typePtr = getTypePointerVariable(*((int32_t*)(code+cpos)));
+	void * typePtr = getTypePointerVariable(*((int32_t*)(code + cpos)));
 	cpos += 4;
 	int32_t varType = popValue().getInt();
-	int32_t field = (popValue().getInt()-12)/4;
+	int32_t field = (popValue().getInt() - 12) / 4;
 	switch (varType) {
-		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr,field));break;
-		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr,field));break;
-		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr,field));break;
-		default: FIXME("handlePushTypeMemberVariable:Unhandled varType %i",varType);break;
+		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr, field)); break;
+		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr, field)); break;
+		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr, field)); break;
+		default: FIXME("handlePushTypeMemberVariable:Unhandled varType %i", varType); break;
 	}
 }
 
@@ -976,15 +979,15 @@ void CBEnchanted::handlePushTypeMemberVariable()
  * CBEnchanted::commandGoto - Jump to different location
  */
 void CBEnchanted::commandGoto(void) {
-	cpos ++;
+	cpos++;
 	cpos = offsets[*(uint32_t *)(code + cpos)];
 }
 
 void CBEnchanted::commandDelete(void) {
-	int32_t memberId = *(int32_t*)(code+cpos-9);
+	int32_t memberId = *(int32_t*)(code + cpos - 9);
 	void *typeMember = popValue().getTypePtr();
 
-	setTypePointerVariable(memberId,Type::getMembersType(typeMember)->deleteMember(typeMember));
+	setTypePointerVariable(memberId, Type::getMembersType(typeMember)->deleteMember(typeMember));
 }
 
 void CBEnchanted::commandInsert(void) {
@@ -1050,10 +1053,10 @@ void CBEnchanted::functionConvertToType(void) {
 
 }
 
-uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t type)
+uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
 {
 	uint32_t pos = 0;
-	switch (type){
+	switch (type) {
 		case 1: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
@@ -1064,7 +1067,8 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t typ
 					pos += popValue().getInt();
 				}
 			}
-			break; }
+			break;
+		}
 		case 4: {
 			Array<uint16_t> &a = getShortArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
@@ -1075,7 +1079,8 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t typ
 					pos += popValue().getInt();
 				}
 			}
-			break; }
+			break;
+		}
 		case 5: {
 			Array<uint8_t> &a = getByteArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
@@ -1086,7 +1091,8 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t typ
 					pos += popValue().getInt();
 				}
 			}
-			break; }
+			break;
+		}
 		case 2: {
 			Array<float> &a = getFloatArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
@@ -1097,8 +1103,9 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t typ
 					pos += popValue().getInt();
 				}
 			}
-			break; }
-		case 3:{
+			break;
+		}
+		case 3: {
 			Array<ISString> &a = getStringArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
 				if (i != n - 1) {
@@ -1108,15 +1115,15 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n,int32_t typ
 					pos += popValue().getInt();
 				}
 			}
-			break; }
+			break;
+		}
 	}
 	return pos;
 }
 
-uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n,int32_t type)
-{
+uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type) {
 	uint32_t pos = 0;
-	switch (type){
+	switch (type) {
 		case 3: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
@@ -1161,7 +1168,7 @@ uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n,int32_t typ
 				}
 			}
 			break; }
-		case 6:{
+		case 6: {
 			Array<ISString> &a = getStringArray(arrayId);
 			for (int32_t i = n - 1; i >= 0; --i) {
 				if (i != n - 1) {
@@ -1232,24 +1239,22 @@ void CBEnchanted::commandSetArrayNumbers() {
 	int32_t stringCount = popValue().getInt();
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
-	initArrays(byteCount,shortCount,stringCount,floatCount,integerCount);
+	initArrays(byteCount, shortCount, stringCount, floatCount, integerCount);
 }
 
 void CBEnchanted::commandSetGlobalVariableNumbers() {
-
-
 	int32_t shortCount = popValue().getInt();
 	int32_t byteCount = popValue().getInt();
 	int32_t stringCount = popValue().getInt();
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
-	initGlobalVars(byteCount,shortCount,stringCount,floatCount,integerCount);
+	initGlobalVars(byteCount, shortCount, stringCount, floatCount, integerCount);
 }
 
 void CBEnchanted::commandType(void)
 {
 	int32_t typeMemberSize = popValue().getInt();
-	addType((typeMemberSize-4)/4);
+	addType((typeMemberSize - 4) / 4);
 	//cpos += 5;
 }
 
@@ -1257,12 +1262,19 @@ void CBEnchanted::commandSetTypeMemberField()
 {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
-	int32_t field = (popValue().getInt()-12)/4;
+	int32_t field = (popValue().getInt() - 12) / 4;
 	switch (varType) {
-		case 1: Type::getMembersType(typePtr)->setField(typePtr,field,popValue().toInt());break;
-		case 2: Type::getMembersType(typePtr)->setField(typePtr,field,popValue().toFloat());break;
-		case 3: Type::getMembersType(typePtr)->setField(typePtr,field,popValue().toString());break;
-		default: FIXME("setTypeMemberField:Unhandled varType %i",varType);break;
+		case 1:
+			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toInt());
+		break;
+		case 2:
+			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toFloat());
+		break;
+		case 3:
+			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toString());
+		break;
+		default:
+			FIXME("setTypeMemberField:Unhandled varType %i", varType);
 	}
 }
 
@@ -1274,5 +1286,5 @@ void CBEnchanted::commandSetVariableNumbers() {
 	int32_t stringCount = popValue().getInt();
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
-	pushScope(byteCount,shortCount,stringCount,floatCount,integerCount,typePtrCount);
+	pushScope(byteCount, shortCount, stringCount, floatCount, integerCount, typePtrCount);
 }

@@ -31,7 +31,7 @@ CBObject::CBObject(bool floor):
 	nextObj(0),
 	playing(false)
 {
-	maskColor = al_map_rgba_f(0,0,0,1);
+	maskColor = al_map_rgba_f(0, 0 , 0, 1);
 }
 
 CBObject::~CBObject() {
@@ -81,7 +81,7 @@ bool CBObject::loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint
 	}
 	if(framecount > (renderTarget->width()/fw)*(renderTarget->height()/fh)){
 		FIXME("Too much frames!")
-		return false;
+				return false;
 	}
 	frameWidth = fw;
 	frameHeight = fh;
@@ -196,12 +196,12 @@ void CBObject::turnObject(float speed){
 
 }
 
- void CBObject::render(RenderTarget &target){
+void CBObject::render(RenderTarget &target){
 	float camX = CBEnchanted::instance()->getCameraX();
 	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
 		if (floor) {
-				//Drawing floor objects
+			//Drawing floor objects
 
 			float snappedx=floorf(camX/renderTarget->width());
 			float snappedy=floorf(camY/renderTarget->height());
@@ -211,12 +211,12 @@ void CBObject::turnObject(float speed){
 
 			float xx=ekax;
 			while (xx<target.width()) {
-			float yy=ekay;
-			while (yy<target.height()) {
-				target.drawBitmap(texture,xx,yy);
-				yy=yy+renderTarget->height();
-			}
-			xx=xx+renderTarget->width();
+				float yy=ekay;
+				while (yy<target.height()) {
+					target.drawBitmap(texture,xx,yy);
+					yy=yy+renderTarget->height();
+				}
+				xx=xx+renderTarget->width();
 			}
 		} else {
 			if(maxFrames!=0){

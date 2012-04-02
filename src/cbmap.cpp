@@ -1,7 +1,7 @@
-
 #include "cbmap.h"
 #include "cbenchanted.h"
 #include "precomp.h"
+
 CBMap::CBMap():CBObject(){
 	layerShowing[0] = 1;
 	layerShowing[1] = 1;
@@ -64,8 +64,9 @@ bool CBMap::loadMap(string file){
 
 		mapStream.read((char*)&tileCount, 4);
 
-		if(tileCount < 0)
-				return false;
+		if (tileCount < 0) {
+			return false;
+		}
 
 		animLenght = new int32_t [tileCount];
 		animSlowness = new int32_t [tileCount];
@@ -99,7 +100,7 @@ bool CBMap::loadMap(string file){
 		   checkNum[1] != 44   ||
 		   checkNum[2] != 11   ||
 		   checkNum[3] != 165)
-				FIXME("Map layer1: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
+			FIXME("Map layer1: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		//Collision layer
 		mapStream.read((char*)layers[2], 4*mapHeight*mapWidth);
@@ -110,7 +111,7 @@ bool CBMap::loadMap(string file){
 		   checkNum[1] != 43   ||
 		   checkNum[2] != 10   ||
 		   checkNum[3] != 164)
-				FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
+			FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		mapStream.read((char*)layers[1], 4*mapHeight*mapWidth);
 
@@ -120,7 +121,7 @@ bool CBMap::loadMap(string file){
 		   checkNum[1] != 42   &&
 		   checkNum[2] != 9    &&
 		   checkNum[3] != 163)
-				FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
+			FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		mapStream.read((char*)layers[3], 4*mapHeight*mapWidth);
 
@@ -130,7 +131,7 @@ bool CBMap::loadMap(string file){
 		   checkNum[1] != 41   ||
 		   checkNum[2] != 8    ||
 		   checkNum[3] != 162)
-				FIXME("Tiles: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
+			FIXME("Tiles: Incorrect magic nums (%u, %u,%u, %u)!",checkNum[0],checkNum[1],checkNum[2],checkNum[3]);
 
 		for(int32_t i = 1; i < tileCount; ++i){
 			mapStream.read((char*)&animLenght[i], 4);
@@ -161,9 +162,9 @@ void CBMap::setLayers(uint8_t back, uint8_t over){
 
 void CBMap::drawLayer(uint8_t level, RenderTarget &target){
 	if(level > 1)
-			return;
+		return;
 	if(layerShowing[level] < 1)
-			return;
+		return;
 
 	float camX = CBEnchanted::instance()->getCameraX()-posX;
 	float camY = CBEnchanted::instance()->getCameraY()-posY;

@@ -207,7 +207,7 @@ void FileInterface::functionOpenToEdit(void) {
 	{
 		filestrs[id] = fopen(file_s.c_str(), "r+");
 	} else {
-        filestrs[id] = fopen(file_s.c_str(), "w+");
+		filestrs[id] = fopen(file_s.c_str(), "w+");
 	}
 	if (filestrs[id] == NULL) {
 		FIXME("OpenToEdit failed.");
