@@ -12,8 +12,7 @@ ObjectInterface::ObjectInterface():
 	firstObject(0),
 	firstFloorObject(0),
 	lastObject(0),
-	lastFloorObject(0)
-{
+	lastFloorObject(0) {
 	cb = static_cast<CBEnchanted*>(this);
 }
 
@@ -235,7 +234,7 @@ void ObjectInterface::commandPaintObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
 
-    if (p > 0 && !object->isFloorObject()) { //Object
+	if (p > 0 && !object->isFloorObject()) { //Object
 		CBObject *object2 = objectMap[p];
 		object->paintObject(*object2);
 	}

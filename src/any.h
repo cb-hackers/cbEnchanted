@@ -22,17 +22,13 @@ class Any {
 		int32_t typeId;
 
 		union {
-			/** Float data
-			  */
+			/** Float data */
 			float dFloat;
-			/** 32bit integer data
-			  */
+			/** 32bit integer data */
 			int32_t dInt;
-			/** ISString data
-			  */
+			/** ISString data */
 			ISString::SharedData *dString;
-			/** Type pointer
-			  */
+			/** Type pointer */
 			void *dPtr;
 		};
 

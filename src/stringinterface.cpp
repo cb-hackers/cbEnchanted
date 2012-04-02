@@ -2,20 +2,22 @@
 #include "cbenchanted.h"
 #include "stringinterface.h"
 
-StringInterface::StringInterface() : cb(static_cast <CBEnchanted *> (this)) {
-
+StringInterface::StringInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 void StringInterface::functionStr(void) {
 	Any a = cb->popValue();
-	switch (a.type())
-	{
-	case Any::Int: cb->pushValue(lexical_cast<string>(a.getInt()));return;
-	case Any::Float: cb->pushValue(lexical_cast<string>(a.getFloat()));return;
-	default:cb->pushValue(a);
+	switch (a.type()) {
+		case Any::Int:
+			cb->pushValue(lexical_cast<string>(a.getInt()));
+		return;
+		case Any::Float:
+			cb->pushValue(lexical_cast<string>(a.getFloat()));
+		return;
+		default:
+			cb->pushValue(a);
 	}
-
-
 }
 
 void StringInterface::functionLeft(void) {

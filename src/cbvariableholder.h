@@ -132,7 +132,7 @@ class Type {
 		void *dummyFirst[2];
 		int32_t sizeOfMember;
 		void *firstMember;
-	void *lastMember;
+		void *lastMember;
 };
 
 class VariableScope {

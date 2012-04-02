@@ -48,14 +48,10 @@ Any &Any::operator =(const Any &a)
 
 const type_info &Any::typeInfo() const{
 	switch (typeId) {
-		case Int:
-			return typeid(int32_t);
-		case Float:
-			return typeid(float);
-		case String:
-			return typeid(ISString);
-		default:
-			return typeid(void);
+		case Int: return typeid(int32_t);
+		case Float: return typeid(float);
+		case String: return typeid(ISString);
+		default: return typeid(void);
 	}
 }
 

@@ -19,8 +19,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 
-TextInterface::TextInterface() : cb(static_cast <CBEnchanted *> (this)), locationX(0), locationY(0) {
-
+TextInterface::TextInterface() : locationX(0), locationY(0) {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 TextInterface::~TextInterface() {
@@ -29,7 +29,7 @@ TextInterface::~TextInterface() {
 bool TextInterface::initializeFonts() {
 	al_init_font_addon();
 	al_init_ttf_addon();
-	currentFont = al_load_font(DEFAULT_FONT,12,0);
+	currentFont = al_load_font(DEFAULT_FONT, 12, 0);
 	if (currentFont == 0) return false;
 	fontMap[0] = currentFont;
 	return true;
@@ -48,7 +48,7 @@ void TextInterface::commandText(void) {
 	string txt = cb->popValue().toString().getRef();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
-	cb->getCurrentRenderTarget()->drawText(currentFont,txt,x,y,cb->getDrawColor());
+	cb->getCurrentRenderTarget()->drawText(currentFont, txt, x, y, cb->getDrawColor());
 }
 
 void TextInterface::commandCenterText(void) {
@@ -57,16 +57,20 @@ void TextInterface::commandCenterText(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	switch(style){
-		case 0:{
-			cb->getCurrentRenderTarget()->drawText(currentFont,str,x,y,cb->getDrawColor(),RenderTarget::HCenter);
-		}
+		case 0:
+			cb->getCurrentRenderTarget()->drawText(
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter
+			);
 		break;
-		case 1:{
-			cb->getCurrentRenderTarget()->drawText(currentFont,str,x,y,cb->getDrawColor(),RenderTarget::VCenter);
-		}
-		case 2:{
-			cb->getCurrentRenderTarget()->drawText(currentFont,str,x,y,cb->getDrawColor(),RenderTarget::Center);
-		}
+		case 1:
+			cb->getCurrentRenderTarget()->drawText(
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter
+			);
+		break;
+		case 2:
+			cb->getCurrentRenderTarget()->drawText(
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center
+			);
 		break;
 	}
 }
@@ -133,7 +137,7 @@ void TextInterface::functionLoadFont(void) {
 
 	string path = FONT_PATH + file;
 
-	ALLEGRO_FONT *font = al_load_font(file.c_str(),size,ALLEGRO_TTF_MONOCHROME);
+	ALLEGRO_FONT *font = al_load_font(file.c_str(), size, ALLEGRO_TTF_MONOCHROME);
 	int32_t keyId = nextfontid();
 	fontMap[keyId] = font;
 }
@@ -152,12 +156,12 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 }
 
 void TextInterface::functionTextWidth(void) {
-	cb->pushValue(al_get_text_width(currentFont,cb->popValue().getString().getRef().c_str()));
+	cb->pushValue(al_get_text_width(currentFont, cb->popValue().getString().getRef().c_str()));
 }
 
 void TextInterface::functionTextHeight(void) {
 	int dummy;
 	int height;
-	al_get_text_dimensions(currentFont,cb->popValue().getString().getRef().c_str(),&dummy,&dummy,&dummy,&height);
+	al_get_text_dimensions(currentFont, cb->popValue().getString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
 	cb->pushValue(height);
 }

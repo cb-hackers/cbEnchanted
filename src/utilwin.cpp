@@ -13,7 +13,7 @@ float randf() {
 }
 
 int32_t rand(int32_t max) {
-	return rand() % (max+1); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
+	return rand() % (max + 1); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
 }
 
 #endif // _WIN32

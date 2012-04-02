@@ -4,8 +4,8 @@
 #include "cbimage.h"
 
 
-ImageInterface::ImageInterface():cb(static_cast<CBEnchanted*>(this)) {
-
+ImageInterface::ImageInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 ImageInterface::~ImageInterface() {

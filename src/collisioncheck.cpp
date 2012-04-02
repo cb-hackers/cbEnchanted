@@ -31,11 +31,9 @@ bool CollisionCheck::testCollision(){
 					if(right1 > right2) return false;
 
 
-					return true;
-				break;
+				return true;
 				case Circle:
-					return CircleRectTest();
-				break;
+				return CircleRectTest();
 				case Map:
 				{
 					CBMap *map = static_cast<CBMap*>(mObject2);
@@ -76,7 +74,7 @@ bool CollisionCheck::testCollision(){
 		case Circle:
 			switch(mCollisionType2){
 				case Box:
-					return CircleRectTest();
+				return CircleRectTest();
 				break;
 				case Circle:
 
@@ -89,17 +87,17 @@ bool CollisionCheck::testCollision(){
 					circleDistY = abs(mObject2->getY() - mObject1->getY()-mObject1->getObjectSizeY()/2);
 
 					if (circleDistX > (mObject1->getObjectSizeX()/2 + circleRad))
-							return false;
+						return false;
 					if (circleDistY > (mObject1->getObjectSizeY()/2 + circleRad))
-							return false;
+						return false;
 
 					if (circleDistX <= (mObject1->getObjectSizeX()/2))
-							return true;
+						return true;
 					if (circleDistY <= (mObject1->getObjectSizeY()/2))
-							return true;
+						return true;
 
 					cornerDist = ((circleDistX - mObject1->getObjectSizeX()/2)*(circleDistX - mObject1->getObjectSizeX()/2)+(circleDistY - mObject1->getObjectSizeY()/2)*(circleDistY - mObject1->getObjectSizeY()/2));
-					return (cornerDist <= circleRad*circleRad);
+				return (cornerDist <= circleRad*circleRad);
 
 
 				break;

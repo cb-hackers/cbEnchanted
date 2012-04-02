@@ -2,8 +2,8 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 
-FileInterface::FileInterface() : cb(static_cast <CBEnchanted *> (this)) {
-
+FileInterface::FileInterface() {
+	cb = static_cast <CBEnchanted *> (this);
 }
 
 FileInterface::~FileInterface() {
@@ -207,7 +207,7 @@ void FileInterface::functionOpenToEdit(void) {
 	{
 		filestrs[id] = fopen(file_s.c_str(), "r+");
 	} else {
-        filestrs[id] = fopen(file_s.c_str(), "w+");
+		filestrs[id] = fopen(file_s.c_str(), "w+");
 	}
 	if (filestrs[id] == NULL) {
 		FIXME("OpenToEdit failed.");

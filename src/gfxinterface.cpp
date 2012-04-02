@@ -31,7 +31,6 @@ const char *screenGammaFragmentShaderCode =
 
 
 GfxInterface::GfxInterface() :
-	cb(static_cast <CBEnchanted *> (this)),
 	windowTitle(""),
 	window(),
 	drawDrawCommandToWorld(false),
@@ -40,6 +39,7 @@ GfxInterface::GfxInterface() :
 	gameDrawn(false),
 	gameUpdated(false)
 {
+	cb = static_cast <CBEnchanted *> (this);
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
 	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;
@@ -87,13 +87,13 @@ void GfxInterface::commandScreen(void) {
 	switch (state) {
 		case 0: //cbFullscreen
 			flags = ALLEGRO_OPENGL | ALLEGRO_FULLSCREEN;
-			break;
+		break;
 		case 1: // default
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED;
-			break;
+		break;
 		case 2: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
-			break;
+		break;
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
 		if (state != 2) {
@@ -173,9 +173,7 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
-				break;
-			default:
-				break;
+			break;
 		}
 	}
 	cb->updateInputs();

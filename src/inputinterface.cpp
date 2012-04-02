@@ -114,8 +114,7 @@ InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0){
 	cbKeyMap[219] = ALLEGRO_KEY_LWIN;
 	cbKeyMap[220] = ALLEGRO_KEY_RWIN;
 	cbKeyMap[221] = ALLEGRO_KEY_MENU;
-
- }
+}
 
 void InputInterface::commandCloseInput(void) {
 	STUB;
@@ -131,10 +130,10 @@ void InputInterface::commandWaitKey(void) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type)
 		{
-		case ALLEGRO_EVENT_KEY_DOWN:
+			case ALLEGRO_EVENT_KEY_DOWN:
 			return;
-		case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			cb->stop();
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				cb->stop();
 			return;
 		}
 	}
@@ -200,14 +199,13 @@ void InputInterface::functionWaitKey(void) {
 	while(true)
 	{
 		al_wait_for_event(cb->getEventQueue(),&e);
-		switch (e.type)
-		{
-		case ALLEGRO_EVENT_KEY_DOWN:
-			cb->pushValue((int32_t)e.keyboard.keycode);
+		switch (e.type) {
+			case ALLEGRO_EVENT_KEY_DOWN:
+				cb->pushValue((int32_t)e.keyboard.keycode);
 			return;
-		case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			cb->stop();
-			cb->pushValue(0);
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				cb->stop();
+				cb->pushValue(0);
 			return;
 		}
 	}
@@ -237,14 +235,13 @@ void InputInterface::functionWaitMouse(void) {
 	while(true)
 	{
 		al_wait_for_event(cb->getEventQueue(),&e);
-		switch (e.type)
-		{
-		case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-			cb->pushValue((int32_t)e.mouse.button);
+		switch (e.type) {
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+				cb->pushValue((int32_t)e.mouse.button);
 			return;
-		case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			cb->stop();
-			cb->pushValue(0);
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				cb->stop();
+				cb->pushValue(0);
 			return;
 		}
 	}
