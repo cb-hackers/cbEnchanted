@@ -145,6 +145,8 @@ bool CBEnchanted::init(string file) {
 
 	if (!al_init()) return false;
 	eventQueue = al_create_event_queue();
+	//Create screen
+	initializeGfx();
 	if (!initializeInputs()) {
 		INFO("InitializeInputs failed");
 		return false;
@@ -157,8 +159,6 @@ bool CBEnchanted::init(string file) {
 		INFO("initializeFonts failed");
 		return false;
 	}
-	//Create screen
-	initializeGfx();
 
 	initialized = true;
 	INFO("Initialized");
@@ -204,8 +204,9 @@ void CBEnchanted::commandFunction(void) {
 void CBEnchanted::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code + cpos);
 	cpos += 4;
-
-	setIntegerVariable(var, popValue().toInt());
+	int32_t value = popValue().toInt();
+	setIntegerVariable(var, value);
+	HCDEBUG("[%i]: Setting int variable %i to value: %i", cpos, var,value);
 }
 
 /*

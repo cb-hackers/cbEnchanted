@@ -53,8 +53,6 @@ GfxInterface::~GfxInterface() {
 
 void GfxInterface::initializeGfx()
 {
-	al_init_image_addon();
-	al_init_primitives_addon();
 	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
 	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
 	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP,1,ALLEGRO_SUGGEST);
@@ -67,12 +65,13 @@ void GfxInterface::initializeGfx()
 	windowRenderTarget->create(400,300);
 	windowRenderTarget->clear(clearColor);
 	bufferMap[windowRenderTarget->getId()] = windowRenderTarget;
+	al_init_image_addon();
+	al_init_primitives_addon();
 
 	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
 	windowGammaG = 0;
 	windowGammaB = 0;
-	cb->updateInputs();
 }
 
 void GfxInterface::commandScreen(void) {

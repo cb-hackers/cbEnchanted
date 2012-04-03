@@ -309,6 +309,7 @@ bool InputInterface::initializeInputs() {
 	if (!al_install_keyboard()) return false;
 	if (!al_install_mouse()) return false;
 	al_register_event_source(cb->getEventQueue(),al_get_keyboard_event_source());
+	updateInputs();
 	return true;
 }
 
