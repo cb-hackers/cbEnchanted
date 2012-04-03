@@ -89,14 +89,14 @@ class Type {
 			}
 			delete[] (void**)m;
 		}
-		inline static Type *getMembersType(void * m){return ((Type**)m)[2];}
-		inline static int32_t &getIntField(void *m,int32_t field) {
+		inline static Type *getMembersType(const void * m){return ((Type**)m)[2];}
+		inline static int32_t &getIntField(const void *m,int32_t field) {
 			return *(int32_t*)(((void**)m)+3+field);
 		}
-		inline static float getFloatField(void *m,int32_t field) {
+		inline static float getFloatField(const void *m,int32_t field) {
 			return *(float*)(((void**)m)+3+field);
 		}
-		inline static ISString &getStringField(void *m,int32_t field) {
+		inline static ISString &getStringField(const void *m,int32_t field) {
 			return *(ISString*)(((void**)m)+3+field);
 		}
 		inline static void setField(void *m,int32_t field,int32_t value) {
@@ -182,7 +182,6 @@ class CBVariableHolder {
 			assert(!internalStack.empty());
 			Any value = internalStack.top();
 			internalStack.pop();
-
 			assert(!value.empty());
 			return value;
 		}

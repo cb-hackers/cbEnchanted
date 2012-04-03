@@ -3,14 +3,24 @@ QT -= core gui #No qt
 TEMPLATE = app
 
 CONFIG += thread console
-!contains(CBE_CONFIG,full_optimization) {
-	CONFIG += precompiled_header
+
+
+QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t /Zi
+
+
+contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
+	QMAKE_CXXFLAGS_DEBUG += /Zi /Zc:wchar_t /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /EHsc /GS /Gy /Zc:forScope
+} else {
+	!contains(CBE_CONFIG,full_optimization) {
+		CONFIG += precompiled_header
+		DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
+	}
+	QMAKE_CXXFLAGS_RELEASE += /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /EHsc /GS /Gy /Zc:forScope /Zc:wchar_t
 }
 
 
-QMAKE_CXXFLAGS_RELEASE += /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /Gm /EHsc /MD /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope
-QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t
+
 
 HEADERS += \
     ../src/textinterface.h \

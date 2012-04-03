@@ -83,7 +83,7 @@ class Any {
 		/** Returns type pointer stored in Any. Causes assertion if typeId isn't TypePtr
 		  * @return Type pointer stored in Any
 		  */
-		void *getTypePtr() { assert(typeId == TypePtr); return dPtr;}
+		void *getTypePtr() const { assert(typeId == TypePtr); return dPtr;}
 		/** Returns true if Any is constructed with default constructor.
 		  * @return Returns true if Any is constructed with default constructor.
 		  */

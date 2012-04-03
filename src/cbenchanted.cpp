@@ -112,6 +112,8 @@ bool CBEnchanted::init(string file) {
 	input.read(code, size);
 	input.close();
 
+	std::map <uint32_t, uint32_t> offsets;
+	//std::map <uint32_t, uint32_t> roffsets;
 	// Precalculation
 	// ToDo:	JIT-optimization?
 	// 			Handle functions and types
@@ -119,8 +121,7 @@ bool CBEnchanted::init(string file) {
 	uint32_t i = 0;
 	while (i < size) {
 		offsets[ncmd] = i;
-		roffsets[i] = ncmd;
-
+		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
 		ncmd++;
 		i++;
@@ -132,15 +133,54 @@ bool CBEnchanted::init(string file) {
 			case 74:
 			case 78:
 			case 80:
-			case 81: //!!!!
+			case 81:
 			case 84:
 			case 85:
 			case 86:
 			case 90: i += 4; break;
 			case 79: i ++; break;
-			default: FIXME("Unhandled preparsing: %i", (uint32_t) cmd);
+			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
 		}
+	}
 
+
+	//Goto and if
+	ncmd = 0;
+	i = 0;
+	while (i < size) {
+		//roffsets[i] = ncmd;
+		uint8_t cmd = *(uint8_t *)(code + i);
+		ncmd++;
+		i++;
+		switch (cmd) {
+			case 65:
+			case 66:
+
+			case 73:
+			case 74:
+			case 80:
+			case 81:
+			case 84:
+			case 86:
+			case 90: i += 4; break;
+			case 79: i ++; break;
+			case 67: {
+				if ((*(int32_t *)(code + i)) == 12) { //commandGoto
+					int32_t id = *(int32_t *)(code + i+5);
+					*(int32_t *)(code + i+5) = offsets[id];
+				}
+				i += 4;
+				break;
+			}
+			case 85: //pushFunctionPtr
+			case 78: { //Jump
+				int32_t id = *(int32_t *)(code + i);
+				*(int32_t *)(code + i) = offsets[id];
+				i +=4;
+				break;
+			}
+			default: FIXME("[%i] Unhandled preparsing2: %i",i, (uint32_t) cmd);
+		}
 	}
 
 	if (!al_init()) return false;
@@ -179,7 +219,7 @@ void CBEnchanted::handlePushFuncptr(void) {
 
 	pos.push_back(cpos);
 
-	cpos = offsets[ptr];
+	cpos = ptr;
 }
 
 void CBEnchanted::commandFunction(void) {
@@ -942,7 +982,7 @@ void CBEnchanted::handleJump(void) {
 	cpos += 4;
 
 	if (!popValue().getInt()) {
-		cpos = offsets[dest];
+		cpos = dest;
 	}
 }
 
@@ -981,7 +1021,7 @@ void CBEnchanted::handlePushTypeMemberVariable()
  */
 void CBEnchanted::commandGoto(void) {
 	cpos++;
-	cpos = offsets[*(uint32_t *)(code + cpos)];
+	cpos = *(uint32_t *)(code + cpos);
 }
 
 void CBEnchanted::commandDelete(void) {

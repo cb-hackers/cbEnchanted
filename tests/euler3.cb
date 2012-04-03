@@ -1,4 +1,4 @@
-Screen 300, 200
+SCREEN 300, 200
 
 alku = Timer()
 For i = 200000000 To 999999999

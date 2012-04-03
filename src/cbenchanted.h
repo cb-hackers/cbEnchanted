@@ -72,9 +72,6 @@ class CBEnchanted :
 		bool safeExit;
 		float framesMs;
 
-		std::map <uint32_t, uint32_t> offsets;
-		std::map <uint32_t, uint32_t> roffsets;
-
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
 		void handleSetFloat(void);
