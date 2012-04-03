@@ -4,9 +4,9 @@
 #include "precomp.h"
 #include "cbobject.h"
 
+
+/** Class for tilemaps */
 class CBMap : public CBObject{
-
-
 		int32_t *layers[4];
 
 		int32_t tileCount;
@@ -15,10 +15,9 @@ class CBMap : public CBObject{
 		int32_t tileWidth;
 		int32_t tileHeight;
 
-
 		uint8_t maskR, maskG, maskB;
 
-		int32_t *animLenght;
+		int32_t *animLength;
 		int32_t *animSlowness;
 		float *currentFrame;
 		uint8_t layerShowing[2];
@@ -36,8 +35,8 @@ class CBMap : public CBObject{
 
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
-		void edit(uint8_t maplayer, int32_t MapX, int32_t MapY, int32_t tile);
-		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t MapY);
+		void edit(uint8_t maplayer, int32_t MapX, int32_t tileY, int32_t tileIndex);
+		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t tileY);
 		int32_t getHit(int32_t x, int32_t y);
 		int32_t mapSizeX(){return mapWidth;}
 		int32_t mapSizeY(){return mapHeight;}
@@ -49,7 +48,7 @@ class CBMap : public CBObject{
 		int32_t getTileHeight(){return tileWidth;}
 
 		void setLayers(uint8_t back, uint8_t over);
-		void setTile(uint32_t tile, uint32_t lenght, uint32_t slowness);
+		void setTile(uint32_t tile, uint32_t length, uint32_t slowness);
 		bool updateObject(float timestep);
 };
 
