@@ -1,0 +1,13 @@
+SCREEN 600,600
+Repeat
+    Cls
+    aika=aika+1
+    For x=1 To 60
+        For y= 1 To 50
+            Color Cos(aika+y*2.5+x*2.5)*127+127,Sin(aika+y*5)*127+127,Sin(aika+x*5)*127+127
+            Line x*10+Sin(aika+y*5)*20,y*10+Sin(aika+x*5)*20,x*10+Sin(aika+y*5)*20+Sin(aika+x*5)*10,y*10+Sin(aika+x*5)*20+Sin(aika+y*5)*10
+        Next y
+    Next x
+    SetWindow "" + FPS()
+    DrawScreen
+Forever
