@@ -3,6 +3,7 @@ CBEmu
 
 # Ignore object files
 *.o
+tests/exe
 /tests/exe/*
 test.exe
 

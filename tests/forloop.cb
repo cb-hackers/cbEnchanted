@@ -1,0 +1,9 @@
+alku = Timer()
+For i = 0 To 20000000
+Next i
+
+loppu = Timer()
+Repeat
+	Text 0, 0, Str(loppu - alku)
+	DrawScreen
+Forever

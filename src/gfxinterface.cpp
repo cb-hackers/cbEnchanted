@@ -139,9 +139,9 @@ void GfxInterface::commandColor(void) {
 void GfxInterface::commandCircle(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
-	float r = cb->popValue().toFloat()*0.5+0.5;
-	float cy = cb->popValue().toFloat() + r+0.5f;
-	float cx = cb->popValue().toFloat() + r+0.5f;
+	float r = cb->popValue().toFloat()*0.5;
+	float cy = cb->popValue().toFloat() + r;
+	float cx = cb->popValue().toFloat() + r;
 	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
 }
 
