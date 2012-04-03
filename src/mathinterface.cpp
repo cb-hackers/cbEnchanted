@@ -57,33 +57,33 @@ void MathInterface::functionSqrt(void) {
 void MathInterface::functionSin(void) {
 	float angle = cb->popValue().toFloat();
 
-	cb->pushValue(float(sin(angle / 180.0 * 3.14159265358979323)));
+	cb->pushValue(float(sin(angle / 180.0 * M_PI)));
 }
 
 void MathInterface::functionCos(void) {
 	float angle = cb->popValue().toFloat();
 
-	cb->pushValue(float(cos(angle / 180.0 * 3.14159265358979323)));
+	cb->pushValue(float(cos(angle / 180.0 * M_PI)));
 }
 
 void MathInterface::functionTan(void) {
 	float angle = cb->popValue().toFloat();
-	cb->pushValue(float(tan(angle / 180.0 * 3.14159265358979323)));
+	cb->pushValue(float(tan(angle / 180.0 * M_PI)));
 }
 
 void MathInterface::functionASin(void) {
 	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(asinf(v) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)(asinf(v) / M_PI * 180.0));
 }
 
 void MathInterface::functionACos(void) {
 	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(acosf(v) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)(acosf(v) / M_PI * 180.0));
 }
 
 void MathInterface::functionATan(void) {
 	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(atanf(v) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)(atanf(v) / M_PI * 180.0));
 }
 
 void MathInterface::functionGetAngle(void) {
@@ -91,7 +91,7 @@ void MathInterface::functionGetAngle(void) {
 	float x2 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
-	cb->pushValue((float)((3.14159265358979323 - atan2f(y1 - y2, x1 - x2)) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)((M_PI - atan2f(y1 - y2, x1 - x2)) / M_PI * 180.0));
 }
 
 void MathInterface::functionLog(void) {
