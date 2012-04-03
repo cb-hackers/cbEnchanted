@@ -15,7 +15,7 @@ Any::Any(const string &a) : typeId(String) {
 	dString = 0;
 }
 
-Any::Any(const ISString &a):typeId(String),dString(a.data) {
+Any::Any(const ISString &a) : typeId(String), dString(a.data) {
 	if (dString != 0) {
 		++dString->refCounter;
 		return;
@@ -25,28 +25,34 @@ Any::Any(const ISString &a):typeId(String),dString(a.data) {
 Any::Any(const Any &a) : typeId(a.typeId) {
 	if (a.typeId == String) {
 		this->dString = a.dString;
-		if ( this->dString ) { this->dString->increaseRefCount(); }
+		if (this->dString) {
+			this->dString->increaseRefCount();
+		}
 		return;
 	}
 	this->dPtr = a.dPtr;
 }
 
 Any::~Any() {
-	if ( typeId == String ) {
-		if ( dString ) dString->decreaseRefCount();
+	if (typeId == String && dString) {
+		dString->decreaseRefCount();
 	}
 }
 
-Any &Any::operator =(const Any &a)
+Any &Any::operator = (const Any &a)
 {
-	if ( a.typeId == String && a.dString ) { a.dString->increaseRefCount(); }
-	if ( this->typeId == String && this->dString ) { this->dString->decreaseRefCount(); }
+	if (a.typeId == String && a.dString) {
+		a.dString->increaseRefCount();
+	}
+	if (this->typeId == String && this->dString) {
+		this->dString->decreaseRefCount();
+	}
 	this->typeId = a.typeId;
 	this->dPtr = a.dPtr;
 	return *this;
 }
 
-const type_info &Any::typeInfo() const{
+const type_info &Any::typeInfo() const {
 	switch (typeId) {
 		case Int: return typeid(int32_t);
 		case Float: return typeid(float);
@@ -56,7 +62,7 @@ const type_info &Any::typeInfo() const{
 }
 
 
-ISString Any::toString() const{
+ISString Any::toString() const {
 	assert(!empty());
 	try {
 		if (type() == Any::String) {

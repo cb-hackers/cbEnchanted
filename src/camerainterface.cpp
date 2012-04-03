@@ -3,7 +3,7 @@
 #include "cbenchanted.h"
 #include "cbobject.h"
 
-CameraInterface::CameraInterface(): cameraX(0), cameraY(0), cameraAngle(0){
+CameraInterface::CameraInterface(): cameraX(0), cameraY(0), cameraAngle(0) {
 	cb = static_cast <CBEnchanted *> (this);
 }
 
