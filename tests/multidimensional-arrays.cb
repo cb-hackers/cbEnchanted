@@ -1,0 +1,38 @@
+// Reserve 1000*1*100*1*10 cells, which equals 100 000 cells
+// and 400 000 bytes of memory
+
+Dim TESTARRAY(999, 0, 99, 0, 9) As Integer
+
+// We can jump back here by pressing space to calculate again
+calculate:
+d1 = 0 : d2 = 0 : d3 = 0 : d4 = 0 : d5 = 0 : alku = 0 : loppu = 0
+SetWindow "Calculating..."
+
+// Let's calculate by filling TESTARRAYs all dimensions with number 1337
+alku = Timer()
+For d1 = 0 To 999
+    For d2 = 0 To 0
+        For d3 = 0 To 99
+            For d4 = 0 To 0
+                For d5 = 0 To 9
+                    TESTARRAY(d1, d2, d3, d4, d5) = 1337
+                Next d5
+            Next d4
+        Next d3
+    Next d2
+Next d1
+
+SetWindow "Calculating finished!"
+
+loppu = Timer()
+key = 0
+Cls
+Repeat
+	Text 0, 0, Str(loppu - alku)
+    If key = cbKeySpace Then
+        ClearKeys
+        Goto calculate
+    EndIf
+	DrawScreen
+    key = WaitKey()
+Forever
