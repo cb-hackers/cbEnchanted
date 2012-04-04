@@ -22,6 +22,7 @@
 #include "effectinterface.h"
 #include "debug.h"
 #include <vector>
+#include "customfunctionhandler.h"
 
 using std::vector;
 
@@ -85,6 +86,7 @@ class CBEnchanted :
 		void handleIncVar(void);
 		void handleIncGlobalVar(void);
 		void handlePushTypeMemberVariable(void);
+		void handleCustomFunctionCall(void);
 
 		void commandFunction(void);
 		void commandSetGlobalVariable(void); //80
@@ -103,7 +105,6 @@ class CBEnchanted :
 		void commandDelete(void);
 		void commandSetVariable(void);
 		void commandArrayAssign(void);
-
 		void functionNew(void);
 		void functionFirst(void);
 		void functionLast(void);
@@ -117,6 +118,7 @@ class CBEnchanted :
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 
+		CustomFunctionHandler customFunctionHandler;
 };
 
 #endif

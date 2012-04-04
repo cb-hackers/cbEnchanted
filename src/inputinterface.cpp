@@ -203,7 +203,7 @@ void InputInterface::functionWaitKey(void) {
 			case ALLEGRO_EVENT_KEY_DOWN:
 				cb->pushValue((int32_t)e.keyboard.keycode);
 			return;
-			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+            case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 				cb->pushValue(0);
 			return;
