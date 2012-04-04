@@ -36,7 +36,17 @@ void ImageInterface::commandDrawGhostImage(void) {
 }
 
 void ImageInterface::commandDrawImageBox(void) {
-	STUB;
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
+	int32_t mask = cb->popValue().toInt();
+	int32_t frame = cb->popValue().toInt();
+	float h = cb->popValue().toFloat();
+	float w = cb->popValue().toFloat();
+	float sy = cb->popValue().toFloat();
+	float sx = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	img->draw(*cb->getCurrentRenderTarget(),x,y,frame,mask);
 }
 
 void ImageInterface::commandMaskImage(void) {
