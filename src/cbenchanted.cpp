@@ -199,6 +199,9 @@ bool CBEnchanted::init(string file) {
 		INFO("initializeFonts failed");
 		return false;
 	}
+	if (SoundInterface::init()) {
+		FIXME("sound system initializion failed")
+	}
 
 	initialized = true;
 	INFO("Initialized");
