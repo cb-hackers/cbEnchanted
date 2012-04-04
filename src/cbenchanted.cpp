@@ -57,6 +57,7 @@ void CBEnchanted::run() {
 			case 97:
 			case 98:
 			case 99: break;
+			case 100: handleCustomFunctionCall(); break;
 			default: FIXME("Unimplemented handler: %i", opCode);
 		}
 	}
@@ -142,8 +143,7 @@ bool CBEnchanted::init(string file) {
 			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
 		}
 	}
-
-
+	map<int32_t,int32_t> functionMaping;
 	//Goto and if
 	ncmd = 0;
 	i = 0;
@@ -155,7 +155,6 @@ bool CBEnchanted::init(string file) {
 		switch (cmd) {
 			case 65:
 			case 66:
-
 			case 73:
 			case 74:
 			case 80:
@@ -176,6 +175,113 @@ bool CBEnchanted::init(string file) {
 			case 78: { //Jump
 				int32_t id = *(int32_t *)(code + i);
 				*(int32_t *)(code + i) = offsets[id];
+
+				if (cmd == 85) { //custom function check
+					uint32_t i2 = *(int32_t *)(code + i);
+					if (functionMaping.find(i2) != functionMaping.end()) { //Already parsed function
+						*(uint8_t *)(code + i-1) = 100; //Custom function call
+						*(int32_t *)(code + i) = functionMaping[i2];
+						goto already_parsed;
+					}
+
+					//command 99
+					if (code[i2++] != 73) {
+						FIXME("[%i] Unexpected opcode1: %i, expecting 73.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					if (*(int32_t*)(code + i2) != 2) {
+						goto not_custom_function;
+					}
+					i2 += 4;
+					for (int32_t c = 0; c != 5; c++) {
+						if (code[i2++] != 73) {
+							FIXME("[%i] Unexpected opcode2: %i, expecting 73.",i2,code[i2]);
+							goto not_custom_function;
+						}
+						if (*(int32_t*)(code + i2) != 0) {
+							goto not_custom_function;
+						}
+						i2 += 4;
+					}
+					if (code[i2++] != 67) {
+						FIXME("[%i] Unexpected opcode3: %i, expecting 67.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					if (*(int32_t*)(code + i2) != 99) {
+						FIXME("[%i] Unexpected command %i, expecting 79.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					i2 += 4;
+					//commandFunction
+					int32_t paramCount = 0;
+					vector<int32_t> params;
+					while (code[i2] == 67 && *(int32_t*)(code + i2+1) != 79) {
+						i2 += 6;
+						paramCount++;
+						params.insert(params.begin(), *(int32_t*)(code + i2));
+						i2 += 4;
+
+					}
+					int32_t groupId;
+					int32_t funcId;
+
+					//Group id
+					if (code[i2++] != 73) { //PushInt
+						INFO("1");
+						goto not_custom_function;
+					}
+					groupId = *(int32_t*)(code + i2);
+					i2 += 4;
+					if (code[i2++] != 65) { //Set int var
+						INFO("2");
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					//Func id
+					if (code[i2++] != 73) { //PushInt
+						INFO("3");
+						goto not_custom_function;
+					}
+					funcId = *(int32_t*)(code + i2);
+					i2 += 4;
+					if (code[i2++] != 65) { //Set int var
+						INFO("4");
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					//Return
+					if (code[i2++] != 73) { //PushInt
+						INFO("5");
+						goto not_custom_function;
+					}
+					if (*(int32_t*)(code + i2) != 0) { //Return == 0
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					if (code[i2] != 67) { //call command
+						INFO("7 %i",code[i2]);
+						goto not_custom_function;
+					}
+					i2++;
+					if (*(int32_t*)(code + i2) != 22) { //Return
+						INFO("8");
+						goto not_custom_function;
+					}
+
+					CustomFunction func(0,groupId,funcId);
+					func.setParams(params);
+					int32_t handle = customFunctionHandler.getHandle(func);
+					functionMaping[*(int32_t *)(code + i)] = handle;
+					*(uint8_t *)(code + i-1) = 100; //Custom function call
+					*(int32_t *)(code + i) = handle;
+					INFO("Added custom function with handle %i",handle);
+				}
+				already_parsed:
+				not_custom_function:
+
 				i +=4;
 				break;
 			}
@@ -1002,8 +1108,7 @@ void CBEnchanted::handleIncGlobalVar(void) {
 	cpos += 4;
 }
 
-void CBEnchanted::handlePushTypeMemberVariable()
-{
+void CBEnchanted::handlePushTypeMemberVariable() {
 	void * typePtr = getTypePointerVariable(*((int32_t*)(code + cpos)));
 	cpos += 4;
 	int32_t varType = popValue().getInt();
@@ -1014,6 +1119,12 @@ void CBEnchanted::handlePushTypeMemberVariable()
 		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr, field)); break;
 		default: FIXME("handlePushTypeMemberVariable:Unhandled varType %i", varType); break;
 	}
+}
+
+void CBEnchanted::handleCustomFunctionCall() {
+	int32_t handle = *(int32_t *)(code + cpos);
+	cpos += 4;
+	customFunctionHandler.call(handle);
 }
 
 /*

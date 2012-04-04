@@ -54,7 +54,9 @@ HEADERS += \
     ../src/cbparticleemitter.h \
     ../src/particle.h \
     ../src/isstring.h \
-    ../src/rendertarget.h
+    ../src/rendertarget.h \
+    ../src/customfunctionhandler.h \
+    ../src/customfunction.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -84,7 +86,9 @@ SOURCES += \
     ../src/cbparticleemitter.cpp \
     ../src/debug.cpp \
     ../src/rendertarget.cpp \
-    ../src/any.cpp
+    ../src/any.cpp \
+    ../src/customfunctionhandler.cpp \
+    ../src/customfunction.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
