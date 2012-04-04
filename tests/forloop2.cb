@@ -1,0 +1,15 @@
+alku = Timer()
+For a = 0 To 200
+    For b = 0 To 200
+        For c = 0 To 10 Step 2
+            For d = c To 20
+            Next d
+        Next c
+    Next b
+Next a
+
+loppu = Timer()
+Repeat
+	Text 0, 0, Str(loppu - alku)
+	DrawScreen
+Forever

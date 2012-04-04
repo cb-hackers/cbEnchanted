@@ -1,0 +1,162 @@
+// http://www.coolbasic.com/phpBB3/viewtopic.php?p=54490#p54490
+
+//RATASEFEKTI by "Kille"
+//saa käyttää vapaasti
+
+//Funktio + esimerkki
+
+'FrameLimit 40
+'SCREEN 800,600,0,1
+'SCREEN 400,300,0,2
+Global sw
+Global sh
+sw=ScreenWidth()
+sh=ScreenHeight()
+
+Global kulma As Float
+kulma=0
+
+
+
+ClsColor 0,0,0
+
+
+Repeat
+
+
+
+Color 50,50,50
+
+gear(0,0,16,150,200,3,kulma/2)
+gear(0+(Sin(45)*350),0+(Sin(45)*350),16,150,200,3,-1*kulma/2)
+gear(0-(Sin(45)*350),0+(Sin(45)*350),16,150,200,3,-1*kulma/2)
+gear(0+(Sin(45)*350),0-(Sin(45)*350),16,150,200,3,-1*kulma/2)
+gear(0-(Sin(45)*350),0-(Sin(45)*350),16,150,200,3,-1*kulma/2)
+
+Color 100,100,100
+
+gear(-100,-100,7,20,25,3,kulma*4)
+gear(-100,-145,7,20,25,3,-1*kulma*4+22)
+gear(-100+(Sin(45)*45),-100+(Sin(45)*45) ,7,20,25,3,-1*kulma*4+12)
+
+Color 200,200,200
+
+gear(0,0,8,40,60,3,kulma)
+gear(100,0,8,40,60,3,-1*kulma)
+gear(0,100,8,40,60,3,-1*kulma)
+
+
+
+Text 1,1,FPS()
+
+
+DrawScreen
+
+ClearText
+kulma=kulma+1
+If kulma>359 Then kulma=0
+
+
+
+
+Forever
+
+
+
+//Funktio:
+//käyttö: gear(x, y, hampaiden määrä, sisäkehän säde, ulkokehän säde, hampaiden sivujen kulma, rattaan kulma)
+
+Function gear(x,y,hammas#,minrad,maxrad,pres,ang#)
+x=x+sw/2
+y=y+sh/2
+hammas=hammas*2
+hammasväli#=360.00/hammas
+
+For i=1 To hammas-1 Step 2
+
+Circle x-minrad,y-minrad,minrad*2+1,1
+
+Next i
+
+'Lock
+
+For i=2 To hammas Step 2
+
+trifiller(Sin(ang-hammasväli*i)*minrad+x,Cos(ang-hammasväli*i)*minrad+y,Sin(ang-hammasväli*i-hammasväli)*minrad+x,Cos(ang-hammasväli*i-hammasväli)*minrad+y,Sin(ang-hammasväli*i-hammasväli+pres)*maxrad+x,Cos(ang-hammasväli*i-hammasväli+pres)*maxrad+y)
+trifiller(Sin(ang-hammasväli*i-pres)*maxrad+x,Cos(ang-hammasväli*i-pres)*maxrad+y,Sin(ang-hammasväli*i-hammasväli+pres)*maxrad+x,Cos(ang-hammasväli*i-hammasväli+pres)*maxrad+y,Sin(ang-hammasväli*i)*minrad+x,Cos(ang-hammasväli*i)*minrad+y)
+
+Next i
+
+'Unlock
+
+End Function
+
+//trifiller by Atomimalli
+Function trifiller(x1,y1,x2,y2,x3,y3) 'kolmion kärkipisteet p1, p2, p3
+   'järjestetään pisteet y koordinaatin perusteella
+   If y2<y1 Then 'jos p2 on ylempänä kuin p1 vaihdetaan niiden paikkaa
+       tmp=y1
+       y1=y2
+       y2=tmp
+       
+       tmp=x1
+       x1=x2
+       x2=tmp
+   EndIf
+   
+   If y3<y1 Then 'jos p3 on ylempänä kuin p1 vaihdetaan niiden paikkaa
+       tmp=y1
+       y1=y3
+       y3=tmp
+       
+       tmp=x1
+       x1=x3
+       x3=tmp
+   EndIf
+   
+   If y3<y2 Then 'jos p3 on lempänä kuin p2 vaihdetaan niiden paikkaa
+       tmp=y2
+       y2=y3
+       y3=tmp
+       
+       tmp=x2
+       x2=x3
+       x3=tmp
+   EndIf
+   
+   'pisteet ovat nyt järjestyksessä
+   'ylhäältä alas p1(x1,y1), p2(x2,y2), p3(x3,y3)
+   
+   dy1=y2-y1'pystysuora matka p1:sta p2:seen
+   dx1=x2-x1'vaakasuora matka p1:sta p2:seen
+   
+   dy2=y3-y1'pystysuora matka p1:sta p3:meen
+   dx2=x3-x1'vaakasuora matka p1:sta p3:meen
+   
+   If dy1 Then 'jos kolmion yläosa on pidempi kuin 0
+       'käydään läpi kaikki vaakaviivat kolmion yläosassa(p1-p2)
+       For i = y1 To y2
+           'lasketaan seuraava x-koordinaatti p1:stä p2:seen
+           ax=x1+((i-y1)*dx1)/dy1
+           'lasketaan seuraava x-koordinaatti p1:stä p3:meen
+           bx=x1+((i-y1)*dx2)/dy2
+           
+           Line ax,i,bx,i 'piirretään viiva kolmion reunojen välille
+       Next i
+   EndIf
+   
+   dy1=y3-y2'pystysuora matka p2:sta p3:meen
+   dx1=x3-x2'vaakasuora matka p2:sta p3:meen
+   
+   If dy1 Then 'jos kolmion alaosa on pidempi kuin 0
+       'käydään läpi kaikki vaakaviivat kolmion alaosassa(p2-p3)
+       For i = y2 To y3
+           'lasketaan seuraava x-koordinaatti p2:stä p3:meen
+           ax=x2+((i-y2)*dx1)/dy1
+           'lasketaan seuraava x-koordinaatti p1:stä p3:meen
+           bx=x1+((i-y1)*dx2)/dy2
+           
+           Line ax,i,bx,i 'piirretään viiva kolmion reunojen välille
+       Next i
+   EndIf
+End Function

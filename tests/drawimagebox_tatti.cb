@@ -1,0 +1,50 @@
+// http://www.coolbasic.com/phpBB3/viewtopic.php?p=16097#p16097
+
+SCREEN 200,200
+
+kuva = LoadImage("media/tatti.bmp") 'ihan hanurista n‰‰ mediat, t‰‰h‰n on ainoa hyv‰!
+ResizeImage kuva, 85,80
+
+w = ImageWidth(kuva)/2
+h = ImageHeight(kuva)/2
+
+Const PX = 1
+Const PY = 2
+Const PDX = 3
+Const PDY = 4
+Dim part(w,h,4) As Float
+
+For y = 0 To h
+   For x = 0 To w
+      part(x,y,PX) = x+Rnd(-1,1) 'tottahan toki me halutetaan sekottaa n‰m‰ ensin
+      part(x,y,PY) = y+Rnd(-1,1)
+      part(x,y,PDX) = Rnd(-1,1)
+      part(x,y,PDY) = Rnd(-1,1)
+   Next x
+Next y
+
+Repeat
+   If MouseDown(1) Xor MouseDown(2) Then
+      mx# = (MouseX()-50)/2
+      my# = (MouseY()-50)/2
+      sgn = MouseDown(1)-MouseDown(2) 'jotta vasen n‰pp‰in tyˆnt‰‰ ja oikea imee :|
+      For y = 0 To h
+         For x = 0 To w
+            d# = max(Distance(mx,my,part(x,y,PX),part(x,y,PY)),1)*50.0*sgn
+            part(x,y,PDX) = part(x,y,PDX)-(mx-part(x,y,PX))/d 'kiihdytys poisp‰in hiirest‰
+            part(x,y,PDY) = part(x,y,PDY)-(my-part(x,y,PY))/d
+         Next x
+      Next y
+   EndIf
+   For y = 0 To h
+      For x = 0 To w
+         part(x,y,PDX) = part(x,y,PDX)*0.95+(x-part(x,y,PX))*0.01 'kitka, kiihtyvyys kohti alkuper‰ist‰ pistett‰
+         part(x,y,PDY) = part(x,y,PDY)*0.95+(y-part(x,y,PY))*0.01 'vakiot luonnollisesti maagisia, yritys ja erehdys
+         part(x,y,PX) = part(x,y,PX)+part(x,y,PDX)
+         part(x,y,PY) = part(x,y,PY)+part(x,y,PDY)
+         DrawImageBox kuva, part(x,y,PX)*2+50, part(x,y,PY)*2+50, x*2, y*2, 2, 2 '2x2-palikoita ihan vaan siksi ett‰ cb ei jaksais pyˆritt‰‰ nelinkertasta m‰‰r‰‰ :|
+      Next x
+   Next y
+   DrawScreen
+   SetWindow Str(FPS())
+Forever
