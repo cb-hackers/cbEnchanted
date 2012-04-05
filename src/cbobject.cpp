@@ -334,7 +334,7 @@ void CBObject::render(RenderTarget &target) {
 					al_map_rgba(255, 255, 255, alphaBlend),
 					posX,
 					posY,
-					angle * M_PI / 180.0f
+					(angle * M_PI) / 180.0f
 				);
 				return;
 			}
@@ -344,14 +344,14 @@ void CBObject::render(RenderTarget &target) {
 					texture,
 					posX,
 					posY,
-					((angle + 180.0) / 180.0) * M_PI,
+					(angle / 180.0) * M_PI,
 					al_map_rgba(255, 255, 255, alphaBlend)
 				);
 				return;
 			}
 
 			// What's left here is only a regular object without alpha-blending
-			target.drawBitmap(texture, posX, posY, ((angle+180.0) / 180.0) * M_PI);
+			target.drawBitmap(texture, posX, posY, -(angle / 180.0) * M_PI);
 		}
 	}
 }

@@ -140,14 +140,14 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		x = x+ al_get_display_width(CBEnchanted::instance()->getWindow()) / 2.0f - CBEnchanted::instance()->getCameraX();
-		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraX();
+		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraY();
 	}
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
 	setAsCurrent();
 	convertCoords(x,y);
-	al_draw_bitmap(r,x,y,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_bitmap(r,x,y,0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float w, float h) {
@@ -158,31 +158,31 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float w, floa
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP*r, float sx, float sy, float sw, float sh, float tx, float ty, float tw, float th) {
 	setAsCurrent();
 	convertCoords(tx,ty);
-	al_draw_scaled_bitmap(r,sx,sy,sw,sh,tx,ty,tw,th,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_scaled_bitmap(r,sx,sy,sw,sh,tx,ty,tw,th,0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot) {
 	setAsCurrent();
 	convertCoords(x,y);
-	al_draw_rotated_bitmap(r,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_rotated_bitmap(r,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,0);
 }
 
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float rw, float rh, float x, float y) {
 	setAsCurrent();
 	convertCoords(x,y);
-	al_draw_bitmap_region(r,rx,ry,rw,rh,x,y,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_bitmap_region(r,rx,ry,rw,rh,x,y,0);
 }
 
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float x, float y, float rot) {
 	setAsCurrent();
 	convertCoords(x,y);
-	al_draw_tinted_scaled_rotated_bitmap_region(r,sx,sy,sw,sh,tint,sw*0.5f,sh*0.5f,x,y,1.0f,1.0f,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_tinted_scaled_rotated_bitmap_region(r,sx,sy,sw,sh,tint,sw*0.5f,sh*0.5f,x,y,1.0f,1.0f,rot,0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
 	setAsCurrent();
 	convertCoords(x,y);
-	al_draw_tinted_rotated_bitmap(r,tint,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	al_draw_tinted_rotated_bitmap(r,tint,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,0);
 }
 
 
