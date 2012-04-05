@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 		fs::path path(fs::initial_path<fs::path>());
 		path = fs::system_complete(fs::path(argv[0]));
 
-		cb.init(path.c_str());
+		cb.init(path.generic_string());
 		cb.run();
 		cb.cleanup();
 	#endif
