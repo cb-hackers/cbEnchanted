@@ -143,8 +143,8 @@ class ObjectInterface {
 		//Returns new id for objectMap
 		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}
 
-		/** Collisions are stored in this vector */
-		std::vector<CollisionCheck*> collisions;
+		/** Collision checks are stored in this vector */
+		std::vector<CollisionCheck*> collisionChecks;
 };
 
 #endif

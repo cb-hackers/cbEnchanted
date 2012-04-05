@@ -347,7 +347,7 @@ void ObjectInterface::commandSetupCollision(void) {
 	colChk->setCollisionType2(obj2colType);
 
 	// Add the collision check to collisions vector
-	collisions.push_back(colChk);
+	collisionChecks.push_back(colChk);
 }
 
 void ObjectInterface::commandClearCollisions(void) {
@@ -612,4 +612,10 @@ void ObjectInterface::updateObjects(){
 		}
 	}
 	cb->updateRogueParticles();
+
+	// Iterate over every collision check that is set and run testCollision() on them
+	std::vector<CollisionCheck*>::iterator cChkI;
+	for (cChkI = collisionChecks.begin(); cChkI != collisionChecks.end(); cChkI++) {
+		(*cChkI)->testCollision();
+	}
 }

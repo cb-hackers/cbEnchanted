@@ -3,6 +3,8 @@
 #include <cmath>
 #include "cbmap.h"
 #include "debug.h"
+#include "cbenchanted.h"
+#include "rendertarget.h"
 
 /** An empty constructor */
 CollisionCheck::CollisionCheck() : mObject1(0), mObject2(0) {
@@ -106,31 +108,124 @@ void CollisionCheck::handleCollision() {
 
 /** A circle - rectangle collision test */
 bool CollisionCheck::CircleRectTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float r = mObject1->getSizeX() / 2;
+
+	float x = mObject1->getX() - r;
+	float y = mObject1->getY() + r;
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
 /** A rectangle - circle collision test */
 bool CollisionCheck::RectCircleTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float w = mObject1->getSizeX();
+	float h = mObject1->getSizeY();
+
+	float x = mObject1->getX() - w / 2;
+	float y = mObject1->getY() + h / 2;
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
 /** A rectangle - rectangle collision test */
 bool CollisionCheck::RectRectTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float w = mObject1->getSizeX();
+	float h = mObject1->getSizeY();
+
+	float x = mObject1->getX() - w / 2;
+	float y = mObject1->getY() + h / 2;
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
 /** A circle - circle collision test */
 bool CollisionCheck::CircleCircleTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float r = mObject1->getSizeX() / 2;
+
+	float x = mObject1->getX();
+	float y = mObject1->getY();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
 /** A rectangle - map collision test */
 bool CollisionCheck::RectMapTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float w = mObject1->getSizeX();
+	float h = mObject1->getSizeY();
+
+	float x = mObject1->getX() - w / 2;
+	float y = mObject1->getY() + h / 2;
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
 /** A circle - map collision test */
 bool CollisionCheck::CircleMapTest() {
+	// Draw collision boundaries
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	float r = mObject1->getSizeX() / 2;
+
+	float x = mObject1->getX();
+	float y = mObject1->getY();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
+	rendertarget->useWorldCoords(false);
+
+	// ...collision boundaries are now drawn.
+
 	return false;
 }
 
