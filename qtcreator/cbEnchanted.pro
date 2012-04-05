@@ -40,13 +40,13 @@ HEADERS += \
     ../src/effectinterface.h \
     ../src/cbvariableholder.h \
     ../src/cbenchanted.h \
-	../src/cbaudio.h \
-	../src/cbmusic.h \
-	../src/cbsound.h \
+    ../src/cbaudio.h \
+    ../src/cbmusic.h \
+    ../src/cbsound.h \
     ../src/camerainterface.h \
     ../src/animinterface.h \
     ../src/any.h \
-	../src/debug.h \
+    ../src/debug.h \
     ../src/camerainterface.h \
     ../src/cbobject.h \
     ../src/cbimage.h \
@@ -79,16 +79,16 @@ SOURCES += \
     ../src/effectinterface.cpp \
     ../src/cbvariableholder.cpp \
     ../src/cbenchanted.cpp \
-	../src/cbaudio.cpp \
-	../src/cbmusic.cpp \
-	../src/cbsound.cpp \	
+    ../src/cbaudio.cpp \
+    ../src/cbmusic.cpp \
+    ../src/cbsound.cpp \
     ../src/camerainterface.cpp \
     ../src/animinterface.cpp \
     ../src/camerainterface.cpp \
     ../src/cbobject.cpp \
     ../src/cbimage.cpp \
     ../src/cbmap.cpp \
-	../src/collisioncheck.cpp \
+    ../src/collisioncheck.cpp \
     ../src/cbparticleemitter.cpp \
     ../src/debug.cpp \
     ../src/rendertarget.cpp \

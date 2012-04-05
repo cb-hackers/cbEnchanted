@@ -305,9 +305,6 @@ bool CBEnchanted::init(string file) {
 		INFO("initializeFonts failed");
 		return false;
 	}
-	if (SoundInterface::init()) {
-		FIXME("sound system initializion failed")
-	}
 
 	initialized = true;
 	INFO("Initialized");
@@ -1413,7 +1410,7 @@ void CBEnchanted::commandType(void)
 	//cpos += 5;
 }
 
-void CBEnchanted::commandSetTypeMemberField()
+void CBEnchanted::commandSetTypeMemberField(void)
 {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
