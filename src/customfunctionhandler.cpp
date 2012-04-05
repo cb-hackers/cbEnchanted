@@ -1,6 +1,7 @@
 #include "customfunctionhandler.h"
 #include "cbenchanted.h"
 #include "customfunctiondefines.h"
+#include "customfunctions.h"
 CustomFunctionHandler::CustomFunctionHandler() {
 	importCustomFunctions();
 }
@@ -52,8 +53,8 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setGroupId(CBE_CUSTOM_FUNCTION_GROUP);
 
 
-	func.setFuncPtr(&GfxInterface::commandTriangle);
-	func.setFuncId(CBE_CUSTOM_GFX_DRAWTRIANGLE);
+	func.setFuncPtr(&commandTriangle);
+	func.setFuncId(CBE_CUSTOM_DRAWTRIANGLE);
 	this->add(func);
 }
 

@@ -60,7 +60,8 @@ HEADERS += \
     ../src/rendertarget.h \
     ../src/customfunctionhandler.h \
     ../src/customfunction.h \
-    ../src/customfunctiondefines.h
+    ../src/customfunctiondefines.h \
+    ../src/customfunctions.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -95,7 +96,8 @@ SOURCES += \
     ../src/rendertarget.cpp \
     ../src/any.cpp \
     ../src/customfunctionhandler.cpp \
-    ../src/customfunction.cpp
+    ../src/customfunction.cpp \
+    ../src/customfunctions.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h

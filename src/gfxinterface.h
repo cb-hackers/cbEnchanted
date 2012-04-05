@@ -63,13 +63,6 @@ class GfxInterface {
 		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
 
 
-		//Custom functions and commands
-		//-----------------------------
-		static void commandTriangle(CBEnchanted *cb);
-
-		//-----------------------------
-
-
 	private:
 		void registerWindow();
 		void unregisterWindow();
