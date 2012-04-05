@@ -5,6 +5,7 @@
 #include "rendertarget.h"
 #include "cbmap.h"
 class CBEnchanted;
+class CollisionCheck;
 
 class ObjectInterface {
 	public:
@@ -141,6 +142,9 @@ class ObjectInterface {
 
 		//Returns new id for objectMap
 		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}
+
+		/** Collisions are stored in this vector */
+		std::vector<CollisionCheck*> collisions;
 };
 
 #endif

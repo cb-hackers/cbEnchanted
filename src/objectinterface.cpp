@@ -6,6 +6,7 @@
 #include "mapinterface.h"
 #include "gfxinterface.h"
 #include "util.h"
+#include "collisioncheck.h"
 
 ObjectInterface::ObjectInterface():
 	lastUpdate(0),
@@ -321,7 +322,32 @@ void ObjectInterface::commandResetObjectCollision(void) {
 }
 
 void ObjectInterface::commandSetupCollision(void) {
-	STUB;
+	// Pop values from stack
+	// ---------------------
+	// The way collisions are handled
+	uint16_t handling = cb->popValue().toInt();
+	// Type of collision
+	uint16_t obj2colType = cb->popValue().toInt();
+	uint16_t obj1colType = cb->popValue().toInt();
+	// Object IDs
+	int32_t obj2id = cb->popValue().toInt();
+	int32_t obj1id = cb->popValue().toInt();
+
+	DEBUG("Called SetupCollision %i, %i, %i, %i, %i", obj1id, obj2id, obj1colType, obj2colType, handling);
+
+	// Fetch  CBObject's based on object IDs
+	CBObject *obj1 = objectMap[obj1id];
+	CBObject *obj2 = objectMap[obj2id];
+
+	// Create a new collision check
+	CollisionCheck *colChk = new CollisionCheck(obj1, obj2);
+
+	// Initialize the collision check
+	colChk->setCollisionType1(obj1colType);
+	colChk->setCollisionType2(obj2colType);
+
+	// Add the collision check to collisions vector
+	collisions.push_back(colChk);
 }
 
 void ObjectInterface::commandClearCollisions(void) {

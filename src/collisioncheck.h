@@ -29,10 +29,10 @@ class CollisionCheck
 		bool isNull() const { return mObject1 == 0 || mObject2 == 0; }
 		/** Sets the objects that take part in this collision */
 		void setObjects(CBObject *a, CBObject *b) { mObject1 = a; mObject2 = b; }
-		/** Sets the type of collision for the colliding object */
-		void setCollisionType1(CollisionType c){ mCollisionType1 = c; }
-		/** Sets the type of collision for the object to collide to */
-		void setCollisionType2(CollisionType c){ mCollisionType2 = c; }
+		/** Sets the type of collision for the colliding object. */
+		void setCollisionType1(uint16_t c);
+		/** Sets the type of collision for the object to collide to. */
+		void setCollisionType2(uint16_t c);
 
 		/** Sets the way collision are handled */
 		void setCollisionHandling(CollisionHandling h) { mCollisionHandling = h; }
