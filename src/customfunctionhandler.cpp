@@ -3,7 +3,10 @@
 #include "customfunctiondefines.h"
 #include "customfunctions.h"
 CustomFunctionHandler::CustomFunctionHandler() {
+
+#ifndef DISABLE_CUSTOMS
 	importCustomFunctions();
+#endif
 }
 
 int32_t CustomFunctionHandler::getHandle(CustomFunction &a) {

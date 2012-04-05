@@ -175,11 +175,11 @@ bool CBEnchanted::init(string file) {
 			case 78: { //Jump
 				int32_t id = *(int32_t *)(code + i);
 				*(int32_t *)(code + i) = offsets[id];
-
+#ifndef DISABLE_CUSTOMS
 				if (cmd == 85) { //custom function check
 					uint32_t i2 = *(int32_t *)(code + i);
 					if (functionMaping.find(i2) != functionMaping.end()) { //Already parsed function
-						*(uint8_t *)(code + i-1) = 100; //Custom function call
+						*(uint8_t *)(code + i - 1) = 100; //Custom function call
 						*(int32_t *)(code + i) = functionMaping[i2];
 						goto already_parsed;
 					}
@@ -211,7 +211,7 @@ bool CBEnchanted::init(string file) {
 					vector<int32_t> params;
 					int32_t opc;
 					int32_t comc;
-					while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2+1)) == 79) {
+					while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2 + 1)) == 79) {
 						i2 += 6;
 						paramCount++;
 						params.insert(params.begin(), *(int32_t*)(code + i2));
@@ -262,16 +262,18 @@ bool CBEnchanted::init(string file) {
 					func.setParams(params);
 					int32_t handle = customFunctionHandler.getHandle(func);
 					functionMaping[*(int32_t *)(code + i)] = handle;
-					*(uint8_t *)(code + i-1) = 100; //Custom function call
+					*(uint8_t *)(code + i - 1) = 100; //Custom function call
 					*(int32_t *)(code + i) = handle;
 					INFO("Added custom function with handle %i",handle);
 				}
 				already_parsed:
 				not_custom_function:
+#endif //DISABLE_CUSTOMS
 
 				i +=4;
 				break;
 			}
+
 			default: FIXME("[%i] Unhandled preparsing2: %i",i, (uint32_t) cmd);
 		}
 	}
