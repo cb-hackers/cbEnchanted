@@ -1,17 +1,34 @@
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include "precomp.h"
 #include "cbenchanted.h"
+
+namespace fs = boost::filesystem;
 
 int main(int argc, char** argv) {
 	CBEnchanted cb;
 
-	std::string exe = "sigmaExe.exe";
-	if (argc == 2) exe = std::string(argv[1]);
-	if (cb.init(exe))
-	{
+	#ifdef TEST
+	if (argc == 2) {
+		if (cb.init(string(argv[1]))) {
+			cb.run();
+			cb.cleanup();
+		}
+		al_uninstall_system();
+	}
+	else {
+		cerr << "Usage: CBEnchanted file.exe" << endl;
+		return -1;
+	}
+	#else
+		fs::path path(fs::initial_path<fs::path>());
+		path = fs::system_complete(fs::path(argv[0]));
+
+		cb.init(path.c_str());
 		cb.run();
 		cb.cleanup();
-	}
-	al_uninstall_system();
+	#endif
+
 
 	return 0;
 }
