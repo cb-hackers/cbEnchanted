@@ -3,24 +3,34 @@
 #include "precomp.h"
 class CBEnchanted;
 
+/** @defgroup customfunction Custom functions and commands
+  */
+
+
 class CustomFunction
 {
 	public:
-		typedef void (*CustomFunc) (void);
+		typedef void (*CustomFunc) (CBEnchanted *);
 
 		CustomFunction(CustomFunc func,int32_t group,int32_t id) :
 			function(func), groupId(group), funcId(id) { }
 		CustomFunction() : function(0), groupId(0), funcId(0) {}
-
-		void call() const { (*function)(); }
+		inline void call(CBEnchanted *cb) const { (*function)(cb); }
 		bool isNull() const {return function == 0;}
 		bool operator > (const CustomFunction &o);
 		bool operator < (const CustomFunction &o);
 		bool operator == (const CustomFunction &o);
+		CustomFunc getFuncPtr() const { return function; }
+		void setFuncPtr(CustomFunc func) { function = func; }
 		void setParams(const vector<int32_t> &p) { params = p; }
 		const vector<int32_t> &getParams() const { return params; }
 		int32_t getHandle() const { return handle; }
 		void setHandle( int32_t h ) { handle = h; }
+		int32_t getGroup() const { return groupId; }
+		void setGroupId(int32_t g) { groupId = g; }
+		int32_t getFuncId() const {return funcId; }
+		void setFuncId(int32_t f) { funcId = f; }
+
 	private:
 		vector<int32_t> params;
 		int32_t groupId;

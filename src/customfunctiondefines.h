@@ -1,0 +1,10 @@
+#ifndef CUSTOMFUNCTIONDEFINES_H
+#define CUSTOMFUNCTIONDEFINES_H
+
+/** Group id of cbE's custom functions */
+#define CBE_CUSTOM_FUNCTION_GROUP 1
+
+//GFX
+#define CBE_CUSTOM_GFX_DRAWTRIANGLE 1
+
+#endif // CUSTOMFUNCTIONDEFINES_H

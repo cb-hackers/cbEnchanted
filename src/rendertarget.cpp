@@ -222,5 +222,14 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const string &text, float 
 	al_draw_text(font,color,x,y,0,text.c_str());
 }
 
+void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill,const ALLEGRO_COLOR &color) {
+	setAsCurrent();
+	if (fill) {
+		al_draw_filled_triangle(x1, y1, x2, y2, x3, y3, color);
+	}
+	else {
+		al_draw_triangle(x1, y1, x2, y2, x3, y3, color, thickness);
+	}
+}
 
 

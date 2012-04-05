@@ -3,6 +3,9 @@ FrameLimit 60
 
 map = LoadMap("Media\cdm2.til", "Media\tileset.bmp")
 guy = LoadObject("Media\soldier.bmp", 72)
+AddText ""+ObjectSizeX(guy)
+ObjectRange guy,10
+AddText ""+ObjectSizeX(guy)
 
 Repeat
     SetWindow "CamX: "+CameraX()+" CamY: "+CameraY()
@@ -12,4 +15,5 @@ Repeat
     CloneCameraPosition guy
     DrawScreen
 Forever
+
 

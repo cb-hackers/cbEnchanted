@@ -59,7 +59,8 @@ HEADERS += \
     ../src/isstring.h \
     ../src/rendertarget.h \
     ../src/customfunctionhandler.h \
-    ../src/customfunction.h
+    ../src/customfunction.h \
+    ../src/customfunctiondefines.h
 
 SOURCES += \
     ../src/textinterface.cpp \

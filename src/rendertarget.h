@@ -34,11 +34,11 @@ class RenderTarget
 		void drawBitmapRegion(ALLEGRO_BITMAP *r,float sx,float sy,float sw,float sh,float tx,float ty,float tw,float th);
 		void drawBitmap(ALLEGRO_BITMAP *r,float x,float y,float rot);
 		void drawBitmapRegion(ALLEGRO_BITMAP *r,float rx,float ry,float rw,float rh,float x,float y);
-
 		void drawBitmapRegion(ALLEGRO_BITMAP *r,float sx,float sy,float sw,float sh,const ALLEGRO_COLOR &tint,float x,float y,float rot);
 		void drawBitmap(ALLEGRO_BITMAP *r,float x,float y,float rot,const ALLEGRO_COLOR &tint);
 		void drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime,int32_t animLength);
 		void drawText(const ALLEGRO_FONT *font,const string&text,float x,float y,const ALLEGRO_COLOR &color,int flags = Left|Top);
+		void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill, const ALLEGRO_COLOR &color);
 		void putPixel(int32_t x,int32_t y, const ALLEGRO_COLOR &color);
 		void copyBox(RenderTarget *src,int32_t sx,int32_t sy,int32_t w,int32_t h,int32_t tx,int32_t ty);
 		bool isDrawToWorldViewOn()const{return worldCoordsEnabled;}

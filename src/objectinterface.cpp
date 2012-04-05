@@ -562,6 +562,47 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	//al_hold_bitmap_drawing(false);
 }
 
+void ObjectInterface::removeFromDrawOrder(CBObject *o) {
+	if (o->isFloorObject()) {
+		if (o == lastFloorObject) {
+			if (o == firstFloorObject) {
+				lastFloorObject = firstFloorObject = 0;
+				return;
+			}
+			o->lastObj->nextObj = 0;
+			lastFloorObject = o->lastObj;
+			return;
+		}
+		if (o == firstFloorObject) {
+			firstFloorObject = o->nextObj;
+			o->nextObj->lastObj = 0;
+			return;
+		}
+
+		o->nextObj->lastObj = o->lastObj;
+		o->lastObj->nextObj = o->nextObj;
+	}
+	else {
+		if (o == lastObject) {
+			if (o == firstObject) {
+				lastObject = firstObject = 0;
+				return;
+			}
+			o->lastObj->nextObj = 0;
+			lastObject = o->lastObj;
+			return;
+		}
+		if (o == firstObject) {
+			firstObject = o->nextObj;
+			o->nextObj->lastObj = 0;
+			return;
+		}
+
+		o->nextObj->lastObj = o->lastObj;
+		o->lastObj->nextObj = o->nextObj;
+	}
+}
+
 
 int32_t ObjectInterface::addMap(CBMap *mapObj){
 	int32_t id = nextObjectId();

@@ -1,7 +1,8 @@
 #include "customfunctionhandler.h"
-
-CustomFunctionHandler::CustomFunctionHandler()
-{
+#include "cbenchanted.h"
+#include "customfunctiondefines.h"
+CustomFunctionHandler::CustomFunctionHandler() {
+	importCustomFunctions();
 }
 
 int32_t CustomFunctionHandler::getHandle(CustomFunction &a) {
@@ -16,7 +17,7 @@ int32_t CustomFunctionHandler::getHandle(CustomFunction &a) {
 	return handle;
 }
 
-void CustomFunctionHandler::add(CustomFunction &a) {
+void CustomFunctionHandler::import(CustomFunction &a) {
 	int32_t handleCounter = 0;
 
 	//Check if already added by getHandle
@@ -33,7 +34,26 @@ void CustomFunctionHandler::add(CustomFunction &a) {
 	functions.push_back(a);
 }
 
-void CustomFunctionHandler::call(int32_t handle) {
+void CustomFunctionHandler::call(CBEnchanted *cb, int32_t handle) {
 	assert(0 <= handle && handle < functions.size());
-	functions[handle].call();
+	functions[handle].call(cb);
 }
+
+void CustomFunctionHandler::add(CustomFunction &a) {
+	int32_t handle = functions.size();
+	a.setHandle(handle);
+	functions.push_back(a);
+}
+
+/** Adds custom functions to CustomFunctionHandler
+  */
+void CustomFunctionHandler::importCustomFunctions() {
+	CustomFunction func;
+	func.setGroupId(CBE_CUSTOM_FUNCTION_GROUP);
+
+
+	func.setFuncPtr(&GfxInterface::commandTriangle);
+	func.setFuncId(CBE_CUSTOM_GFX_DRAWTRIANGLE);
+	this->add(func);
+}
+

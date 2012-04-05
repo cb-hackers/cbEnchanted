@@ -86,46 +86,7 @@ class ObjectInterface {
 		inline void addToFloorDrawOrder(CBObject *o){if (lastFloorObject == 0) {lastFloorObject = firstFloorObject = o;o->lastObj = o->nextObj = 0;return;} lastObject->nextObj = o;o->nextObj = 0;o->lastObj = lastFloorObject;lastFloorObject = o;}
 
 
-		inline void removeFromDrawOrder(CBObject *o) {
-			if (o->isFloorObject()) {
-				if (o == lastFloorObject) {
-					if (o == firstFloorObject) {
-						lastFloorObject = firstFloorObject = 0;
-						return;
-					}
-					o->lastObj->nextObj = 0;
-					lastFloorObject = o->lastObj;
-					return;
-				}
-				if (o == firstFloorObject) {
-					firstFloorObject = o->nextObj;
-					o->nextObj->lastObj = 0;
-					return;
-				}
-
-				o->nextObj->lastObj = o->lastObj;
-				o->lastObj->nextObj = o->nextObj;
-			}
-			else {
-				if (o == lastObject) {
-					if (o == firstObject) {
-						lastObject = firstObject = 0;
-						return;
-					}
-					o->lastObj->nextObj = 0;
-					lastObject = o->lastObj;
-					return;
-				}
-				if (o == firstObject) {
-					firstObject = o->nextObj;
-					o->nextObj->lastObj = 0;
-					return;
-				}
-
-				o->nextObj->lastObj = o->lastObj;
-				o->lastObj->nextObj = o->nextObj;
-			}
-		}
+		void removeFromDrawOrder(CBObject *o);
 	private:
 		CBObject *lastObject;
 		CBObject *firstObject;

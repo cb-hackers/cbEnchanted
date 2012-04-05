@@ -183,22 +183,16 @@ bool CBEnchanted::init(string file) {
 						*(int32_t *)(code + i) = functionMaping[i2];
 						goto already_parsed;
 					}
-
 					//command 99
 					if (code[i2++] != 73) {
 						FIXME("[%i] Unexpected opcode1: %i, expecting 73.",i2,code[i2]);
 						goto not_custom_function;
 					}
-					if (*(int32_t*)(code + i2) != 2) {
-						goto not_custom_function;
-					}
 					i2 += 4;
+
 					for (int32_t c = 0; c != 5; c++) {
 						if (code[i2++] != 73) {
 							FIXME("[%i] Unexpected opcode2: %i, expecting 73.",i2,code[i2]);
-							goto not_custom_function;
-						}
-						if (*(int32_t*)(code + i2) != 0) {
 							goto not_custom_function;
 						}
 						i2 += 4;
@@ -215,45 +209,41 @@ bool CBEnchanted::init(string file) {
 					//commandFunction
 					int32_t paramCount = 0;
 					vector<int32_t> params;
-					while (code[i2] == 67 && *(int32_t*)(code + i2+1) != 79) {
+					int32_t opc;
+					int32_t comc;
+					while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2+1)) == 79) {
 						i2 += 6;
 						paramCount++;
 						params.insert(params.begin(), *(int32_t*)(code + i2));
-						i2 += 4;
-
+						i2 += 9;
 					}
 					int32_t groupId;
 					int32_t funcId;
 
 					//Group id
 					if (code[i2++] != 73) { //PushInt
-						INFO("1");
 						goto not_custom_function;
 					}
 					groupId = *(int32_t*)(code + i2);
 					i2 += 4;
 					if (code[i2++] != 65) { //Set int var
-						INFO("2");
 						goto not_custom_function;
 					}
 					i2 += 4;
 
 					//Func id
 					if (code[i2++] != 73) { //PushInt
-						INFO("3");
 						goto not_custom_function;
 					}
 					funcId = *(int32_t*)(code + i2);
 					i2 += 4;
 					if (code[i2++] != 65) { //Set int var
-						INFO("4");
 						goto not_custom_function;
 					}
 					i2 += 4;
 
 					//Return
 					if (code[i2++] != 73) { //PushInt
-						INFO("5");
 						goto not_custom_function;
 					}
 					if (*(int32_t*)(code + i2) != 0) { //Return == 0
@@ -261,13 +251,10 @@ bool CBEnchanted::init(string file) {
 					}
 					i2 += 4;
 
-					if (code[i2] != 67) { //call command
-						INFO("7 %i",code[i2]);
+					if (code[i2++] != 67) { //call command
 						goto not_custom_function;
 					}
-					i2++;
 					if (*(int32_t*)(code + i2) != 22) { //Return
-						INFO("8");
 						goto not_custom_function;
 					}
 
@@ -1124,7 +1111,7 @@ void CBEnchanted::handlePushTypeMemberVariable() {
 void CBEnchanted::handleCustomFunctionCall() {
 	int32_t handle = *(int32_t *)(code + cpos);
 	cpos += 4;
-	customFunctionHandler.call(handle);
+	customFunctionHandler.call(this,handle);
 }
 
 /*
