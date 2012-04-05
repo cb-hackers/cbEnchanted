@@ -1,5 +1,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+#include <iostream>
 #include "precomp.h"
 #include "cbenchanted.h"
 
@@ -17,7 +18,7 @@ int main(int argc, char** argv) {
 		al_uninstall_system();
 	}
 	else {
-		printf("Usage: CBEnchanted file.exe\n", stderr);
+		cerr << "Usage: CBEnchanted file.exe" << endl;
 		return -1;
 	}
 	#else
