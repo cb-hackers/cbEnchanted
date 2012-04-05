@@ -1,3 +1,10 @@
+Const CBE_CUSTOM_FUNCION_GROUP = 1
+
+Function Triangle(x1 As Float,y1 As Float,x2 As Float,y2 As Float,x3 As Float,y3 As Float,thicness As Float,fill)
+    group = CBE_CUSTOM_FUNCION_GROUP
+    funcId = 1
+EndFunction
+
 // http://www.coolbasic.com/phpBB3/viewtopic.php?p=54490#p54490
 
 //RATASEFEKTI by "Kille"
@@ -13,14 +20,14 @@ Global sh
 sw=ScreenWidth()
 sh=ScreenHeight()
 
-Global kulma As Float
-kulma=0
+Dim kulma As Float
+kulma=0.0
 
 
 
 ClsColor 0,0,0
 
-
+rec = Timer()
 Repeat
 
 
@@ -47,14 +54,17 @@ gear(0,100,8,40,60,3,-1*kulma)
 
 
 
-Text 1,1,FPS()
-
+kulma = kulma + 30.0 * (Timer() - rec) / 1000.0
+SetWindow "FPS: " + FPS()
+'Text 1,20,"Kulma: " + kulma
 
 DrawScreen
 
 ClearText
-kulma=kulma+1
-If kulma>359 Then kulma=0
+
+If kulma > 359 Then kulma = 0
+
+rec = Timer()
 
 
 
@@ -82,81 +92,11 @@ Next i
 
 For i=2 To hammas Step 2
 
-trifiller(Sin(ang-hammasv‰li*i)*minrad+x,Cos(ang-hammasv‰li*i)*minrad+y,Sin(ang-hammasv‰li*i-hammasv‰li)*minrad+x,Cos(ang-hammasv‰li*i-hammasv‰li)*minrad+y,Sin(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+x,Cos(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+y)
-trifiller(Sin(ang-hammasv‰li*i-pres)*maxrad+x,Cos(ang-hammasv‰li*i-pres)*maxrad+y,Sin(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+x,Cos(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+y,Sin(ang-hammasv‰li*i)*minrad+x,Cos(ang-hammasv‰li*i)*minrad+y)
+Triangle(Sin(ang-hammasv‰li*i)*minrad+x,Cos(ang-hammasv‰li*i)*minrad+y,Sin(ang-hammasv‰li*i-hammasv‰li)*minrad+x,Cos(ang-hammasv‰li*i-hammasv‰li)*minrad+y,Sin(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+x,Cos(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+y, 0, True)
+Triangle(Sin(ang-hammasv‰li*i-pres)*maxrad+x,Cos(ang-hammasv‰li*i-pres)*maxrad+y,Sin(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+x,Cos(ang-hammasv‰li*i-hammasv‰li+pres)*maxrad+y,Sin(ang-hammasv‰li*i)*minrad+x,Cos(ang-hammasv‰li*i)*minrad+y, 0, True)
 
 Next i
 
 'Unlock
 
-End Function
-
-//trifiller by Atomimalli
-Function trifiller(x1,y1,x2,y2,x3,y3) 'kolmion k‰rkipisteet p1, p2, p3
-   'j‰rjestet‰‰n pisteet y koordinaatin perusteella
-   If y2<y1 Then 'jos p2 on ylemp‰n‰ kuin p1 vaihdetaan niiden paikkaa
-       tmp=y1
-       y1=y2
-       y2=tmp
-       
-       tmp=x1
-       x1=x2
-       x2=tmp
-   EndIf
-   
-   If y3<y1 Then 'jos p3 on ylemp‰n‰ kuin p1 vaihdetaan niiden paikkaa
-       tmp=y1
-       y1=y3
-       y3=tmp
-       
-       tmp=x1
-       x1=x3
-       x3=tmp
-   EndIf
-   
-   If y3<y2 Then 'jos p3 on lemp‰n‰ kuin p2 vaihdetaan niiden paikkaa
-       tmp=y2
-       y2=y3
-       y3=tmp
-       
-       tmp=x2
-       x2=x3
-       x3=tmp
-   EndIf
-   
-   'pisteet ovat nyt j‰rjestyksess‰
-   'ylh‰‰lt‰ alas p1(x1,y1), p2(x2,y2), p3(x3,y3)
-   
-   dy1=y2-y1'pystysuora matka p1:sta p2:seen
-   dx1=x2-x1'vaakasuora matka p1:sta p2:seen
-   
-   dy2=y3-y1'pystysuora matka p1:sta p3:meen
-   dx2=x3-x1'vaakasuora matka p1:sta p3:meen
-   
-   If dy1 Then 'jos kolmion yl‰osa on pidempi kuin 0
-       'k‰yd‰‰n l‰pi kaikki vaakaviivat kolmion yl‰osassa(p1-p2)
-       For i = y1 To y2
-           'lasketaan seuraava x-koordinaatti p1:st‰ p2:seen
-           ax=x1+((i-y1)*dx1)/dy1
-           'lasketaan seuraava x-koordinaatti p1:st‰ p3:meen
-           bx=x1+((i-y1)*dx2)/dy2
-           
-           Line ax,i,bx,i 'piirret‰‰n viiva kolmion reunojen v‰lille
-       Next i
-   EndIf
-   
-   dy1=y3-y2'pystysuora matka p2:sta p3:meen
-   dx1=x3-x2'vaakasuora matka p2:sta p3:meen
-   
-   If dy1 Then 'jos kolmion alaosa on pidempi kuin 0
-       'k‰yd‰‰n l‰pi kaikki vaakaviivat kolmion alaosassa(p2-p3)
-       For i = y2 To y3
-           'lasketaan seuraava x-koordinaatti p2:st‰ p3:meen
-           ax=x2+((i-y2)*dx1)/dy1
-           'lasketaan seuraava x-koordinaatti p1:st‰ p3:meen
-           bx=x1+((i-y1)*dx2)/dy2
-           
-           Line ax,i,bx,i 'piirret‰‰n viiva kolmion reunojen v‰lille
-       Next i
-   EndIf
 End Function
