@@ -61,6 +61,11 @@ class CBObject{
 
 		virtual bool updateObject(float timestep);
 
+		/** Returns sizeX property. For internal use only */
+		uint32_t getSizeX() const { return sizeX; }
+		/** Returns sizeY property. For internal use only */
+		uint32_t getSizeY() const { return sizeY; }
+
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
