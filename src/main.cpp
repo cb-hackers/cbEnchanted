@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 		al_uninstall_system();
 	}
 	else {
-		cerr << "Usage: CBEnchanted file.exe" << endl;
+		printf("Usage: CBEnchanted file.exe\n", stderr);
 		return -1;
 	}
 	#else
