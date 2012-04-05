@@ -23,7 +23,7 @@ class RenderTarget
 		RenderTarget *clone();
 		void copy(const RenderTarget * r);
 		void setAsCurrent(bool force = 0);
-		void useWorldCoords(bool t,bool force = false);
+		void useWorldCoords(bool t) { worldCoordsEnabled = t;}
 		void drawBox(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawEllipse(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawCircle(float cx,float cy,float r,bool fill,const ALLEGRO_COLOR &color);
@@ -41,7 +41,7 @@ class RenderTarget
 		void drawText(const ALLEGRO_FONT *font,const string&text,float x,float y,const ALLEGRO_COLOR &color,int flags = Left|Top);
 		void putPixel(int32_t x,int32_t y, const ALLEGRO_COLOR &color);
 		void copyBox(RenderTarget *src,int32_t sx,int32_t sy,int32_t w,int32_t h,int32_t tx,int32_t ty);
-		bool isDrawToWorldViewOn()const{return worldMatrixEnabled;}
+		bool isDrawToWorldViewOn()const{return worldCoordsEnabled;}
 		ALLEGRO_COLOR getPixel(int32_t x,int32_t y);
 		void clear(const ALLEGRO_COLOR &c);
 		void lock(){al_lock_bitmap(bitmap,ALLEGRO_LOCK_READWRITE,ALLEGRO_PIXEL_FORMAT_ANY);}
@@ -51,7 +51,9 @@ class RenderTarget
 		ALLEGRO_BITMAP *getBitmap(){return bitmap;}
 		int32_t getId()const{return id;}
 	private:
-		bool worldMatrixEnabled;
+		void convertCoords(float &x,float &y);
+
+		bool worldCoordsEnabled;
 		ALLEGRO_BITMAP *bitmap;
 		int32_t id;
 };

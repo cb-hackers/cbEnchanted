@@ -1,19 +1,9 @@
 #include "rendertarget.h"
 #include "cbenchanted.h"
 #include "cbimage.h"
+
 int32_t renderTargetIdCounter = 0;
 RenderTarget *bindRenderTarget = 0;
-
-void RenderTarget::useWorldCoords(bool t, bool force) {
-	if (t == worldMatrixEnabled && !force) return;
-	setAsCurrent();
-	worldMatrixEnabled = t;
-	ALLEGRO_TRANSFORM trans;
-	if (t) al_build_transform(&trans,al_get_display_width(CBEnchanted::instance()->getWindow())*0.5f-CBEnchanted::instance()->getCameraX(),al_get_display_height(CBEnchanted::instance()->getWindow())*0.5f+CBEnchanted::instance()->getCameraY(),1.0f,-1.0f,0.0f);
-	else al_identity_transform(&trans);
-	//al_translate_transform(&trans,&trans,-al_get_display_width(CBEnchanted::instance()->getWindow())*0.5f,al_get_display_height(CBEnchanted::instance()->getWindow())*0.5f);
-	al_use_transform(&trans);
-}
 
 void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime,int32_t animLength) {
 	if (animLength == 0 || tex->animLength == 0) {
@@ -49,7 +39,7 @@ void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles
 
 RenderTarget::RenderTarget():
 	bitmap(0),
-	worldMatrixEnabled(false)
+	worldCoordsEnabled(false)
 {
 	id = ++renderTargetIdCounter;
 }
@@ -78,6 +68,7 @@ void RenderTarget::setAsCurrent(bool force) {
 
 void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
 	setAsCurrent();
+	convertCoords(x,y);
 	if (fill) {
 		al_draw_filled_rectangle(x,y,x+w,y+h,color);
 	}
@@ -87,6 +78,7 @@ void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const A
 }
 
 void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLEGRO_COLOR &color) {
+	convertCoords(cx,cy);
 	if (r <= 0) return;
 	setAsCurrent();
 	if (fill) {
@@ -98,6 +90,7 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLE
 }
 
 void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
+	convertCoords(x,y);
 	if (w < 0 || h < 0) return;
 	setAsCurrent();
 	if (fill) {
@@ -110,11 +103,14 @@ void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,con
 
 void RenderTarget::drawDot(float x, float y, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
+	convertCoords(x,y);
 	al_draw_pixel(x,y,color);
 }
 
 void RenderTarget::drawLine(float x1, float y1, float x2, float y2, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
+	convertCoords(x1,y1);
+	convertCoords(x2,y2);
 	al_draw_line(x1,y1,x2,y2,color,1.0f);
 }
 
@@ -141,40 +137,52 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 	al_clear_to_color(c);
 }
 
+void RenderTarget::convertCoords(float &x, float &y) {
+	if (worldCoordsEnabled) {
+		x = x+ al_get_display_width(CBEnchanted::instance()->getWindow()) / 2.0f - CBEnchanted::instance()->getCameraX();
+		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraX();
+	}
+}
+
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
 	setAsCurrent();
-	al_draw_bitmap(r,x,y,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	convertCoords(x,y);
+	al_draw_bitmap(r,x,y,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float w, float h) {
+	convertCoords(x,y);
 	drawBitmapRegion(r,0,0,al_get_bitmap_width(r),al_get_bitmap_height(r),x,y,w,h);
 }
 
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP*r, float sx, float sy, float sw, float sh, float tx, float ty, float tw, float th) {
 	setAsCurrent();
-	al_draw_scaled_bitmap(r,sx,sy,sw,sh,tx,ty,tw,th,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	convertCoords(tx,ty);
+	al_draw_scaled_bitmap(r,sx,sy,sw,sh,tx,ty,tw,th,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot) {
 	setAsCurrent();
-	al_draw_rotated_bitmap(r,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	convertCoords(x,y);
+	al_draw_rotated_bitmap(r,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
 }
 
-void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float rw, float rh, float x, float y)
-{
-	al_draw_bitmap_region(r,rx,ry,rw,rh,x,y,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
-}
-
-void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float x, float y, float rot)
-{
+void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float rw, float rh, float x, float y) {
 	setAsCurrent();
-	al_draw_tinted_scaled_rotated_bitmap_region(r,sx,sy,sw,sh,tint,sw*0.5f,sh*0.5f,x,y,1.0f,1.0f,rot,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	convertCoords(x,y);
+	al_draw_bitmap_region(r,rx,ry,rw,rh,x,y,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
 }
 
-void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint)
-{
+void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float x, float y, float rot) {
 	setAsCurrent();
-	al_draw_tinted_rotated_bitmap(r,tint,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldMatrixEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+	convertCoords(x,y);
+	al_draw_tinted_scaled_rotated_bitmap_region(r,sx,sy,sw,sh,tint,sw*0.5f,sh*0.5f,x,y,1.0f,1.0f,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
+}
+
+void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
+	setAsCurrent();
+	convertCoords(x,y);
+	al_draw_tinted_rotated_bitmap(r,tint,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,worldCoordsEnabled ? ALLEGRO_FLIP_HORIZONTAL:0);
 }
 
 
@@ -191,6 +199,7 @@ void RenderTarget::copy(const RenderTarget *r) {
 
 void RenderTarget::drawText(const ALLEGRO_FONT *font, const string &text, float x, float y, const ALLEGRO_COLOR &color,int flags) {
 	setAsCurrent();
+	convertCoords(x,y);
 	if ((flags & Center) == Center) {
 		al_draw_text(font,color,x,y,ALLEGRO_ALIGN_CENTRE,text.c_str());
 		return;

@@ -140,7 +140,7 @@ void GfxInterface::commandCircle(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld);
 	bool fill = cb->popValue().toInt();
 	float r = cb->popValue().toFloat()*0.5;
-	float cy = cb->popValue().toFloat() + r;
+	float cy = cb->popValue().toFloat() + (drawDrawCommandToWorld ? -r :r);
 	float cx = cb->popValue().toFloat() + r;
 	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
 }
@@ -262,8 +262,8 @@ void GfxInterface::commandBox(void) {
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
-	float y = cb->popValue().toFloat()+0.5f;
-	float x = cb->popValue().toFloat()+0.5f;
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
 	currentRenderTarget->drawBox(x,y,w,h,fill,drawColor);
 }
 

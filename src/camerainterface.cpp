@@ -17,10 +17,6 @@ void CameraInterface::commandCloneCameraPosition(void) {
 	CBObject *obj = cb->getObject(id);
 	cameraX = obj->getX();
 	cameraY = obj->getY();
-
-	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
-	}
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
@@ -58,30 +54,18 @@ void CameraInterface::commandMoveCamera(void) {
 
 	cameraX += cosf(cameraAngle * M_PI / 180.0) * fwrd;
 	cameraY += sinf(cameraAngle * M_PI / 180.0) * fwrd;
-
-	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
-	}
 }
 
 void CameraInterface::commandTranslateCamera(void) {
 	cameraZ += cb->popValue().toFloat();
 	cameraY += cb->popValue().toFloat();
 	cameraX += cb->popValue().toFloat();
-
-	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
-	}
 }
 
 void CameraInterface::commandPositionCamera(void) {
 	cameraZ = cb->popValue().toFloat();
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
-
-	if (cb->getCurrentRenderTarget()->isDrawToWorldViewOn()) {
-		cb->getCurrentRenderTarget()->useWorldCoords(true, true);
-	}
 }
 
 void CameraInterface::functionCameraX(void) {

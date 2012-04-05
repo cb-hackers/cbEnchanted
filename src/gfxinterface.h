@@ -3,7 +3,7 @@
 
 #include "rendertarget.h"
 #include "cbmap.h"
-//#include "animationPlayer.h"
+
 class CBEnchanted;
 
 
@@ -87,6 +87,8 @@ class GfxInterface {
 		bool gameDrawn; //Game has already been drawn in DrawGame
 		bool gameUpdated; //Game has already been updated in UpdateGame
 
+		/** Buffer's returned by SCREEN() and Image()
+		  */
 		std::map<int32_t,RenderTarget*> bufferMap;
 };
 

@@ -48,6 +48,8 @@ void TextInterface::commandText(void) {
 	string txt = cb->popValue().toString().getRef();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
+
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
 	cb->getCurrentRenderTarget()->drawText(currentFont, txt, x, y, cb->getDrawColor());
 }
 
@@ -56,6 +58,7 @@ void TextInterface::commandCenterText(void) {
 	string str = cb->popValue().getString().getRef();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
 	switch(style){
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(
