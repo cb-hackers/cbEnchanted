@@ -51,7 +51,7 @@ GfxInterface::GfxInterface() :
 GfxInterface::~GfxInterface() {
 }
 
-void GfxInterface::initializeGfx()
+bool GfxInterface::initializeGfx()
 {
 	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
 	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
@@ -59,6 +59,10 @@ void GfxInterface::initializeGfx()
 	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP,1,ALLEGRO_REQUIRE);
 	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY,1,ALLEGRO_REQUIRE);
 	window = al_create_display(400,300);
+	if (!window) {
+		INFO("FATAL: Failed to create a window!");
+		return false;
+	}
 	registerWindow();
 	al_set_window_title(window,"");
 	windowRenderTarget = new RenderTarget;
@@ -72,6 +76,8 @@ void GfxInterface::initializeGfx()
 	windowGammaR = 0;
 	windowGammaG = 0;
 	windowGammaB = 0;
+
+	return true;
 }
 
 void GfxInterface::commandScreen(void) {

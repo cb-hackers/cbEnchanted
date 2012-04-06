@@ -281,7 +281,9 @@ bool CBEnchanted::init(string file) {
 	if (!al_init()) return false;
 	eventQueue = al_create_event_queue();
 	//Create screen
-	initializeGfx();
+	if (!initializeGfx()) {
+		return false;
+	}
 	if (!initializeInputs()) {
 		INFO("InitializeInputs failed");
 		return false;

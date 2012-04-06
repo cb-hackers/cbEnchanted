@@ -59,7 +59,7 @@ class GfxInterface {
 		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
 		void setCurrentRenderTarget(RenderTarget *t);
 
-		void initializeGfx();
+		bool initializeGfx();
 		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
 
 
