@@ -756,42 +756,60 @@ void CBEnchanted::commandDim(void) {
 	uint32_t arrId = *(uint32_t *)(code + cpos); // Array ID
 	cpos += 4;
 	uint32_t size = 1;
-
-	map<uint32_t, uint32_t> *dimensions = new map<uint32_t, uint32_t>();
-	for (int32_t i = n - 1; i >= 0; --i) {
-		int32_t dim = popValue().toInt() + 1; // Size of dimension
-		(*dimensions)[i] = dim;
-		size *= dim;
+	uint32_t dimensions[5] = {0};
+	for (int32_t i = 0; i != n; ++i) {
+		dimensions[i] = popValue().toInt() + 1; // Size of dimension
 	}
+
 
 	switch (type){
 		case 3: {
 			Array<int32_t> a;
-			a.init(size, dimensions);
+			for (int i = n - 1; i >= 0;--i) {
+				a.dimensions[i] = size;
+				size *= dimensions[i];
+			}
+			a.init(size);
 			setArray(arrId, a);
 			break;
 		}
 		case 7: {
 			Array<uint16_t> a;
-			a.init(size, dimensions);
+			for (int i = n - 1; i >= 0;--i) {
+				a.dimensions[i] = size;
+				size *= dimensions[i];
+			}
+			a.init(size);
 			setArray(arrId, a);
 			break;
 		}
 		case 8: {
 			Array<uint8_t> a;
-			a.init(size, dimensions);
+			for (int i = n - 1; i >= 0;--i) {
+				a.dimensions[i] = size;
+				size *= dimensions[i];
+			}
+			a.init(size);
 			setArray(arrId, a);
 			break;
 		}
 		case 4: {
 			Array<float> a;
-			a.init(size, dimensions);
+			for (int i = n - 1; i >= 0;--i) {
+				a.dimensions[i] = size;
+				size *= dimensions[i];
+			}
+			a.init(size);
 			setArray(arrId, a);
 			break;
 		}
 		case 6: {
 			Array<ISString> a;
-			a.init(size, dimensions);
+			for (int i = n - 1; i >= 0;--i) {
+				a.dimensions[i] = size;
+				size *= dimensions[i];
+			}
+			a.init(size);
 			setArray(arrId, a);
 			break;
 		}
@@ -1200,61 +1218,36 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t ty
 	switch (type) {
 		case 1: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
 			break;
 		}
 		case 4: {
 			Array<uint16_t> &a = getShortArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
 			break;
 		}
 		case 5: {
 			Array<uint8_t> &a = getByteArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
 			break;
 		}
 		case 2: {
 			Array<float> &a = getFloatArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
 			break;
 		}
 		case 3: {
 			Array<ISString> &a = getStringArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
 			break;
 		}
@@ -1267,59 +1260,39 @@ uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n, int32_t ty
 	switch (type) {
 		case 3: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
-			break; }
+			break;
+		}
 		case 7: {
 			Array<uint16_t> &a = getShortArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
-			break; }
+			break;
+		}
 		case 8: {
 			Array<uint8_t> &a = getByteArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
-			break; }
+			break;
+		}
 		case 4: {
 			Array<float> &a = getFloatArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
-			break; }
+			break;
+		}
 		case 6: {
 			Array<ISString> &a = getStringArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				if (i != n - 1) {
-					pos += popValue().getInt() * (*a.dimensions)[i + 1];
-				}
-				else {
-					pos += popValue().getInt();
-				}
+			for (int32_t i = 0; i != n; ++i) {
+				pos += popValue().getInt() * a.dimensions[i];
 			}
-			break; }
+			break;
+		}
 	}
 	return pos;
 }

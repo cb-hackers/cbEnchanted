@@ -158,9 +158,9 @@ class Array {
 	public:
 		Array() : data(0){}
 
-		void init(uint32_t size,map<uint32_t, uint32_t> *dim) {
-			dimensions = dim;
+		void init(uint32_t s) {
 			if (data) delete [] data;
+			size = s;
 			data = new T[size];
 			memset(data,0,size*sizeof(T));
 		}
@@ -168,10 +168,12 @@ class Array {
 			return data[index];
 		}
 		void set(uint32_t index,const T &t){
+			assert(index < size);
 			data[index] = t;
 		}
-		map<uint32_t, uint32_t> *dimensions;
+		uint32_t dimensions[5];
 		T *data;
+		uint32_t size;
 };
 
 class CBVariableHolder {
