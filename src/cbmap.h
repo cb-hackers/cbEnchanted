@@ -41,11 +41,15 @@ class CBMap : public CBObject{
 		int32_t mapSizeX(){return mapWidth;}
 		int32_t mapSizeY(){return mapHeight;}
 
-		int32_t getSizeX(){return mapWidth*tileWidth;}
-		int32_t getSizeY(){return mapHeight*tileHeight;}
+		int32_t getSizeX() const {
+			return mapWidth * tileWidth;
+		}
+		int32_t getSizeY() const {
+			return mapHeight * tileHeight;
+		}
 
-		int32_t getTileWidth(){return tileHeight;}
-		int32_t getTileHeight(){return tileWidth;}
+		int32_t getTileWidth() const {return tileWidth;}
+		int32_t getTileHeight() const {return tileHeight;}
 
 		void setLayers(uint8_t back, uint8_t over);
 		void setTile(uint32_t tile, uint32_t length, uint32_t slowness);

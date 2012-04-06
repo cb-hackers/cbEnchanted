@@ -72,6 +72,12 @@ class CollisionCheck
 		bool RectMapTest();
 		/** A circle - map collision test */
 		bool CircleMapTest();
+
+		/** Drawing the collision box, used for debugging only. */
+		void DrawCollisionBoundaries();
+
+		/** Tests a rectangle - rectangle collision, with parameters. */
+		bool RectRectTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
 };
 
 #endif // COLLISIONCHECK_H

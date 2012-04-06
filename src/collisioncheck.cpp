@@ -108,124 +108,172 @@ void CollisionCheck::handleCollision() {
 
 /** A circle - rectangle collision test */
 bool CollisionCheck::CircleRectTest() {
-	// Draw collision boundaries
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	float r = mObject1->getSizeX() / 2;
-
-	float x = mObject1->getX() - r;
-	float y = mObject1->getY() + r;
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
-
-	// ...collision boundaries are now drawn.
+	DrawCollisionBoundaries();
 
 	return false;
 }
 
 /** A rectangle - circle collision test */
 bool CollisionCheck::RectCircleTest() {
-	// Draw collision boundaries
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	float w = mObject1->getSizeX();
-	float h = mObject1->getSizeY();
-
-	float x = mObject1->getX() - w / 2;
-	float y = mObject1->getY() + h / 2;
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
-
-	// ...collision boundaries are now drawn.
+	DrawCollisionBoundaries();
 
 	return false;
 }
 
 /** A rectangle - rectangle collision test */
 bool CollisionCheck::RectRectTest() {
-	// Draw collision boundaries
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	float w = mObject1->getSizeX();
-	float h = mObject1->getSizeY();
-
-	float x = mObject1->getX() - w / 2;
-	float y = mObject1->getY() + h / 2;
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
-
-	// ...collision boundaries are now drawn.
+	DrawCollisionBoundaries();
 
 	return false;
 }
 
 /** A circle - circle collision test */
 bool CollisionCheck::CircleCircleTest() {
-	// Draw collision boundaries
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	float r = mObject1->getSizeX() / 2;
-
-	float x = mObject1->getX();
-	float y = mObject1->getY();
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
-
-	// ...collision boundaries are now drawn.
+	DrawCollisionBoundaries();
 
 	return false;
 }
 
 /** A rectangle - map collision test */
 bool CollisionCheck::RectMapTest() {
-	// Draw collision boundaries
+	DrawCollisionBoundaries();
+
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
-	float w = mObject1->getSizeX();
-	float h = mObject1->getSizeY();
 
-	float x = mObject1->getX() - w / 2;
-	float y = mObject1->getY() + h / 2;
 
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawBox(x, y, w, h, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
 
-	// ...collision boundaries are now drawn.
+	// The current map is the object in mObject2
+	CBMap *cbmap = static_cast<CBMap*>(mObject2);
+
+	// Fetch tile width and tile height to variables so that the code is less messy
+	int32_t tileWidth = cbmap->getTileWidth();
+	int32_t tileHeight = cbmap->getTileHeight();
+
+	// Same goes for object width, height and position.
+	float objX = mObject1->getX();
+	float objY = mObject1->getY();
+	float objWidth = mObject1->getSizeX();
+	float objHeight = mObject1->getSizeY();
+
+	// Calculate tile coordinates that are one up and one left from the object
+	int32_t startTileX = (int32_t) (mObject1->getX() + cbmap->getSizeX() / 2) / tileWidth - 1;
+	int32_t startTileY = (int32_t) (-mObject1->getY() + cbmap->getSizeY() / 2) / tileHeight - 1;
+
+	// Loop through an 3x3 area and check collisions to tiles that have hit data
+	for (int32_t iterateX = 0; iterateX <= 2; ++iterateX) {
+		for (int32_t iterateY = 0; iterateY <= 2; ++iterateY) {
+			if (cbmap->getHit(startTileX + iterateX, startTileY + iterateY)) {
+				float x = (startTileX + iterateX) * tileWidth - cbmap->getSizeX() / 2;
+				float y = cbmap->getSizeY() / 2 - (startTileY + iterateY) * tileHeight;
+
+				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+				if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
+					rendertarget->useWorldCoords(true);
+					rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+					rendertarget->useWorldCoords(false);
+					//DEBUG("Collision detected at (%f, %f)", x, y);
+				}
+			}
+		}
+	}
 
 	return false;
 }
 
 /** A circle - map collision test */
 bool CollisionCheck::CircleMapTest() {
-	// Draw collision boundaries
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	float r = mObject1->getSizeX() / 2;
-
-	float x = mObject1->getX();
-	float y = mObject1->getY();
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawCircle(x, y, r, false, al_map_rgb(255, 255, 255));
-	rendertarget->useWorldCoords(false);
-
-	// ...collision boundaries are now drawn.
+	DrawCollisionBoundaries();
 
 	return false;
 }
 
+/** Drawing the collision box, used for debugging only. */
+void CollisionCheck::DrawCollisionBoundaries() {
+
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+
+	// Draw the collision box for the first collision
+	switch (mCollisionType1) {
+		case Box: {
+			float w = mObject1->getSizeX();
+			float h = mObject1->getSizeY();
+			float x = mObject1->getX() - w / 2;
+			float y = mObject1->getY() + h / 2;
+			rendertarget->drawBox(x, y, w, h, false, al_map_rgba(0, 255, 0, 128));
+			break;
+		}
+		case Circle: {
+			float x = mObject1->getX();
+			float y = mObject1->getY();
+			float r = mObject1->getSizeX() / 2;
+			rendertarget->drawCircle(x, y, r, false, al_map_rgba(0, 255, 0, 128));
+			break;
+		}
+	}
+
+	// Draw the collision box for the thing to collide to
+	switch (mCollisionType2) {
+		case Box: break;
+		case Circle: break;
+		case Map: {
+			CBMap *cbmap = static_cast<CBMap*>(mObject2);
+			// Draw a box around the 8 tiles surrounding player
+			// and the tile the player is currently on.
+			int32_t startTileX = (int32_t) (mObject1->getX() + cbmap->getSizeX() / 2) / cbmap->getTileWidth() - 1;
+			int32_t startTileY = (int32_t) (-mObject1->getY() + cbmap->getSizeY() / 2) / cbmap->getTileHeight() - 1;
+			for (int32_t x = 0; x <= 2; ++x) {
+				for (int32_t y = 0; y <= 2; ++y) {
+					if (cbmap->getHit(startTileX + x, startTileY + y)) {
+						float drawX = (startTileX + x) * cbmap->getTileWidth() - cbmap->getSizeX() / 2;
+						float drawY = cbmap->getSizeY() / 2 - (startTileY + y) * cbmap->getTileHeight();
+						rendertarget->drawBox(drawX, drawY, cbmap->getTileWidth(), cbmap->getTileHeight(), true, al_map_rgba(64, 64, 64, 64));
+					}
+				}
+			}
+			break;
+		}
+	}
+
+	rendertarget->useWorldCoords(false);
+}
+
+
+/** Tests a rectangle - rectangle collision, with parameters. */
+bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+	float left1, right1, top1, bottom1;
+	float left2, right2, top2, bottom2;
+
+	left1 = x1;
+	right1 = x1 + w1;
+	top1 = y1;
+	bottom1 = y1 + h1;
+
+	left2 = x2;
+	right2 = x2 + w2;
+	top2 = y2;
+	bottom2 = y2 + h2;
+
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+
+	rendertarget->drawBox(x1, y1, w1, h1, false, al_map_rgba(0, 0, 255, 128));
+	rendertarget->drawBox(x2, y2, w2, h2, false, al_map_rgba(0, 0, 255, 128));
+
+	rendertarget->useWorldCoords(false);
+
+	if (bottom1 < top2) return false;
+	if (top1 > bottom2) return false;
+
+	if (right1 < left2) return false;
+	if (left1 > right2) return false;
+
+
+	return true;
+}
