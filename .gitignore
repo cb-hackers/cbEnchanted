@@ -29,3 +29,5 @@ tools/cbcompiler/IDE/CompileLog.txt
 tools/cbcompiler/IDE/Compiler
 tools/cbcompiler/IDE/Editor.out
 
+# Don't put generated documentation to the repository
+docs
