@@ -31,8 +31,8 @@ void FileInterface::commandSeekFile(void) {
 }
 
 void FileInterface::commandStartSearch(void) {
-    fs::directory_iterator new_dir_iter(fs::current_path());
-    fs::directory_iterator new_dir_end;
+	fs::directory_iterator new_dir_iter(fs::current_path());
+	fs::directory_iterator new_dir_end;
 
 	rcount = 0;
 
@@ -41,7 +41,7 @@ void FileInterface::commandStartSearch(void) {
 }
 
 void FileInterface::commandEndSearch(void) {
-    fs::directory_iterator new_dir_end;
+	fs::directory_iterator new_dir_end;
 
 	rcount = 0;
 
@@ -50,21 +50,21 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-    fs::current_path(fs::path(cb->popValue().toString().getRef()));
+	fs::current_path(fs::path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandMakeDir(void) {
-    fs::create_directory(fs::path(cb->popValue().toString().getRef()));
+	fs::create_directory(fs::path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString().getRef();
 	string file_s1 = cb->popValue().toString().getRef();
-    fs::copy_file(fs::path(file_s1), fs::path(file_s2));
+	fs::copy_file(fs::path(file_s1), fs::path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
-    fs::remove(fs::path(cb->popValue().toString().getRef()));
+	fs::remove(fs::path(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::commandExecute(void) {
@@ -203,7 +203,7 @@ void FileInterface::functionOpenToEdit(void) {
 	string file_s = cb->popValue().toString().getRef();
 	int32_t id = ++idC;
 
-    if(fs::exists(file_s))
+	if(fs::exists(file_s))
 	{
 		filestrs[id] = fopen(file_s.c_str(), "r+");
 	} else {
@@ -223,7 +223,7 @@ void FileInterface::functionFileOffset(void) {
 void FileInterface::functionFindFile(void) {
 	++rcount;
 	if (rcount == 1) {
-        if(fs::path(fs::current_path()).has_relative_path()) {
+		if(fs::path(fs::current_path()).has_relative_path()) {
 			cb->pushValue(string("."));
 		}
 		else {
@@ -232,7 +232,7 @@ void FileInterface::functionFindFile(void) {
 		}
 	}
 	else if (rcount == 2) {
-        if(fs::path(fs::current_path()).has_parent_path()) {
+		if(fs::path(fs::current_path()).has_parent_path()) {
 			cb->pushValue(string(".."));
 		}
 		else {
@@ -240,7 +240,7 @@ void FileInterface::functionFindFile(void) {
 		}
 	}
 	else if (dir_iter != dir_end) {
-        cb->pushValue(fs::path(dir_iter->path()).filename().string());
+		cb->pushValue(fs::path(dir_iter->path()).filename().string());
 		++dir_iter;
 	}
 	else {
@@ -249,19 +249,19 @@ void FileInterface::functionFindFile(void) {
 }
 
 void FileInterface::functionCurrentDir(void) {
-    cb->pushValue(fs::current_path().string());
+	cb->pushValue(fs::current_path().string());
 }
 
 void FileInterface::functionFileExists(void) {
-    cb->pushValue(fs::exists(cb->popValue().toString().getRef()));
+	cb->pushValue(fs::exists(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::functionIsDirectory(void) {
-    cb->pushValue(fs::is_directory(cb->popValue().toString().getRef()));
+	cb->pushValue(fs::is_directory(cb->popValue().toString().getRef()));
 }
 
 void FileInterface::functionFileSize(void) {
-    cb->pushValue(int32_t(fs::file_size(cb->popValue().toString().getRef())));
+	cb->pushValue(int32_t(fs::file_size(cb->popValue().toString().getRef())));
 }
 
 void FileInterface::functionEOF(void) {
