@@ -1,9 +1,4 @@
-Const CBE_CUSTOM_FUNCION_GROUP = 1
-
-Function Triangle(x1 As Float,y1 As Float,x2 As Float,y2 As Float,x3 As Float,y3 As Float,thicness As Float,fill)
-    group = CBE_CUSTOM_FUNCION_GROUP
-    funcId = 1
-EndFunction
+Include "include/customfunctions.cb"
 
 // http://www.coolbasic.com/phpBB3/viewtopic.php?p=54490#p54490
 

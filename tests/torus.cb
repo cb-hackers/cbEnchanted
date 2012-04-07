@@ -1,4 +1,4 @@
-Include "../src/cbEnchanted.cb"
+Include "include/customfunctions.cb"
 
 Const ires# = 30.0
 Const jres# = 30.0
