@@ -4,8 +4,6 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 
-namespace fs = boost::filesystem;
-
 int main(int argc, char** argv) {
 	CBEnchanted cb;
 	#ifdef TEST

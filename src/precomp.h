@@ -32,7 +32,8 @@
 #define UNUSED(v) (v);
 
 using namespace std;
-using namespace boost::filesystem;
+
+namespace fs = boost::filesystem;
 
 using boost::function;
 using boost::lexical_cast;
