@@ -102,8 +102,11 @@ SOURCES += \
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
-DEFINES += ALLEGRO_STATICLINK TEST
+DEFINES += ALLEGRO_STATICLINK
 
+!contains(CBE_CONFIG,no_testing) {
+	DEFINES += TEST
+}
 
 win32{
 	CONFIG(release, debug|release){
