@@ -8,7 +8,7 @@ Include "include/customfunctions.cb"
 //Funktio + esimerkki
 
 'FrameLimit 40
-'SCREEN 800,600,0,1
+SCREEN 800,600,0,1
 'SCREEN 400,300,0,2
 Global sw
 Global sh
