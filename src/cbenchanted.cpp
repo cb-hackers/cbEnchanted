@@ -37,9 +37,9 @@ void CBEnchanted::run() {
 	// Run until told to quit
 	running = true;
 	while (running) {
-		uint32_t opCode = (uint32_t)code[cpos++];
+		uint32_t opCode = (uint32_t)*(uint8_t *)(code++);//[cpos++];
 
-		HCDEBUG("[%i]: OpCode: %i", cpos, opCode);
+		HCDEBUG("[%i]: OpCode: %i", code - codeBase, opCode);
 		switch (opCode) {
 			case 65: handleSetInt(); break;
 			case 66: handleSetFloat(); break;
@@ -110,6 +110,8 @@ bool CBEnchanted::init(string file) {
 	// Read code to memory and close the file
 	size = endPos - startPos;
 	code = new char [size];
+	codeBase = code;
+
 	input.read(code, size);
 	input.close();
 
@@ -311,20 +313,20 @@ void CBEnchanted::cleanup() {
 }
 
 void CBEnchanted::handlePushFuncptr(void) {
-	int32_t ptr = *(int32_t *)(code + cpos);
-	cpos += 4;
+	int32_t ptr = *(int32_t *)(code);
+	code += 4;
 
-	pos.push_back(cpos);
+	pos.push_back(code - codeBase);
 
-	cpos = ptr;
+	code = codeBase + ptr;
 }
 
 void CBEnchanted::commandFunction(void) {
-	cpos++;
-	int32_t type = *(int32_t *)(code + cpos);
-	cpos += 5;
-	int32_t var = *(int32_t *)(code + cpos);
-	cpos += 4;
+	code++;
+	int32_t type = *(int32_t *)(code);
+	code += 5;
+	int32_t var = *(int32_t *)(code);
+	code += 4;
 
 	switch (type) {
 		case 1: setIntegerVariable(var, popValue().toInt()); break;
@@ -339,19 +341,20 @@ void CBEnchanted::commandFunction(void) {
  * CBEnchanted::handleSetInt - Set value of integer
  */
 void CBEnchanted::handleSetInt(void) {
-	uint32_t var = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	uint32_t var = *(uint32_t *)(code);
+	code += 4;
+
 	int32_t value = popValue().toInt();
 	setIntegerVariable(var, value);
-	HCDEBUG("[%i]: Setting int variable %i to value: %i", cpos, var,value);
+	HCDEBUG("[%i]: Setting int variable %i to value: %i", code - codeBase, var,value);
 }
 
 /*
  * CBEnchanted::handleSetFloat - Set value of float
  */
 void CBEnchanted::handleSetFloat(void) {
-	uint32_t var = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	uint32_t var = *(uint32_t *)(code);
+	code += 4;
 
 	setFloatVariable(var, popValue().toFloat());
 }
@@ -360,8 +363,8 @@ void CBEnchanted::handleSetFloat(void) {
  * CBEnchanted::handleCommand - Run command
  */
 void CBEnchanted::handleCommand(void) {
-	uint32_t command = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	uint32_t command = *(uint32_t *)(code);
+	code += 4;
 
 	HCDEBUG("Command: %i", command);
 
@@ -551,8 +554,8 @@ void CBEnchanted::handleCommand(void) {
  * CBEnchanted::handleFunction - Run function
  */
 void CBEnchanted::handleFunction(void) {
-	uint32_t func = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	uint32_t func = *(uint32_t *)(code);
+	code += 4;
 	HCDEBUG("Function: %i", func);
 
 	switch(func) {
@@ -739,24 +742,24 @@ void CBEnchanted::handleFunction(void) {
  * CBEnchanted::handlePushInt - Push integer to stack
  */
 void CBEnchanted::handlePushInt(void) {
-	HCDEBUG("[%i] Push Int %i", cpos, *(int32_t *)(code + cpos));
-	pushValue(*(int32_t *)(code + cpos));
-	cpos += 4;
+	HCDEBUG("[%i] Push Int %i", code - codeBase, *(int32_t *)(code));
+	pushValue(*(int32_t *)(code));
+	code += 4;
 }
 
 /*
  * CBEnchanted::commandDim - Create array
  */
 void CBEnchanted::commandDim(void) {
-	cpos ++;
-	uint32_t n = *(uint32_t *)(code + cpos); // Number of dimensions
-	cpos += 4;
-	cpos += 1;
-	uint32_t type = *(uint32_t *)(code + cpos);
-	cpos += 4;
-	cpos += 1;
-	uint32_t arrId = *(uint32_t *)(code + cpos); // Array ID
-	cpos += 4;
+	code ++;
+	uint32_t n = *(uint32_t *)(code); // Number of dimensions
+	code += 4;
+	code += 1;
+	uint32_t type = *(uint32_t *)(code);
+	code += 4;
+	code += 1;
+	uint32_t arrId = *(uint32_t *)(code); // Array ID
+	code += 4;
 	uint32_t size = 1;
 	uint32_t dimensions[5] = {0};
 	for (int32_t i = 0; i != n; ++i) {
@@ -823,12 +826,12 @@ void CBEnchanted::commandDim(void) {
  */
 void CBEnchanted::commandArrayAssign(void) {
 	uint32_t type = popValue().getInt();
-	cpos ++;
-	uint32_t n = *(uint32_t *)(code + cpos);
-	cpos += 4;
-	cpos += 1;
-	uint32_t id = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	code ++;
+	uint32_t n = *(uint32_t *)(code);
+	code += 4;
+	code += 1;
+	uint32_t id = *(uint32_t *)(code);
+	code += 4;
 
 	uint32_t pos = popArrayDimensions1(id,n,type);
 	switch (type) {
@@ -846,9 +849,9 @@ void CBEnchanted::commandArrayAssign(void) {
  */
 void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue().getInt();
-	int32_t var = *(int32_t *)(code + cpos);
-	cpos += 4;
-	HCDEBUG("[%i] Push variable: %i",cpos,type);
+	int32_t var = *(int32_t *)(code);
+	code += 4;
+	//HCDEBUG("[%i] Push variable: %i",cpos,type);
 	switch (type) {
 		case 1: pushValue(getIntegerVariable(var)); break;
 		case 2: pushValue(getFloatVariable(var)); break;
@@ -877,8 +880,8 @@ void CBEnchanted::handlePushSomething(void) {
 	uint32_t type = popValue().getInt();
 	switch (type) {
 		case 2: { // Float
-			float value = *(float *)(code + cpos);
-			cpos += 4;
+			float value = *(float *)(code);
+			code += 4;
 
 			pushValue(value);
 			break;
@@ -889,8 +892,8 @@ void CBEnchanted::handlePushSomething(void) {
 		case 7:
 		case 8:
 		{
-			uint32_t id = *(uint32_t *)(code + cpos);
-			cpos += 4;
+			uint32_t id = *(uint32_t *)(code);
+			code += 4;
 
 			int32_t dimensions = popValue().getInt();
 			uint32_t pos = popArrayDimensions2(id, dimensions, type);
@@ -914,8 +917,8 @@ void CBEnchanted::handlePushSomething(void) {
 			break;
 		}
 		case 5: { // String
-			uint32_t strId = *(uint32_t *)(code + cpos);
-			cpos += 4;
+			uint32_t strId = *(uint32_t *)(code);
+			code += 4;
 
 			// Push empty string
 			if (strId == 0) {
@@ -936,8 +939,8 @@ void CBEnchanted::handlePushSomething(void) {
  * CBEnchanted::handleMathOperation - Handle mathematical operation
  */
 void CBEnchanted::handleMathOperation(void) {
-	uint8_t op = *(uint8_t *)(code + cpos);
-	cpos++;
+	uint8_t op = *(uint8_t *)(code);
+	code++;
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
 		case 1: {
@@ -1093,11 +1096,11 @@ void CBEnchanted::handleMathOperation(void) {
  * CBEnchanted::handleJump - Jump if last operation was true
  */
 void CBEnchanted::handleJump(void) {
-	uint32_t dest = *(uint32_t *)(code + cpos);
-	cpos += 4;
+	uint32_t dest = *(uint32_t *)(code);
+	code += 4;
 
 	if (!popValue().getInt()) {
-		cpos = dest;
+		code = codeBase + dest;
 	}
 }
 
@@ -1105,21 +1108,21 @@ void CBEnchanted::handleJump(void) {
  * CBEnchanted::handleIncVar - Increase integer variable
  */
 void CBEnchanted::handleIncVar(void) {
-	setIntegerVariable(*(uint32_t *)(code + cpos), getIntegerVariable(*(uint32_t *)(code + cpos)) + 1);
-	cpos += 4;
+	setIntegerVariable(*(uint32_t *)(code), getIntegerVariable(*(uint32_t *)(code)) + 1);
+	code += 4;
 }
 
 /*
  * CBEnchanted::handleIncGlobalVar - Increase global integer variable
  */
 void CBEnchanted::handleIncGlobalVar(void) {
-	setGlobalIntegerVariable(*(uint32_t *)(code + cpos), getGlobalIntegerVariable(*(uint32_t *)(code + cpos)) + 1);
-	cpos += 4;
+	setGlobalIntegerVariable(*(uint32_t *)(code), getGlobalIntegerVariable(*(uint32_t *)(code)) + 1);
+	code += 4;
 }
 
 void CBEnchanted::handlePushTypeMemberVariable() {
-	void * typePtr = getTypePointerVariable(*((int32_t*)(code + cpos)));
-	cpos += 4;
+	void * typePtr = getTypePointerVariable(*((int32_t*)(code)));
+	code += 4;
 	int32_t varType = popValue().getInt();
 	int32_t field = (popValue().getInt() - 12) / 4;
 	switch (varType) {
@@ -1131,8 +1134,8 @@ void CBEnchanted::handlePushTypeMemberVariable() {
 }
 
 void CBEnchanted::handleCustomFunctionCall() {
-	int32_t handle = *(int32_t *)(code + cpos);
-	cpos += 4;
+	int32_t handle = *(int32_t *)(code);
+	code += 4;
 	customFunctionHandler.call(this,handle);
 }
 
@@ -1140,12 +1143,12 @@ void CBEnchanted::handleCustomFunctionCall() {
  * CBEnchanted::commandGoto - Jump to different location
  */
 void CBEnchanted::commandGoto(void) {
-	cpos++;
-	cpos = *(uint32_t *)(code + cpos);
+	code++;
+	code = codeBase + *(uint32_t *)(code);
 }
 
 void CBEnchanted::commandDelete(void) {
-	int32_t memberId = *(int32_t*)(code + cpos - 9);
+	int32_t memberId = *(int32_t*)(code - 9);
 	void *typeMember = popValue().getTypePtr();
 
 	setTypePointerVariable(memberId, Type::getMembersType(typeMember)->deleteMember(typeMember));

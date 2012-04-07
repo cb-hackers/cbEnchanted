@@ -64,6 +64,8 @@ class CBEnchanted :
 	private:
 
 		char *code;
+		char *codeBase;
+
 		uint32_t cpos;
 		vector <uint32_t> pos;
 
