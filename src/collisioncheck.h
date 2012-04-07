@@ -35,12 +35,10 @@ class CollisionCheck
 		void setCollisionType2(uint16_t c);
 
 		/** Sets the way collision are handled */
-		void setCollisionHandling(CollisionHandling h) { mCollisionHandling = h; }
+		void setCollisionHandling(uint16_t h);
 
 		/** Tests the collision */
 		bool testCollision();
-		/** Handles the collision */
-		void handleCollision();
 	private:
 		/** Object that has the collision set */
 		CBObject *mObject1;
@@ -78,6 +76,12 @@ class CollisionCheck
 
 		/** Tests a rectangle - rectangle collision, with parameters. */
 		bool RectRectTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
+
+		/** Adds a new collision to the objects collision list. */
+		void addCollision();
+
+		/** Handles the collision */
+		void handleCollision();
 };
 
 #endif // COLLISIONCHECK_H

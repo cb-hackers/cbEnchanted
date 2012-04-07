@@ -30,7 +30,7 @@ void CollisionCheck::setCollisionType1(uint16_t c) {
 			mCollisionType1 = Circle;
 		break;
 		default:
-			FIXME("Unsupported collision type %i set for the colliding object", c);
+			INFO("Error: Unsupported collision type %i set for the colliding object", c);
 			mObject1 = 0;
 			mObject2 = 0;
 	}
@@ -44,16 +44,67 @@ void CollisionCheck::setCollisionType1(uint16_t c) {
 void CollisionCheck::setCollisionType2(uint16_t c) {
 	switch (c) {
 		case 1:
-			mCollisionType2 = Box;
+			// The other collision type must also be Box
+			if (mCollisionType1 == Box) {
+				mCollisionType2 = Box;
+			}
+			else {
+				INFO("Error: Unsupported colliding type %i: The other collision type must also be Box(1)", c);
+				mObject1 = 0;
+				mObject2 = 0;
+			}
 		break;
 		case 2:
-			mCollisionType2 = Circle;
+			// The other collision type must also be Circle
+			if (mCollisionType1 == Circle) {
+				mCollisionType2 = Circle;
+			}
+			else {
+				INFO("Error: Unsupported colliding type %i: The other collision type must also be Circle(2)", c);
+				mObject1 = 0;
+				mObject2 = 0;
+			}
 		break;
 		case 4:
-			mCollisionType2 = Map;
+			// The other collision type must be Box or Circle
+			if (mCollisionType1 == Box || mCollisionType1 == Circle) {
+				mCollisionType2 = Map;
+			}
+			else {
+				INFO("Error: Unsupported colliding type %i: The other collision type must be Box(1) or Circle(2)", c);
+				mObject1 = 0;
+				mObject2 = 0;
+			}
 		break;
 		default:
-			FIXME("Unsupported collision type %i set for the object to collide to", c);
+			INFO("Error: Unsupported collision type %i set for the object to collide to", c);
+			mObject1 = 0;
+			mObject2 = 0;
+	}
+}
+
+/** Sets the way collision are handled.
+ *
+ * If the collision handling is of invalid type, mObject1 and mObject2 are cleared so
+ * that the collision will never be checked.
+ */
+void CollisionCheck::setCollisionHandling(uint16_t h) {
+	switch (h) {
+		case 1:
+			if (mCollisionType1 == Circle) {
+				mCollisionHandling = Stop;
+			}
+			else {
+				INFO("Error: Unsupported collision handling type %i: The collision type must be set to Circle(2)", h);
+				mObject1 = 0;
+				mObject2 = 0;
+			}
+		break;
+		case 2:
+			mCollisionHandling = Slide;
+		break;
+		default:
+			INFO("Error: Unsupported collision handling type %i", h);
 			mObject1 = 0;
 			mObject2 = 0;
 	}
@@ -142,8 +193,6 @@ bool CollisionCheck::RectMapTest() {
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 
-
-
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
 
@@ -173,7 +222,32 @@ bool CollisionCheck::RectMapTest() {
 					rendertarget->useWorldCoords(true);
 					rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
 					rendertarget->useWorldCoords(false);
+					// Move the object as close to the colliding wall as possible
+					if (iterateX < 1) {
+						// Colliding tile is to the left of player
+						objX = x + objWidth/2 + objWidth + 1;
+					}
+					else if (iterateX > 1) {
+						// Colliding tile is to the right of player
+						objX = x + objWidth/2 - objWidth - 1;
+					}
+					/*else if (iterateY < 1) {
+						// Colliding tile is to the up of player
+						objY = y - objHeight/2 - objHeight - 1;
+					}
+					else if (iterateY > 1) {
+						// Colliding tile is to the down of player
+						objY = y - objHeight/2 + objHeight + 1;
+					}*/
+
+
+					//objX = mCollisionX + cos(((mCollisionAngle - 180.0) / 180.0) * M_PI) * objWidth;
+					//objY = mCollisionY - sin(((mCollisionAngle - 180.0) / 180.0) * M_PI) * objHeight / 2;
+
+					mObject1->setPosition(objX, objY);
 					//DEBUG("Collision detected at (%f, %f)", x, y);
+
+					break;
 				}
 			}
 		}
@@ -274,6 +348,48 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	if (right1 < left2) return false;
 	if (left1 > right2) return false;
 
+	// Calculate collision angle
+	if (y1 < y2) {
+		// Collision from above
+		mCollisionAngle = 270.0;
+		mCollisionX = x1 + w1 / 2;
+		mCollisionY = top1;
+		rendertarget->drawText(cb->getCurrentFont(), "Collision above", 10, 30, al_map_rgb(255, 255, 255), 0);
+	}
+	else if (y1 > y2) {
+		// Collision from below
+		mCollisionAngle = 90.0;
+		mCollisionX = x1 + w1 / 2;
+		mCollisionY = bottom1;
+		rendertarget->drawText(cb->getCurrentFont(), "Collision below", 10, 30, al_map_rgb(255, 255, 255), 0);
+	}
+	else if (x1 < x2) {
+		// Collision from right side
+		mCollisionAngle = 180.0;
+		mCollisionX = right1;
+		mCollisionY = y1 + h1 / 2;
+		rendertarget->drawText(cb->getCurrentFont(), "Collision right", 10, 30, al_map_rgb(255, 255, 255), 0);
+	}
+	else if (x1 > x2) {
+		// Collision from left side
+		mCollisionAngle = 180.0;
+		mCollisionX = left1;
+		mCollisionY = y1 + h1 / 2;
+		rendertarget->drawText(cb->getCurrentFont(), "Collision left", 10, 30, al_map_rgb(255, 255, 255), 0);
+	}
+
+
+	rendertarget->drawText(cb->getCurrentFont(), string("x1: ") + lexical_cast<string>(x1), 10, 42, al_map_rgb(255, 255, 255), 0);
+	rendertarget->drawText(cb->getCurrentFont(), string("x2: ") + lexical_cast<string>(x2) , 10, 54, al_map_rgb(255, 255, 255), 0);
+	rendertarget->drawText(cb->getCurrentFont(), string("y1: ") + lexical_cast<string>(y1), 10, 66, al_map_rgb(255, 255, 255), 0);
+	rendertarget->drawText(cb->getCurrentFont(), string("y2: ") + lexical_cast<string>(y2), 10, 78, al_map_rgb(255, 255, 255), 0);
 
 	return true;
+}
+
+/** Adds a new collision to the objects collision list. */
+void CollisionCheck::addCollision() {
+	Collision *collision = new Collision(mObject1, mObject2, mCollisionAngle, mCollisionX, mCollisionY);
+
+	mObject1->addCollision(collision);
 }

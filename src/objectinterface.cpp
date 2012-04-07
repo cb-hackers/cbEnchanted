@@ -335,7 +335,7 @@ void ObjectInterface::commandSetupCollision(void) {
 
 	DEBUG("Called SetupCollision %i, %i, %i, %i, %i", obj1id, obj2id, obj1colType, obj2colType, handling);
 
-	// Fetch  CBObject's based on object IDs
+	// Fetch CBObject's based on object IDs
 	CBObject *obj1 = objectMap[obj1id];
 	CBObject *obj2 = objectMap[obj2id];
 
@@ -345,9 +345,13 @@ void ObjectInterface::commandSetupCollision(void) {
 	// Initialize the collision check
 	colChk->setCollisionType1(obj1colType);
 	colChk->setCollisionType2(obj2colType);
+	colChk->setCollisionHandling(handling);
 
-	// Add the collision check to collisions vector
-	collisionChecks.push_back(colChk);
+	// Check that collisions are set OK
+	if (!colChk->isNull()) {
+		// Add the collision check to collisions vector
+		collisionChecks.push_back(colChk);
+	}
 }
 
 void ObjectInterface::commandClearCollisions(void) {

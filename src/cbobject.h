@@ -66,6 +66,9 @@ class CBObject{
 		/** Returns sizeY property. For internal use only */
 		uint32_t getSizeY() const { return sizeY; }
 
+		/** Adds a collision to collisionList. */
+		void addCollision(Collision *collision);
+
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
@@ -135,7 +138,7 @@ class CBObject{
 		bool playing;
 
 		/** Collision data. Unimplemented. */
-		std::vector<Collision> collisionList;
+		std::vector<Collision*> collisionList;
 };
 
 #endif // OBJECT_H

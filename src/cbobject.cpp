@@ -194,7 +194,7 @@ void CBObject::startPlaying(uint16_t startf, uint16_t endf, float spd, bool cont
 	playing = true;
 }
 
-/** Updates the animation and life of an object.
+/** Updates the animation and life of an object and also clears the collisions.
  * @param timestep Something related to animation and timestep. Not used here.
  * @returns Should the object be deleted afterwards
  */
@@ -226,6 +226,10 @@ bool CBObject::updateObject(float timestep) {
 			return true; //Delete object
 		}
 	}
+
+	// Clear collisions
+	collisionList.clear();
+
 	return false;
 }
 
@@ -410,5 +414,10 @@ uint32_t CBObject::getLife() {
 /** @returns Is the object using life or not */
 bool CBObject::isLife() {
 	return usingLife;
+}
+
+/** Adds a collision to collisionList */
+void CBObject::addCollision(Collision *collision) {
+	collisionList.push_back(collision);
 }
 
