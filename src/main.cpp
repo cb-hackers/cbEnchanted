@@ -8,7 +8,6 @@ namespace fs = boost::filesystem;
 
 int main(int argc, char** argv) {
 	CBEnchanted cb;
-
 	#ifdef TEST
 	if (argc == 2) {
 		if (cb.init(string(argv[1]))) {

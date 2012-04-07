@@ -941,145 +941,145 @@ void CBEnchanted::handleMathOperation(void) {
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
 		case 1: {
-			Any r = popValue();
+			const Any &r = popValue();
 
 			pushValue(-r);
 			break;
 		}
 		case 2: {
-			Any r = popValue();
+			const Any &r = popValue();
 
 			pushValue(+r);
 			break;
 		}
 		case 3: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any& r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l ^ r);
 			break;
 		}
 		case 4: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l + r);
 			break;
 		}
 		case 5: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l - r);
 			break;
 		}
 		case 6: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l * r);
 			break;
 		}
 		case 7: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l / r);
 			break;
 		}
 		case 8: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l % r);
 			break;
 		}
 		case 9: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l << r);
 			break;
 		}
 		case 10: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(shr(l, r));
 			break;
 		}
 		case 11: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(sar(l, r));
 			break;
 		}
 		case 12: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l < r);
 			break;
 		}
 		case 13: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l > r);
 			break;
 		}
 		case 14: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l == r);
 			break;
 		}
 		case 15: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l != r);
 			break;
 		}
 		case 16: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l <= r);
 			break;
 		}
 		case 17: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l >= r);
 			break;
 		}
 		case 18: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l && r);
 			break;
 		}
 		case 19: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue(l || r);
 			break;
 		}
 		case 20: {
-			Any r = popValue();
-			Any l = popValue();
+			const Any &r = popValue();
+			const Any &l = popValue();
 
 			pushValue((l || r) && !(r && l));
 			break;
 		}
 		case 21: {
-			Any r = popValue();
+			const Any &r = popValue();
 
 			pushValue(!r);
 			break;

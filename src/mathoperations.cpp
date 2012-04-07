@@ -4,7 +4,7 @@
 #include "any.h"
 
 
-Any operator ! (Any &l) {
+Any operator ! (const Any &l) {
 	if (l.type() == Any::Float) {
 		return !l.getFloat();
 	}
@@ -18,7 +18,7 @@ Any operator ! (Any &l) {
 	return 0;
 }
 
-Any operator + (Any &l) {
+Any operator + (const Any &l) {
 	if (l.type() == Any::Float) {
 		return +l.getFloat();
 	}
@@ -29,7 +29,7 @@ Any operator + (Any &l) {
 	return 0;
 }
 
-Any operator - (Any &l) {
+Any operator - (const Any &l) {
 	if (l.type() == Any::Float) {
 		return -l.getFloat();
 	}
@@ -40,12 +40,12 @@ Any operator - (Any &l) {
 	return 0;
 }
 
-Any operator % (Any &l, Any &r) {
+Any operator % (const Any &l, const Any &r) {
 	return l.toInt() % r.toInt();
 	FIXME("Unsupported operation %s % %s", l.typeInfo().name(), r.typeInfo().name());
 }
 
-Any operator * (Any &l, Any &r) {
+Any operator * (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() * r.getFloat();
@@ -66,7 +66,7 @@ Any operator * (Any &l, Any &r) {
 	return 0;
 }
 
-Any operator + (Any &l, Any &r) {
+Any operator + (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() + r.getFloat();
@@ -104,7 +104,7 @@ Any operator + (Any &l, Any &r) {
 	return 0;
 }
 
-Any operator - (Any &l, Any &r) {
+Any operator - (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() - r.getFloat();
@@ -125,7 +125,7 @@ Any operator - (Any &l, Any &r) {
 	return 0;
 }
 
-Any operator / (Any &l, Any &r) {
+Any operator / (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() / r.getFloat();
@@ -146,7 +146,7 @@ Any operator / (Any &l, Any &r) {
 	return 0;
 }
 
-Any operator << (Any &l, Any &r) {
+Any operator << (const Any &l, const Any &r) {
 	if (l.type() == Any::Int) {
 		if (r.type() == Any::Int) {
 			int32_t a = l.getInt();
@@ -159,7 +159,7 @@ Any operator << (Any &l, Any &r) {
 	return 0;
 }
 
-Any sar (Any &l, Any &r) {
+Any sar (const Any &l, const Any &r) {
 	if (l.type() == Any::Int) {
 		if (r.type() == Any::Int) {
 			return l.getInt() >> l.getInt();
@@ -169,7 +169,7 @@ Any sar (Any &l, Any &r) {
 	return 0;
 }
 
-Any shr (Any &l, Any &r) {
+Any shr (const Any &l, const Any &r) {
 	if (l.type() == Any::Int) {
 		if (r.type() == Any::Int) {
 			int32_t a = l.getInt();
@@ -182,7 +182,7 @@ Any shr (Any &l, Any &r) {
 	return 0;
 }
 
-Any operator ^ (Any &l, Any &r) {
+Any operator ^ (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return (float)pow(l.getFloat(), r.getFloat());
@@ -203,7 +203,7 @@ Any operator ^ (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator != (Any &l, Any &r) {
+int32_t operator != (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() != r.getFloat();
@@ -234,7 +234,7 @@ int32_t operator != (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator && (Any &l, Any &r) {
+int32_t operator && (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() && r.getFloat();
@@ -260,7 +260,7 @@ int32_t operator && (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator <= (Any &l, Any &r) {
+int32_t operator <= (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() <= r.getFloat();
@@ -281,7 +281,7 @@ int32_t operator <= (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator == (Any &l, Any &r) {
+int32_t operator == (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() == r.getFloat();
@@ -344,7 +344,7 @@ int32_t operator == (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator >= (Any &l, Any &r) {
+int32_t operator >= (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() >= r.getFloat();
@@ -365,7 +365,7 @@ int32_t operator >= (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator || (Any &l, Any &r) {
+int32_t operator || (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() || r.getFloat();
@@ -391,7 +391,7 @@ int32_t operator || (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator > (Any &l, Any &r) {
+int32_t operator > (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() > r.getFloat();
@@ -412,7 +412,7 @@ int32_t operator > (Any &l, Any &r) {
 	return 0;
 }
 
-int32_t operator < (Any &l, Any &r) {
+int32_t operator < (const Any &l, const Any &r) {
 	if (l.type() == Any::Float) {
 		if (r.type() == Any::Float) {
 			return l.getFloat() < r.getFloat();

@@ -39,13 +39,12 @@ Any::~Any() {
 	}
 }
 
-Any &Any::operator = (const Any &a)
-{
-	if (a.typeId == String && a.dString) {
-		a.dString->increaseRefCount();
+Any &Any::operator =(const Any &a) {
+	if (a.typeId == String) {
+		if (a.dString) a.dString->increaseRefCount();
 	}
-	if (this->typeId == String && this->dString) {
-		this->dString->decreaseRefCount();
+	if (this->typeId == String) {
+		if (this->dString) this->dString->decreaseRefCount();
 	}
 	this->typeId = a.typeId;
 	this->dPtr = a.dPtr;

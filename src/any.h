@@ -17,10 +17,6 @@ class Any {
 			TypePtr = 4
 		};
 	private:
-		/** Any::Type of data type saved to Any
-		  */
-		int32_t typeId;
-
 		union {
 			/** Float data */
 			float dFloat;
@@ -32,6 +28,9 @@ class Any {
 			void *dPtr;
 		};
 
+		/** Any::Type of data type saved to Any
+		  */
+		uint8_t typeId;
 	public:
 		/** Constructs empty Any. empty() == true
 		  */
@@ -66,7 +65,7 @@ class Any {
 
 		/** Assignment operator
 		  */
-		Any &operator = (const Any &a);
+		Any & operator = (const Any &a);
 
 		/** Returns string stored in Any. Causes assertion if typeId isn't String
 		  * @return String stored in Any

@@ -10,7 +10,8 @@ QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t /Zi
 
 contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
-	QMAKE_CXXFLAGS_DEBUG += /Zi /Zc:wchar_t /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /EHsc /GS /Gy /Zc:forScope
+	QMAKE_CXXFLAGS_RELEASE += /Zi /Zc:wchar_t /arch
+	QMAKE_LFLAGS_RELEASE += /DEBUG
 } else {
 	!contains(CBE_CONFIG,full_optimization) {
 		CONFIG += precompiled_header
