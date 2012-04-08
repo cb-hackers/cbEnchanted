@@ -62,7 +62,8 @@ HEADERS += \
     ../src/customfunctionhandler.h \
     ../src/customfunction.h \
     ../src/customfunctiondefines.h \
-    ../src/customfunctions.h
+    ../src/customfunctions.h \
+    ../src/scopeholder.h
 
 SOURCES += \
     ../src/textinterface.cpp \
@@ -98,7 +99,8 @@ SOURCES += \
     ../src/any.cpp \
     ../src/customfunctionhandler.cpp \
     ../src/customfunction.cpp \
-    ../src/customfunctions.cpp
+    ../src/customfunctions.cpp \
+    ../src/scopeholder.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
