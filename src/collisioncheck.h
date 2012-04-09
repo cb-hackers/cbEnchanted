@@ -27,8 +27,8 @@ class CollisionCheck
 
 		/** Check if either of the collision objects are null */
 		bool isNull() const { return mObject1 == 0 || mObject2 == 0; }
-		/** Sets the objects that take part in this collision */
-		void setObjects(CBObject *a, CBObject *b) { mObject1 = a; mObject2 = b; }
+		/** Sets the objects that take part in this collision and resets safe coordinates. */
+		void setObjects(CBObject *a, CBObject *b);
 		/** Sets the type of collision for the colliding object. */
 		void setCollisionType1(uint16_t c);
 		/** Sets the type of collision for the object to collide to. */
@@ -44,6 +44,9 @@ class CollisionCheck
 		CBObject *mObject1;
 		/** Object to collide to */
 		CBObject *mObject2;
+
+		/** Latest coordinates of mObject1 where there were no collision. */
+		float safeX, safeY;
 
 		/** The type of collision, @see CollisionType */
 		CollisionType mCollisionType1, mCollisionType2;

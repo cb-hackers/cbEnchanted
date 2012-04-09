@@ -16,6 +16,15 @@ CollisionCheck::CollisionCheck(CBObject *object1, CBObject *object2) {
 	setObjects(object1, object2);
 }
 
+/** Sets the objects that take part in this collision and resets safe coordinates. */
+void CollisionCheck::setObjects(CBObject *a, CBObject *b) {
+	mObject1 = a;
+	mObject2 = b;
+
+	safeX = mObject1->getX();
+	safeY = mObject1->getY();
+}
+
 /** Sets the type of collision for the colliding object.
  *
  * If the type is of invalid value, both mObject1 and mObject2 properties are
@@ -206,52 +215,258 @@ bool CollisionCheck::RectMapTest() {
 	float objWidth = mObject1->getSizeX();
 	float objHeight = mObject1->getSizeY();
 
-	// Calculate tile coordinates that are one up and one left from the object
-	int32_t startTileX = (int32_t) (mObject1->getX() + cbmap->getSizeX() / 2) / tileWidth - 1;
-	int32_t startTileY = (int32_t) (-mObject1->getY() + cbmap->getSizeY() / 2) / tileHeight - 1;
+	// Calculate the amount of tiles to both X- and Y-directions we need to check
+	uint16_t checkTilesX = 1;
+	uint16_t checkTilesY = 1;
 
-	// Loop through an 3x3 area and check collisions to tiles that have hit data
-	for (int32_t iterateX = 0; iterateX <= 2; ++iterateX) {
-		for (int32_t iterateY = 0; iterateY <= 2; ++iterateY) {
+	// Calculate tile coordinates that are one up and one left from the object
+	int32_t startTileX = (int32_t) (mObject1->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
+	int32_t startTileY = (int32_t) (-mObject1->getY() + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
+
+	// Create an array that tells if there was a collision and in which direction
+	//   isCollisions[0] = top
+	//   isCollisions[1] = right
+	//   isCollisions[2] = bottom
+	//   isCollisions[3] = left
+	bool isCollisions[4] = {false, false, false, false};
+
+	// Create an array that holds the related collision coordinate.
+	// Top/bottom collision has y-coordinate while left/right collision has x-coordinate.
+	float collisions[4];
+
+	// Loop through tiles top of player
+	for (int32_t iterateX = 0; iterateX <= checkTilesX * 2; ++iterateX) {
+		if (cbmap->getHit(startTileX + iterateX, startTileY)) {
+			float x = (startTileX + iterateX) * tileWidth - cbmap->getSizeX() / 2;
+			float y = cbmap->getSizeY() / 2 - startTileY * tileHeight;
+
+			// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+			if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
+				// Colliding tile is top of player
+				isCollisions[0] = true;
+				collisions[0] = y - tileHeight - 1.0f;
+
+				// Let's do some debug drawing
+				rendertarget->useWorldCoords(true);
+				rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+				rendertarget->useWorldCoords(false);
+
+				break;
+			}
+		}
+	}
+
+	// Check the directions to where we collided and handle them here.
+	if (isCollisions[0]) {
+		// Collision top
+		rendertarget->drawText(cb->getCurrentFont(), "Collision top", 10, 30, al_map_rgb(255, 255, 255), 0);
+
+		rendertarget->useWorldCoords(true);
+		rendertarget->drawCircle(objX, collisions[0], 5, true, al_map_rgb(255, 0, 0));
+		rendertarget->useWorldCoords(false);
+
+		// Calculate the new y-coordinate for this object
+		objY = collisions[0] - objHeight/2;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	// Loop through tiles bottom of player
+	for (int32_t iterateX = 0; iterateX <= checkTilesX * 2; ++iterateX) {
+		if (cbmap->getHit(startTileX + iterateX, startTileY + 2)) {
+			float x = (startTileX + iterateX) * tileWidth - cbmap->getSizeX() / 2;
+			float y = cbmap->getSizeY() / 2 - (startTileY + 2) * tileHeight;
+
+			// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+			if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
+				// Colliding tile is to the down of player
+				isCollisions[2] = true;
+				collisions[2] = y + 1.0f;
+
+				// Let's do some debug drawing
+				rendertarget->useWorldCoords(true);
+				rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+				rendertarget->useWorldCoords(false);
+
+				break;
+			}
+		}
+	}
+
+	// Check the directions to where we collided and handle them here.
+	if (isCollisions[2]) {
+		// Collision bottom
+		rendertarget->drawText(cb->getCurrentFont(), "Collision bottom", 10, 54, al_map_rgb(255, 255, 255), 0);
+
+		rendertarget->useWorldCoords(true);
+		rendertarget->drawCircle(objX, collisions[2], 5, true, al_map_rgb(255, 0, 0));
+		rendertarget->useWorldCoords(false);
+
+		// Calculate the new y-coordinate for this object
+		objY = collisions[2] + objHeight/2;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	// Loop through tiles to the right of player
+	for (int32_t iterateY = 0; iterateY <= checkTilesY * 2; ++iterateY) {
+		if (cbmap->getHit(startTileX + 2, startTileY + iterateY)) {
+			float x = (startTileX + 2) * tileWidth - cbmap->getSizeX() / 2;
+			float y = cbmap->getSizeY() / 2 - (startTileY + iterateY) * tileHeight;
+
+			// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+			if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
+				// Colliding tile is to the right of player
+				isCollisions[1] = true;
+				collisions[1] = x - 1.0f;
+
+				// Let's do some debug drawing
+				rendertarget->useWorldCoords(true);
+				rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+				rendertarget->useWorldCoords(false);
+
+				break;
+			}
+		}
+	}
+
+	// Check the directions to where we collided and handle them here.
+	if (isCollisions[1]) {
+		// Collision right
+		rendertarget->drawText(cb->getCurrentFont(), "Collision right", 10, 42, al_map_rgb(255, 255, 255), 0);
+
+		rendertarget->useWorldCoords(true);
+		rendertarget->drawCircle(collisions[1], objY, 5, true, al_map_rgb(255, 0, 0));
+		rendertarget->useWorldCoords(false);
+
+		// Calculate the new x-coordinate for this object
+		objX = collisions[1] - objWidth/2;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	// Loop through tiles to the left of player
+	for (int32_t iterateY = 0; iterateY <= checkTilesY * 2; ++iterateY) {
+		if (cbmap->getHit(startTileX, startTileY + iterateY)) {
+			float x = startTileX * tileWidth - cbmap->getSizeX() / 2;
+			float y = cbmap->getSizeY() / 2 - (startTileY + iterateY) * tileHeight;
+
+			// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+			if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
+				// Colliding tile is to the left of player
+				isCollisions[3] = true;
+				collisions[3] = x + tileWidth + 1.0f;
+
+				// Let's do some debug drawing
+				rendertarget->useWorldCoords(true);
+				rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+				rendertarget->useWorldCoords(false);
+
+				break;
+			}
+		}
+	}
+
+	// Check the directions to where we collided and handle them here.
+	if (isCollisions[3]) {
+		// Collision left
+		rendertarget->drawText(cb->getCurrentFont(), "Collision left", 10, 66, al_map_rgb(255, 255, 255), 0);
+
+		rendertarget->useWorldCoords(true);
+		rendertarget->drawCircle(collisions[3], objY, 5, true, al_map_rgb(255, 0, 0));
+		rendertarget->useWorldCoords(false);
+
+		// Calculate the new x-coordinate for this object
+		objX = collisions[3] + objWidth/2;
+	}
+
+
+
+	/*
+	for (int32_t iterateX = 0; iterateX <= checkTilesX * 2; ++iterateX) {
+		for (int32_t iterateY = 0; iterateY <= checkTilesY * 2; ++iterateY) {
 			if (cbmap->getHit(startTileX + iterateX, startTileY + iterateY)) {
 				float x = (startTileX + iterateX) * tileWidth - cbmap->getSizeX() / 2;
 				float y = cbmap->getSizeY() / 2 - (startTileY + iterateY) * tileHeight;
 
 				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
 				if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
-					rendertarget->useWorldCoords(true);
-					rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
-					rendertarget->useWorldCoords(false);
-					// Move the object as close to the colliding wall as possible
-					if (iterateX < 1) {
+
+					if (iterateX < checkTilesX) {
 						// Colliding tile is to the left of player
-						objX = x + objWidth/2 + objWidth + 1;
+						isCollisions[3] = true;
+						collisions[3] = x + tileWidth + 1.0f;
 					}
-					else if (iterateX > 1) {
+					else if (iterateX > checkTilesY) {
 						// Colliding tile is to the right of player
-						objX = x + objWidth/2 - objWidth - 1;
+						isCollisions[1] = true;
+						collisions[1] = x - 1.0f;
 					}
-					/*else if (iterateY < 1) {
+
+					if (iterateY < checkTilesY) {
 						// Colliding tile is to the up of player
-						objY = y - objHeight/2 - objHeight - 1;
+						isCollisions[0] = true;
+						collisions[0] = y - tileHeight - 1.0f;
 					}
-					else if (iterateY > 1) {
+					else if (iterateY > checkTilesY) {
 						// Colliding tile is to the down of player
-						objY = y - objHeight/2 + objHeight + 1;
-					}*/
+						isCollisions[2] = true;
+						collisions[2] = y + 1.0f;
+					}
+
+					// Let's do some debug drawing
+					rendertarget->useWorldCoords(true);
+
+					rendertarget->drawBox(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, true, al_map_rgba(255, 0, 0, 64));
+
+					rendertarget->useWorldCoords(false);
 
 
 					//objX = mCollisionX + cos(((mCollisionAngle - 180.0) / 180.0) * M_PI) * objWidth;
 					//objY = mCollisionY - sin(((mCollisionAngle - 180.0) / 180.0) * M_PI) * objHeight / 2;
 
-					mObject1->setPosition(objX, objY);
+					//mObject1->setPosition(objX, objY);
 					//DEBUG("Collision detected at (%f, %f)", x, y);
 
-					break;
+					//break;
 				}
 			}
 		}
 	}
+	*/
+
+
+	// Set the object position
+	mObject1->setPosition(objX, objY);
+
+	/*
+		// Draw text indicating which way did we collide
+		if (mCollidedX) {
+
+		}
+		else {
+			mCollisionX = objX;
+		}
+		if (mCollidedY) {
+			rendertarget->drawText(cb->getCurrentFont(), "Y-directional collision", 10, 42, al_map_rgb(255, 255, 255), 0);
+		}
+		else {
+			mCollisionY = objY;
+		}
+
+		rendertarget->useWorldCoords(true);
+		rendertarget->drawCircle(mCollisionX, mCollisionY, 5, true, al_map_rgb(255, 0, 0));
+		rendertarget->useWorldCoords(false);
+	}
+	*/
+
+
 
 	return false;
 }
@@ -348,6 +563,7 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	if (right1 < left2) return false;
 	if (left1 > right2) return false;
 
+	/*
 	// Calculate collision angle
 	if (y1 < y2) {
 		// Collision from above
@@ -383,7 +599,7 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	rendertarget->drawText(cb->getCurrentFont(), string("x2: ") + lexical_cast<string>(x2) , 10, 54, al_map_rgb(255, 255, 255), 0);
 	rendertarget->drawText(cb->getCurrentFont(), string("y1: ") + lexical_cast<string>(y1), 10, 66, al_map_rgb(255, 255, 255), 0);
 	rendertarget->drawText(cb->getCurrentFont(), string("y2: ") + lexical_cast<string>(y2), 10, 78, al_map_rgb(255, 255, 255), 0);
-
+	*/
 	return true;
 }
 
