@@ -1,0 +1,36 @@
+FrameLimit 40
+
+'load map 
+map=LoadMap("Media\testmap.til","Media\negative.bmp")
+
+'load player 
+guy=LoadObject("Media\guy.bmp",72)
+PositionObject guy,0, -40
+
+'load a neutral unit 
+fellow=LoadObject("Media\guy.bmp",72)
+PositionObject fellow, -100, -40
+
+'setup some collisions 
+SetupCollision guy,fellow,2,2,2
+SetupCollision guy,map,1,4,2
+
+'Delete all collisions (which really doesn't 
+'make any sense since we just defined some). 
+ClearCollisions
+
+Repeat
+
+    'Controls
+    If LeftKey() Then TurnObject guy,5
+    If RightKey() Then TurnObject guy, -5
+    If UpKey() Then MoveObject guy,3
+    If DownKey() Then MoveObject guy, -3
+    
+    'camera follow
+    UpdateGame
+    CloneCameraPosition guy
+
+    DrawScreen
+
+Until EscapeKey()

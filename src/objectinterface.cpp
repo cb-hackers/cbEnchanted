@@ -355,7 +355,7 @@ void ObjectInterface::commandSetupCollision(void) {
 }
 
 void ObjectInterface::commandClearCollisions(void) {
-	STUB;
+	collisionChecks.clear();
 }
 
 void ObjectInterface::commandInitObjectList(void) {
