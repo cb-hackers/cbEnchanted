@@ -32,7 +32,13 @@ CBObject::CBObject(bool floor):
 	life(0),
 	lastObj(0),
 	nextObj(0),
-	playing(false)
+	playing(false),
+	animEndingFrame(0),
+	animSpeed(0),
+	animStartFrame(0),
+	objectIntData(0),
+	objectStringData(),
+	objectFloatData(0)
 {
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
@@ -396,7 +402,12 @@ CBObject *CBObject::copyObject() const {
 	obj->copied = true;
 	obj->frameHeight = frameHeight;
 	obj->frameWidth = frameWidth;
+	obj->animEndingFrame = this->animEndingFrame;
+	obj->animLooping = this->animLooping;
+	obj->animSpeed = this->animSpeed;
+	obj->animStartFrame = this->animStartFrame;
 	obj->visible = true;
+	obj->maxFrames = this->maxFrames;
 	return obj;
 }
 

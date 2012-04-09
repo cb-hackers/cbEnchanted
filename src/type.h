@@ -6,29 +6,29 @@
 
 class Type {
 	public:
-		Type(int32_t fields);
+		Type(int32_t dataSize);
 
 		void *newMember();
 		void *deleteMember(void *m);
 
 		inline static Type *getMembersType(const void *m) { return ((Type**)m)[2]; }
-		inline static int32_t &getIntField(const void *m, int32_t field) {
-			return *(int32_t*)(((void**)m) + 3 + field);
+		inline static int32_t &getIntField(const void *m, int32_t place) {
+			return *(int32_t*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
 		}
-		inline static float getFloatField(const void *m, int32_t field) {
-			return *(float*)(((void**)m) + 3 + field);
+		inline static float getFloatField(const void *m, int32_t place) {
+			return *(float*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
 		}
-		inline static ISString &getStringField(const void *m, int32_t field) {
-			return *(ISString*)(((void**)m) + 3 + field);
+		inline static ISString &getStringField(const void *m, int32_t place) {
+			return *(ISString*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
 		}
-		inline static void setField(void *m,int32_t field, int32_t value) {
-			*(int32_t*)(((void**)m) + 3 + field) = value;
+		inline static void setField(void *m,int32_t place, int32_t value) {
+			*(int32_t*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
 		}
-		inline static void setField(void *m,int32_t field, float value) {
-			*(float*)(((void**)m) + 3 + field) = value;
+		inline static void setField(void *m,int32_t place, float value) {
+			*(float*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
 		}
-		inline static void setField(void *m,int32_t field, const ISString &value) {
-			*(ISString*)(((void**)m) + 3 + field) = value;
+		inline static void setField(void *m,int32_t place, const ISString &value) {
+			*(ISString*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
 		}
 		inline static void *getBefore(void *m) {
 			if (m == 0) return 0;

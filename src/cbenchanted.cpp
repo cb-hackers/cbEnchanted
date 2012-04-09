@@ -1147,11 +1147,11 @@ void CBEnchanted::handlePushTypeMemberVariable() {
 	void * typePtr = getTypePointerVariable(*((int32_t*)(code)));
 	code += 4;
 	int32_t varType = popValue().getInt();
-	int32_t field = (popValue().getInt() - 12) / 4;
+	int32_t place = popValue().getInt() - 12;
 	switch (varType) {
-		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr, field)); break;
-		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr, field)); break;
-		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr, field)); break;
+		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr, place)); break;
+		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr, place)); break;
+		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr, place)); break;
 		default: FIXME("handlePushTypeMemberVariable:Unhandled varType %i", varType); break;
 	}
 }
@@ -1396,7 +1396,7 @@ void CBEnchanted::commandSetGlobalVariableNumbers() {
 void CBEnchanted::commandType(void)
 {
 	int32_t typeMemberSize = popValue().getInt();
-	addType((typeMemberSize - 4) / 4);
+	addType(typeMemberSize - 4);
 	//cpos += 5;
 }
 
@@ -1404,16 +1404,16 @@ void CBEnchanted::commandSetTypeMemberField(void)
 {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
-	int32_t field = (popValue().getInt() - 12) / 4;
+	int32_t place = popValue().getInt() - 12;
 	switch (varType) {
 		case 1:
-			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toInt());
+			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toInt());
 		break;
 		case 2:
-			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toFloat());
+			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toFloat());
 		break;
 		case 3:
-			Type::getMembersType(typePtr)->setField(typePtr, field, popValue().toString());
+			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toString());
 		break;
 		default:
 			FIXME("setTypeMemberField:Unhandled varType %i", varType);

@@ -4,6 +4,7 @@
 #include "precomp.h"
 #include "rendertarget.h"
 #include "collision.h"
+#include "isstring.h"
 
 /** Implementation of CoolBasic objects.
  * Maps and particles inherit this class.
@@ -41,10 +42,10 @@ class CBObject{
 		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
 		float getObjectFloat()const{return objectFloatData;}
-		string getObjectString()const{return objectStringData;}
+		ISString getObjectString()const{return objectStringData;}
 		void setObjectInteger(int32_t i){objectIntData = i;}
 		void setObjectFloat(float f){objectFloatData = f;}
-		void setObjectString(const string &s){objectStringData = s;}
+		void setObjectString(const ISString &s){objectStringData = s;}
 		void setFrame(uint16_t frame);
 		CBObject *copyObject()const;
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
@@ -117,7 +118,7 @@ class CBObject{
 		/** Integer data stored with ObjectInteger */
 		int32_t objectIntData;
 		/** String data stored with ObjectString */
-		string objectStringData;
+		ISString objectStringData;
 		/** Float data stored with ObjectFloat */
 		float objectFloatData;
 

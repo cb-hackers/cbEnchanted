@@ -262,15 +262,18 @@ void ObjectInterface::commandObjectRange(void) {
 }
 
 void ObjectInterface::commandObjectInteger(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	getObject(id)->setObjectInteger(cb->popValue().toInt());
 }
 
 void ObjectInterface::commandObjectFloat(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	getObject(id)->setObjectFloat(cb->popValue().toFloat());
 }
 
 void ObjectInterface::commandObjectString(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	getObject(id)->setObjectString(cb->popValue().toString());
 }
 
 void ObjectInterface::commandObjectPickable(void) {
@@ -417,7 +420,7 @@ void ObjectInterface::functionCloneObject(void) {
 	CBObject *object = objectMap[id];
 	CBObject *obj = object->copyObject();
 	if (obj->isFloorObject()) {
-
+		addToFloorDrawOrder(obj);
 	}
 	else {
 		addToDrawOrder(obj);

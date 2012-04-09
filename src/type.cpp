@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "type.h"
 
-Type::Type(int32_t fields) : sizeOfMember((fields + 3) * sizeof(void *)), firstMember(0), lastMember(0) {
+Type::Type(int32_t dataSize) : sizeOfMember(sizeof(void*)*3+dataSize * (sizeof(void*)/4)), firstMember(0), lastMember(0) {
 	dummyFirst[0] = dummyFirst[1] = 0;
 }
 

@@ -78,7 +78,7 @@ class CBVariableHolder {
 
 		void setString(uint32_t id, ISString value) { strings.set(id, value); }
 
-		void addType(int32_t fields) {types.push_back(new Type(fields));}
+		void addType(int32_t dataSize) {types.push_back(new Type(dataSize));}
 
 		void initStrings(uint32_t n) { strings.init(n);}
 		void initArrays(int32_t byteCount,int32_t shortCount,int32_t stringCount,int32_t floatCount,int32_t integerCount) {
