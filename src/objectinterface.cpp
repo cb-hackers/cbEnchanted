@@ -546,23 +546,42 @@ void ObjectInterface::functionObjectSight(void) {
 }
 
 void ObjectInterface::functionCountCollisions(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = getObject(id);
+	int32_t collisionCount = object->getCollisionCount();
+	cb->pushValue(collisionCount);
 }
 
 void ObjectInterface::functionGetCollision(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->b->getID());
 }
 
 void ObjectInterface::functionCollisionX(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->x);
 }
 
 void ObjectInterface::functionCollisionY(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->y);
 }
 
 void ObjectInterface::functionCollisionAngle(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->angle);
 }
 
 void ObjectInterface::functionNextObject(void) {

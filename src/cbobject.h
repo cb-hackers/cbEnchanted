@@ -68,11 +68,15 @@ class CBObject{
 
 		/** Adds a collision to collisionList. */
 		void addCollision(Collision *collision);
+		/** Gets the amount of collisions. */
+		int32_t getCollisionCount() const { return collisionList.size(); }
+		/** Gets a collision from collisionList */
+		Collision* getCollision(int32_t id) { return collisionList.at(id - 1); }
 
 		/** Sets object ID which should be the same as the key stored in ObjectInterface::objectMap */
 		void setID(int32_t pId) { id = pId; }
 		/** Returns object ID */
-		int32_t getID() { return id; }
+		int32_t getID() const { return id; }
 
 		uint32_t getLife();
 		bool isLife();

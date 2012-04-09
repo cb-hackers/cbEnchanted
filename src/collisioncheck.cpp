@@ -275,7 +275,7 @@ void CollisionCheck::RectMapTest() {
 	}
 	if (collided[3]) {
 		// Left
-		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, objX + objWidth/2, objY));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, objX - objWidth/2, objY));
 	}
 }
 
