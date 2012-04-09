@@ -198,11 +198,11 @@ void CollisionCheck::RectMapTest() {
 	int32_t tileWidth = cbmap->getTileWidth();
 	int32_t tileHeight = cbmap->getTileHeight();
 
-	// Same goes for object width, height and position.
+	// Same goes for object range and position.
 	float objX = mObject1->getX();
 	float objY = mObject1->getY();
-	float objWidth = mObject1->getSizeX();
-	float objHeight = mObject1->getSizeY();
+	float objWidth = mObject1->getRange1();
+	float objHeight = mObject1->getRange2();
 
 	// Calculate the amount of tiles to both X- and Y-directions we need to check
 	uint16_t checkTilesX = 1;
@@ -295,6 +295,7 @@ void CollisionCheck::CircleMapTest() {
 
 /** Drawing the collision box, used for debugging only. */
 void CollisionCheck::DrawCollisionBoundaries() {
+	return;
 
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
@@ -304,8 +305,8 @@ void CollisionCheck::DrawCollisionBoundaries() {
 	// Draw the collision box for the first collision
 	switch (mCollisionType1) {
 		case Box: {
-			float w = mObject1->getSizeX();
-			float h = mObject1->getSizeY();
+			float w = mObject1->getRange1();
+			float h = mObject1->getRange2();
 			float x = mObject1->getX() - w / 2;
 			float y = mObject1->getY() + h / 2;
 			rendertarget->drawBox(x, y, w, h, false, al_map_rgba(0, 255, 0, 128));
@@ -314,7 +315,7 @@ void CollisionCheck::DrawCollisionBoundaries() {
 		case Circle: {
 			float x = mObject1->getX();
 			float y = mObject1->getY();
-			float r = mObject1->getSizeX() / 2;
+			float r = mObject1->getRange1() / 2;
 			rendertarget->drawCircle(x, y, r, false, al_map_rgba(0, 255, 0, 128));
 			break;
 		}

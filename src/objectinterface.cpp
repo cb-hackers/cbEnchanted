@@ -258,7 +258,15 @@ void ObjectInterface::commandMirrorObject(void) {
 }
 
 void ObjectInterface::commandObjectRange(void) {
-	STUB;
+	float range2 = cb->popValue().toFloat();
+	float range1 = cb->popValue().toFloat();
+	if (range2 < 0.001f) {
+		range2 = range1;
+	}
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	obj->setRange(range1, range2);
 }
 
 void ObjectInterface::commandObjectInteger(void) {
