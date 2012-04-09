@@ -23,84 +23,9 @@ contains(CBE_CONFIG,optimized_debug) {
 
 
 
-HEADERS += \
-    ../src/textinterface.h \
-    ../src/sysinterface.h \
-    ../src/stringinterface.h \
-    ../src/soundinterface.h \
-    ../src/precomp.h \
-    ../src/objectinterface.h \
-    ../src/meminterface.h \
-    ../src/mathoperations.h \
-    ../src/mathinterface.h \
-    ../src/mapinterface.h \
-    ../src/inputinterface.h \
-    ../src/imageinterface.h \
-    ../src/gfxinterface.h \
-    ../src/fileinterface.h \
-    ../src/effectinterface.h \
-    ../src/cbvariableholder.h \
-    ../src/cbenchanted.h \
-    ../src/cbaudio.h \
-    ../src/cbmusic.h \
-    ../src/cbsound.h \
-    ../src/camerainterface.h \
-    ../src/animinterface.h \
-    ../src/any.h \
-    ../src/debug.h \
-    ../src/camerainterface.h \
-    ../src/cbobject.h \
-    ../src/cbimage.h \
-    ../src/cbmap.h \
-    ../src/collisioncheck.h \
-    ../src/collision.h \
-    ../src/util.h \
-    ../src/cbparticleemitter.h \
-    ../src/particle.h \
-    ../src/isstring.h \
-    ../src/rendertarget.h \
-    ../src/customfunctionhandler.h \
-    ../src/customfunction.h \
-    ../src/customfunctiondefines.h \
-    ../src/customfunctions.h \
-    ../src/scopeholder.h
+HEADERS += ../src/*.h
 
-SOURCES += \
-    ../src/textinterface.cpp \
-    ../src/sysinterface.cpp \
-    ../src/stringinterface.cpp \
-    ../src/soundinterface.cpp \
-    ../src/objectinterface.cpp \
-    ../src/meminterface.cpp \
-    ../src/mathoperations.cpp \
-    ../src/mathinterface.cpp \
-    ../src/mapinterface.cpp \
-    ../src/main.cpp \
-    ../src/inputinterface.cpp \
-    ../src/imageinterface.cpp \
-    ../src/gfxinterface.cpp \
-    ../src/fileinterface.cpp \
-    ../src/effectinterface.cpp \
-    ../src/cbvariableholder.cpp \
-    ../src/cbenchanted.cpp \
-    ../src/cbaudio.cpp \
-    ../src/cbmusic.cpp \
-    ../src/cbsound.cpp \
-    ../src/camerainterface.cpp \
-    ../src/animinterface.cpp \
-    ../src/camerainterface.cpp \
-    ../src/cbobject.cpp \
-    ../src/cbimage.cpp \
-    ../src/cbmap.cpp \
-    ../src/collisioncheck.cpp \
-    ../src/cbparticleemitter.cpp \
-    ../src/debug.cpp \
-    ../src/rendertarget.cpp \
-    ../src/any.cpp \
-    ../src/customfunctionhandler.cpp \
-    ../src/customfunction.cpp \
-    ../src/customfunctions.cpp \
-    ../src/scopeholder.cpp
+SOURCES += ../src/*.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
