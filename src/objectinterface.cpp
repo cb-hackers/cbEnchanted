@@ -258,7 +258,15 @@ void ObjectInterface::commandMirrorObject(void) {
 }
 
 void ObjectInterface::commandObjectRange(void) {
-	STUB;
+	float range2 = cb->popValue().toFloat();
+	float range1 = cb->popValue().toFloat();
+	if (range2 < 0.001f) {
+		range2 = range1;
+	}
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	obj->setRange(range1, range2);
 }
 
 void ObjectInterface::commandObjectInteger(void) {
@@ -321,7 +329,9 @@ void ObjectInterface::commandStopObject(void) {
 }
 
 void ObjectInterface::commandResetObjectCollision(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = getObject(id);
+	object->setCollisionChecking(false);
 }
 
 void ObjectInterface::commandSetupCollision(void) {
@@ -358,7 +368,7 @@ void ObjectInterface::commandSetupCollision(void) {
 }
 
 void ObjectInterface::commandClearCollisions(void) {
-	STUB;
+	collisionChecks.clear();
 }
 
 void ObjectInterface::commandInitObjectList(void) {
@@ -377,6 +387,7 @@ void ObjectInterface::functionLoadObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -396,6 +407,7 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -404,6 +416,7 @@ void ObjectInterface::functionMakeObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -412,6 +425,7 @@ void ObjectInterface::functionMakeObjectFloor(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -427,6 +441,7 @@ void ObjectInterface::functionCloneObject(void) {
 	}
 	int32_t id2 = nextObjectId();
 	objectMap[id2] = obj;
+	obj->setID(id2);
 	cb->pushValue(id2);
 }
 
@@ -544,23 +559,42 @@ void ObjectInterface::functionObjectSight(void) {
 }
 
 void ObjectInterface::functionCountCollisions(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = getObject(id);
+	int32_t collisionCount = object->getCollisionCount();
+	cb->pushValue(collisionCount);
 }
 
 void ObjectInterface::functionGetCollision(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->b->getID());
 }
 
 void ObjectInterface::functionCollisionX(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->x);
 }
 
 void ObjectInterface::functionCollisionY(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->y);
 }
 
 void ObjectInterface::functionCollisionAngle(void) {
-	STUB;
+	int32_t collisionId = cb->popValue().getInt();
+	int32_t objId = cb->popValue().getInt();
+	CBObject *obj = getObject(objId);
+	Collision *collision = obj->getCollision(collisionId);
+	cb->pushValue(collision->angle);
 }
 
 void ObjectInterface::functionNextObject(void) {
@@ -640,6 +674,7 @@ void ObjectInterface::removeFromDrawOrder(CBObject *o) {
 int32_t ObjectInterface::addMap(CBMap *mapObj){
 	int32_t id = nextObjectId();
 	objectMap[id] = mapObj;
+	mapObj->setID(id);
 	return id;
 }
 
@@ -665,5 +700,12 @@ void ObjectInterface::updateObjects(){
 	std::vector<CollisionCheck*>::iterator cChkI;
 	for (cChkI = collisionChecks.begin(); cChkI != collisionChecks.end(); cChkI++) {
 		(*cChkI)->testCollision();
+	}
+
+	// Iterate again over every object and reset setCollisionChecking on them
+	for (i = objectMap.begin(); i != objectMap.end();) {
+		// Reset object collision check to true
+		(*i).second->setCollisionChecking(true);
+		++i;
 	}
 }

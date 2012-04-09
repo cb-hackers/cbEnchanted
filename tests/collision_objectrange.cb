@@ -1,0 +1,28 @@
+FrameLimit 40
+DrawToWorld ON
+
+'Load the map 
+map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
+
+'Load player 
+soldier=LoadObject("Media\soldier.bmp",72)
+ObjectRange soldier,24
+
+'setup some collisions 
+SetupCollision soldier,map,1,4,2
+
+Repeat
+
+    'Update controls
+    If LeftKey() Then TurnObject soldier,5
+    If RightKey() Then TurnObject soldier, -5
+    If UpKey() Then MoveObject soldier,3.5
+    If DownKey() Then MoveObject soldier, -2
+
+    'Camera follow
+    CloneCameraPosition soldier
+
+    'render SCREEN
+    DrawScreen
+
+Until EscapeKey()

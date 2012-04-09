@@ -62,13 +62,28 @@ class CBObject{
 
 		virtual bool updateObject(float timestep);
 
-		/** Returns sizeX property. For internal use only */
-		uint32_t getSizeX() const { return sizeX; }
-		/** Returns sizeY property. For internal use only */
-		uint32_t getSizeY() const { return sizeY; }
+		/** Sets object range, @see getRange1 and getRange2 */
+		void setRange(float range1, float range2) { objectRange[0] = range1; objectRange[1] = range2; }
+		/** Returns object range, box width in Box-collision and diameter in Circle-collision. */
+		float getRange1() const { return objectRange[0]; }
+		/** Returns object range, box height in Box-collision. */
+		float getRange2() const { return objectRange[1]; }
 
 		/** Adds a collision to collisionList. */
 		void addCollision(Collision *collision);
+		/** Gets the amount of collisions. */
+		int32_t getCollisionCount() const { return collisionList.size(); }
+		/** Gets a collision from collisionList */
+		Collision* getCollision(int32_t id) { return collisionList.at(id - 1); }
+		/** Sets collisions to be skipped or checked until next updateObject comes along. */
+		void setCollisionChecking(bool checkOrNot) { checkCollisions = checkOrNot; }
+		/** Should collision checking be made for this object or not. */
+		bool isCollisionsOn() const { return checkCollisions; }
+
+		/** Sets object ID which should be the same as the key stored in ObjectInterface::objectMap */
+		void setID(int32_t pId) { id = pId; }
+		/** Returns object ID */
+		int32_t getID() const { return id; }
 
 		uint32_t getLife();
 		bool isLife();
@@ -138,8 +153,15 @@ class CBObject{
 		/** Is the animation currently playing */
 		bool playing;
 
-		/** Collision data. Unimplemented. */
+		/** The ID this object has. */
+		int32_t id;
+
+		/** Collisions. */
 		std::vector<Collision*> collisionList;
+		/** Should collision check be made for this object. */
+		bool checkCollisions;
+		/** Object range for collisions. */
+		float objectRange[2];
 };
 
 #endif // OBJECT_H

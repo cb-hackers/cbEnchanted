@@ -38,7 +38,8 @@ CBObject::CBObject(bool floor):
 	animStartFrame(0),
 	objectIntData(0),
 	objectStringData(),
-	objectFloatData(0)
+	objectFloatData(0),
+	checkCollisions(true)
 {
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
@@ -85,6 +86,8 @@ bool CBObject::load(const string &file, const ALLEGRO_COLOR &mask) {
 	maskColor = mask;
 	sizeX = renderTarget->width();
 	sizeY = renderTarget->height();
+	objectRange[0] = sizeX;
+	objectRange[1] = sizeY;
 	frameWidth = 0;
 	frameHeight = 0;
 	startFrame = 0;
