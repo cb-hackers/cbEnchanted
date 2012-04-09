@@ -120,38 +120,30 @@ void CollisionCheck::setCollisionHandling(uint16_t h) {
 }
 
 /** Tests the collision */
-bool CollisionCheck::testCollision() {
+void CollisionCheck::testCollision() {
 	// Make sure we are not testing against null objects
 	if (isNull()) {
 		FIXME("Trying to test collision for null objects");
-		return false;
+		return;
 	}
 
-	bool collided = false;
 	// What is the collision type for the colliding object
 	switch (mCollisionType1) {
 		case Box:
 			switch (mCollisionType2) {
-				case Box: collided = RectRectTest(); break;
-				case Circle: collided = RectCircleTest(); break;
-				case Map: collided = RectMapTest(); break;
+				case Box: RectRectTest(); break;
+				case Circle: RectCircleTest(); break;
+				case Map: RectMapTest(); break;
 			}
 		break;
 		case Circle:
 			switch (mCollisionType2) {
-				case Box: collided = CircleRectTest(); break;
-				case Circle: collided = CircleCircleTest(); break;
-				case Map: collided = CircleMapTest(); break;
+				case Box: CircleRectTest(); break;
+				case Circle: CircleCircleTest(); break;
+				case Map: CircleMapTest(); break;
 			}
 		break;
 	}
-
-	// If there was a collision, increment the collision count
-	if (collided) {
-		collisionCount++;
-	}
-
-	return collided;
 }
 
 /** Handles the collision */
@@ -161,45 +153,38 @@ void CollisionCheck::handleCollision() {
 
 // ----------------------------------------------------------------------------
 // Below are the private methods that calculate the collisions.
-// All methods return true if there was a collision, false otherwise. It is up
-// to testCollision() method to increase the count of collisions, not the
-// methods below.
 // ----------------------------------------------------------------------------
 
 /** A circle - rectangle collision test */
-bool CollisionCheck::CircleRectTest() {
+void CollisionCheck::CircleRectTest() {
 	DrawCollisionBoundaries();
-
-	return false;
 }
 
 /** A rectangle - circle collision test */
-bool CollisionCheck::RectCircleTest() {
+void CollisionCheck::RectCircleTest() {
 	DrawCollisionBoundaries();
-
-	return false;
 }
 
 /** A rectangle - rectangle collision test */
-bool CollisionCheck::RectRectTest() {
+void CollisionCheck::RectRectTest() {
 	DrawCollisionBoundaries();
-
-	return false;
 }
 
 /** A circle - circle collision test */
-bool CollisionCheck::CircleCircleTest() {
+void CollisionCheck::CircleCircleTest() {
 	DrawCollisionBoundaries();
-
-	return false;
 }
 
 /** A rectangle - map collision test */
-bool CollisionCheck::RectMapTest() {
+void CollisionCheck::RectMapTest() {
 	DrawCollisionBoundaries();
 
-	// Did we collide
-	bool collided = false;
+	// Did we collide? Where?
+	//  * 0 = top
+	//  * 1 = right
+	//  * 2 = bottom
+	//  * 3 = left
+	bool collided[4] = {false, false, false, false};
 
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
@@ -232,7 +217,15 @@ bool CollisionCheck::RectMapTest() {
 				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
 				if (this->RectRectTest(objX - objWidth/2, safeY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
 					objX = safeX;
-					collided = true;
+					// Check the direction to where we collided
+					if (tileX < startTileX + checkTilesX) {
+						// It seems to be left.
+						collided[3] = true;
+					}
+					else if (tileX > startTileX + checkTilesX) {
+						// It seems to be right.
+						collided[1] = true;
+					}
 				}
 			}
 		}
@@ -248,7 +241,15 @@ bool CollisionCheck::RectMapTest() {
 				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
 				if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
 					objY = safeY;
-					collided = true;
+					// Check the direction to where we collided
+					if (tileY < startTileY + checkTilesY) {
+						// It seems to be top.
+						collided[0] = true;
+					}
+					else if (tileY > startTileY + checkTilesY) {
+						// It seems to be bottom.
+						collided[2] = true;
+					}
 				}
 			}
 		}
@@ -259,14 +260,28 @@ bool CollisionCheck::RectMapTest() {
 
 	mObject1->positionObject(safeX, safeY);
 
-	return collided;
+	// Let's add those collisions.
+	if (collided[0]) {
+		// Top
+		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, objX, objY + objHeight/2));
+	}
+	if (collided[1]) {
+		// Right
+		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, objX + objWidth/2, objY));
+	}
+	if (collided[2]) {
+		// Bottom
+		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, objX, objY - objHeight/2));
+	}
+	if (collided[3]) {
+		// Left
+		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, objX + objWidth/2, objY));
+	}
 }
 
 /** A circle - map collision test */
-bool CollisionCheck::CircleMapTest() {
+void CollisionCheck::CircleMapTest() {
 	DrawCollisionBoundaries();
-
-	return false;
 }
 
 /** Drawing the collision box, used for debugging only. */
@@ -347,9 +362,3 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	return true;
 }
 
-/** Adds a new collision to the objects collision list. */
-void CollisionCheck::addCollision() {
-	Collision *collision = new Collision(mObject1, mObject2, mCollisionAngle, mCollisionX, mCollisionY);
-
-	mObject1->addCollision(collision);
-}

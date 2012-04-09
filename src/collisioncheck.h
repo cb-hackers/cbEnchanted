@@ -38,7 +38,7 @@ class CollisionCheck
 		void setCollisionHandling(uint16_t h);
 
 		/** Tests the collision */
-		bool testCollision();
+		void testCollision();
 	private:
 		/** Object that has the collision set */
 		CBObject *mObject1;
@@ -62,26 +62,23 @@ class CollisionCheck
 		uint16_t collisionCount;
 
 		/** A circle - rectangle collision test */
-		bool CircleRectTest();
+		void CircleRectTest();
 		/** A rectangle - circle collision test */
-		bool RectCircleTest();
+		void RectCircleTest();
 		/** A rectangle - rectangle collision test */
-		bool RectRectTest();
+		void RectRectTest();
 		/** A circle - circle collision test */
-		bool CircleCircleTest();
+		void CircleCircleTest();
 		/** A rectangle - map collision test */
-		bool RectMapTest();
+		void RectMapTest();
 		/** A circle - map collision test */
-		bool CircleMapTest();
+		void CircleMapTest();
 
 		/** Drawing the collision box, used for debugging only. */
 		void DrawCollisionBoundaries();
 
 		/** Tests a rectangle - rectangle collision, with parameters. */
 		bool RectRectTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
-
-		/** Adds a new collision to the objects collision list. */
-		void addCollision();
 
 		/** Handles the collision */
 		void handleCollision();
