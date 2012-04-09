@@ -267,19 +267,19 @@ void CollisionCheck::RectMapTest() {
 	// Let's add those collisions.
 	if (collided[0]) {
 		// Top
-		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, objX, objY + objHeight/2));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, objX, objY + objHeight/2 + 1.0f));
 	}
 	if (collided[1]) {
 		// Right
-		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, objX + objWidth/2, objY));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, objX + objWidth/2 + 1.0f, objY));
 	}
 	if (collided[2]) {
 		// Bottom
-		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, objX, objY - objHeight/2));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, objX, objY - objHeight/2 - 1.0f));
 	}
 	if (collided[3]) {
 		// Left
-		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, objX - objWidth/2, objY));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, objX - objWidth/2 - 1.0f, objY));
 	}
 }
 
