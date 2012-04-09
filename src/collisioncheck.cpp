@@ -221,10 +221,12 @@ void CollisionCheck::RectMapTest() {
 					if (tileX < startTileX + checkTilesX) {
 						// It seems to be left.
 						collided[3] = true;
+						objX = x + tileWidth + 1.0f + objWidth/2;
 					}
 					else if (tileX > startTileX + checkTilesX) {
 						// It seems to be right.
 						collided[1] = true;
+						objX = x - 1.0f - objWidth/2;
 					}
 				}
 			}
@@ -245,10 +247,12 @@ void CollisionCheck::RectMapTest() {
 					if (tileY < startTileY + checkTilesY) {
 						// It seems to be top.
 						collided[0] = true;
+						objY = y - tileHeight - 1.0f - objHeight/2;
 					}
 					else if (tileY > startTileY + checkTilesY) {
 						// It seems to be bottom.
 						collided[2] = true;
+						objY = y + 1.0f + objHeight/2;
 					}
 				}
 			}
@@ -345,13 +349,13 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 
 	left1 = x1;
 	right1 = x1 + w1;
-	top1 = y1;
-	bottom1 = y1 + h1;
+	top1 = y1 - h1;
+	bottom1 = y1;
 
 	left2 = x2;
 	right2 = x2 + w2;
-	top2 = y2;
-	bottom2 = y2 + h2;
+	top2 = y2 - h2;
+	bottom2 = y2;
 
 	if (bottom1 < top2) return false;
 	if (top1 > bottom2) return false;
