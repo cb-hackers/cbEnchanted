@@ -374,6 +374,7 @@ void ObjectInterface::functionLoadObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -393,6 +394,7 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -401,6 +403,7 @@ void ObjectInterface::functionMakeObject(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -409,6 +412,7 @@ void ObjectInterface::functionMakeObjectFloor(void) {
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
+	obj->setID(id);
 	cb->pushValue(id);
 }
 
@@ -424,6 +428,7 @@ void ObjectInterface::functionCloneObject(void) {
 	}
 	int32_t id2 = nextObjectId();
 	objectMap[id2] = obj;
+	obj->setID(id2);
 	cb->pushValue(id2);
 }
 
@@ -637,6 +642,7 @@ void ObjectInterface::removeFromDrawOrder(CBObject *o) {
 int32_t ObjectInterface::addMap(CBMap *mapObj){
 	int32_t id = nextObjectId();
 	objectMap[id] = mapObj;
+	mapObj->setID(id);
 	return id;
 }
 

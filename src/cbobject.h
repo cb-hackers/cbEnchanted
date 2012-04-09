@@ -69,6 +69,11 @@ class CBObject{
 		/** Adds a collision to collisionList. */
 		void addCollision(Collision *collision);
 
+		/** Sets object ID which should be the same as the key stored in ObjectInterface::objectMap */
+		void setID(int32_t pId) { id = pId; }
+		/** Returns object ID */
+		int32_t getID() { return id; }
+
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
@@ -136,6 +141,9 @@ class CBObject{
 		bool animLooping;
 		/** Is the animation currently playing */
 		bool playing;
+
+		/** The ID this object has. */
+		int32_t id;
 
 		/** Collision data. Unimplemented. */
 		std::vector<Collision*> collisionList;
