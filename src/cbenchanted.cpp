@@ -147,12 +147,10 @@ bool CBEnchanted::init(string file) {
 	}
 	map<int32_t,int32_t> functionMaping;
 	//Goto and if
-	ncmd = 0;
 	i = 0;
 	while (i < size) {
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
-		ncmd++;
 		i++;
 		switch (cmd) {
 			case 65:
@@ -166,9 +164,13 @@ bool CBEnchanted::init(string file) {
 			case 90: i += 4; break;
 			case 79: i ++; break;
 			case 67: {
-				if ((*(int32_t *)(code + i)) == 12) { //commandGoto
-					int32_t id = *(int32_t *)(code + i+5);
-					*(int32_t *)(code + i+5) = offsets[id];
+				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 6) { //commandGoto
+					int32_t id = *(int32_t *)(code + i + 5);
+					*(int32_t *)(code + i + 5) = offsets[id];
+				}
+				if ((*(int32_t *)(code + i)) == 7) {
+					int32_t id = *(int32_t *)(code + i + 10);
+					*(int32_t *)(code + i + 10) = offsets[id];
 				}
 				i += 4;
 				break;
@@ -337,6 +339,27 @@ void CBEnchanted::commandFunction(void) {
 	}
 }
 
+void CBEnchanted::commandSelect() {
+	selectValue = popValue().toInt();
+	++code;
+	code = codeBase + *(int32_t *)(code);
+}
+
+void CBEnchanted::commandCase() {
+	++code;
+	int32_t testCount = *(int32_t *)(code);
+	code += 5;
+	int32_t nextCase = *(int32_t *)(code);
+	for (int i = 0; i < testCount;++i) {
+		code += 5;
+		if (*(int32_t *)(code) == selectValue) {
+			code += 4;
+			return;
+		}
+	}
+	code = codeBase + nextCase;
+}
+
 /*
  * CBEnchanted::handleSetInt - Set value of integer
  */
@@ -372,10 +395,10 @@ void CBEnchanted::handleCommand(void) {
 		/*case 1: commandIf(); break;
 		case 3: commandElse(); break;
 		case 4: commandElseIf(); break;
-		case 5: commandEndIf(); break;
+		case 5: commandEndIf(); break;*/
 		case 6: commandSelect(); break;
 		case 7: commandCase(); break;
-		case 8: commandDefault(); break;
+		/*case 8: commandDefault(); break;
 		case 9: commandEndSelect(); break;
 		case 10: commandRepeat(); break;
 		case 11: commandUntil(); break;*/

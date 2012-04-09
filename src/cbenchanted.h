@@ -65,15 +65,15 @@ class CBEnchanted :
 
 		char *code;
 		char *codeBase;
-
 		uint32_t cpos;
 		vector <uint32_t> pos;
-
 		bool initialized;
 		bool running;
-
 		bool safeExit;
 		float framesMs;
+		ALLEGRO_EVENT_QUEUE * eventQueue;
+		CustomFunctionHandler customFunctionHandler;
+		int32_t selectValue;
 
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
@@ -90,6 +90,8 @@ class CBEnchanted :
 		void handlePushTypeMemberVariable(void);
 		void handleCustomFunctionCall(void);
 
+		void commandSelect(void);
+		void commandCase(void);
 		void commandFunction(void);
 		void commandSetGlobalVariable(void); //80
 		void commandSetArrayNumbers(void); //97
@@ -118,9 +120,6 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
-		ALLEGRO_EVENT_QUEUE * eventQueue;
-
-		CustomFunctionHandler customFunctionHandler;
 };
 
 #endif
