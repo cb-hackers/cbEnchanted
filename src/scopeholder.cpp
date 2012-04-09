@@ -12,6 +12,7 @@ void ScopeHolder::pushScope(int32_t byteCount, int32_t shortCount, int32_t strin
 			stringCount * sizeof(ISString) +
 			typePtrCount * sizeof(void*);
 	scope.data = new char[scope.size];
+	memset(scope.data, 0, scope.size);
 	char *pointer(scope.data);
 	scope.intVars = (int32_t*)pointer;
 	pointer += integerCount * 4;
