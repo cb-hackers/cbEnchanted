@@ -127,6 +127,11 @@ void CollisionCheck::testCollision() {
 		return;
 	}
 
+	// If object is set to be skipped from collision checks then skip it.
+	if (!mObject1->isCollisionsOn()) {
+		return;
+	}
+
 	// What is the collision type for the colliding object
 	switch (mCollisionType1) {
 		case Box:

@@ -318,7 +318,9 @@ void ObjectInterface::commandStopObject(void) {
 }
 
 void ObjectInterface::commandResetObjectCollision(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = getObject(id);
+	object->setCollisionChecking(false);
 }
 
 void ObjectInterface::commandSetupCollision(void) {
@@ -667,6 +669,12 @@ int32_t ObjectInterface::addMap(CBMap *mapObj){
 
 
 void ObjectInterface::updateObjects(){
+	// Iterate over every collision check that is set and run testCollision() on them
+	std::vector<CollisionCheck*>::iterator cChkI;
+	for (cChkI = collisionChecks.begin(); cChkI != collisionChecks.end(); cChkI++) {
+		(*cChkI)->testCollision();
+	}
+
 	int64_t currentTime = mtimer();
 	float updateTime = (float)(currentTime-lastUpdate)/1000.0f;
 	lastUpdate = currentTime;
@@ -678,14 +686,10 @@ void ObjectInterface::updateObjects(){
 			//i = objectMap.erase(i);
 		}
 		else {
+			// Reset object collision check to true
+			(*i).second->setCollisionChecking(true);
 			++i;
 		}
 	}
 	cb->updateRogueParticles();
-
-	// Iterate over every collision check that is set and run testCollision() on them
-	std::vector<CollisionCheck*>::iterator cChkI;
-	for (cChkI = collisionChecks.begin(); cChkI != collisionChecks.end(); cChkI++) {
-		(*cChkI)->testCollision();
-	}
 }

@@ -72,6 +72,10 @@ class CBObject{
 		int32_t getCollisionCount() const { return collisionList.size(); }
 		/** Gets a collision from collisionList */
 		Collision* getCollision(int32_t id) { return collisionList.at(id - 1); }
+		/** Sets collisions to be skipped or checked until next updateObject comes along. */
+		void setCollisionChecking(bool checkOrNot) { checkCollisions = checkOrNot; }
+		/** Should collision checking be made for this object or not. */
+		bool isCollisionsOn() const { return checkCollisions; }
 
 		/** Sets object ID which should be the same as the key stored in ObjectInterface::objectMap */
 		void setID(int32_t pId) { id = pId; }
@@ -149,8 +153,10 @@ class CBObject{
 		/** The ID this object has. */
 		int32_t id;
 
-		/** Collision data. Unimplemented. */
+		/** Collisions. */
 		std::vector<Collision*> collisionList;
+		/** Should collision check not check for collisions. */
+		bool checkCollisions;
 };
 
 #endif // OBJECT_H

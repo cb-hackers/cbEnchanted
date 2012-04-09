@@ -1,0 +1,32 @@
+FrameLimit 40
+
+'load map 
+map=LoadMap("Media\testmap.til","Media\negative.bmp")
+
+'load player 
+mrpac=LoadObject("Media\pacman.bmp",36)
+
+'setup a collision between the player and map 
+SetupCollision mrpac,map,1,4,2
+
+AddText "Arrows to move..."
+AddText "HOLD SPACE to ignore collision"
+
+Repeat
+
+    'Controls
+    If LeftKey() Then TurnObject mrpac,10
+    If RightKey() Then TurnObject mrpac, -10
+    If UpKey() Then MoveObject mrpac,5
+    If DownKey() Then MoveObject mrpac, -5
+    
+    If KeyDown(57) Then 'space
+        ResetObjectCollision mrpac
+    EndIf
+
+    'camera follow
+    CloneCameraPosition mrpac
+
+    DrawScreen
+
+Until EscapeKey()

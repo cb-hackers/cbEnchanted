@@ -32,7 +32,8 @@ CBObject::CBObject(bool floor):
 	life(0),
 	lastObj(0),
 	nextObj(0),
-	playing(false)
+	playing(false),
+	checkCollisions(true)
 {
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
