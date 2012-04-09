@@ -1,0 +1,50 @@
+FrameLimit 40
+DrawToWorld ON
+
+'Load the map 
+map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
+
+'Load player 
+soldier=LoadObject("Media\guy.bmp",72)
+'ObjectRange soldier,32
+
+'Load dumb immobile bot 
+bot=LoadObject("Media\guy.bmp")
+'ObjectRange bot,32
+PositionObject bot,50,200
+
+'setup some collisions 
+SetupCollision soldier,bot,1,1,2
+'SetupCollision soldier,map,1,4,2
+
+Repeat
+
+    'Update controls
+    If LeftKey() Then TurnObject soldier,5
+    If RightKey() Then TurnObject soldier, -5
+    If UpKey() Then MoveObject soldier,3.5
+    If DownKey() Then MoveObject soldier, -2
+
+    'Camera follow
+    CloneCameraPosition soldier
+
+    'Enable additional graphics
+    DrawGame
+    
+    collisions=CountCollisions(soldier)
+    
+    'iterate through all collisions
+    For i=1 To collisions
+        Color cbwhite
+        Text 0,(i-1)*12,"angle: "+CollisionAngle(soldier,i)+" object: "+GetCollision(soldier,i)
+        
+        'draw the collision-ball
+        Color cbred
+        Circle CollisionX(soldier,i) -5,CollisionY(soldier,i)+5,10
+    Next i
+    
+
+    'render SCREEN
+    DrawScreen
+
+Until EscapeKey()

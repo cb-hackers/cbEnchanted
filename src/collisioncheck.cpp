@@ -172,7 +172,29 @@ void CollisionCheck::RectCircleTest() {
 
 /** A rectangle - rectangle collision test */
 void CollisionCheck::RectRectTest() {
-	DrawCollisionBoundaries();
+	if (RectRectTest(mObject1->getX(), mObject1->getY(), mObject1->getRange1(), mObject1->getRange2(),
+					 mObject2->getX(), mObject2->getY(), mObject2->getRange1(), mObject2->getRange2())) {
+		// We have a collision! Calculate collision angle
+
+		// Calculate collision angle
+		float collisionAngle = atan2(mObject1->getY() - mObject2->getY(), mObject1->getX() - mObject2->getX());
+		// collisionAngle is now in range -PI...PI, turn it to degrees!
+		collisionAngle = ((collisionAngle + M_PI) / M_PI) * 180.0f;
+
+		// Check the colliding direction from collisionAngle
+		if (collisionAngle >= 315.0f || collisionAngle < 45.0f) {
+			// Right?
+		}
+		else if (collisionAngle < 135.0f) {
+			// Bottom?
+		}
+		else if (collisionAngle < 225.0f) {
+			// Left?
+		}
+		else {
+			// Top?
+		}
+	}
 }
 
 /** A circle - circle collision test */
