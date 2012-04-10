@@ -15,7 +15,6 @@ CBEnchanted::CBEnchanted() {
 	cbInstance = this;
 	initialized = false;
 	running = false;
-	cpos = 0;
 	safeExit = 1;
 }
 
@@ -164,11 +163,11 @@ bool CBEnchanted::init(string file) {
 			case 90: i += 4; break;
 			case 79: i ++; break;
 			case 67: {
-				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 6) { //commandGoto
+				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 6) { //commandGoto & commandSelect
 					int32_t id = *(int32_t *)(code + i + 5);
 					*(int32_t *)(code + i + 5) = offsets[id];
 				}
-				if ((*(int32_t *)(code + i)) == 7) {
+				if ((*(int32_t *)(code + i)) == 7) { //Command case
 					int32_t id = *(int32_t *)(code + i + 10);
 					*(int32_t *)(code + i + 10) = offsets[id];
 				}
@@ -314,11 +313,11 @@ void CBEnchanted::cleanup() {
 	cleanupSoundInterface();
 }
 
-void CBEnchanted::handlePushFuncptr(void) {
+FORCEINLINE void CBEnchanted::handlePushFuncptr(void) {
 	int32_t ptr = *(int32_t *)(code);
 	code += 4;
 
-	pos.push_back(code - codeBase);
+	pos.push_back(code);
 
 	code = codeBase + ptr;
 }
@@ -363,7 +362,7 @@ void CBEnchanted::commandCase() {
 /*
  * CBEnchanted::handleSetInt - Set value of integer
  */
-void CBEnchanted::handleSetInt(void) {
+FORCEINLINE void CBEnchanted::handleSetInt(void) {
 	uint32_t var = *(uint32_t *)(code);
 	code += 4;
 
@@ -375,7 +374,7 @@ void CBEnchanted::handleSetInt(void) {
 /*
  * CBEnchanted::handleSetFloat - Set value of float
  */
-void CBEnchanted::handleSetFloat(void) {
+FORCEINLINE void CBEnchanted::handleSetFloat(void) {
 	uint32_t var = *(uint32_t *)(code);
 	code += 4;
 
@@ -385,7 +384,7 @@ void CBEnchanted::handleSetFloat(void) {
 /*
  * CBEnchanted::handleCommand - Run command
  */
-void CBEnchanted::handleCommand(void) {
+FORCEINLINE void CBEnchanted::handleCommand(void) {
 	uint32_t command = *(uint32_t *)(code);
 	code += 4;
 
@@ -764,7 +763,7 @@ void CBEnchanted::handleFunction(void) {
 /*
  * CBEnchanted::handlePushInt - Push integer to stack
  */
-void CBEnchanted::handlePushInt(void) {
+FORCEINLINE void CBEnchanted::handlePushInt(void) {
 	HCDEBUG("[%i] Push Int %i", code - codeBase, *(int32_t *)(code));
 	pushValue(*(int32_t *)(code));
 	code += 4;
@@ -847,7 +846,7 @@ void CBEnchanted::commandDim(void) {
 /*
  * CBEnchanted::commandArrayAssing - Assing value of array element
  */
-void CBEnchanted::commandArrayAssign(void) {
+FORCEINLINE void CBEnchanted::commandArrayAssign(void) {
 	uint32_t type = popValue().getInt();
 	code ++;
 	uint32_t n = *(uint32_t *)(code);
@@ -870,7 +869,7 @@ void CBEnchanted::commandArrayAssign(void) {
 /*
  * CBEnchanted::handlePushVariable - Push value of variable to stack
  */
-void CBEnchanted::handlePushVariable(void) {
+FORCEINLINE void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue().getInt();
 	int32_t var = *(int32_t *)(code);
 	code += 4;
@@ -899,7 +898,7 @@ void CBEnchanted::handlePushVariable(void) {
 /*
  * CBEnchanted::handlePushSomething - Push float, string or something else to stack
  */
-void CBEnchanted::handlePushSomething(void) {
+FORCEINLINE void CBEnchanted::handlePushSomething(void) {
 	uint32_t type = popValue().getInt();
 	switch (type) {
 		case 2: { // Float
@@ -961,7 +960,7 @@ void CBEnchanted::handlePushSomething(void) {
 /*
  * CBEnchanted::handleMathOperation - Handle mathematical operation
  */
-void CBEnchanted::handleMathOperation(void) {
+FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 	uint8_t op = *(uint8_t *)(code);
 	code++;
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
@@ -986,31 +985,19 @@ void CBEnchanted::handleMathOperation(void) {
 			break;
 		}
 		case 4: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l + r);
+			Any::addition(&internalStack);
 			break;
 		}
 		case 5: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l - r);
+			Any::substraction(&internalStack);
 			break;
 		}
 		case 6: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l * r);
+			Any::multiplication(&internalStack);
 			break;
 		}
 		case 7: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l / r);
+			Any::division(&internalStack);
 			break;
 		}
 		case 8: {
@@ -1031,14 +1018,14 @@ void CBEnchanted::handleMathOperation(void) {
 			const Any &r = popValue();
 			const Any &l = popValue();
 
-			pushValue(shr(l, r));
+			pushValue(Any::shr(l, r));
 			break;
 		}
 		case 11: {
 			const Any &r = popValue();
 			const Any &l = popValue();
 
-			pushValue(sar(l, r));
+			pushValue(Any::sar(l, r));
 			break;
 		}
 		case 12: {
@@ -1118,7 +1105,7 @@ void CBEnchanted::handleMathOperation(void) {
 /*
  * CBEnchanted::handleJump - Jump if last operation was true
  */
-void CBEnchanted::handleJump(void) {
+FORCEINLINE void CBEnchanted::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code);
 	code += 4;
 
@@ -1130,7 +1117,7 @@ void CBEnchanted::handleJump(void) {
 /*
  * CBEnchanted::handleIncVar - Increase integer variable
  */
-void CBEnchanted::handleIncVar(void) {
+FORCEINLINE void CBEnchanted::handleIncVar(void) {
 	setIntegerVariable(*(uint32_t *)(code), getIntegerVariable(*(uint32_t *)(code)) + 1);
 	code += 4;
 }
@@ -1138,12 +1125,12 @@ void CBEnchanted::handleIncVar(void) {
 /*
  * CBEnchanted::handleIncGlobalVar - Increase global integer variable
  */
-void CBEnchanted::handleIncGlobalVar(void) {
+FORCEINLINE void CBEnchanted::handleIncGlobalVar(void) {
 	setGlobalIntegerVariable(*(uint32_t *)(code), getGlobalIntegerVariable(*(uint32_t *)(code)) + 1);
 	code += 4;
 }
 
-void CBEnchanted::handlePushTypeMemberVariable() {
+FORCEINLINE void CBEnchanted::handlePushTypeMemberVariable() {
 	void * typePtr = getTypePointerVariable(*((int32_t*)(code)));
 	code += 4;
 	int32_t varType = popValue().getInt();
@@ -1156,7 +1143,7 @@ void CBEnchanted::handlePushTypeMemberVariable() {
 	}
 }
 
-void CBEnchanted::handleCustomFunctionCall() {
+FORCEINLINE void CBEnchanted::handleCustomFunctionCall() {
 	int32_t handle = *(int32_t *)(code);
 	code += 4;
 	customFunctionHandler.call(this,handle);
@@ -1165,7 +1152,7 @@ void CBEnchanted::handleCustomFunctionCall() {
 /*
  * CBEnchanted::commandGoto - Jump to different location
  */
-void CBEnchanted::commandGoto(void) {
+FORCEINLINE void CBEnchanted::commandGoto(void) {
 	code++;
 	code = codeBase + *(uint32_t *)(code);
 }
@@ -1189,8 +1176,8 @@ void CBEnchanted::commandReDim(void) {
 	STUB;
 }
 
-void CBEnchanted::commandReturn(void) {
-	cpos = pos.back();
+FORCEINLINE void CBEnchanted::commandReturn(void) {
+	code = pos.back();
 	pos.pop_back();
 
 	if (inFunction()) {
@@ -1240,7 +1227,7 @@ void CBEnchanted::functionConvertToType(void) {
 
 }
 
-uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
+FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
 {
 	uint32_t pos = 0;
 	switch (type) {
@@ -1283,7 +1270,7 @@ uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t ty
 	return pos;
 }
 
-uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type) {
+FORCEINLINE uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type) {
 	uint32_t pos = 0;
 	switch (type) {
 		case 3: {

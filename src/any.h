@@ -5,6 +5,8 @@
 #include <assert.h>
 #include "isstring.h"
 
+class VariableStack;
+
 class Any {
 	public:
 		/** Enumerated type for CB's data types
@@ -70,23 +72,23 @@ class Any {
 		/** Returns string stored in Any. Causes assertion if typeId isn't String
 		  * @return String stored in Any
 		  */
-		ISString getString() const { assert(typeId == String); return ISString(dString); }
+		inline ISString getString() const { assert(typeId == String); return ISString(dString); }
 		/** Returns int stored in Any. Causes assertion if typeId isn't Int
 		  * @return Int stored in Any
 		  */
-		int32_t getInt() const { assert(typeId == Int); return dInt; }
+		inline int32_t getInt() const { assert(typeId == Int); return dInt; }
 		/** Returns float stored in Any. Causes assertion if typeId isn't String
 		  * @return Float stored in Any
 		  */
-		float getFloat() const { assert(typeId == Float); return dFloat; }
+		inline float getFloat() const { assert(typeId == Float); return dFloat; }
 		/** Returns type pointer stored in Any. Causes assertion if typeId isn't TypePtr
 		  * @return Type pointer stored in Any
 		  */
-		void *getTypePtr() const { assert(typeId == TypePtr); return dPtr;}
+		inline void *getTypePtr() const { assert(typeId == TypePtr); return dPtr;}
 		/** Returns true if Any is constructed with default constructor.
 		  * @return Returns true if Any is constructed with default constructor.
 		  */
-		bool empty() const { return typeId == Empty; }
+		inline bool empty() const { return typeId == Empty; }
 
 		/**
 		  * @return Any::Type
@@ -119,6 +121,55 @@ class Any {
 		  * @return Converted byte value
 		  */
 		uint8_t toByte() const;
+
+		/** Negation operator */
+		int32_t operator ! ()const;
+		/** Unary plus operator */
+		Any operator + ()const;
+		/** Unary minus operator */
+		Any operator - ()const;
+		/** Modulo operator */
+		Any operator % (const Any &r) const;
+		/** Multiplication operator */
+		Any operator * (const Any &r) const;
+		/** Addition operator */
+		Any operator + (const Any &r) const;
+		/** Substraction operator */
+		Any operator - (const Any &r) const;
+		/** Division operator */
+		Any operator / (const Any &r) const;
+		/** Bitwise left shift operator */
+		Any operator << (const Any &r) const;
+		/** Logical bitwise right shift operator */
+		static int32_t shr (const Any &l, const Any &r);
+		/** Arithmetic bitwise right shift operator */
+		static int32_t sar (const Any &l, const Any &r);
+		/** Power operator */
+		Any operator ^ (const Any &r) const;
+		/** Not equal operator */
+		int32_t operator != (const Any &r) const;
+		/** Logical AND operator */
+		int32_t operator && (const Any &r) const;
+		/** Less than or equal operator */
+		int32_t operator <= (const Any &r) const;
+		/** Equal operator */
+		int32_t operator == (const Any &r) const;
+		/** Greater than or equal operator */
+		int32_t operator >= (const Any &r) const;
+		/** Logical or operator */
+		int32_t operator || (const Any &r) const;
+		/** Greater than operator */
+		int32_t operator > (const Any &r) const;
+		/** Less than operator */
+		int32_t operator < (const Any &r) const;
+
+
+		static void addition(VariableStack *s);
+		static void multiplication(VariableStack *s);
+		static void division(VariableStack *s);
+		static void substraction(VariableStack *s);
 };
+
+
 
 #endif // ANY_H

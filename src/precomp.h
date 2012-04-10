@@ -39,4 +39,13 @@ using boost::function;
 using boost::lexical_cast;
 using boost::dynamic_bitset;
 
+#ifdef FORCEINLINE
+	#undef FORCEINLINE
+#endif
+#ifdef VC_USE_FORCEINLINE
+	#define FORCEINLINE __forceinline
+#else
+	#define FORCEINLINE inline
+#endif
+
 #endif

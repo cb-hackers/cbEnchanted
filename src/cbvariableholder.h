@@ -20,7 +20,7 @@ class CBVariableHolder {
 			return value;
 		}
 
-		void pushValue(const Any &value) {
+		FORCEINLINE void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
 
@@ -98,8 +98,9 @@ class CBVariableHolder {
 		}
 		Type *getType(int32_t id){return types[--id];}
 
-	private:
+	protected:
 		VariableStack internalStack;
+	private:
 		ScopeHolder scopeHolder;
 
 		VariableCollection <uint8_t> globalByteVariables;

@@ -1,7 +1,14 @@
 #ifndef VARIABLESTACK_H
 #define VARIABLESTACK_H
+#include "precomp.h"
 
 class VariableStack {
+		/** @brief
+		 * To gain speed, mathematical expressions need to have a direct
+		 * link to stack variables. Making Any friend with VariableHolder
+		 * does exactly that.
+		 * @see mathoperations.h */
+		friend class Any;
 	public:
 		VariableStack() {
 			stackSize = 100;
@@ -10,7 +17,7 @@ class VariableStack {
 			stackLevel = 0;
 		}
 
-		inline void push(const Any &a) {
+		FORCEINLINE void push(const Any &a) {
 			if (stackSize < stackLevel) {
 				resize(stackSize * 2);
 			}

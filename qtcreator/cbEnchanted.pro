@@ -10,20 +10,23 @@ QMAKE_CXXFLAGS_DEBUG += /Zc:wchar_t /Zi
 
 contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
-	QMAKE_CXXFLAGS_RELEASE += /Zi /Zc:wchar_t /arch
+	DEFINES += VC_USE_FORCEINLINE
+	QMAKE_CXXFLAGS_RELEASE += /Zi /Zc:wchar_t /Ox
 	QMAKE_LFLAGS_RELEASE += /DEBUG
 } else {
 	!contains(CBE_CONFIG,full_optimization) {
 		CONFIG += precompiled_header
 		DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 	}
-	QMAKE_CXXFLAGS_RELEASE += /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /EHsc /GS /Gy /Zc:forScope /Zc:wchar_t
+	QMAKE_CXXFLAGS_RELEASE += /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy- /GL /GL /EHsc /Gy /Zc:forScope /Zc:wchar_t
+	DEFINES += VC_USE_FORCEINLINE
 }
 
 
 
 
-HEADERS += ../src/*.h
+HEADERS += ../src/*.h \
+    ../src/mathoperations.h
 
 SOURCES += ../src/*.cpp
 

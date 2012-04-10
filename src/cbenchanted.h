@@ -65,8 +65,7 @@ class CBEnchanted :
 
 		char *code;
 		char *codeBase;
-		uint32_t cpos;
-		vector <uint32_t> pos;
+		vector <char*> pos;
 		bool initialized;
 		bool running;
 		bool safeExit;

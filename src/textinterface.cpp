@@ -1,7 +1,6 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "textinterface.h"
-#include "mathoperations.h"
 #ifdef WIN32
 	#include <Windows.h>
 	#include <GL/GL.h>

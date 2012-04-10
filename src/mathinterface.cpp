@@ -2,7 +2,6 @@
 #include "cbenchanted.h"
 #include "mathinterface.h"
 #include <math.h>
-#include "mathoperations.h"
 #include "util.h"
 
 MathInterface::MathInterface() {
