@@ -53,11 +53,6 @@ class CollisionCheck
 		/** The way collision is handled, @see CollisionHandling */
 		CollisionHandling mCollisionHandling;
 
-		/** Coordinates where the collision happened */
-		float mCollisionX, mCollisionY;
-		/** Angle of collision, in degrees */
-		float mCollisionAngle;
-
 		/** The amount of collisions detected */
 		uint16_t collisionCount;
 
