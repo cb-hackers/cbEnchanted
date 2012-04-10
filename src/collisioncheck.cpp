@@ -193,13 +193,13 @@ void CollisionCheck::RectRectTest() {
 			// Left?
 			//DEBUG("Box collision at left side of colliding object");
 			objX = mObject2->getX() + mObject2->getRange1() + 1.0f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY));
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX - mObject1->getRange1()/2 - 1.0f, objY));
 		}
 		else {
 			// Right?
 			//DEBUG("Box collision at right side of colliding object");
 			objX = mObject2->getX() - mObject2->getRange1() - 1.0f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY));
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX + mObject1->getRange1()/2 + 1.0f, objY));
 		}
 	}
 
@@ -218,13 +218,13 @@ void CollisionCheck::RectRectTest() {
 			// Bottom?
 			//DEBUG("Box collision at bottom side of colliding object");
 			objY = mObject2->getY() + mObject2->getRange2() + 1.0f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY));
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY - mObject1->getRange2()/2 - 1.0f));
 		}
 		else {
 			// Top?
 			//DEBUG("Box collision at top side of colliding object");
 			objY = mObject2->getY() - mObject2->getRange2() - 1.0f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY));
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY + mObject1->getRange2()/2 + 1.0f));
 		}
 	}
 
