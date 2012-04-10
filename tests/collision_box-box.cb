@@ -30,6 +30,7 @@ Repeat
 
     'Enable additional graphics
     DrawGame
+    UpdateGame
     
     collisions=CountCollisions(soldier)
     
