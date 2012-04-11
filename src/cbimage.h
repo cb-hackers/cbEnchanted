@@ -19,7 +19,8 @@ class CBImage
 		RenderTarget *getRenderTarget(){return &renderTarget;}
 		void draw(RenderTarget &r,float x,float y,bool useMask);
 		void draw(RenderTarget &r,float x,float y,int frame, bool useMask);
-		void drawBox(RenderTarget &r,float x,float y, float w, float h, float sx, float sy, int frame, bool useMask);
+		void drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask);
+		void drawBox(RenderTarget &r,float sx,float sy, float sw, float sh, float tx, float ty, int frame, bool useMask);
 		void maskImage(const ALLEGRO_COLOR &c){maskColor = c;}
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
 		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begining,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begining;animLength = animL;}
