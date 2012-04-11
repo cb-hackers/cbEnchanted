@@ -5,6 +5,20 @@
 FORCEINLINE void Any::addition(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel-1];
+	if (b.typeId == Int) {
+		if (a.typeId == Int) {
+			a.dInt = a.dInt + b.dInt;
+			return;
+		}
+		if (a.typeId == Float) {
+			a.dFloat = a.dFloat + b.dInt;
+			return;
+		}
+		if (a.typeId == String) {
+			a = a.getString().getRef() + boost::lexical_cast<string>(b.dInt);
+			return;
+		}
+	}
 	if (b.typeId == Float) {
 		if (a.typeId == Float) {
 			a.dFloat = a.dFloat + b.dFloat;
@@ -17,20 +31,6 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 		}
 		if (a.typeId == String) {
 			a = a.getString().getRef() + boost::lexical_cast<string>(b.dFloat);
-			return;
-		}
-	}
-	if (b.typeId == Int) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat + b.dInt;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dInt = a.dInt + b.dInt;
-			return;
-		}
-		if (a.typeId == String) {
-			a = a.getString().getRef() + boost::lexical_cast<string>(b.dInt);
 			return;
 		}
 	}

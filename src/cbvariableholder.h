@@ -20,7 +20,7 @@ class CBVariableHolder {
 			return value;
 		}
 
-		FORCEINLINE void pushValue(const Any &value) {
+		void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
 
@@ -36,24 +36,24 @@ class CBVariableHolder {
 			return scopeHolder.depth() > 1;
 		}
 
-		uint8_t getByteVariable(uint32_t id) { return scopeHolder.getByteVar(id); }
-		uint16_t getShortVariable(uint32_t id) { return scopeHolder.getShortVar(id); }
-		int32_t getIntegerVariable(uint32_t id) { return scopeHolder.getIntVar(id); }
-		float getFloatVariable(uint32_t id) { return scopeHolder.getFloatVar(id); }
-		const ISString &getStringVariable(uint32_t id) { return scopeHolder.getStringVar(id); }
-		void *getTypePointerVariable(uint32_t id) { return scopeHolder.getTypePtrVar(id);}
+		FORCEINLINE uint8_t &getByteVariable(uint32_t id) { return scopeHolder.getByteVar(id); }
+		FORCEINLINE uint16_t &getShortVariable(uint32_t id) { return scopeHolder.getShortVar(id); }
+		FORCEINLINE int32_t &getIntegerVariable(uint32_t id) { return scopeHolder.getIntVar(id); }
+		FORCEINLINE float &getFloatVariable(uint32_t id) { return scopeHolder.getFloatVar(id); }
+		FORCEINLINE ISString &getStringVariable(uint32_t id) { return scopeHolder.getStringVar(id); }
+		FORCEINLINE void *&getTypePointerVariable(uint32_t id) { return scopeHolder.getTypePtrVar(id);}
 
-		uint8_t &getGlobalByteVariable(uint32_t id) { return globalByteVariables.get(id); }
-		uint16_t &getGlobalShortVariable(uint32_t id) { return globalShortVariables.get(id); }
-		int32_t &getGlobalIntegerVariable(uint32_t id) { return globalIntegerVariables.get(id); }
-		float &getGlobalFloatVariable(uint32_t id) { return globalFloatVariables.get(id); }
-		ISString &getGlobalStringVariable(uint32_t id) { return globalStringVariables.get(id); }
+		FORCEINLINE uint8_t &getGlobalByteVariable(uint32_t id) { return globalByteVariables.get(id); }
+		FORCEINLINE uint16_t &getGlobalShortVariable(uint32_t id) { return globalShortVariables.get(id); }
+		FORCEINLINE int32_t &getGlobalIntegerVariable(uint32_t id) { return globalIntegerVariables.get(id); }
+		FORCEINLINE float &getGlobalFloatVariable(uint32_t id) { return globalFloatVariables.get(id); }
+		FORCEINLINE ISString &getGlobalStringVariable(uint32_t id) { return globalStringVariables.get(id); }
 
-		Array<int32_t> &getIntegerArray(uint32_t id) { return integerArrays.get(id); }
-		Array<float> &getFloatArray(uint32_t id) { return floatArrays.get(id); }
-		Array<uint16_t> &getShortArray(uint32_t id) { return shortArrays.get(id); }
-		Array<uint8_t> &getByteArray(uint32_t id) { return byteArrays.get(id); }
-		Array<ISString> &getStringArray(uint32_t id) { return stringArrays.get(id); }
+		FORCEINLINE Array<int32_t> &getIntegerArray(uint32_t id) { return integerArrays.get(id); }
+		FORCEINLINE Array<float> &getFloatArray(uint32_t id) { return floatArrays.get(id); }
+		FORCEINLINE Array<uint16_t> &getShortArray(uint32_t id) { return shortArrays.get(id); }
+		FORCEINLINE Array<uint8_t> &getByteArray(uint32_t id) { return byteArrays.get(id); }
+		FORCEINLINE Array<ISString> &getStringArray(uint32_t id) { return stringArrays.get(id); }
 
 		ISString &getString(uint32_t id) { return strings.get(id); }
 

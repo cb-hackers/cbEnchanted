@@ -17,15 +17,15 @@ class ScopeHolder {
 				uint32_t stringVarCount;
 		};
 	public:
-        ScopeHolder();
+		ScopeHolder();
 		void pushScope(int32_t byteCount,int32_t shortCount,int32_t stringCount,int32_t floatCount,int32_t integerCount,int32_t typePtrCount);
 		void popScope();
-		int32_t getIntVar(int32_t i) const {return scopes.top().intVars[i-1];}
-		float getFloatVar(int32_t i) const {return scopes.top().floatVars[i-1];}
-		uint16_t getShortVar(int32_t i) const {return scopes.top().shortVars[i-1];}
-		uint8_t getByteVar(int32_t i) const {return scopes.top().byteVars[i-1];}
-		const ISString &getStringVar(int32_t i) const {return scopes.top().stringVars[i-1];}
-		void *getTypePtrVar(int32_t i) const {return scopes.top().typePtrVars[i-1];}
+		FORCEINLINE int32_t &getIntVar(int32_t i) const {return scopes.top().intVars[i-1];}
+		FORCEINLINE float &getFloatVar(int32_t i) const {return scopes.top().floatVars[i-1];}
+		FORCEINLINE uint16_t &getShortVar(int32_t i) const {return scopes.top().shortVars[i-1];}
+		FORCEINLINE uint8_t &getByteVar(int32_t i) const {return scopes.top().byteVars[i-1];}
+		FORCEINLINE ISString &getStringVar(int32_t i) const {return scopes.top().stringVars[i-1];}
+		FORCEINLINE void *&getTypePtrVar(int32_t i) const {return scopes.top().typePtrVars[i-1];}
 
 		void setIntVar(int32_t i, int32_t v) const {scopes.top().intVars[i-1] = v;}
 		void setFloatVar(int32_t i, float v) const {scopes.top().floatVars[i-1] = v;}
