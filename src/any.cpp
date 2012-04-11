@@ -327,12 +327,7 @@ Any Any::operator << (const Any &r) const {
 }
 
 int32_t Any::sar (const Any &l, const Any &r) {
-	if (l.type() == Any::Int) {
-		if (r.type() == Any::Int) {
-			return l.getInt() >> l.getInt();
-		}
-	}
-	FIXME("Unsupported operation %s << %s", l.typeInfo().name(), r.typeInfo().name());
+	return l.toInt() >> l.toInt();
 	return 0;
 }
 

@@ -163,11 +163,29 @@ class Any {
 		/** Less than operator */
 		int32_t operator < (const Any &r) const;
 
-
+		/** Optimized version of addition for handleMathCommand */
 		static void addition(VariableStack *s);
+
+		/** Optimized version of multiplication for handleMathCommand */
 		static void multiplication(VariableStack *s);
+
+		/** Optimized version of division for handleMathCommand */
 		static void division(VariableStack *s);
+
+		/** Optimized version of substraction for handleMathCommand */
 		static void substraction(VariableStack *s);
+
+		/** Optimized version of modulo for handleMathCommand */
+		static void modulo(VariableStack *s);
+
+		/** Optimized version of bitwise left shift for handleMathCommand */
+		static void shl(VariableStack *s);
+
+		/** Optimized version of bitwise arithmetic right shift for handleMathCommand */
+		static void sar(VariableStack *s);
+
+		/** Optimized version of bitwise logical right shift for handleMathCommand */
+		static void shr(VariableStack *s);
 };
 
 

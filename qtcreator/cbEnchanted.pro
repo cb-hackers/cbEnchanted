@@ -32,7 +32,8 @@ contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
 	#DEFINES += VC_USE_FORCEINLINE
 	QMAKE_LFLAGS_RELEASE += -DEBUG
-	QMAKE_CXX_FLAGS_RELEASE += -Zi
+	QMAKE_CXXFLAGS_RELEASE += -Zi
+	QMAKE_CFLAGS_RELEASE += -Zi
 } else {
 	!contains(CBE_CONFIG,full_optimization) {
 		CONFIG += precompiled_header

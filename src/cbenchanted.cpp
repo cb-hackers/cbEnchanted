@@ -984,50 +984,14 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 			pushValue(l ^ r);
 			break;
 		}
-		case 4: {
-			Any::addition(&internalStack);
-			break;
-		}
-		case 5: {
-			Any::substraction(&internalStack);
-			break;
-		}
-		case 6: {
-			Any::multiplication(&internalStack);
-			break;
-		}
-		case 7: {
-			Any::division(&internalStack);
-			break;
-		}
-		case 8: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l % r);
-			break;
-		}
-		case 9: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l << r);
-			break;
-		}
-		case 10: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(Any::shr(l, r));
-			break;
-		}
-		case 11: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(Any::sar(l, r));
-			break;
-		}
+		case 4: Any::addition(&internalStack); break;
+		case 5: Any::substraction(&internalStack); break;
+		case 6: Any::multiplication(&internalStack); break;
+		case 7: Any::division(&internalStack); break;
+		case 8: Any::modulo(&internalStack); break;
+		case 9: Any::shl(&internalStack); break;
+		case 10: Any::shr(&internalStack); break;
+		case 11: Any::sar(&internalStack); break;
 		case 12: {
 			const Any &r = popValue();
 			const Any &l = popValue();
