@@ -12,7 +12,7 @@ FileInterface::~FileInterface() {
 void FileInterface::commandCloseFile(void) {
 	int32_t ID;
 	ID = cb->popValue().getInt();
-	if (filestrs[ID] == 0)
+	if (filestrs[ID] == NULL)
 	{
 		FIXME("CloseFile failed.");
 		cb->pushValue(0);
@@ -104,27 +104,22 @@ void FileInterface::commandWriteFloat(void) {
 void FileInterface::commandWriteString(void) {
 	string sstring = cb->popValue().toString().getRef();
 
-	FILE *file2;
-	file2 = filestrs[cb->popValue().toInt()];
+	FILE *file = filestrs[cb->popValue().toInt()];
 
 	int l = int(sstring.length());
-	char * str;
-	str = new char [sstring.length() + 1];
-	strcpy(str, sstring.c_str());
 
-	fwrite(&l, sizeof(int32_t), 1, file2);
-	fwrite(str, l, 1, file2);
-	delete[] str;
+	fwrite(&l, sizeof(int32_t), 1, file);
+	fwrite(sstring.c_str(), l, 1, file);
+
 }
 
 void FileInterface::commandWriteLine(void) {
 	string line = cb->popValue().toString().getRef();
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
+	FILE *file = filestrs[cb->popValue().getInt()];
 
 	line += "\n";
 
-	fputs(line.c_str(), file2);
+	fputs(line.c_str(), file);
 }
 
 void FileInterface::commandReadByte(void) {
@@ -265,10 +260,9 @@ void FileInterface::functionFileSize(void) {
 }
 
 void FileInterface::functionEOF(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
+	FILE *file = filestrs[cb->popValue().getInt()];
 
-	cb->pushValue(feof(file2) != 0);
+	cb->pushValue(feof(file) != 0);
 }
 
 void FileInterface::functionReadByte(void) {
@@ -300,21 +294,16 @@ void FileInterface::functionReadFloat(void) {
 }
 
 void FileInterface::functionReadString(void) {
-	FILE *file2;
-	file2 = filestrs[cb->popValue().getInt()];
+	FILE *file = filestrs[cb->popValue().getInt()];
 
 	int32_t i;
-
-	fread(&i, sizeof(int32_t), 1, file2);
+	fread(&i, sizeof(int32_t), 1, file);
 
 	char * str;
 	str = new char [i + 1];
-
-	fread(str, i, 1, file2);
+	fread(str, i, 1, file);
 
 	string line(str);
-
-	line=line.substr(0, line.length() - 1);
 
 	delete[] str;
 
@@ -322,11 +311,11 @@ void FileInterface::functionReadString(void) {
 }
 
 void FileInterface::functionReadLine(void) {
-	FILE *file2 = filestrs[cb->popValue().getInt()];
+	FILE *file = filestrs[cb->popValue().getInt()];
 
 	string line = "";
 	while(1) {
-		int c = fgetc(file2);
+		int c = fgetc(file);
 		if (c != '\n' && c != EOF) {
 			line = line + char(c);
 		}
