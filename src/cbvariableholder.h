@@ -20,7 +20,7 @@ class CBVariableHolder {
 			return value;
 		}
 
-		void pushValue(const Any &value) {
+		FORCEINLINE void pushValue(const Any &value) {
 			internalStack.push(value);
 		}
 
