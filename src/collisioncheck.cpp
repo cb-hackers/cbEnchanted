@@ -246,32 +246,32 @@ void CollisionCheck::CircleCircleTest() {
 	float obj1r = mObject1->getRange1() / 2;
 	float obj2r = mObject2->getRange1() / 2;
 
-	// Sliding collision check
-	if (mCollisionHandling == Slide) {
+	// Stop collision check
+	if (mCollisionHandling == Stop) {
+		// Not here yet
+	}
+	else { // Sliding collision checking
 		// Calculate the differentials between object coordinates
 		float dx = mObject2->getX() - objX;
 		float dy = mObject2->getY() - objY;
 
-		// Only if we are withing a rectangle with sides as long as objects diameter,
-		// can a collision happen. We surely don't want to do expensive square root calculations
-		// for nothing.
-		if (abs(dx) <= mObject1->getRange1() && abs(dy) <= mObject1->getRange1()) {
-			float r = sqrt((dx * dx) + (dy * dy));
-			float totalR = obj1r + obj2r;
-			if (r < totalR) {
-				float colAngle = atan2(dy, dx);
-				objX = mObject2->getX() - cos(colAngle) * (totalR + 1.0f);
-				objY = mObject2->getY() - sin(colAngle) * (totalR + 1.0f);
+		float dist = dx * dx + dy * dy;
+		float minDist = obj1r + obj2r;
 
-				// Add the collision
-				mObject1->addCollision(new Collision(
-					mObject1,
-					mObject2,
-					((colAngle + M_PI) / M_PI) * 180.0f,
-					objX + cos(colAngle) * (obj1r + 1.0f),
-					objY + sin(colAngle) * (obj1r + 1.0f)
-				));
-			}
+		if (dist <= minDist * minDist) {
+			// Collided.
+			float radAngle = atan2(dy, dx);
+			objX = mObject2->getX() - cos(radAngle) * (obj1r + obj2r);
+			objY = mObject2->getY() - sin(radAngle) * (obj1r + obj2r);
+
+			// Add the collision
+			mObject1->addCollision(new Collision(
+				mObject1,
+				mObject2,
+				((radAngle + M_PI) / M_PI) * 180.0f,
+				objX + cos(radAngle) * (obj1r + 1.0f),
+				objY + sin(radAngle) * (obj1r + 1.0f)
+			));
 		}
 	}
 
