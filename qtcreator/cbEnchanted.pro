@@ -50,8 +50,7 @@ contains(CBE_CONFIG,optimized_debug) {
 
 
 
-HEADERS += ../src/*.h \
-    ../src/mathoperations.h
+HEADERS += ../src/*.h
 
 SOURCES += ../src/*.cpp
 
