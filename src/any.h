@@ -134,7 +134,7 @@ class Any {
 		Any operator * (const Any &r) const;
 		/** Addition operator */
 		Any operator + (const Any &r) const;
-		/** Substraction operator */
+		/** Subtraction operator */
 		Any operator - (const Any &r) const;
 		/** Division operator */
 		Any operator / (const Any &r) const;
@@ -172,8 +172,8 @@ class Any {
 		/** Optimized version of division for handleMathCommand */
 		static void division(VariableStack *s);
 
-		/** Optimized version of substraction for handleMathCommand */
-		static void substraction(VariableStack *s);
+		/** Optimized version of subtraction for handleMathCommand */
+		static void subtraction(VariableStack *s);
 
 		/** Optimized version of modulo for handleMathCommand */
 		static void modulo(VariableStack *s);

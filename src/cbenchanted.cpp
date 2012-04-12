@@ -985,7 +985,7 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 			break;
 		}
 		case 4: Any::addition(&internalStack); break;
-		case 5: Any::substraction(&internalStack); break;
+		case 5: Any::subtraction(&internalStack); break;
 		case 6: Any::multiplication(&internalStack); break;
 		case 7: Any::division(&internalStack); break;
 		case 8: Any::modulo(&internalStack); break;

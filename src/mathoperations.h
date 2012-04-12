@@ -78,7 +78,7 @@ FORCEINLINE void Any::multiplication(VariableStack *s) {
 	FIXME("Unsupported operation %s * %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
-FORCEINLINE void Any::substraction(VariableStack *s) {
+FORCEINLINE void Any::subtraction(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel-1];
 	if (b.typeId == Float) {
