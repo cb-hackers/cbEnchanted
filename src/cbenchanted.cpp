@@ -163,7 +163,7 @@ bool CBEnchanted::init(string file) {
 			case 90: i += 4; break;
 			case 79: i ++; break;
 			case 67: {
-				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 6) { //commandGoto & commandSelect
+				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 21 || (*(int32_t *)(code + i)) == 6) { //commandGoto, commandGosub and commandSelect
 					int32_t id = *(int32_t *)(code + i + 5);
 					*(int32_t *)(code + i + 5) = offsets[id];
 				}
@@ -1082,7 +1082,7 @@ FORCEINLINE void CBEnchanted::handleJump(void) {
  * CBEnchanted::handleIncVar - Increase integer variable
  */
 FORCEINLINE void CBEnchanted::handleIncVar(void) {
-	setIntegerVariable(*(uint32_t *)(code), getIntegerVariable(*(uint32_t *)(code)) + 1);
+	getIntegerVariable(*(uint32_t *)(code)) += 1;
 	code += 4;
 }
 
@@ -1090,7 +1090,7 @@ FORCEINLINE void CBEnchanted::handleIncVar(void) {
  * CBEnchanted::handleIncGlobalVar - Increase global integer variable
  */
 FORCEINLINE void CBEnchanted::handleIncGlobalVar(void) {
-	setGlobalIntegerVariable(*(uint32_t *)(code), getGlobalIntegerVariable(*(uint32_t *)(code)) + 1);
+	getGlobalIntegerVariable(*(uint32_t *)(code)) += 1;
 	code += 4;
 }
 
@@ -1150,7 +1150,12 @@ FORCEINLINE void CBEnchanted::commandReturn(void) {
 }
 
 void CBEnchanted::commandGosub(void) {
+	int32_t ptr = *(int32_t *)(++code);
+	code += 4;
 
+	pos.push_back(code);
+
+	code = codeBase + ptr;
 }
 
 void CBEnchanted::functionNew(void) {
