@@ -246,33 +246,37 @@ void CollisionCheck::CircleCircleTest() {
 	float obj1r = mObject1->getRange1() / 2;
 	float obj2r = mObject2->getRange1() / 2;
 
-	// Stop collision check
-	if (mCollisionHandling == Stop) {
-		// Not here yet
-	}
-	else { // Sliding collision checking
-		// Calculate the differentials between object coordinates
-		float dx = mObject2->getX() - objX;
-		float dy = mObject2->getY() - objY;
+	// Calculate the differentials between object coordinates
+	float dx = mObject2->getX() - objX;
+	float dy = mObject2->getY() - objY;
 
-		float dist = dx * dx + dy * dy;
-		float minDist = obj1r + obj2r;
+	float dist = dx * dx + dy * dy;
+	float minDist = obj1r + obj2r;
 
-		if (dist <= minDist * minDist) {
-			// Collided.
-			float radAngle = atan2(dy, dx);
-			objX = mObject2->getX() - cos(radAngle) * (obj1r + obj2r);
-			objY = mObject2->getY() - sin(radAngle) * (obj1r + obj2r);
-
-			// Add the collision
-			mObject1->addCollision(new Collision(
-				mObject1,
-				mObject2,
-				((radAngle + M_PI) / M_PI) * 180.0f,
-				objX + cos(radAngle) * (obj1r + 1.0f),
-				objY + sin(radAngle) * (obj1r + 1.0f)
-			));
+	// Check for collision and then handle properly
+	if (dist < minDist * minDist) {
+		float radAngle;
+		if (mCollisionHandling == Stop) {
+			// Check the angle from safe coordinates, so that we stop instead of sliding
+			radAngle = atan2(mObject2->getY() - safeY, mObject2->getX() - safeX);
 		}
+		else {
+			// Check the angle from new object coordinates so we slide
+			radAngle = atan2(dy, dx);
+		}
+
+		// Position the object using triginometry. Thank you, mathematics.
+		objX = mObject2->getX() - cos(radAngle) * (obj1r + obj2r + 0.5f);
+		objY = mObject2->getY() - sin(radAngle) * (obj1r + obj2r + 0.5f);
+
+		// Add the collision
+		mObject1->addCollision(new Collision(
+			mObject1,
+			mObject2,
+			((radAngle + M_PI) / M_PI) * 180.0f,
+			objX + cos(radAngle) * (obj1r + 1.0f),
+			objY + sin(radAngle) * (obj1r + 1.0f)
+		));
 	}
 
 	// And then the resetion.
