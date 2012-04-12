@@ -237,6 +237,48 @@ void CollisionCheck::RectRectTest() {
 /** A circle - circle collision test */
 void CollisionCheck::CircleCircleTest() {
 	DrawCollisionBoundaries();
+
+	// Get the object coordinates here and then modify them later on. Creates more readable code ;)
+	float objX = mObject1->getX();
+	float objY = mObject1->getY();
+
+	// Also calculate radii of collision objects.
+	float obj1r = mObject1->getRange1() / 2;
+	float obj2r = mObject2->getRange1() / 2;
+
+	// Sliding collision check
+	if (mCollisionHandling == Slide) {
+		// Calculate the differentials between object coordinates
+		float dx = mObject2->getX() - objX;
+		float dy = mObject2->getY() - objY;
+
+		// Only if we are withing a rectangle with sides as long as objects diameter,
+		// can a collision happen. We surely don't want to do expensive square root calculations
+		// for nothing.
+		if (abs(dx) <= mObject1->getRange1() && abs(dy) <= mObject1->getRange1()) {
+			float r = sqrt((dx * dx) + (dy * dy));
+			float totalR = obj1r + obj2r;
+			if (r < totalR) {
+				float colAngle = atan2(dy, dx);
+				objX = mObject2->getX() - cos(colAngle) * (totalR + 1.0f);
+				objY = mObject2->getY() - sin(colAngle) * (totalR + 1.0f);
+
+				// Add the collision
+				mObject1->addCollision(new Collision(
+					mObject1,
+					mObject2,
+					((colAngle + M_PI) / M_PI) * 180.0f,
+					objX + cos(colAngle) * (obj1r + 1.0f),
+					objY + sin(colAngle) * (obj1r + 1.0f)
+				));
+			}
+		}
+	}
+
+	// And then the resetion.
+	safeX = objX;
+	safeY = objY;
+	mObject1->setPosition(safeX, safeY);
 }
 
 /** A rectangle - map collision test */
@@ -390,7 +432,13 @@ void CollisionCheck::DrawCollisionBoundaries() {
 			rendertarget->drawBox(x, y, w, h, false, al_map_rgba(0, 255, 0, 128));
 			break;
 		}
-		case Circle: break;
+		case Circle: {
+			float x = mObject2->getX();
+			float y = mObject2->getY();
+			float r = mObject2->getRange1() / 2;
+			rendertarget->drawCircle(x, y, r, false, al_map_rgba(0, 255, 0, 128));
+			break;
+		}
 		case Map: {
 			CBMap *cbmap = static_cast<CBMap*>(mObject2);
 			// Draw a box around the 8 tiles surrounding player
