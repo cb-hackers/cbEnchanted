@@ -1,10 +1,13 @@
 'Esimerkki 11 : Kartat 2
 FrameLimit 60
+DrawToWorld ON
 
 kartta = LoadMap("Media\cdm2.til","Media\tileset.bmp")
 PlayObject kartta,0,0,1
 
-ukko = LoadObject ("Media\guy.bmp",72)
+ukko = LoadObject ("Media\soldier.bmp",72)
+ukkoW = ObjectSizeX(ukko)
+ukkoH = ObjectSizeY(ukko)
 
 
 SetupCollision ukko, kartta, 2, 4, 2
@@ -19,6 +22,8 @@ Repeat
 
     DrawGame
     UpdateGame
+
+    Circle ObjectX(ukko)-ukkow/2, ObjectY(ukko)-ukkoh/2, ukkoW
 
     CloneCameraPosition ukko
 

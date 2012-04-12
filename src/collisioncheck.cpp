@@ -396,6 +396,47 @@ void CollisionCheck::RectMapTest() {
 /** A circle - map collision test */
 void CollisionCheck::CircleMapTest() {
 	DrawCollisionBoundaries();
+
+	// The current map is the object in mObject2
+	CBMap *cbmap = static_cast<CBMap*>(mObject2);
+
+	// Fetch tile width and tile height to variables so that the code is less messy
+	int32_t tileWidth = cbmap->getTileWidth();
+	int32_t tileHeight = cbmap->getTileHeight();
+
+	// Same goes for object radius and position.
+	float objX = mObject1->getX();
+	float objY = mObject1->getY();
+	float objR = mObject1->getRange1() / 2;
+
+	// Calculate the amount of tiles to both X- and Y-directions we need to check
+	uint16_t checkTilesX = 1;
+	uint16_t checkTilesY = 1;
+
+	// Calculate tile coordinates that are one up and one left from the object
+	int32_t startTileX = (int32_t) (objX + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
+	int32_t startTileY = (int32_t) (-objY + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
+
+	// Check collision to nearby tiles
+	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
+		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
+			if (cbmap->getHit(tileX, tileY)) {
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+
+				// We got ourselves some real coordinates. Now do circle-rectangle collision.
+				if (this->CircleRectTest(objX, objY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
+					objX = safeX;
+					objY = safeY;
+					// TODO: position the object as close to the wall as possible
+				}
+			}
+		}
+	}
+
+	safeX = objX;
+	safeY = objY;
+	mObject1->setPosition(objX, objY);
 }
 
 /** Drawing the collision box, used for debugging only. */
@@ -488,5 +529,33 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	if (left1 > right2) return false;
 
 	return true;
+}
+
+/** Tests a circle - rectangle collision, with parameters.
+ *
+ * @see http://stackoverflow.com/a/402010
+ */
+bool CollisionCheck::CircleRectTest(float circleX, float circleY, float circleR, float rectX, float rectY, float rectW, float rectH) {
+	// Rectangle width and height are needed in every calculation, so calculate them here already
+	float halfRectW = rectW / 2;
+	float halfRectH = rectH / 2;
+
+
+	float circleDistX = abs(circleX - rectX - halfRectW);
+	float circleDistY = abs(circleY - rectY - halfRectH);
+
+	// If we're too far away, we can't collide
+	if (circleDistX > (halfRectW + circleR)) { return false; }
+	if (circleDistY > (halfRectH + circleR)) { return false; }
+
+	// If we're close enough, we always collide
+	if (circleDistX <= halfRectW) { return true; }
+	if (circleDistY <= halfRectH) { return true; }
+
+	// Then the computationally more expensive part, the corner.
+	float cornerDistance_sq = (circleDistX - halfRectW)*(circleDistX - halfRectW) +
+			(circleDistY - halfRectH)*(circleDistY - halfRectH);
+
+	return (cornerDistance_sq <= (circleR * circleR));
 }
 

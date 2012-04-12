@@ -75,6 +75,9 @@ class CollisionCheck
 		/** Tests a rectangle - rectangle collision, with parameters. */
 		bool RectRectTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
 
+		/** Tests a circle - rectangle collision, with parameters. */
+		bool CircleRectTest(float circleX, float circleY, float circleR, float rectX, float rectY, float rectW, float rectH);
+
 		/** Handles the collision */
 		void handleCollision();
 };
