@@ -54,24 +54,24 @@ void TextInterface::commandText(void) {
 
 void TextInterface::commandCenterText(void) {
 	uint8_t style = cb->popValue().toInt();
-	string str = cb->popValue().getString().getRef();
+	ISString str = cb->popValue().toString();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
 	switch(style){
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::HCenter
 			);
 		break;
 		case 1:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::VCenter
 			);
 		break;
 		case 2:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::Center
 			);
 		break;
 	}

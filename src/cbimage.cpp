@@ -1,6 +1,11 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
 
+bool CBImage::useARBShaders;
+GLuint CBImage::maskShaderProgram;
+GLuint CBImage::maskColorUniformPos;
+
+
 CBImage::CBImage() :
 	hotspotX(0),
 	hotspotY(0),
@@ -22,13 +27,25 @@ bool CBImage::load(const string &path) {
 }
 
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
-	if (useMask) {
-		//TODO MASKING
+	if (useMask && maskShaderProgram) {
+		if (useARBShaders) {
+			glUseProgramObjectARB(maskShaderProgram);
+			glUniform4fARB(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
+		}
+		else {
+			glUseProgram(maskShaderProgram);
+			glUniform4f(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
+		}
 		r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
+		if (useARBShaders) {
+			glUseProgramObjectARB(0);
+		}
+		else {
+			glUseProgram(0);
+		}
+		return;
 	}
-	else {
-		r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
-	}
+	r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
 }
 
 void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
@@ -73,7 +90,24 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 }
 
 void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask) {
-	//TODO: Masking
+	if (useMask && maskShaderProgram) {
+		if (useARBShaders) {
+			glUseProgramObjectARB(maskShaderProgram);
+			glUniform4fARB(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
+		}
+		else {
+			glUseProgram(maskShaderProgram);
+			glUniform4f(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
+		}
+		r.drawBitmapRegion(renderTarget.getBitmap(),sx,sy,sw,sh,tx,ty);
+		if (useARBShaders) {
+			glUseProgramObjectARB(0);
+		}
+		else {
+			glUseProgram(0);
+		}
+		return;
+	}
 	r.drawBitmapRegion(renderTarget.getBitmap(),sx,sy,sw,sh,tx,ty);
 }
 
@@ -97,4 +131,67 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
 	renderTarget.clear(al_map_rgb_f(0, 0, 0));
+}
+
+const char * imageMaskFragmentShaderCode =
+		"uniform sampler2D texture;\n"
+		"uniform vec4 maskColor;\n"
+		"const float offset = 0.00196078431372549019607843137255;\n"
+		"void main(void)\n"
+		"{\n"
+		"    vec4 color = texture2D(texture,gl_TexCoord[0].st);"
+		"    vec4 div = abs(maskColor - color);\n"
+		"    if ((div.r <= offset) && (div.g <= offset) && (div.b <= offset) && (div.a <= offset)) color = vec4(0.0);\n"
+		"    gl_FragColor = color;"
+		"}\n"
+		"";
+
+void CBImage::initMaskShader() {
+	maskShaderProgram = 0;
+	if (al_get_opengl_version() > 0x02000000) {
+		useARBShaders = false;
+		GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(shader,1,&imageMaskFragmentShaderCode,0);
+		glCompileShader(shader);
+		if (glGetError() != GL_NO_ERROR) {
+			INFO("Compiling image mask shader failed");
+			glDeleteShader(shader);
+			return;
+		}
+
+		maskShaderProgram = glCreateProgram();
+		glAttachShader(maskShaderProgram, shader);
+		glLinkProgram(maskShaderProgram);
+		if (glGetError() != GL_NO_ERROR) {
+			INFO("Linking image mask shader failed");
+			glDeleteProgram(maskShaderProgram);
+			glDeleteShader(shader);
+			maskShaderProgram = 0;
+			return;
+		}
+		maskColorUniformPos = glGetUniformLocationARB(maskShaderProgram,"maskColor");
+	}
+	else if (al_get_opengl_extension_list()->ALLEGRO_GL_ARB_fragment_shader) {
+		useARBShaders = true;
+		GLhandleARB shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+		glShaderSourceARB(shader,1,&imageMaskFragmentShaderCode,0);
+		glCompileShaderARB(shader);
+		if (glGetError()) {
+			INFO("Compiling image mask shader failed");
+			glDeleteObjectARB(shader);
+			return;
+		}
+
+		maskShaderProgram = glCreateProgramObjectARB();
+		glAttachObjectARB(maskShaderProgram,shader);
+		glLinkProgram(maskShaderProgram);
+		if (glGetError() != GL_NO_ERROR) {
+			INFO("Linking image mask shader failed");
+			glDeleteProgramsARB(1,&maskShaderProgram);
+			glDeleteObjectARB(shader);
+			maskShaderProgram = 0;
+			return;
+		}
+		maskColorUniformPos = glGetUniformLocation(maskShaderProgram,"maskColor");
+	}
 }

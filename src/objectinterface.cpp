@@ -270,18 +270,21 @@ void ObjectInterface::commandObjectRange(void) {
 }
 
 void ObjectInterface::commandObjectInteger(void) {
+	int32_t i = cb->popValue().toInt();
 	int32_t id = cb->popValue().getInt();
-	getObject(id)->setObjectInteger(cb->popValue().toInt());
+	getObject(id)->setObjectInteger(i);
 }
 
 void ObjectInterface::commandObjectFloat(void) {
+	float f = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	getObject(id)->setObjectFloat(cb->popValue().toFloat());
+	getObject(id)->setObjectFloat(f);
 }
 
 void ObjectInterface::commandObjectString(void) {
+	const ISString &s = cb->popValue().toString();
 	int32_t id = cb->popValue().getInt();
-	getObject(id)->setObjectString(cb->popValue().toString());
+	getObject(id)->setObjectString(s);
 }
 
 void ObjectInterface::commandObjectPickable(void) {

@@ -74,6 +74,7 @@ bool GfxInterface::initializeGfx()
 
 	al_init_image_addon();
 	al_init_primitives_addon();
+	CBImage::initMaskShader();
 
 	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
