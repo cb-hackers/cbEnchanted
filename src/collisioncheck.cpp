@@ -397,6 +397,17 @@ void CollisionCheck::RectMapTest() {
 void CollisionCheck::CircleMapTest() {
 	DrawCollisionBoundaries();
 
+	// Did we collide? Where?
+	//  * 0 = top
+	//  * 1 = right
+	//  * 2 = bottom
+	//  * 3 = left
+	//  * 4 = one of the corners, this one actually requires circle detection
+	bool collided[5] = {false, false, false, false, false};
+
+	// If there's a collision to a corner, this variable holds the collision angle in radians.
+	float cornerCollisionAngle;
+
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
 
@@ -417,18 +428,59 @@ void CollisionCheck::CircleMapTest() {
 	int32_t startTileX = (int32_t) (objX + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
 	int32_t startTileY = (int32_t) (-objY + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
-	// Check collision to nearby tiles
+	// First check x-directional collision with obj position as safeY
 	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 			if (cbmap->getHit(tileX, tileY)) {
 				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
 				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
 
-				// We got ourselves some real coordinates. Now do circle-rectangle collision.
-				if (this->CircleRectTest(objX, objY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
+				float centerX = x + tileWidth / 2;
+				float centerY = y - tileHeight / 2;
+
+				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+				if (this->RectRectTest(objX - objR, safeY + objR, objR*2, objR*2, x, y, tileWidth, tileHeight)) {
 					objX = safeX;
+					// Check the direction to where we collided
+					if (tileX < startTileX + checkTilesX) {
+						// It seems to be left.
+						collided[3] = true;
+						objX = x + tileWidth + 1.0f + objR;
+					}
+					else if (tileX > startTileX + checkTilesX) {
+						// It seems to be right.
+						collided[1] = true;
+						objX = x - 1.0f - objR;
+					}
+				}
+			}
+		}
+	}
+
+	// Then check y-directional collision, now with regular coordinates
+	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
+		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
+			if (cbmap->getHit(tileX, tileY)) {
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+
+				float centerX = x + tileWidth / 2;
+				float centerY = y - tileHeight / 2;
+
+				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
+				if (this->RectRectTest(objX - objR, objY + objR, objR*2, objR*2, x, y, tileWidth, tileHeight)) {
 					objY = safeY;
-					// TODO: position the object as close to the wall as possible
+					// Check the direction to where we collided
+					if (tileY < startTileY + checkTilesY) {
+						// It seems to be top.
+						collided[0] = true;
+						objY = y - tileHeight - 1.0f - objR;
+					}
+					else if (tileY > startTileY + checkTilesY) {
+						// It seems to be bottom.
+						collided[2] = true;
+						objY = y + 1.0f + objR;
+					}
 				}
 			}
 		}
