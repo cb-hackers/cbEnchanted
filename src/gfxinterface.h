@@ -66,6 +66,7 @@ class GfxInterface {
 	private:
 		void registerWindow();
 		void unregisterWindow();
+		void resizeTempBitmap(int32_t w, int32_t h);
 
 		CBEnchanted *cb;
 		float windowScaleX,windowScaleY;
@@ -80,6 +81,7 @@ class GfxInterface {
 		RenderTarget *currentRenderTarget;
 
 		RenderTarget *windowRenderTarget;
+		ALLEGRO_BITMAP *drawscreenTempBitmap;
 		float windowGammaR;
 		float windowGammaG;
 		float windowGammaB;
@@ -89,8 +91,7 @@ class GfxInterface {
 		bool gameDrawn; //Game has already been drawn in DrawGame
 		bool gameUpdated; //Game has already been updated in UpdateGame
 
-		/** Buffer's returned by SCREEN() and Image()
-		  */
+		/** Buffer's returned by SCREEN() and Image() */
 		std::map<int32_t,RenderTarget*> bufferMap;
 };
 

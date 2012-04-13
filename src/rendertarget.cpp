@@ -53,6 +53,12 @@ void RenderTarget::create(int32_t w, int32_t h) {
 	bitmap = al_create_bitmap(w,h);
 }
 
+void RenderTarget::create(ALLEGRO_BITMAP *bm) {
+	if (bindRenderTarget == this) bindRenderTarget = 0;
+	if (bitmap) al_destroy_bitmap(bitmap);
+	bitmap = bm;
+}
+
 bool RenderTarget::load(const string &path) {
 	if (bitmap) al_destroy_bitmap(bitmap);
 	bitmap = al_load_bitmap(path.c_str());
@@ -128,6 +134,15 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 	al_set_blender(a,b,c);
 }
 
+ALLEGRO_BITMAP *RenderTarget::swapBitmap(ALLEGRO_BITMAP *bm) {
+	ALLEGRO_BITMAP *old(this->bitmap);
+	if (bindRenderTarget == this) {
+		bindRenderTarget = 0;
+	}
+	this->bitmap = bm;
+	return old;
+}
+
 ALLEGRO_COLOR RenderTarget::getPixel(int32_t x, int32_t y) {
 	return al_get_pixel(bitmap,x,y);
 }
@@ -137,7 +152,7 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 	al_clear_to_color(c);
 }
 
-void RenderTarget::convertCoords(float &x, float &y) {
+FORCEINLINE void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		x = x+ al_get_display_width(CBEnchanted::instance()->getWindow()) / 2.0f - CBEnchanted::instance()->getCameraX();
 		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraY();

@@ -19,6 +19,7 @@ class RenderTarget
 		RenderTarget();
 		~RenderTarget();
 		void create(int32_t w, int32_t h);
+		void create(ALLEGRO_BITMAP *bm);
 		bool load(const string &path);
 		RenderTarget *clone();
 		void copy(const RenderTarget * r);
@@ -42,6 +43,7 @@ class RenderTarget
 		void putPixel(int32_t x,int32_t y, const ALLEGRO_COLOR &color);
 		void copyBox(RenderTarget *src,int32_t sx,int32_t sy,int32_t w,int32_t h,int32_t tx,int32_t ty);
 		bool isDrawToWorldViewOn()const{return worldCoordsEnabled;}
+		ALLEGRO_BITMAP *swapBitmap(ALLEGRO_BITMAP *bm);
 		ALLEGRO_COLOR getPixel(int32_t x,int32_t y);
 		void clear(const ALLEGRO_COLOR &c);
 		void lock(){al_lock_bitmap(bitmap,ALLEGRO_LOCK_READWRITE,ALLEGRO_PIXEL_FORMAT_ANY);}

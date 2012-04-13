@@ -66,9 +66,12 @@ bool GfxInterface::initializeGfx()
 	registerWindow();
 	al_set_window_title(window,"");
 	windowRenderTarget = new RenderTarget;
-	windowRenderTarget->create(400,300);
+	windowRenderTarget->create(al_get_backbuffer(window));
 	windowRenderTarget->clear(clearColor);
 	bufferMap[windowRenderTarget->getId()] = windowRenderTarget;
+
+	drawscreenTempBitmap = al_create_bitmap(400,300);
+
 	al_init_image_addon();
 	al_init_primitives_addon();
 
@@ -103,6 +106,8 @@ void GfxInterface::commandScreen(void) {
 	if ((al_get_display_flags(window) & flags) == flags) {
 		if (state != 2) {
 			al_resize_display(window,width,height);
+
+			resizeTempBitmap(width, height);
 		}
 	}
 	else {
@@ -111,6 +116,8 @@ void GfxInterface::commandScreen(void) {
 		if (state != 2) {
 			al_destroy_display(window);
 			window = al_create_display(width,height);
+
+			resizeTempBitmap(width, height);
 		}
 		else {
 			int32_t w = al_get_display_width(window);
@@ -120,8 +127,7 @@ void GfxInterface::commandScreen(void) {
 		}
 		registerWindow();
 	}
-
-	windowRenderTarget->create(width,height);
+	windowRenderTarget->swapBitmap(al_get_backbuffer(window));
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -191,13 +197,27 @@ void GfxInterface::commandDrawScreen(void) {
 		lastSecTimer = clock();
 	}
 	cb->renderAddTexts(*windowRenderTarget);
-	al_set_target_backbuffer(window);
-	al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),0,0,al_get_bitmap_width(windowRenderTarget->getBitmap()),al_get_bitmap_height(windowRenderTarget->getBitmap()),0,0,al_get_display_width(window),al_get_display_height(window),0);
-
-	al_flip_display();
-	windowRenderTarget->setAsCurrent(true);
 	if (cls) {
+		al_flip_display();
 		windowRenderTarget->clear(clearColor);
+	}
+	else {
+		//Setting target to temporary bitmap
+		al_set_target_bitmap(drawscreenTempBitmap);
+		//Saving blender state
+		int32_t a,b,c;
+		al_get_blender(&a,&b,&c);
+		//Setting blender state to replace
+		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+		//Drawing backbuffer to temporary bitmap
+		al_draw_bitmap(windowRenderTarget->getBitmap(),0,0,0);
+		//Swaping window buffers
+		al_flip_display();
+		windowRenderTarget->setAsCurrent(true);
+		//Drawing temporary bitmap on backbuffer.
+		al_draw_bitmap(drawscreenTempBitmap,0,0,0);
+		//Restoring blender state
+		al_set_blender(a,b,c);
 	}
 }
 
@@ -402,6 +422,11 @@ void GfxInterface::registerWindow() {
 
 void GfxInterface::unregisterWindow() {
 	al_unregister_event_source(cb->getEventQueue(),al_get_display_event_source(window));
+}
+
+void GfxInterface::resizeTempBitmap(int32_t w, int32_t h) {
+	al_destroy_bitmap(drawscreenTempBitmap);
+	drawscreenTempBitmap = al_create_bitmap(w, h);
 }
 
 void GfxInterface::sleep(int64_t time){
