@@ -30,8 +30,8 @@ CBObject::CBObject(bool floor):
 	sizeY(0),
 	usingLife(false),
 	life(0),
-	lastObj(0),
-	nextObj(0),
+	beforeObj(0),
+	afterObj(0),
 	playing(false),
 	animEndingFrame(0),
 	animSpeed(0),
@@ -411,6 +411,7 @@ CBObject *CBObject::copyObject() const {
 	obj->animStartFrame = this->animStartFrame;
 	obj->visible = true;
 	obj->maxFrames = this->maxFrames;
+	obj->painted = this->painted;
 	return obj;
 }
 

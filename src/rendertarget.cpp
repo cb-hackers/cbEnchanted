@@ -54,22 +54,32 @@ void RenderTarget::create(int32_t w, int32_t h) {
 }
 
 void RenderTarget::create(ALLEGRO_BITMAP *bm) {
-	if (bindRenderTarget == this) bindRenderTarget = 0;
-	if (bitmap) al_destroy_bitmap(bitmap);
+	if (bindRenderTarget == this) {
+		bindRenderTarget = 0;
+	}
+	if (bitmap) {
+		al_destroy_bitmap(bitmap);
+	}
 	bitmap = bm;
 }
 
 bool RenderTarget::load(const string &path) {
-	if (bitmap) al_destroy_bitmap(bitmap);
+	if (bitmap) {
+		al_destroy_bitmap(bitmap);
+	}
 	bitmap = al_load_bitmap(path.c_str());
 	if (bitmap) return true;
 	return false;
 }
 
-void RenderTarget::setAsCurrent(bool force) {
-	if (bindRenderTarget != this || force) {
-		al_set_target_bitmap(bitmap);
-		bindRenderTarget = this;}
+FORCEINLINE void RenderTarget::setAsCurrent(bool force) {
+	if (bindRenderTarget != 0 && !force) {
+		if (bindRenderTarget->bitmap == this->bitmap) {
+			return;
+		}
+	}
+	al_set_target_bitmap(this->bitmap);
+	bindRenderTarget = this;
 }
 
 void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {

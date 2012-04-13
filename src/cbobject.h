@@ -88,8 +88,8 @@ class CBObject{
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
-		CBObject *nextObj;
-		CBObject *lastObj;
+		CBObject *afterObj;
+		CBObject *beforeObj;
 	protected:
 		/** Is the object created as a copy */
 		bool copied;

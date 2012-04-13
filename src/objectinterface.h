@@ -83,10 +83,8 @@ class ObjectInterface {
 		void drawObjects(RenderTarget &target);
 		inline CBObject *getObject(int32_t key){return objectMap[key];}
 		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
-		inline void addToDrawOrder(CBObject *o){if (lastObject == 0) {lastObject = firstObject = o;o->lastObj = o->nextObj = 0;return;} lastObject->nextObj = o;o->nextObj = 0;o->lastObj = lastObject;lastObject = o;}
-		inline void addToFloorDrawOrder(CBObject *o){if (lastFloorObject == 0) {lastFloorObject = firstFloorObject = o;o->lastObj = o->nextObj = 0;return;} lastObject->nextObj = o;o->nextObj = 0;o->lastObj = lastFloorObject;lastFloorObject = o;}
-
-
+		void addToDrawOrder(CBObject *o);
+		void addToFloorDrawOrder(CBObject *o);
 		void removeFromDrawOrder(CBObject *o);
 	private:
 		CBObject *lastObject;

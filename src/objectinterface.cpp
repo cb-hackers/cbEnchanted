@@ -131,39 +131,39 @@ void ObjectInterface::commandObjectOrder(void) {
 		if (select == 1) {//Move to top
 			if (object == firstFloorObject) return;
 			if (object == lastFloorObject) {
-				object->lastObj->nextObj = 0;
-				lastFloorObject = object->lastObj;
-				firstFloorObject->lastObj = object;
-				object->nextObj = firstFloorObject;
-				object->lastObj = 0;
+				object->beforeObj->afterObj = 0;
+				lastFloorObject = object->beforeObj;
+				firstFloorObject->beforeObj = object;
+				object->afterObj = firstFloorObject;
+				object->beforeObj = 0;
 				firstFloorObject = object;
 
 				return;
 			}
 
-			object->nextObj->lastObj = object->lastObj;
-			object->lastObj->nextObj = object->nextObj;
-			firstFloorObject->lastObj = object;
-			object->nextObj = firstFloorObject;
-			object->lastObj = 0;
+			object->afterObj->beforeObj = object->beforeObj;
+			object->beforeObj->afterObj = object->afterObj;
+			firstFloorObject->beforeObj = object;
+			object->afterObj = firstFloorObject;
+			object->beforeObj = 0;
 		}
 		else if (select == -1) { //Move to last
 			if (object == lastObject) return;
 			if (object == firstObject) {
-				object->nextObj->lastObj = 0;
-				firstFloorObject = object->nextObj;
+				object->afterObj->beforeObj = 0;
+				firstFloorObject = object->afterObj;
 
-				lastFloorObject->nextObj = object;
-				object->nextObj = 0;
-				object->lastObj = lastFloorObject;
+				lastFloorObject->afterObj = object;
+				object->afterObj = 0;
+				object->beforeObj = lastFloorObject;
 				lastFloorObject = object;
 				return;
 			}
-			object->nextObj->lastObj = object->lastObj;
-			object->lastObj->nextObj = object->nextObj;
-			lastFloorObject->nextObj = object;
-			object->lastObj = lastFloorObject;
-			object->nextObj = 0;
+			object->afterObj->beforeObj = object->beforeObj;
+			object->beforeObj->afterObj = object->afterObj;
+			lastFloorObject->afterObj = object;
+			object->beforeObj = lastFloorObject;
+			object->afterObj = 0;
 			lastFloorObject = object;
 		}
 	}
@@ -171,39 +171,39 @@ void ObjectInterface::commandObjectOrder(void) {
 		if (select == 1) {//Move to top
 			if (object == firstObject) return;
 			if (object == lastObject) {
-				object->lastObj->nextObj = 0;
-				firstObject->lastObj = object;
-				object->nextObj = firstObject;
-				object->lastObj = 0;
+				object->beforeObj->afterObj = 0;
+				firstObject->beforeObj = object;
+				object->afterObj = firstObject;
+				object->beforeObj = 0;
 				firstObject = object;
 
 				return;
 			}
 
-			object->nextObj->lastObj = object->lastObj;
-			object->lastObj->nextObj = object->nextObj;
-			firstObject->lastObj = object;
-			object->nextObj = firstObject;
-			object->lastObj = 0;
+			object->afterObj->beforeObj = object->beforeObj;
+			object->beforeObj->afterObj = object->afterObj;
+			firstObject->beforeObj = object;
+			object->afterObj = firstObject;
+			object->beforeObj = 0;
 		}
 		else if (select == -1) { //Move to last
 			if (object == lastObject) return;
 			if (object == firstObject) {
-				object->nextObj->lastObj = 0;
-				lastObject = object->lastObj;
-				firstObject = object->nextObj;
+				object->afterObj->beforeObj = 0;
+				lastObject = object->beforeObj;
+				firstObject = object->afterObj;
 
-				lastObject->nextObj = object;
-				object->nextObj = 0;
-				object->lastObj = lastObject;
+				lastObject->afterObj = object;
+				object->afterObj = 0;
+				object->beforeObj = lastObject;
 				lastObject = object;
 				return;
 			}
-			object->nextObj->lastObj = object->lastObj;
-			object->lastObj->nextObj = object->nextObj;
-			lastObject->nextObj = object;
-			object->lastObj = lastObject;
-			object->nextObj = 0;
+			object->afterObj->beforeObj = object->beforeObj;
+			object->beforeObj->afterObj = object->afterObj;
+			lastObject->afterObj = object;
+			object->beforeObj = lastObject;
+			object->afterObj = 0;
 			lastObject = object;
 		}
 	}
@@ -612,21 +612,45 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	target.setAsCurrent();
 	//al_hold_bitmap_drawing(true); //Little speed up
 	target.useWorldCoords(false);
-	CBObject *currentObject = firstFloorObject;
+	CBObject *currentObject = lastFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
-		currentObject = currentObject->nextObj;
+		currentObject = currentObject->beforeObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
 	target.useWorldCoords(true);
-	currentObject = lastObject;
+	currentObject = firstObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
-		currentObject = currentObject->lastObj;
+		currentObject = currentObject->afterObj;
 	}
 	target.useWorldCoords(false);
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
 	//al_hold_bitmap_drawing(false);
+}
+
+void ObjectInterface::addToDrawOrder(CBObject *o) {
+	if (lastObject == 0) {
+		lastObject = firstObject = o;
+		o->beforeObj = o->afterObj = 0;
+		return;
+	}
+	lastObject->afterObj = o;
+	o->afterObj = 0;
+	o->beforeObj = lastObject;
+	lastObject = o;
+}
+
+void ObjectInterface::addToFloorDrawOrder(CBObject *o) {
+	if (lastFloorObject == 0) {
+		lastFloorObject = firstFloorObject = o;
+		o->beforeObj = o->afterObj = 0;
+		return;
+	}
+	lastObject->afterObj = o;
+	o->afterObj = 0;
+	o->beforeObj = lastFloorObject;
+	lastFloorObject = o;
 }
 
 void ObjectInterface::removeFromDrawOrder(CBObject *o) {
@@ -636,18 +660,18 @@ void ObjectInterface::removeFromDrawOrder(CBObject *o) {
 				lastFloorObject = firstFloorObject = 0;
 				return;
 			}
-			o->lastObj->nextObj = 0;
-			lastFloorObject = o->lastObj;
+			o->beforeObj->afterObj = 0;
+			lastFloorObject = o->beforeObj;
 			return;
 		}
 		if (o == firstFloorObject) {
-			firstFloorObject = o->nextObj;
-			o->nextObj->lastObj = 0;
+			firstFloorObject = o->afterObj;
+			o->afterObj->beforeObj = 0;
 			return;
 		}
 
-		o->nextObj->lastObj = o->lastObj;
-		o->lastObj->nextObj = o->nextObj;
+		o->afterObj->beforeObj = o->beforeObj;
+		o->beforeObj->afterObj = o->afterObj;
 	}
 	else {
 		if (o == lastObject) {
@@ -655,18 +679,18 @@ void ObjectInterface::removeFromDrawOrder(CBObject *o) {
 				lastObject = firstObject = 0;
 				return;
 			}
-			o->lastObj->nextObj = 0;
-			lastObject = o->lastObj;
+			o->beforeObj->afterObj = 0;
+			lastObject = o->beforeObj;
 			return;
 		}
 		if (o == firstObject) {
-			firstObject = o->nextObj;
-			o->nextObj->lastObj = 0;
+			firstObject = o->afterObj;
+			o->afterObj->beforeObj = 0;
 			return;
 		}
 
-		o->nextObj->lastObj = o->lastObj;
-		o->lastObj->nextObj = o->nextObj;
+		o->afterObj->beforeObj = o->beforeObj;
+		o->beforeObj->afterObj = o->afterObj;
 	}
 }
 
