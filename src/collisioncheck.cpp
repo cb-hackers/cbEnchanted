@@ -393,9 +393,15 @@ void CollisionCheck::RectMapTest() {
 	}
 }
 
+uint32_t debugCollisionCount = 0;
 /** A circle - map collision test */
 void CollisionCheck::CircleMapTest() {
 	DrawCollisionBoundaries();
+
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
 
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
@@ -418,25 +424,210 @@ void CollisionCheck::CircleMapTest() {
 	int32_t startTileY = (int32_t) (-objY + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
 	// Check collision to nearby tiles
-	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
-		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
+	for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
+		for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 			if (cbmap->getHit(tileX, tileY)) {
 				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
 				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
 
+				float centerX = x + tileWidth/2;
+				float centerY = y - tileHeight/2;
+
+				rendertarget->drawCircle(centerX, centerY, 5, true, al_map_rgb(0,255,0));
+
+
 				// We got ourselves some real coordinates. Now do circle-rectangle collision.
-				if (this->CircleRectTest(objX, objY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
-					objX = safeX;
-					objY = safeY;
-					// TODO: position the object as close to the wall as possible
+				if (this->CircleRectTest(objX, safeY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
+					//objX = safeX;
+					//objY = safeY;
+
+					// Should we handle this like a rectangle-map collision?
+					if (centerY > safeY) {
+						float cornerY = centerY - tileHeight/2;
+						if (cbmap->getHit(tileX, tileY + 1) || cornerY < safeY) {
+							// Rect rect
+							// Check the direction to where we collided
+							if (tileX < startTileX + checkTilesX) {
+								// It seems to be left.
+								objX = x + tileWidth + 0.5f + objR;
+							}
+							else if (tileX > startTileX + checkTilesX) {
+								// It seems to be right.
+								objX = x - 0.5f - objR;
+							}
+						}
+						else {
+							DEBUG("Circle-map collision1 %i", ++debugCollisionCount);
+							float cornerX;
+							bool isCornerSet = false;
+							// Check the direction to where we collided
+							if (tileX < startTileX + checkTilesX) {
+								// It seems to be left.
+								cornerX = x + tileWidth;
+								isCornerSet = true;
+							}
+							else if (tileX > startTileX + checkTilesX) {
+								// It seems to be right.
+								cornerX = x;
+								isCornerSet = true;
+							}
+
+							if (isCornerSet) {
+								float radAngle = atan2(cornerY - safeY, cornerX - objX);
+								objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								//objY = cornerY - sin(radAngle) * (objR + 0.5f);
+							}
+						}
+					}
+					else {
+						float cornerY = centerY + tileHeight/2;
+						if (cbmap->getHit(tileX, tileY - 1) || cornerY > safeY) {
+							// Rect rect
+							// Check the direction to where we collided
+							if (tileX < startTileX + checkTilesX) {
+								// It seems to be left.
+								objX = x + tileWidth + 0.5f + objR;
+							}
+							else if (tileX > startTileX + checkTilesX) {
+								// It seems to be right.
+								objX = x - 0.5f - objR;
+							}
+						}
+						else {
+							DEBUG("Circle-map collision2 %i", ++debugCollisionCount);
+							float cornerX;
+							bool isCornerSet = false;
+							// Check the direction to where we collided
+							if (tileX < startTileX + checkTilesX) {
+								// It seems to be left.
+								cornerX = x + tileWidth;
+								isCornerSet = true;
+							}
+							else if (tileX > startTileX + checkTilesX) {
+								// It seems to be right.
+								cornerX = x;
+								isCornerSet = true;
+							}
+
+							if (isCornerSet) {
+								float radAngle = atan2(cornerY - safeY, cornerX - objX);
+								objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								//objY = cornerY - sin(radAngle) * (objR + 0.5f);
+							}
+						}
+					}
+					goto breakout1;
 				}
 			}
 		}
 	}
+	breakout1:
+
+	// Check collision to nearby tiles
+	for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
+		for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
+			if (cbmap->getHit(tileX, tileY)) {
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+
+				float centerX = x + tileWidth/2;
+				float centerY = y - tileHeight/2;
+
+				rendertarget->drawCircle(centerX, centerY, 5, true, al_map_rgb(0,255,0));
+
+
+				// We got ourselves some real coordinates. Now do circle-rectangle collision.
+				if (this->CircleRectTest(objX, objY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
+					//objX = safeX;
+					//objY = safeY;
+
+					// Should we handle this like a rectangle-map collision?
+					if (centerX > objX) {
+						float cornerX = x;
+						if (cbmap->getHit(tileX - 1, tileY) || cornerX < objX) {
+							// Rect rect
+							// Check the direction to where we collided
+							if (tileY < startTileY + checkTilesY) {
+								// It seems to be top.
+								objY = y - tileHeight - 0.5f - objR;
+							}
+							else if (tileY > startTileY + checkTilesY) {
+								// It seems to be bottom.
+								objY = y + 0.5f + objR;
+							}
+						}
+						else {
+							DEBUG("Circle-map collision3 %i", ++debugCollisionCount);
+							float cornerY;
+							bool isCornerSet = false;
+							// Check the direction to where we collided
+							if (tileY < startTileY + checkTilesY) {
+								// It seems to be top.
+								cornerY = y - tileHeight;
+								isCornerSet = true;
+							}
+							else if (tileY > startTileY + checkTilesY) {
+								// It seems to be bottom.
+								cornerY = y;
+								isCornerSet = true;
+							}
+
+							if (isCornerSet) {
+								float radAngle = atan2(cornerY - objY, cornerX - objX);
+								//objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								objY = cornerY - sin(radAngle) * (objR + 0.5f);
+							}
+						}
+					}
+					else {
+						float cornerX = x + tileWidth;
+						if (cbmap->getHit(tileX + 1, tileY) || cornerX > objX) {
+							// Rect rect
+							// Check the direction to where we collided
+							if (tileY < startTileY + checkTilesY) {
+								// It seems to be top.
+								objY = y - tileHeight - 0.5f - objR;
+							}
+							else if (tileY > startTileY + checkTilesY) {
+								// It seems to be bottom.
+								objY = y + 0.5f + objR;
+							}
+						}
+						else {
+							DEBUG("Circle-map collision4 %i", ++debugCollisionCount);
+							float cornerY;
+							bool isCornerSet = false;
+							// Check the direction to where we collided
+							if (tileY < startTileY + checkTilesY) {
+								// It seems to be top.
+								cornerY = y - tileHeight;
+								isCornerSet = true;
+							}
+							else if (tileY > startTileY + checkTilesY) {
+								// It seems to be bottom.
+								cornerY = y;
+								isCornerSet = true;
+							}
+
+							if (isCornerSet) {
+								float radAngle = atan2(cornerY - objY, cornerX - objX);
+								//objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								objY = cornerY - sin(radAngle) * (objR + 0.5f);
+							}
+						}
+					}
+					goto breakout2;
+				}
+			}
+		}
+	}
+	breakout2:
 
 	safeX = objX;
 	safeY = objY;
 	mObject1->setPosition(objX, objY);
+
+	rendertarget->useWorldCoords(false);
 }
 
 /** Drawing the collision box, used for debugging only. */
