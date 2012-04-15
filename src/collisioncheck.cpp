@@ -397,6 +397,13 @@ void CollisionCheck::RectMapTest() {
 void CollisionCheck::CircleMapTest() {
 	//DrawCollisionBoundaries();
 
+	// Did we collide? Where?
+	//  * 0 = top
+	//  * 1 = right
+	//  * 2 = bottom
+	//  * 3 = left
+	bool collided[4] = {false, false, false, false};
+
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
 
@@ -436,10 +443,12 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileX < startTileX + checkTilesX) {
 								// It seems to be left.
+								collided[3] = true;
 								objX = x + tileWidth + 0.5f + objR;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
+								collided[1] = true;
 								objX = x - 0.5f - objR;
 							}
 						}
@@ -451,11 +460,13 @@ void CollisionCheck::CircleMapTest() {
 								// It seems to be left.
 								cornerX = x + tileWidth;
 								isCornerSet = true;
+								collided[3] = true;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								cornerX = x;
 								isCornerSet = true;
+								collided[1] = true;
 							}
 
 							if (isCornerSet) {
@@ -472,10 +483,12 @@ void CollisionCheck::CircleMapTest() {
 							if (tileX < startTileX + checkTilesX) {
 								// It seems to be left.
 								objX = x + tileWidth + 0.5f + objR;
+								collided[3] = true;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								objX = x - 0.5f - objR;
+								collided[1] = true;
 							}
 						}
 						else {
@@ -486,11 +499,13 @@ void CollisionCheck::CircleMapTest() {
 								// It seems to be left.
 								cornerX = x + tileWidth;
 								isCornerSet = true;
+								collided[3] = true;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								cornerX = x;
 								isCornerSet = true;
+								collided[1] = true;
 							}
 
 							if (isCornerSet) {
@@ -526,10 +541,12 @@ void CollisionCheck::CircleMapTest() {
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
 								objY = y - tileHeight - 0.5f - objR;
+								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								objY = y + 0.5f + objR;
+								collided[2] = true;
 							}
 						}
 						else {
@@ -540,11 +557,13 @@ void CollisionCheck::CircleMapTest() {
 								// It seems to be top.
 								cornerY = y - tileHeight;
 								isCornerSet = true;
+								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								cornerY = y;
 								isCornerSet = true;
+								collided[2] = true;
 							}
 
 							if (isCornerSet) {
@@ -561,10 +580,12 @@ void CollisionCheck::CircleMapTest() {
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
 								objY = y - tileHeight - 0.5f - objR;
+								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								objY = y + 0.5f + objR;
+								collided[2] = true;
 							}
 						}
 						else {
@@ -575,11 +596,13 @@ void CollisionCheck::CircleMapTest() {
 								// It seems to be top.
 								cornerY = y - tileHeight;
 								isCornerSet = true;
+								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								cornerY = y;
 								isCornerSet = true;
+								collided[2] = true;
 							}
 
 							if (isCornerSet) {
@@ -598,6 +621,24 @@ void CollisionCheck::CircleMapTest() {
 	safeX = objX;
 	safeY = objY;
 	mObject1->setPosition(objX, objY);
+
+	// Let's add those collisions.
+	if (collided[0]) {
+		// Top
+		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, 0.0, 0.0));
+	}
+	if (collided[1]) {
+		// Right
+		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, 0.0, 0.0));
+	}
+	if (collided[2]) {
+		// Bottom
+		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, 0.0, 0.0));
+	}
+	if (collided[3]) {
+		// Left
+		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, 0.0, 0.0));
+	}
 }
 
 /** Drawing the collision box, used for debugging only. */

@@ -21,7 +21,7 @@ Repeat
     If DownKey() Then MoveObject ukko,-2
 
     DrawGame
-    UpdateGame
+    'UpdateGame
 
     Color cbBlue
     Circle ObjectX(ukko)-ukkow/2, ObjectY(ukko)+ukkow/2, ukkoW, OFF
