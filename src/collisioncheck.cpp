@@ -393,15 +393,9 @@ void CollisionCheck::RectMapTest() {
 	}
 }
 
-uint32_t debugCollisionCount = 0;
 /** A circle - map collision test */
 void CollisionCheck::CircleMapTest() {
-	DrawCollisionBoundaries();
-
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	rendertarget->useWorldCoords(true);
+	//DrawCollisionBoundaries();
 
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
@@ -430,17 +424,10 @@ void CollisionCheck::CircleMapTest() {
 				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
 				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
 
-				float centerX = x + tileWidth/2;
 				float centerY = y - tileHeight/2;
-
-				rendertarget->drawCircle(centerX, centerY, 5, true, al_map_rgb(0,255,0));
-
 
 				// We got ourselves some real coordinates. Now do circle-rectangle collision.
 				if (this->CircleRectTest(objX, safeY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
-					//objX = safeX;
-					//objY = safeY;
-
 					// Should we handle this like a rectangle-map collision?
 					if (centerY > safeY) {
 						float cornerY = centerY - tileHeight/2;
@@ -457,7 +444,6 @@ void CollisionCheck::CircleMapTest() {
 							}
 						}
 						else {
-							DEBUG("Circle-map collision1 %i", ++debugCollisionCount);
 							float cornerX;
 							bool isCornerSet = false;
 							// Check the direction to where we collided
@@ -475,7 +461,6 @@ void CollisionCheck::CircleMapTest() {
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - safeY, cornerX - objX);
 								objX = cornerX - cos(radAngle) * (objR + 0.5f);
-								//objY = cornerY - sin(radAngle) * (objR + 0.5f);
 							}
 						}
 					}
@@ -494,7 +479,6 @@ void CollisionCheck::CircleMapTest() {
 							}
 						}
 						else {
-							DEBUG("Circle-map collision2 %i", ++debugCollisionCount);
 							float cornerX;
 							bool isCornerSet = false;
 							// Check the direction to where we collided
@@ -512,7 +496,6 @@ void CollisionCheck::CircleMapTest() {
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - safeY, cornerX - objX);
 								objX = cornerX - cos(radAngle) * (objR + 0.5f);
-								//objY = cornerY - sin(radAngle) * (objR + 0.5f);
 							}
 						}
 					}
@@ -531,16 +514,9 @@ void CollisionCheck::CircleMapTest() {
 				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
 
 				float centerX = x + tileWidth/2;
-				float centerY = y - tileHeight/2;
-
-				rendertarget->drawCircle(centerX, centerY, 5, true, al_map_rgb(0,255,0));
-
 
 				// We got ourselves some real coordinates. Now do circle-rectangle collision.
 				if (this->CircleRectTest(objX, objY + tileHeight, objR, x, y, tileWidth, tileHeight)) {
-					//objX = safeX;
-					//objY = safeY;
-
 					// Should we handle this like a rectangle-map collision?
 					if (centerX > objX) {
 						float cornerX = x;
@@ -557,7 +533,6 @@ void CollisionCheck::CircleMapTest() {
 							}
 						}
 						else {
-							DEBUG("Circle-map collision3 %i", ++debugCollisionCount);
 							float cornerY;
 							bool isCornerSet = false;
 							// Check the direction to where we collided
@@ -574,7 +549,6 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - objY, cornerX - objX);
-								//objX = cornerX - cos(radAngle) * (objR + 0.5f);
 								objY = cornerY - sin(radAngle) * (objR + 0.5f);
 							}
 						}
@@ -594,7 +568,6 @@ void CollisionCheck::CircleMapTest() {
 							}
 						}
 						else {
-							DEBUG("Circle-map collision4 %i", ++debugCollisionCount);
 							float cornerY;
 							bool isCornerSet = false;
 							// Check the direction to where we collided
@@ -611,7 +584,6 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - objY, cornerX - objX);
-								//objX = cornerX - cos(radAngle) * (objR + 0.5f);
 								objY = cornerY - sin(radAngle) * (objR + 0.5f);
 							}
 						}
@@ -626,8 +598,6 @@ void CollisionCheck::CircleMapTest() {
 	safeX = objX;
 	safeY = objY;
 	mObject1->setPosition(objX, objY);
-
-	rendertarget->useWorldCoords(false);
 }
 
 /** Drawing the collision box, used for debugging only. */
