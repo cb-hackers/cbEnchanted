@@ -208,7 +208,22 @@ Any Any::operator - () const {
 }
 
 Any Any::operator % (const Any &r) const {
-	return this->toInt() % r.toInt();
+	if (this->type() == Any::Float) {
+		if (r.type() == Any::Float) {
+			return (float)fmod(this->getFloat(), r.getFloat());
+		}
+		if (r.type() == Any::Int) {
+			return (float)fmod((double)this->getFloat(), (double)r.getInt());
+		}
+	}
+	if (this->type() == Any::Int) {
+		if (r.type() == Any::Float) {
+			return (float)fmod((double)this->getInt(), (double)r.getFloat());
+		}
+		if (r.type() == Any::Int) {
+			return this->getInt() % r.getInt();
+		}
+	}
 	FIXME("Unsupported operation %s % %s", this->typeInfo().name(), r.typeInfo().name());
 }
 
