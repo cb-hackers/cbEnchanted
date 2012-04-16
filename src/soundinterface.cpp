@@ -2,8 +2,7 @@
 #include "soundinterface.h"
 #include "cbenchanted.h"
 #include "any.h"
-#include <allegro5/allegro_acodec.h>
-#include <allegro5/allegro_audio.h>
+
 
 SoundInterface::SoundInterface() : idCounter(0) {
 	cb = static_cast <CBEnchanted *> (this);
@@ -68,6 +67,7 @@ bool SoundInterface::initializeSounds()
 {
 	if (!al_install_audio()) return false;
 	if (!al_init_acodec_addon()) return false;
+	cbMixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_INT24, ALLEGRO_CHANNEL_CONF_2);
 	return true;
 }
 

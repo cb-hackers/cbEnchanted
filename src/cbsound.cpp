@@ -1,6 +1,6 @@
 #include "cbsound.h"
 
-CBSound::CBSound(): looping(false), volume(100), balance(0)
+CBSound::CBSound(): looping(false), gain(1.0), balance(0.0)
 {
 }
 
@@ -11,18 +11,19 @@ void CBSound::loadSound(string file) {
 }
 
 
-void CBSound::setSound(bool loop, uint8_t gain, int8_t pan, int32_t freq) {
+void CBSound::setSound(bool loop, uint8_t vol, int8_t pan, int32_t freq) {
 	looping = loop;
-	volume = gain;
-	balance = pan;
-	frequency = freq;
+	gain = vol / 100.0 * getGain();
+	balance = pan / 100.0;
+	if(freq>=0)
+		frequency = freq;
 }
 
-uint8_t CBSound::getVolume() {
-	return volume;
+float CBSound::getGain() {
+	return gain;
 }
 
-int8_t CBSound::getBalance() {
+float CBSound::getBalance() {
 	return balance;
 }
 
