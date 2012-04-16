@@ -114,14 +114,14 @@ FORCEINLINE void Any::division(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == Int) {
-			a.dFloat = a.dInt / b.dFloat;
+			a.dFloat = (float)a.dInt / b.dFloat;
 			a.typeId = Float;
 			return;
 		}
 	}
 	if (b.typeId == Int) {
 		if (a.typeId == Float) {
-			a.dFloat = a.dFloat / b.dInt;
+			a.dFloat = a.dFloat / (float)b.dInt;
 			return;
 		}
 		if (a.typeId == Int) {
@@ -135,8 +135,27 @@ FORCEINLINE void Any::division(VariableStack *s) {
 void Any::modulo(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel-1];
-	a.dInt = a.toInt() % b.toInt();
-	a.typeId = Int;
+	if (b.typeId == Float) {
+		if (a.typeId == Float) {
+			a.dFloat = fmod(a.dFloat, b.dFloat);
+			return;
+		}
+		if (a.typeId == Int) {
+			a.dFloat = fmod((double)a.dInt, (double)b.dFloat);
+			a.typeId = Float;
+			return;
+		}
+	}
+	if (b.typeId == Int) {
+		if (a.typeId == Float) {
+			a.dFloat = fmod((double)a.dFloat, (double)b.dInt);
+			return;
+		}
+		if (a.typeId == Int) {
+			a.dInt = a.dInt % b.dInt;
+			return;
+		}
+	}
 }
 
 void Any::shl(VariableStack *s) {
