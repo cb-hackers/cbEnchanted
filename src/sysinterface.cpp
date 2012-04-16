@@ -4,6 +4,7 @@
 #include "sysinterface.h"
 #include <time.h>
 #include <iostream>
+#include <boost/crc.hpp>
 #ifdef WIN32
 	#include <Windows.h>
 #else
@@ -126,5 +127,8 @@ void SysInterface::functionFPS(void) {
 }
 
 void SysInterface::functionCrc32(void) {
-	STUB;
+	const ISString &str = cb->popValue().getString();
+	boost::crc_32_type result;
+	result.process_bytes(str.getRef().c_str(), str.getRef().length());
+	cb->pushValue((int32_t)result.checksum());
 }
