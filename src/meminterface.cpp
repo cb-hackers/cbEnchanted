@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 MemInterface::MemInterface() {
-
+	cb = static_cast<CBEnchanted*>(this);
 }
 
 MemInterface::~MemInterface() {
@@ -14,28 +14,30 @@ MemInterface::~MemInterface() {
 
 //DeleteMEMBlock
 void MemInterface::commandDeleteMEMBlock(void) {
-	int32_t *mem = (int32_t *)cb->popValue().getInt();
+	uint8_t*mem = getMemblock(cb->popValue().getInt());
 	delete mem;
 }
 
 //ResizeMEMblock
 void MemInterface::commandResizeMEMBlock(void) {
 	int32_t size = cb->popValue().getInt();
-	int32_t *mem = (int32_t *)cb->popValue().getInt();
-	int32_t memsize = mem[0];
-	int8_t *newblock = new int8_t[size + 4];
-	memcpy(newblock, mem, (size_t)memsize);
+	int32_t id = cb->popValue().getInt();
+	uint8_t *mem = getMemblock(id);
+	int32_t oldsize = mem[0];
+	uint8_t *newBlock = new uint8_t[size + 4];
+	*((int32_t*)newBlock) = size;
+	memcpy(newBlock+4, mem+4, (size_t)oldsize);
 	delete mem;
-	cb->pushValue((int32_t)newblock);
+	memblockMap[id] = newBlock;
 }
 
 //MemCopy
 void MemInterface::commandMemCopy(void) {
 	int32_t lenght = cb->popValue().getInt();
 	int32_t dest = cb->popValue().getInt();
-	int32_t *destmem = (int32_t *)cb->popValue().getInt();
+	uint8_t *destmem = getMemblock(cb->popValue().getInt());
 	int32_t src = cb->popValue().getInt();
-	int32_t *srcmem = (int32_t *)cb->popValue().getInt();
+	uint8_t *srcmem = getMemblock(cb->popValue().getInt());
 	memcpy(destmem + dest + 4, srcmem + src + 4, lenght);
 }
 
@@ -43,7 +45,7 @@ void MemInterface::commandMemCopy(void) {
 void MemInterface::commandPokeByte(void) {
 	uint8_t value = cb->popValue().toByte();
 	int32_t position  = cb->popValue().getInt();
-	unsigned char * mem = (uint8_t *)cb->popValue().getInt();
+	uint8_t * mem = getMemblock(cb->popValue().getInt());
 	*((uint8_t *)(mem + position + 4)) = value;
 }
 
@@ -51,7 +53,7 @@ void MemInterface::commandPokeByte(void) {
 void MemInterface::commandPokeShort(void) {
 	uint16_t value = cb->popValue().toShort();
 	int32_t position  = cb->popValue().getInt();
-	uint8_t *mem = (uint8_t *)cb->popValue().getInt();
+	uint8_t * mem = getMemblock(cb->popValue().getInt());
 	*((uint16_t *)(mem + position + 4)) = value;
 }
 
@@ -59,7 +61,7 @@ void MemInterface::commandPokeShort(void) {
 void MemInterface::commandPokeInt(void){
 	int32_t value = cb->popValue().getInt();
 	int32_t position = cb->popValue().getInt();
-	uint8_t *mem = (uint8_t *)cb->popValue().getInt();
+	uint8_t * mem = getMemblock(cb->popValue().getInt());
 	*((int32_t *)(mem + position + 4)) = value;
 }
 
@@ -67,7 +69,7 @@ void MemInterface::commandPokeInt(void){
 void MemInterface::commandPokeFloat(void){
 	float value = cb->popValue().toFloat();
 	int32_t position  = cb->popValue().getInt();
-	uint8_t *mem = (uint8_t *)cb->popValue().getInt();
+	uint8_t * mem = getMemblock(cb->popValue().getInt());
 	*((float *)(mem + position + 4)) = value;
 }
 
@@ -75,45 +77,42 @@ void MemInterface::commandPokeFloat(void){
 void MemInterface::functionMakeMEMBlock(void){
 	int32_t size = cb->popValue().getInt();
 	uint8_t *mem = new uint8_t[size + 4];
-	*((uint32_t *)mem) = size;
-	cb->pushValue((int32_t) mem);
+	*((int32_t *)mem) = size;
+	int32_t id = nextId();
+	memblockMap[id] = mem;
+	cb->pushValue(id);
 }
 
 //MemblockSize
 void MemInterface::functionMEMBlockSize(void){
-	int32_t *mem = (int32_t *)cb->popValue().getInt();
-	int32_t data = mem[0];
-	cb->pushValue(data);
+	int32_t *mem = (int32_t *)getMemblock(cb->popValue().getInt());
+	cb->pushValue(*mem);
 }
 
 //PeekByte
 void MemInterface::functionPeekByte(void) {
 	int32_t position = cb->popValue().getInt();
-	uint8_t *mem = (uint8_t *)cb->popValue().getInt();
-	uint8_t data = mem[position + 4];
-	cb->pushValue(data);
+	uint8_t *mem = getMemblock(cb->popValue().getInt());
+	cb->pushValue(mem[position + 4]);
 }
 
 //PeekShort
 void MemInterface::functionPeekShort(void) {
 	int32_t position = cb->popValue().getInt();
-	uint16_t *mem = (uint16_t *)cb->popValue().getInt();
-	uint16_t data = mem[position + 4];
-	cb->pushValue(data);
+	uint8_t *mem = getMemblock(cb->popValue().getInt());
+	cb->pushValue(*(uint16_t*)(&mem[position+4]));
 }
 
 //PeekInt
 void MemInterface::functionPeekInt(void){
 	int32_t position = cb->popValue().getInt();
-	int32_t *mem = (int32_t*)cb->popValue().getInt();
-	int32_t data = mem[position + 4];
-	cb->pushValue(data);
+	uint8_t *mem = getMemblock(cb->popValue().getInt());
+	cb->pushValue(*(int32_t*)(&mem[position+4]));
 }
 
 //PeekFloat
 void MemInterface::functionPeekFloat(void){
 	int32_t position = cb->popValue().getInt();
-	float *mem = (float *)cb->popValue().getInt();
-	float data = mem[position + 4];
-	cb->pushValue(data);
+	uint8_t *mem = getMemblock(cb->popValue().getInt());
+	cb->pushValue(*(float*)(&mem[position+4]));
 }

@@ -1,6 +1,6 @@
 #ifndef MEMINTERFACE_H
 #define MEMINTERFACE_H
-
+#include "precomp.h"
 class CBEnchanted;
 
 class MemInterface {
@@ -22,8 +22,15 @@ class MemInterface {
 		void functionPeekShort(void);
 		void functionPeekInt(void);
 		void functionPeekFloat(void);
+		uint8_t* getMemblock(int32_t id) { return memblockMap[id];}
 	private:
 		CBEnchanted *cb;
+		std::map<int32_t, uint8_t*> memblockMap;
+
+		int32_t nextId() const {
+			static int32_t idCounter = 0;
+			return ++idCounter;
+		}
 
 };
 
