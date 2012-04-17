@@ -2,12 +2,12 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
-CBChannel::CBChannel(): playing(false), bufferCount(32), sampleCount(4)
+CBChannel::CBChannel(): bufferCount(32), sampleCount(4)
 {
 
 }
 
-void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, uint32_t freq) {
+void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, int32_t freq) {
 
 	instance = al_create_sample_instance(sound.getSample());
 	al_attach_sample_instance_to_mixer(instance, mixer);
@@ -46,9 +46,9 @@ void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, uint32_t 
 	al_play_sample_instance(instance);
 }
 
-void CBChannel::playSound(string str,  uint8_t volume, int8_t pan, uint32_t freq) {
+void CBChannel::playSound(string str,  uint8_t volume, int8_t pan, int32_t freq) {
 
-	flow = al_load_audio_stream(str, bufferCount, sampleCount);
+	flow = al_load_audio_stream(str.c_str(), bufferCount, sampleCount);
 	al_attach_audio_stream_to_mixer(flow, mixer);
 	playtype = streamType;
 

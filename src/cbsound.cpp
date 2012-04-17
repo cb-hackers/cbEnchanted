@@ -35,6 +35,10 @@ float CBSound::getFreqScale() {
 	return 1.0 / frequency;
 }
 
+bool CBSound::isLooping() {
+	return looping;
+}
+
 ALLEGRO_SAMPLE* CBSound::getSample() {
 	return sample;
 }

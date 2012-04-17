@@ -15,11 +15,10 @@ class CBSound
 		uint32_t getFreq();
 		bool isLooping();
 		float getFreqScale();
-
+		ALLEGRO_SAMPLE* getSample();
 	private:
 
 		ALLEGRO_SAMPLE* sample;
-		ALLEGRO_SAMPLE* getSample();
 		float gain;
 		float balance;
 		uint32_t frequency;
