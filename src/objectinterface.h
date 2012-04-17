@@ -107,6 +107,16 @@ class ObjectInterface {
 
 		/** Pickable objects are stored in this vector */
 		std::vector<CBObject*> pickableObjects;
+
+		/** Last object that was picked. */
+		CBObject* lastPickedObj;
+
+		/** ObjectPick X-coordinate */
+		float lastPickedX;
+		/** ObjectPick Y-coordinate */
+		float lastPickedY;
+		/** ObjectPick angle */
+		float lastPickedAngle;
 };
 
 #endif

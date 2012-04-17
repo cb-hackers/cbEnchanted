@@ -58,11 +58,11 @@ class CBMap : public CBObject {
 
 		/** Does a raycast according to object position and angle and sets the raycast end point
 		 * to the referenced variables. */
-		void rayCast(CBObject *obj, float &returnX, float &returnY);
+		bool rayCast(CBObject *obj, float &returnX, float &returnY);
 
 		/** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
 		 * point to the referenced variables. */
-		void rayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY);
+		bool mapRayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY);
 };
 
 

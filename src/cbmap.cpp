@@ -322,9 +322,15 @@ int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
 	return layers[maplayer][position];
 }
 
-/** Does a raycast according to object position and angle and sets the raycast end point
- * to the referenced variables, translated to world coordinates. */
-void CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
+/** Does a raycast from given object to this map.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ */
+bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	// Convert from world coordinates to tilemap based coordinates
 	float startX = obj->getX() + this->mapWidth * this->tileWidth / 2;
 	float startY = -obj->getY() + this->mapHeight * this->tileHeight / 2;
@@ -332,18 +338,22 @@ void CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	float endY = startY + sin((obj->getAngle() / 180.0) * M_PI) * (this->sizeX * this->sizeY);
 
 	// Do the raycast
-	this->rayCast(startX, startY, endX, endY, returnX, returnY);
+	bool didRayHit = this->mapRayCast(startX, startY, endX, endY, returnX, returnY);
 
 	// Convert returned values from tilemap based coordinates back to world coordinates
 	returnX = returnX - this->mapWidth * this->tileWidth / 2;
 	returnY = this->mapHeight * this->tileHeight / 2 - returnY;
+
+	return didRayHit;
 }
 
 /** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
  * point to the referenced variables. */
-void CBMap::rayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY) {
+bool CBMap::mapRayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY) {
 	DEBUG("Raycasting from (%f, %f) to (%f, %f)", startX, startY, endX, endY);
 
 	returnX = endX;
 	returnY = endY;
+
+	return false;
 }

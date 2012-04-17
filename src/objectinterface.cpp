@@ -288,11 +288,42 @@ void ObjectInterface::commandObjectString(void) {
 }
 
 void ObjectInterface::commandObjectPickable(void) {
-	STUB;
+	int32_t pickStyle = cb->popValue().toInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	if (pickStyle == 0) {
+		// Zero means delete.
+		std::vector<CBObject*>::iterator i;
+		for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+			if ((*i)->getID() == id) {
+				// Yeah, this one should be deleted.
+				pickableObjects.erase(i);
+				return;
+			}
+		}
+	}
+
+	if (obj->setPickStyle(pickStyle)) {
+		// If pickStyle is valid, setPickStyle returns true
+		pickableObjects.push_back(obj);
+	}
 }
 
 void ObjectInterface::commandObjectPick(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	// Loop through every pickable object in pickableObjects vector and do the raycast,
+	// setting end coordinates to the following variables
+	float endX, endY;
+	std::vector<CBObject*>::iterator i;
+	for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+		if ((*i)->getID() != id) {
+			// TODO: Check if this is the nearest
+			(*i)->rayCast(obj, endX, endY);
+		}
+	}
 }
 
 void ObjectInterface::commandPixelPick(void) {

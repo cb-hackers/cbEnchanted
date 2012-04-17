@@ -39,7 +39,8 @@ CBObject::CBObject(bool floor):
 	objectIntData(0),
 	objectStringData(),
 	objectFloatData(0),
-	checkCollisions(true)
+	checkCollisions(true),
+	pickStyle(NoPick)
 {
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
@@ -436,3 +437,37 @@ void CBObject::addCollision(Collision *collision) {
 	collisionList.push_back(collision);
 }
 
+/** Does a raycast from given object to this object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ */
+bool CBObject::rayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	// ...not implemented here, yet. Sorry.
+	return false;
+}
+
+/** Sets the way this object is picked.
+ *
+ * @param style The way this object is to be picked. 1 = Box, 2 = Circle, 3 = Pixel
+ * @returns Was the pick style OK
+ */
+bool CBObject::setPickStyle(int32_t style) {
+	switch (style) {
+		case 1:
+			pickStyle = BoxPick;
+			return true;
+		case 2:
+			pickStyle = CirclePick;
+			return true;
+		case 3:
+			pickStyle = PixelPick;
+			return true;
+		default:
+			FIXME("Unsupported pick type %i", style);
+			return false;
+	}
+}
