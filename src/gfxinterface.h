@@ -35,7 +35,6 @@ class GfxInterface {
 		void commandScreenShot(void);
 		void commandUpdateGame(void);
 		void commandDrawGame(void);
-		void commandDrawScreen(void);
 
 		void functionSCREEN(void);
 		void functionImage(void);
@@ -63,7 +62,8 @@ class GfxInterface {
 		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
 
 
-	private:
+		void drawScreen(uint32_t width, uint32_t height, uint32_t depth, uint32_t state);
+private:
 		void registerWindow();
 		void unregisterWindow();
 		void resizeTempBitmap(int32_t w, int32_t h);

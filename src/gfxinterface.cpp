@@ -84,13 +84,9 @@ bool GfxInterface::initializeGfx()
 	return true;
 }
 
-void GfxInterface::commandScreen(void) {
+void GfxInterface::drawScreen(uint32_t width, uint32_t height, uint32_t depth, uint32_t state) {
 
 	//TODO use al_resize_window
-	uint32_t state = cb->popValue().toInt();
-	uint32_t depth = cb->popValue().toInt();
-	uint32_t height = cb->popValue().toInt();
-	uint32_t width = cb->popValue().toInt();
 	uint32_t flags;
 	if (depth == 0) depth = 32;
 	switch (state) {

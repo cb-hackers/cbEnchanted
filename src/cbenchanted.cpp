@@ -11,7 +11,9 @@
 
 static CBEnchanted *cbInstance;
 
-CBEnchanted::CBEnchanted() {
+CBEnchanted::CBEnchanted():
+	caller(&internalStack)
+{
 	cbInstance = this;
 	initialized = false;
 	running = false;
@@ -284,22 +286,7 @@ bool CBEnchanted::init(string file) {
 	if (!al_init()) return false;
 	eventQueue = al_create_event_queue();
 	//Create screen
-	if (!initializeGfx()) {
-		return false;
-	}
-	if (!initializeInputs()) {
-		INFO("InitializeInputs failed");
-		return false;
-	}
-	if (!initializeSounds()){
-		INFO("InitializeSounds failed");
-		return false;
-	}
-	if (!initializeFonts()) {
-		INFO("initializeFonts failed");
-		return false;
-	}
-
+	if (!caller.init()) return false;
 	initialized = true;
 	INFO("Initialized");
 	return true;
@@ -505,7 +492,7 @@ FORCEINLINE void CBEnchanted::handleCommand(void) {
 		case 506: commandSmooth2D(); break;
 		case 511: commandScreenShot(); break;
 		case 512: commandDrawGame(); break;
-		case 513: commandDrawScreen(); break;
+		case 513: caller.commandDrawScreen(); break;
 		case 514: commandUpdateGame(); break;
 		case 519: commandDrawToWorld(); break;
 		case 524: commandSaveImage(); break;

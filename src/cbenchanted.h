@@ -5,48 +5,17 @@
 #define M_HALF_PI  (3.14159265358979323846264338327950288419716939937510/2.0)
 
 #include "cbvariableholder.h"
-#include "mathinterface.h"
-#include "stringinterface.h"
-#include "textinterface.h"
-#include "fileinterface.h"
-#include "meminterface.h"
-#include "inputinterface.h"
-#include "sysinterface.h"
-#include "soundinterface.h"
-#include "animinterface.h"
-#include "imageinterface.h"
-#include "gfxinterface.h"
-#include "objectinterface.h"
-#include "camerainterface.h"
-#include "mapinterface.h"
-#include "effectinterface.h"
 #include "debug.h"
 #include <vector>
 #include "customfunctionhandler.h"
+#include "interfacecaller.h"
 
 using std::vector;
 
 class GfxInterface;
 
 
-class CBEnchanted :
-		public CBVariableHolder,
-		public MathInterface,
-		public GfxInterface,
-		public StringInterface,
-		public TextInterface,
-		public InputInterface,
-		public SysInterface,
-		public ObjectInterface,
-		public MemInterface,
-		public FileInterface,
-		public MapInterface,
-		public CameraInterface,
-		public ImageInterface,
-		public EffectInterface,
-		public AnimInterface,
-		public SoundInterface
-
+class CBEnchanted : public CBVariableHolder
 {
 	public:
 		CBEnchanted();
@@ -73,6 +42,7 @@ class CBEnchanted :
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;
 		int32_t selectValue;
+		InterfaceCaller caller;
 
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
