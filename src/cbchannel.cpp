@@ -1,16 +1,16 @@
 #include "cbchannel.h"
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
-#include "cbchannel.h"
+
 CBChannel::CBChannel(): playing(false), bufferCount(32), sampleCount(4)
 {
-	cb = static_cast <CBEnchanted *> (this);
+
 }
 
 void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, uint32_t freq) {
 
 	instance = al_create_sample_instance(sound.getSample());
-	al_attach_sample_instance_to_mixer(instance, cb->SoundInterface.getMixer());
+	al_attach_sample_instance_to_mixer(instance, mixer);
 	playtype = soundType;
 
 	if (volume==100) {
@@ -49,7 +49,7 @@ void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, uint32_t 
 void CBChannel::playSound(string str,  uint8_t volume, int8_t pan, uint32_t freq) {
 
 	flow = al_load_audio_stream(str, bufferCount, sampleCount);
-	al_attach_audio_stream_to_mixer(flow, cb->SoundInterface.getMixer());
+	al_attach_audio_stream_to_mixer(flow, mixer);
 	playtype = streamType;
 
 	float streamGain = al_get_audio_stream_gain(flow);
