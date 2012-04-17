@@ -6,7 +6,8 @@
 
 
 /** Class for tilemaps */
-class CBMap : public CBObject{
+class CBMap : public CBObject {
+	private:
 		int32_t *layers[4];
 
 		int32_t tileCount;
@@ -54,6 +55,14 @@ class CBMap : public CBObject{
 		void setLayers(uint8_t back, uint8_t over);
 		void setTile(uint32_t tile, uint32_t length, uint32_t slowness);
 		bool updateObject(float timestep);
+
+		/** Does a raycast according to object position and angle and sets the raycast end point
+		 * to the referenced variables. */
+		void rayCast(CBObject *obj, float &returnX, float &returnY);
+
+		/** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
+		 * point to the referenced variables. */
+		void rayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY);
 };
 
 

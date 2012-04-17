@@ -104,6 +104,9 @@ class ObjectInterface {
 
 		/** Collision checks are stored in this vector */
 		std::vector<CollisionCheck*> collisionChecks;
+
+		/** Pickable objects are stored in this vector */
+		std::vector<CBObject*> pickableObjects;
 };
 
 #endif

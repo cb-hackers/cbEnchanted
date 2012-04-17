@@ -321,3 +321,29 @@ int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
 	int32_t position = tileY * mapWidth + tileX;
 	return layers[maplayer][position];
 }
+
+/** Does a raycast according to object position and angle and sets the raycast end point
+ * to the referenced variables, translated to world coordinates. */
+void CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
+	// Convert from world coordinates to tilemap based coordinates
+	float startX = obj->getX() + this->mapWidth * this->tileWidth / 2;
+	float startY = -obj->getY() + this->mapHeight * this->tileHeight / 2;
+	float endX = startX + cos((obj->getAngle() / 180.0) * M_PI) * (this->sizeX * this->sizeY);
+	float endY = startY + sin((obj->getAngle() / 180.0) * M_PI) * (this->sizeX * this->sizeY);
+
+	// Do the raycast
+	this->rayCast(startX, startY, endX, endY, returnX, returnY);
+
+	// Convert returned values from tilemap based coordinates back to world coordinates
+	returnX = returnX - this->mapWidth * this->tileWidth / 2;
+	returnY = this->mapHeight * this->tileHeight / 2 - returnY;
+}
+
+/** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
+ * point to the referenced variables. */
+void CBMap::rayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY) {
+	DEBUG("Raycasting from (%f, %f) to (%f, %f)", startX, startY, endX, endY);
+
+	returnX = endX;
+	returnY = endY;
+}
