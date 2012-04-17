@@ -2,6 +2,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
+/*
 CBChannel::CBChannel(): playing(false), bufferCount(32), sampleCount(4)
 {
 
@@ -89,3 +90,4 @@ bool CBChannel::isPlaying() {
 		break;
 	}
 }
+*/
