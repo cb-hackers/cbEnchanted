@@ -16,6 +16,12 @@ class CBObject{
 			Map,
 			ParticleEmitter
 		};
+		enum PickStyle {
+			NoPick,
+			BoxPick,
+			CirclePick,
+			PixelPick
+		};
 
 		CBObject(bool floor = false);
 		virtual ~CBObject();
@@ -85,6 +91,13 @@ class CBObject{
 		/** Returns object ID */
 		int32_t getID() const { return id; }
 
+		/** Does a raycast from given object to this object. */
+		virtual bool rayCast(CBObject *fromObject, float &returnX, float &returnY);
+
+		/** Sets the way this object is picked. */
+		bool setPickStyle(int32_t style);
+
+
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
@@ -127,9 +140,6 @@ class CBObject{
 		/** Current frame */
 		float currentFrame;
 
-		/** Pick style. Unimplemented. */
-		uint8_t pickStyle;
-
 		/** Integer data stored with ObjectInteger */
 		int32_t objectIntData;
 		/** String data stored with ObjectString */
@@ -162,6 +172,9 @@ class CBObject{
 		bool checkCollisions;
 		/** Object range for collisions. */
 		float objectRange[2];
+
+		/** How the object can be picked if set. */
+		PickStyle pickStyle;
 };
 
 #endif // OBJECT_H
