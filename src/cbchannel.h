@@ -6,11 +6,13 @@ class CBChannel
 {
 	public:
 		CBChannel();
+		~CBChannel();
 		inline void setMixer(ALLEGRO_MIXER* mix) {mixer = mix;}
-		void playSound(string str, uint8_t volume=100, int8_t pan=0, int32_t freq=-1);
-		void playSound(CBSound& sound, uint8_t volume=100, int8_t pan=0, int32_t freq=-1);
+		void playSound(string str, float volume=100, float pan=0, int32_t freq=-1);
+		void playSound(CBSound& sound, float volume=100, float pan=0, int32_t freq=-1);
 		bool isPlaying();
 		void stopSound();
+
 	private:
 		enum playTypes{
 			soundType = 1,

@@ -1,4 +1,5 @@
 #include "cbchannel.h"
+#include "debug.h"
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
@@ -7,32 +8,40 @@ CBChannel::CBChannel(): bufferCount(32), sampleCount(4)
 
 }
 
-void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, int32_t freq) {
+CBChannel::~CBChannel()
+{
+	al_destroy_sample_instance(instance);
+	al_destroy_audio_stream(flow);
+}
+void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq) {
 
 	instance = al_create_sample_instance(sound.getSample());
 	al_attach_sample_instance_to_mixer(instance, mixer);
 	playtype = soundType;
 
-	if (volume==100) {
+	if (volume==100.0) {
 		al_set_sample_instance_gain(instance,  sound.getGain());
 	}
 	else {
-		float newGain = volume / 100.0 * sound.getGain();
-		al_set_sample_instance_gain(instance, newGain);
+		float newGain = float(volume) / 100.0;
+		al_set_sample_instance_gain(instance, newGain * sound.getGain());
+		INFO("Ne Gain: %f", newGain);
 	}
+	INFO("Original gain: %f", sound.getGain());
 
-
-	if (pan==100) {
+	if (pan==0.0) {
 		al_set_sample_instance_pan(instance, sound.getBalance());
 	}
 	else {
-		float newPan = pan / 100.0;
+		float newPan = float(pan) / 100.0;
+		INFO("%f", newPan);
 		al_set_sample_instance_pan(instance, newPan);
 	}
 
 
 	if (freq>=0) {
 		float newFreq = 1.0 / freq;
+		INFO("%f", newFreq);
 		al_set_sample_instance_pan(instance, newFreq);
 	}
 	else {
@@ -46,7 +55,7 @@ void CBChannel::playSound(CBSound &sound,  uint8_t volume, int8_t pan, int32_t f
 	al_play_sample_instance(instance);
 }
 
-void CBChannel::playSound(string str,  uint8_t volume, int8_t pan, int32_t freq) {
+void CBChannel::playSound(string str,  float volume, float pan, int32_t freq) {
 
 	flow = al_load_audio_stream(str.c_str(), bufferCount, sampleCount);
 	al_attach_audio_stream_to_mixer(flow, mixer);
@@ -55,7 +64,7 @@ void CBChannel::playSound(string str,  uint8_t volume, int8_t pan, int32_t freq)
 	float streamGain = al_get_audio_stream_gain(flow);
 	uint32_t frequency = al_get_audio_stream_frequency(flow);
 
-	if (volume==100) {
+	if (volume==100.0) {
 		al_set_audio_stream_gain(flow, streamGain);
 	}
 	else {
@@ -86,6 +95,18 @@ bool CBChannel::isPlaying() {
 		break;
 		case streamType:
 			return al_get_audio_stream_playing(flow);
+		break;
+	}
+}
+
+
+void CBChannel::stopSound() {
+	switch (playtype) {
+		case soundType:
+			al_set_sample_instance_playing(instance, false);
+		break;
+		case streamType:
+			al_set_audio_stream_playing(flow, false);
 		break;
 	}
 }
