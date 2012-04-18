@@ -3,7 +3,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
-CBChannel::CBChannel(): bufferCount(32), sampleCount(4)
+CBChannel::CBChannel(): bufferCount(3), sampleCount(4000)
 {
 
 }
@@ -24,7 +24,7 @@ void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq
 	}
 	else {
 		float newGain = float(volume) / 100.0;
-		al_set_sample_instance_gain(instance, newGain * sound.getGain());
+		al_set_sample_instance_gain(instance, newGain);
 	}
 
 	if (pan==0.0) {
@@ -36,12 +36,12 @@ void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq
 	}
 
 
-	if (freq>=0) {
-		float newFreq = 1.0 / freq;
-		al_set_sample_instance_pan(instance, newFreq);
+	if (freq>0.0f) {
+		float newFreq = freq / float(sound.getFreq());
+		al_set_sample_instance_speed(instance, newFreq);
 	}
 	else {
-		al_set_sample_instance_pan(instance, sound.getFreqScale());
+		al_set_sample_instance_speed(instance, sound.getFreqScale());
 	}
 
 
@@ -74,8 +74,8 @@ void CBChannel::playSound(string str,  float volume, float pan, int32_t freq) {
 		al_set_audio_stream_pan(flow, pan / 100.0);
 	}
 
-	if (freq >= 0) {
-		float speed = float(freq) / frequency;
+	if (freq != frequency) {
+		float speed = float(freq) / float(frequency);
 		al_set_audio_stream_speed(flow, speed);
 	}
 	else {

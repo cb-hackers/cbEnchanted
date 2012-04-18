@@ -96,8 +96,10 @@ void SoundInterface::functionLoadSound(void) {
 void SoundInterface::functionSoundPlaying(void) {
 	int32_t id = cb->popValue().getInt();
 	CBChannel *channel = channels[id];
-	if (channel == NULL)
+	if (channel == NULL){
+		cb->pushValue(0);
 		return;
+	}
 	uint8_t playing = channel->isPlaying();
 	cb->pushValue(playing);
 }
@@ -111,12 +113,18 @@ bool SoundInterface::initializeSounds()
 }
 
 void SoundInterface::updateAudio(void) {
-
+	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
+		if (channel->second->isPlaying() == false){
+			INFO("ASD");
+		}
+	}
 }
 
 //Deletes all sounds.
 void SoundInterface::cleanupSoundInterface() {
 	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
+		if (channel->second->isPlaying())
+			channel->second->stopSound();
 		delete channel->second;
 		channels.erase(channel);
 	}
