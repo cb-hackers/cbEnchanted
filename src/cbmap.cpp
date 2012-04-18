@@ -336,8 +336,8 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	float startY = obj->getY();
 	worldCoordinatesToMapCoordinates(startX, startY);
 
-	float endX = startX + cos((obj->getAngle() / 180.0) * M_PI) * 10;
-	float endY = startY - sin((obj->getAngle() / 180.0) * M_PI) * 10;
+	float endX = startX + 150;
+	float endY = startY + 150;
 
 	// Do the raycast
 	bool didRayHit = this->mapRayCast(startX, startY, endX, endY, returnX, returnY);
@@ -345,13 +345,17 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	// Convert returned values from tilemap based coordinates back to world coordinates
 	mapCoordinatesToWorldCoordinates(returnX, returnY);
 
+	DEBUG("RayCast returned at (%f, %f)", returnX, returnY);
+
 	// Draw a debug line
+	/*
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 	rendertarget->useWorldCoords(true);
 	rendertarget->drawLine(obj->getX(), obj->getY(), returnX, returnY, al_map_rgb(255, 255, 0));
 	rendertarget->useWorldCoords(false);
+	*/
 
 	return didRayHit;
 }
@@ -361,11 +365,11 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 bool CBMap::mapRayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY) {
 	DEBUG("Raycasting from (%f, %f) to (%f, %f)", startX, startY, endX, endY);
 
-	// Normalize points and add one tile to the number, because tiles start from (1,1)
-	double x1 = startX / tileWidth + 1.0;
-	double y1 = startY / tileHeight + 1.0;
-	double x2 = endX / tileWidth + 1.0;
-	double y2 = endY / tileHeight + 1.0;
+	// Normalize points
+	float x1 = startX / tileWidth;
+	float y1 = startY / tileHeight;
+	float x2 = endX / tileWidth;
+	float y2 = endY / tileHeight;
 
 	// If we don't cross any lines, there can't be no collision
 	if ((int)x1 == (int)x2 && (int)y1 == (int)y2) {
@@ -375,19 +379,19 @@ bool CBMap::mapRayCast(float startX, float startY, float endX, float endY, float
 	}
 
 	// Find the direction to go to on x- and y-axis
-	int stepX = (x2 >= x1) ? 1 : -1;
-	int stepY = (y2 >= y1) ? 1 : -1;
+	int stepX = (x2 > x1 || fabs(x2 - x1) < 0.00001f) ? 1 : -1;
+	int stepY = (y2 > y1 || fabs(y2 - y1) < 0.00001f) ? 1 : -1;
 
 	// Direction of the ray
-	double rayDirX = x2 - x1;
-	double rayDirY = y2 - y1;
+	float rayDirX = x2 - x1;
+	float rayDirY = y2 - y1;
 
 	// Find out how far to move on each axis for every whole integer step on the other
-	double ratioX = rayDirX / rayDirY;
-	double ratioY = rayDirY / rayDirX;
+	float ratioX = rayDirX / rayDirY;
+	float ratioY = rayDirY / rayDirX;
 
-	double deltaX = fabs(x2 - x1);
-	double deltaY = fabs(y2 - y1);
+	float deltaX = fabs(x2 - x1);
+	float deltaY = fabs(y2 - y1);
 
 	// Initialize the starting tile coordinates using the normalized startX and Y coordinates.
 	int testX = (int)x1;
@@ -397,20 +401,20 @@ bool CBMap::mapRayCast(float startX, float startY, float endX, float endY, float
 	// and dividing that value with the whole integer of opposing axis.
 	// If moving in positive direction, move to the end of the current tile,
 	// otherwise to the beginning.
-	double maxX, maxY;
+	float maxX, maxY;
 
 	if (stepX > 0) {
-		maxX = deltaX * (1.0 - fmod(x1, 1.0));
+		maxX = deltaX * (1.0 - fmod(x1, 1.0f));
 	}
 	else {
-		maxX = deltaX * fmod(x1, 1.0);
+		maxX = deltaX * fmod(x1, 1.0f);
 	}
 
 	if (stepY > 0) {
-		maxY = deltaY * (1.0 - fmod(y1, 1.0));
+		maxY = deltaY * (1.0 - fmod(y1, 1.0f));
 	}
 	else {
-		maxY = deltaY * fmod(y1, 1.0);
+		maxY = deltaY * fmod(y1, 1.0f);
 	}
 
 	// Init the end tile position
@@ -478,11 +482,12 @@ void CBMap::drawRayCastDebugBox(float x, float y) {
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 	// Translate coords
-	x *= tileWidth;
-	y *= tileHeight;
-	this->mapCoordinatesToWorldCoordinates(x, y);
+	float ownX = x, ownY = y;
+	ownX *= tileWidth;
+	ownY *= tileHeight;
+	this->mapCoordinatesToWorldCoordinates(ownX, ownY);
 
 	rendertarget->useWorldCoords(true);
-	rendertarget->drawBox(x, y, tileWidth, tileHeight, false, al_map_rgb(255, 0, 0));
+	rendertarget->drawBox(ownX, ownY, tileWidth, tileHeight, false, al_map_rgb(0, 255, 0));
 	rendertarget->useWorldCoords(false);
 }

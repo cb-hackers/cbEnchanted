@@ -318,6 +318,9 @@ void ObjectInterface::commandObjectPick(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *obj = getObject(id);
 
+	// Init lastPickedObj to nothing.
+	lastPickedObj = 0;
+
 	// Loop through every pickable object in pickableObjects vector and do the raycast,
 	// setting end coordinates to the following variables
 	float endX, endY;
@@ -537,7 +540,7 @@ void ObjectInterface::functionGetAngle2(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	cb->pushValue((float)((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)((M_PI - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / M_PI * 180.0));
 }
 inline double square(float num) {
 	return (double)num * (double)num;

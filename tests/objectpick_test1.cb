@@ -1,3 +1,5 @@
+SCREEN 800, 600
+
 DrawToWorld ON 'draw circles onto game world
 FrameLimit 60 'limit speed for fast computers
 
@@ -16,7 +18,7 @@ AddText "Move: WASD, Aim: Mouse"
 
 Repeat
     'Get the angle to the crosshair and turn to it
-    aim=GetAngle(200,150,MouseX(),MouseY())
+    aim=GetAngle(400,300,MouseX(),MouseY())
     RotateObject soldier,aim
     
     'Update Controls
@@ -28,7 +30,7 @@ Repeat
     'draw objects
     DrawGame
     'stick the camera to the soldier and draw screen
-    UpdateGame
+    'UpdateGame
     
     ObjectPick soldier
     If PickedObject() Then
