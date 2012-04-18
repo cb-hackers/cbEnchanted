@@ -13,7 +13,11 @@ ObjectInterface::ObjectInterface():
 	firstObject(0),
 	firstFloorObject(0),
 	lastObject(0),
-	lastFloorObject(0) {
+	lastFloorObject(0),
+	lastPickedObj(0),
+	lastPickedX(0.0),
+	lastPickedY(0.0),
+	lastPickedAngle(0.0) {
 	cb = static_cast<CBEnchanted*>(this);
 }
 
@@ -288,11 +292,49 @@ void ObjectInterface::commandObjectString(void) {
 }
 
 void ObjectInterface::commandObjectPickable(void) {
-	STUB;
+	int32_t pickStyle = cb->popValue().toInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	if (pickStyle == 0) {
+		// Zero means delete.
+		std::vector<CBObject*>::iterator i;
+		for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+			if ((*i)->getID() == id) {
+				// Yeah, this one should be deleted.
+				pickableObjects.erase(i);
+				return;
+			}
+		}
+	}
+
+	if (obj->setPickStyle(pickStyle)) {
+		// If pickStyle is valid, setPickStyle returns true
+		pickableObjects.push_back(obj);
+	}
 }
 
 void ObjectInterface::commandObjectPick(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	// Loop through every pickable object in pickableObjects vector and do the raycast,
+	// setting end coordinates to the following variables
+	float endX, endY;
+	std::vector<CBObject*>::iterator i;
+	for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+		if ((*i)->getID() != id) {
+			// TODO: Check if this is the nearest
+			if ((*i)->rayCast(obj, endX, endY)) {
+				// Picked object
+				lastPickedObj = (*i)->getID();
+			}
+		}
+	}
+
+	lastPickedX = endX;
+	lastPickedY = endY;
+	lastPickedAngle = atan2(endY - obj->getY(), endX - obj->getX());
 }
 
 void ObjectInterface::commandPixelPick(void) {
@@ -474,19 +516,19 @@ void ObjectInterface::functionObjectLife(void) {
 }
 
 void ObjectInterface::functionPickedObject(void) {
-	STUB;
+	cb->pushValue(lastPickedObj);
 }
 
 void ObjectInterface::functionPickedX(void) {
-	STUB;
+	cb->pushValue(lastPickedX);
 }
 
 void ObjectInterface::functionPickedY(void) {
-	STUB;
+	cb->pushValue(lastPickedY);
 }
 
 void ObjectInterface::functionPickedAngle(void) {
-	STUB;
+	cb->pushValue(lastPickedAngle);
 }
 
 void ObjectInterface::functionGetAngle2(void) {
