@@ -334,16 +334,16 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	// Convert from world coordinates to tilemap based coordinates
 	float startX = obj->getX();
 	float startY = obj->getY();
-	mapCoordinatesToWorldCoordinates(startX, startY);
+	worldCoordinatesToMapCoordinates(startX, startY);
 
-	float endX = startX + cos((obj->getAngle() / 180.0) * M_PI) * (this->sizeX * this->sizeY);
-	float endY = startY - sin((obj->getAngle() / 180.0) * M_PI) * (this->sizeX * this->sizeY);
+	float endX = startX + cos((obj->getAngle() / 180.0) * M_PI) * 10;
+	float endY = startY - sin((obj->getAngle() / 180.0) * M_PI) * 10;
 
 	// Do the raycast
 	bool didRayHit = this->mapRayCast(startX, startY, endX, endY, returnX, returnY);
 
 	// Convert returned values from tilemap based coordinates back to world coordinates
-	worldCoordinatesToMapCoordinates(returnX, returnY);
+	mapCoordinatesToWorldCoordinates(returnX, returnY);
 
 	// Draw a debug line
 	CBEnchanted *cb = CBEnchanted::instance();
@@ -359,22 +359,130 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 /** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
  * point to the referenced variables. */
 bool CBMap::mapRayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY) {
-	//DEBUG("Raycasting from (%f, %f) to (%f, %f)", startX, startY, endX, endY);
+	DEBUG("Raycasting from (%f, %f) to (%f, %f)", startX, startY, endX, endY);
 
+	// Normalize points and add one tile to the number, because tiles start from (1,1)
+	double x1 = startX / tileWidth + 1.0;
+	double y1 = startY / tileHeight + 1.0;
+	double x2 = endX / tileWidth + 1.0;
+	double y2 = endY / tileHeight + 1.0;
+
+	// If we don't cross any lines, there can't be no collision
+	if ((int)x1 == (int)x2 && (int)y1 == (int)y2) {
+		returnX = endX;
+		returnY = endY;
+		return false;
+	}
+
+	// Find the direction to go to on x- and y-axis
+	int stepX = (x2 >= x1) ? 1 : -1;
+	int stepY = (y2 >= y1) ? 1 : -1;
+
+	// Direction of the ray
+	double rayDirX = x2 - x1;
+	double rayDirY = y2 - y1;
+
+	// Find out how far to move on each axis for every whole integer step on the other
+	double ratioX = rayDirX / rayDirY;
+	double ratioY = rayDirY / rayDirX;
+
+	double deltaX = fabs(x2 - x1);
+	double deltaY = fabs(y2 - y1);
+
+	// Initialize the starting tile coordinates using the normalized startX and Y coordinates.
+	int testX = (int)x1;
+	int testY = (int)y1;
+
+	// Initialize the non-integer step by advancing to the next tile boundary
+	// and dividing that value with the whole integer of opposing axis.
+	// If moving in positive direction, move to the end of the current tile,
+	// otherwise to the beginning.
+	double maxX, maxY;
+
+	if (stepX > 0) {
+		maxX = deltaX * (1.0 - fmod(x1, 1.0));
+	}
+	else {
+		maxX = deltaX * fmod(x1, 1.0);
+	}
+
+	if (stepY > 0) {
+		maxY = deltaY * (1.0 - fmod(y1, 1.0));
+	}
+	else {
+		maxY = deltaY * fmod(y1, 1.0);
+	}
+
+	// Init the end tile position
+	int endTileX = (int)x2;
+	int endTileY = (int)y2;
+
+
+	while (testX != endTileX || testY != endTileY) {
+		this->drawRayCastDebugBox(testX, testY);
+		if (maxX < maxY) {
+			maxX += deltaX;
+			testX += stepX;
+
+			if (this->getHit(testX, testY)) {
+				returnX = testX;
+				if (stepX < 0) {
+					returnX += 1.0f; // If we're going to left, add one.
+				}
+				returnY = y1 + ratioY * (returnX - x1);
+				returnX *= tileWidth; // Scale up
+				returnY *= tileHeight; // Scale up
+				return true;
+			}
+		}
+		else {
+			maxY += deltaY;
+			testY += stepY;
+
+			if (this->getHit(testX, testY)) {
+				returnY = testY;
+				if (stepY < 0) {
+					returnY += 1.0f; // Add one if going up
+				}
+				returnX = x1 + ratioX * (returnY - y1);
+				returnX *= tileWidth; // Scale up
+				returnY *= tileHeight; // Scale up
+				return true;
+			}
+		}
+	}
+
+	// No hits found, return the end point
 	returnX = endX;
 	returnY = endY;
 
-	return true;
+	return false;
 }
 
 /** Converts from tilemap based coordinates to world coordinates */
-void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
+void CBMap::worldCoordinatesToMapCoordinates(float &x, float &y) {
 	x = x + this->mapWidth * this->tileWidth / 2;
 	y = -y + this->mapHeight * this->tileHeight / 2;
 }
 
 /** Converts from wolrd coordinates to tilemap based coordinates */
-void CBMap::worldCoordinatesToMapCoordinates(float &x, float &y) {
+void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
 	x = x - this->mapWidth * this->tileWidth / 2;
 	y = this->mapHeight * this->tileHeight / 2 - y;
+}
+
+
+/** Draws debug box for raycasting */
+void CBMap::drawRayCastDebugBox(float x, float y) {
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	// Translate coords
+	x *= tileWidth;
+	y *= tileHeight;
+	this->mapCoordinatesToWorldCoordinates(x, y);
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawBox(x, y, tileWidth, tileHeight, false, al_map_rgb(255, 0, 0));
+	rendertarget->useWorldCoords(false);
 }

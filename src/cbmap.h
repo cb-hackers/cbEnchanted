@@ -68,6 +68,9 @@ class CBMap : public CBObject {
 		void mapCoordinatesToWorldCoordinates(float &x, float &y);
 		/** Converts from wolrd coordinates to tilemap based coordinates */
 		void worldCoordinatesToMapCoordinates(float &x, float &y);
+
+		/** Draws debug box for raycasting */
+		void drawRayCastDebugBox(float x, float y);
 };
 
 

@@ -23,7 +23,7 @@ class CBObject{
 			PixelPick
 		};
 
-		CBObject(bool floor = false);
+		CBObject(bool isFloor = false);
 		virtual ~CBObject();
 		bool load(const string &file);
 		bool load(const string &file,const ALLEGRO_COLOR &mask);
@@ -57,7 +57,7 @@ class CBObject{
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
-		bool isFloorObject()const{return floor;}
+		bool isFloorObject()const{return isFloor;}
 		void setLife(uint32_t energy);
 		bool isPlaying()const{return playing;}
 		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
@@ -107,7 +107,7 @@ class CBObject{
 		/** Is the object created as a copy */
 		bool copied;
 		/** Is the object a floor made with MakeObjectFloor() */
-		bool floor;
+		bool isFloor;
 		/** Is the object painted */
 		bool painted;
 

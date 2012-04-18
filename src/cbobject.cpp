@@ -22,7 +22,7 @@ CBObject::CBObject(bool floor):
 	frameHeight(0),
 	currentFrame(0),
 	painted(false),
-	floor(floor),
+	isFloor(floor),
 	texture(0),
 	copied(false),
 	sizeX(0),
@@ -310,7 +310,7 @@ void CBObject::render(RenderTarget &target) {
 	float camX = CBEnchanted::instance()->getCameraX();
 	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
-		if (floor) {
+		if (isFloor) {
 			//Drawing floor objects
 
 			float snappedx = floorf(camX / renderTarget->width());
@@ -400,7 +400,7 @@ void CBObject::setDefaultVisible(bool t) {
 
 /** Copies an object so that this can use the texture from the master object */
 CBObject *CBObject::copyObject() const {
-	CBObject *obj = new CBObject(floor);
+	CBObject *obj = new CBObject(isFloor);
 	obj->texture = texture;
 	obj->renderTarget = renderTarget;
 	obj->copied = true;
