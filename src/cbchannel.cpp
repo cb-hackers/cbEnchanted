@@ -25,23 +25,19 @@ void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq
 	else {
 		float newGain = float(volume) / 100.0;
 		al_set_sample_instance_gain(instance, newGain * sound.getGain());
-		INFO("Ne Gain: %f", newGain);
 	}
-	INFO("Original gain: %f", sound.getGain());
 
 	if (pan==0.0) {
 		al_set_sample_instance_pan(instance, sound.getBalance());
 	}
 	else {
 		float newPan = float(pan) / 100.0;
-		INFO("%f", newPan);
 		al_set_sample_instance_pan(instance, newPan);
 	}
 
 
 	if (freq>=0) {
 		float newFreq = 1.0 / freq;
-		INFO("%f", newFreq);
 		al_set_sample_instance_pan(instance, newFreq);
 	}
 	else {

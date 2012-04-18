@@ -1,3 +1,4 @@
+
 #ifndef CBCHANNEL_H
 #define CBCHANNEL_H
 #include "cbsound.h"
@@ -29,3 +30,4 @@ class CBChannel
 };
 
 #endif // CBCHANNEL_H
+
