@@ -345,8 +345,6 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	// Convert returned values from tilemap based coordinates back to world coordinates
 	mapCoordinatesToWorldCoordinates(returnX, returnY);
 
-	DEBUG("RayCast returned at (%f, %f)", returnX, returnY);
-
 	// Draw a debug line
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
@@ -361,8 +359,6 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 /** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
  * point to the referenced variables. */
 bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, float &returnY) {
-	DEBUG("Raycasting from (%f, %f) to (%f, %f)", x1, y1, x2, y2);
-
 	// Floating point error correction
 	x1 += 0.00001f;
 	y1 += 0.00001f;
@@ -414,7 +410,6 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 	int endTileX = int(x2 / tileWidth);
 	int endTileY = int(y2 / tileHeight);
 
-	DEBUG("Using DDA-algorithm from tile (%i, %i) to (%i, %i)", testTileX+1, testTileY+1, endTileX+1, endTileY+1);
 	while ((testTileX != endTileX || testTileY != endTileY) &&
 			!this->outOfBounds(testTileX + 1, testTileY + 1)
 	) {

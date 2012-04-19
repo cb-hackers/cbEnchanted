@@ -1,0 +1,67 @@
+FrameLimit 60
+
+'Enable graphics commands to cast shapes to 
+'the game world 
+DrawToWorld ON
+
+pacman1=LoadObject("Media\pacman.bmp",360)
+pacman2=CloneObject(pacman1)
+pacman3=CloneObject(pacman1)
+
+ObjectPickable pacman1,2
+ObjectPickable pacman2,2
+ObjectPickable pacman3,2
+
+PositionObject pacman1, -100,0
+PositionObject pacman3, 100,0
+
+'Load the shooter 
+guy=LoadObject("Media\guy.bmp",180)
+PositionObject guy,0, -100
+
+Color cbblack
+AddText "Guide via arrows"
+ClsColor cbwhite
+
+
+Repeat
+
+    'Update controls
+    If LeftKey() Then TurnObject guy,2
+    If RightKey() Then TurnObject guy, -2
+    If UpKey() Then MoveObject guy,2
+    If DownKey() Then MoveObject guy, -2
+
+    'Make them spin, add some excitement
+    TurnObject pacman1,1
+    TurnObject pacman2,1
+    TurnObject pacman3,1
+    
+    'Pick
+    ObjectPick guy
+    
+    DrawGame
+    
+    'Something WAS picked, let's see what it is
+    e=PickedObject() 
+    Color cbblack
+    If e Then
+        Color cbred
+        If e=pacman1 Then
+            Text 0,30,"pacman on the left"
+        ElseIf e=pacman2 Then
+            Text 0,30,"pacman at the center"
+        ElseIf e=pacman3 Then
+            Text 0,30,"pacman on the right"
+        EndIf
+        Circle PickedX() - 5, PickedY() + 5, 10, ON
+    EndIf
+    
+    'draw the check-zones
+    'Circle ObjectX(pacman1) - 32, ObjectY(pacman1) + 32, 64, OFF
+    'Circle ObjectX(pacman2) - 32, ObjectY(pacman2) + 32, 64, OFF
+    'Circle ObjectX(pacman3) - 32, ObjectY(pacman3) + 32, 64, OFF
+    
+    DrawScreen
+
+Until EscapeKey()

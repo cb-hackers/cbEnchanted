@@ -324,13 +324,18 @@ void ObjectInterface::commandObjectPick(void) {
 	// Loop through every pickable object in pickableObjects vector and do the raycast,
 	// setting end coordinates to the following variables
 	float endX, endY;
+	// Save distance square to this, so we can perform fast distance checks without sqrt
+	float distSqr = -1.0f;
 	std::vector<CBObject*>::iterator i;
 	for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
 		if ((*i)->getID() != id) {
-			// TODO: Check if this is the nearest
 			if ((*i)->rayCast(obj, endX, endY)) {
-				// Picked object
-				lastPickedObj = (*i)->getID();
+				// Picked object, find out if it's the nearest
+				float tmpDistSqr = obj->getX() * endX + obj->getY() * endY;
+				if (distSqr < -0.5f || tmpDistSqr < distSqr) {
+					distSqr = tmpDistSqr;
+					lastPickedObj = (*i)->getID();
+				}
 			}
 		}
 	}

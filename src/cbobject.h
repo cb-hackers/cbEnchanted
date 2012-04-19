@@ -175,6 +175,9 @@ class CBObject{
 
 		/** How the object can be picked if set. */
 		PickStyle pickStyle;
+
+		/** Does a circle raycast from given object to this object. */
+		bool circleRayCast(CBObject *fromObject, float &returnX, float &returnY);
 };
 
 #endif // OBJECT_H

@@ -446,7 +446,11 @@ void CBObject::addCollision(Collision *collision) {
  * @returns Whether the ray hit the object or not.
  */
 bool CBObject::rayCast(CBObject *fromObject, float &returnX, float &returnY) {
-	// ...not implemented here, yet. Sorry.
+	if (this->pickStyle == CirclePick) {
+		return this->circleRayCast(fromObject, returnX, returnY);
+	}
+
+	// Ray type was wrong
 	return false;
 }
 
@@ -459,15 +463,112 @@ bool CBObject::setPickStyle(int32_t style) {
 	switch (style) {
 		case 1:
 			pickStyle = BoxPick;
+			INFO("Set BoxPick for object %i", this->id);
 			return true;
 		case 2:
 			pickStyle = CirclePick;
+			INFO("Set CirclePick for object %i", this->id);
 			return true;
 		case 3:
 			pickStyle = PixelPick;
+			INFO("Set PixelPick for object %i", this->id);
 			return true;
 		default:
 			FIXME("Unsupported pick type %i", style);
 			return false;
+	}
+}
+
+/** Does a circle raycast from given object to this object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ *
+ * @see http://stackoverflow.com/a/1084899/1152564
+ */
+bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	// Start point
+	float startX = fromObject->getX();
+	float startY = fromObject->getY();
+	// Ray end point
+	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+
+	// Center of circle
+	float circleX = this->getX();
+	float circleY = this->getY();
+	// Radius of circle
+	float r = this->getRange1() / 2;
+
+	// Debug drawing
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawCircle(circleX, circleY, r, false, al_map_rgb(0, 128, 0));
+	rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 128, 0));
+	rendertarget->useWorldCoords(false);
+
+	// Direction vector of ray, from start to end
+	float dirX = endX - startX;
+	float dirY = endY - startY;
+
+	// Vector from center of circle to ray start
+	float cvX = startX - circleX;
+	float cvY = startY - circleY;
+
+	// Solve quadratic product: t^2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r^2 ) = 0
+	// where d is direction vector and f is vector from center of circle to ray start
+
+	//float a = d.Dot( d );
+	float a = dirX * dirX + dirY * dirY;
+	//float b = 2*f.Dot( d ) ;
+	float b = 2 * (dirX * cvX + dirY * cvY);
+	//float c = f.Dot( f ) - r*r ;
+	float c = (cvX * cvX + cvY * cvY) - r * r;
+
+	float discriminant = b * b - 4 * a *c;
+	if( discriminant < 0 ) {
+		// no intersection
+		returnX = endX;
+		returnY = endY;
+		return false;
+	}
+	else {
+		// ray didn't totally miss sphere,
+		// so there is a solution to
+		// the equation.
+
+
+		discriminant = sqrt(discriminant);
+		float t1 = (-b + discriminant) / (2 * a);
+		float t2 = (-b - discriminant) / (2 * a);
+
+		if (t1 >= 0 && t1 <= 1) {
+			// solution on is ON THE RAY.
+			returnX = startX + t1 * dirX;
+			returnY = startY + t1 * dirY;
+			return true;
+		}
+		else {
+			// solution "out of range" of ray
+		}
+
+		// use t2 for second point
+		if (t2 >= 0 && t2 <= 1) {
+			returnX = startX + t2 * dirX;
+			returnY = startY + t2 * dirY;
+		}
+		else {
+			// solution "out of range" of ray
+		}
+
+		// If we get here, there's no hit.
+		returnX = endX;
+		returnY = endY;
+		return false;
 	}
 }
