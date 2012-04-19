@@ -63,7 +63,10 @@ void ImageInterface::commandDefaultMask(void) {
 }
 
 void ImageInterface::commandResizeImage(void) {
-	STUB;
+	int32_t h = cb->popValue().toInt();
+	int32_t w = cb->popValue().toInt();
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	img->resize(w,h);
 }
 
 void ImageInterface::commandRotateImage(void) {
@@ -144,7 +147,11 @@ void ImageInterface::functionMakeImage(void) {
 }
 
 void ImageInterface::functionCloneImage(void) {
-	STUB;
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *newImg = img->clone();
+	int32_t id = nextId();
+	cbImages[id] = newImg;
+	cb->pushValue(id);
 }
 
 void ImageInterface::functionImageWidth(void) {

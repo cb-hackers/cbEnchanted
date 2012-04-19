@@ -128,6 +128,23 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 	drawBox(r,frameAreaLeft,frameAreaTop,sw,sh,tx,ty,useMask);
 }
 
+void CBImage::resize(int32_t w, int32_t h) {
+	renderTarget.resize(w,h);
+}
+
+CBImage *CBImage::clone() {
+	CBImage *newImg = new CBImage;
+	newImg->renderTarget.copy(&this->renderTarget);
+	newImg->maskColor = this->maskColor;
+	newImg->hotspotX = this->hotspotX;
+	newImg->hotspotY = this->hotspotY;
+	newImg->frameWidth = this->frameWidth;
+	newImg->frameHeight = this->frameHeight;
+	newImg->animBegin = this->animBegin;
+	newImg->animLength = this->animLength;
+	return newImg;
+}
+
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
 	renderTarget.clear(al_map_rgb_f(0, 0, 0));
