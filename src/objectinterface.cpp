@@ -108,7 +108,7 @@ void ObjectInterface::commandPointObject(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	object1->rotateObject((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
+	object1->rotateObject((3.14159265358979323 - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
 }
 
 void ObjectInterface::commandCloneObjectPosition(void) {
