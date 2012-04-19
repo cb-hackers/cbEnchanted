@@ -497,15 +497,27 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 	// Start point
 	float startX = fromObject->getX();
 	float startY = fromObject->getY();
-	// Ray end point
-	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
-	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
 
 	// Center of circle
 	float circleX = this->getX();
 	float circleY = this->getY();
 	// Radius of circle
 	float r = this->getRange1() / 2;
+
+	// Vector from center of circle to ray start
+	float cvX = startX - circleX;
+	float cvY = startY - circleY;
+
+	// If ray start point is inside this circle, don't pick this.
+	if ((cvX * cvX + cvY * cvY) < r*r) {
+		returnX = startX;
+		returnY = startY;
+		return false;
+	}
+
+	// Ray end point
+	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
 
 	// Debug drawing
 	CBEnchanted *cb = CBEnchanted::instance();
@@ -519,10 +531,6 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 	// Direction vector of ray, from start to end
 	float dirX = endX - startX;
 	float dirY = endY - startY;
-
-	// Vector from center of circle to ray start
-	float cvX = startX - circleX;
-	float cvY = startY - circleY;
 
 	// Solve quadratic product: t^2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r^2 ) = 0
 	// where d is direction vector and f is vector from center of circle to ray start
@@ -551,20 +559,22 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 		float t1 = (-b + discriminant) / (2 * a);
 		float t2 = (-b - discriminant) / (2 * a);
 
-		if (t1 >= 0 && t1 <= 1) {
+		if (t2 >= 0 && t2 <= 1) {
 			// solution on is ON THE RAY.
-			returnX = startX + t1 * dirX;
-			returnY = startY + t1 * dirY;
+			returnX = startX + t2 * dirX;
+			returnY = startY + t2 * dirY;
 			return true;
 		}
 		else {
 			// solution "out of range" of ray
 		}
 
-		// use t2 for second point
-		if (t2 >= 0 && t2 <= 1) {
-			returnX = startX + t2 * dirX;
-			returnY = startY + t2 * dirY;
+		// use t1 for second point
+		if (t1 >= 0 && t1 <= 1) {
+			// solution on is ON THE RAY.
+			returnX = startX + t1 * dirX;
+			returnY = startY + t1 * dirY;
+			return true;
 		}
 		else {
 			// solution "out of range" of ray
