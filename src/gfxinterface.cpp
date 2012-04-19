@@ -185,6 +185,8 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
 			break;
 		}
 	}
