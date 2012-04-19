@@ -450,12 +450,14 @@ void CBObject::addCollision(Collision *collision) {
  * @returns Whether the ray hit the object or not.
  */
 bool CBObject::rayCast(CBObject *fromObject, float &returnX, float &returnY) {
-	if (this->pickStyle == CirclePick) {
-		return this->circleRayCast(fromObject, returnX, returnY);
+	switch (this->pickStyle) {
+		case BoxPick:
+			return this->boxRayCast(fromObject, returnX, returnY);
+		case CirclePick:
+			return this->circleRayCast(fromObject, returnX, returnY);
+		default:
+			return false;
 	}
-
-	// Ray type was wrong
-	return false;
 }
 
 /** Sets the way this object is picked.
@@ -483,7 +485,7 @@ bool CBObject::setPickStyle(int32_t style) {
 	}
 }
 
-/** Does a circle raycast from given object to this object.
+/** Does a raycast from given object to this circle-shaped object.
  *
  * @param fromObject From which object will the raycast start
  * @param returnX This variable will be set to the x-coordinate of raycast collision point.
@@ -585,4 +587,96 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 		returnY = endY;
 		return false;
 	}
+}
+
+/** Does a raycast from given object to this rectangle-shaped object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ */
+bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	// Get box top left corner coordinates and width and height for collision box
+	float rectW = this->getRange1();
+	float rectH = this->getRange2();
+	float rectX = this->getX() - rectW/2;
+	float rectY = this->getY() - rectH/2;
+
+	float startX = fromObject->getX();
+	float startY = fromObject->getY();
+
+	// If we're inside the rectangle, no collision shall be made.
+	if (rectX >= startX && rectX + rectW <= startX && rectY >= startY && rectY + rectH <= startY) {
+		return false;
+	}
+
+	// Calculate ray end coordinates
+	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+
+	// Do line intersection for every side and find out which one is closest
+	bool intersected = false;
+
+	// Top left -> top right
+	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY, rectX + rectH, rectY, returnX, returnY)) return true;
+	// Top left -> bottom left
+	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY, rectX, rectY + rectH, returnX, returnY)) return true;
+	// Top right -> bottom right
+	if (this->linesIntersect(startX, startY, endX, endY, rectX + rectW, rectY, rectX + rectW, rectY + rectH, returnX, returnY)) return true;
+	// Bottom left -> bottom right
+	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY + rectH, rectX + rectW, rectY + rectH, returnX, returnY)) return true;
+
+	return false;
+}
+
+/** A helper function that tests whether two lines intersect.
+ *
+ * @param x1,y1 Start point for first line
+ * @param x2,y2 End point for first line
+ * @param x3,y3 Start point for second line
+ * @param x4,y4 End point for second line
+ * @param retX,retY Intersection coordinates are stored to these, referenced variables
+ *
+ * @returns Whether the lines intersected or not
+ */
+bool CBObject::linesIntersect(float x1, float y1, float x2, float y2,
+							  float x3, float y3, float x4, float y4,
+							  float &retX, float &retY)
+{
+	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+	// If d is zero, there is no intersection
+	if (fabs(d) < 0.00001f) return false;
+
+	// Debug drawing
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawLine(x1, y1, x2, y2, al_map_rgb(0, 128, 0));
+	rendertarget->drawLine(x3, y3, x4, y4, al_map_rgb(0, 128, 0));
+	rendertarget->useWorldCoords(false);
+
+	// Get the x and y
+	float pre = (x1*y2 - y1*y2), post = (x3*y4 - y3*x4);
+	float x = (pre * (x3 - x4) - (x1 - x2) * post) / d;
+	float y = (pre * (y3 - y4) - (y1 - y2) * post) / d;
+
+	// Check if the x and y coordinates are within both lines
+	if (x < min(x1, x2) || x > max(x1, x2) ||
+		x < min(x3, x4) || x > max(x3, x4)
+	) {
+		return false;
+	}
+	if (y < min(y1, y2) || y > max(y1, y2) ||
+		y < min(y3, y4) || y > max(y3, y4)
+	) {
+		return false;
+	}
+
+	// Return the point of intersection
+	retX = x;
+	retY = y;
+	return true;
 }

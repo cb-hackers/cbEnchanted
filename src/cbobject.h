@@ -176,8 +176,13 @@ class CBObject{
 		/** How the object can be picked if set. */
 		PickStyle pickStyle;
 
-		/** Does a circle raycast from given object to this object. */
+		/** Does a raycast from given object to this circle-shaped object. */
 		bool circleRayCast(CBObject *fromObject, float &returnX, float &returnY);
+		/** Does a raycast from given object to this rectangle-shaped object. */
+		bool boxRayCast(CBObject *fromObject, float &returnX, float &returnY);
+
+		/** A helper function that tests whether two lines intersect. */
+		bool linesIntersect(float sx1, float sy1, float ex1, float ey1, float sx2, float sy2, float ex2, float ey2, float &retX, float &retY);
 };
 
 #endif // OBJECT_H

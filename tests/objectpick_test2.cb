@@ -8,7 +8,7 @@ pacman1=LoadObject("Media\pacman.bmp",360)
 pacman2=CloneObject(pacman1)
 pacman3=CloneObject(pacman1)
 
-ObjectPickable pacman1,2
+ObjectPickable pacman1,1
 ObjectPickable pacman2,2
 ObjectPickable pacman3,2
 
