@@ -42,6 +42,8 @@ CBObject::CBObject(bool floor):
 	checkCollisions(true),
 	pickStyle(NoPick)
 {
+	objectRange[0] = 0.0;
+	objectRange[1] = 0.0;
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
 
@@ -413,6 +415,8 @@ CBObject *CBObject::copyObject() const {
 	obj->visible = true;
 	obj->maxFrames = this->maxFrames;
 	obj->painted = this->painted;
+	obj->objectRange[0] = this->sizeX;
+	obj->objectRange[1] = this->sizeY;
 	return obj;
 }
 
