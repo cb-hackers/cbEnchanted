@@ -108,7 +108,7 @@ void ObjectInterface::commandPointObject(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	object1->rotateObject((3.14159265358979323 - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
+	object1->rotateObject((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
 }
 
 void ObjectInterface::commandCloneObjectPosition(void) {
@@ -545,7 +545,7 @@ void ObjectInterface::functionGetAngle2(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	cb->pushValue((float)((M_PI - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / M_PI * 180.0));
+	cb->pushValue((float)((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0));
 }
 inline double square(float num) {
 	return (double)num * (double)num;
