@@ -348,14 +348,12 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	DEBUG("RayCast returned at (%f, %f)", returnX, returnY);
 
 	// Draw a debug line
-	/*
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 	rendertarget->useWorldCoords(true);
 	rendertarget->drawLine(obj->getX(), obj->getY(), returnX, returnY, al_map_rgb(255, 255, 0));
 	rendertarget->useWorldCoords(false);
-	*/
 
 	return didRayHit;
 }
@@ -371,6 +369,12 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 	x2 += 0.00001f;
 	y2 += 0.00001f;
 
+	// Normalized points
+	float nX1 = x1 / tileWidth;
+	float nX2 = x2 / tileWidth;
+	float nY1 = y1 / tileHeight;
+	float nY2 = y2 / tileHeight;
+
 	// Tile to be tested
 	int testTileX = int(x1 / tileWidth);
 	int testTileY = int(y1 / tileHeight);
@@ -385,6 +389,11 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 		returnY = y2;
 		return false;
 	}
+
+	// Find out how far to move on each axis for every whole integer step on the other
+	float ratioX, ratioY = 0.0f;
+	if (fabs(dirY) > 0.00001f) ratioX = dirX / dirY;
+	if (fabs(dirX) > 0.00001f) ratioY = dirY / dirX;
 
 	float nf = 1.0f / sqrt(distSqr);
 	dirX *= nf;
@@ -413,15 +422,32 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 		if (maxX < maxY) {
 			maxX += deltaX;
 			testTileX += stepX;
+
+			if (this->getHit(testTileX, testTileY)) {
+				returnX = testTileX;
+				if (stepX < 0) {
+					returnX += 1.0f; // If we're going to left, add one.
+				}
+				returnY = nY1 + ratioY * (returnX - nX1);
+				returnX = returnX * tileWidth; // Scale up
+				returnY = returnY * tileHeight; // Scale up
+				return true;
+			}
 		}
 		else {
 			maxY += deltaY;
 			testTileY += stepY;
-		}
-		if (this->getHit(testTileX, testTileY)) {
-			returnX = testTileX * tileWidth;
-			returnY = testTileY * tileHeight;
-			return true;
+
+			if (this->getHit(testTileX, testTileY)) {
+				returnY = testTileY;
+				if (stepY < 0) {
+					returnY += 1.0f; // Add one if going up
+				}
+				returnX = nX1 + ratioX * (returnY - nY1);
+				returnX = returnX * tileWidth; // Scale up
+				returnY = returnY * tileHeight; // Scale up
+				return true;
+			}
 		}
 	}
 
