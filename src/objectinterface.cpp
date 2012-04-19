@@ -331,17 +331,17 @@ void ObjectInterface::commandObjectPick(void) {
 		if ((*i)->getID() != id) {
 			if ((*i)->rayCast(obj, endX, endY)) {
 				// Picked object, find out if it's the nearest
-				float tmpDistSqr = obj->getX() * endX + obj->getY() * endY;
+				float tmpDistSqr = (obj->getX() - endX) * (obj->getX() - endX) + (obj->getY() - endY) * (obj->getY() - endY);
 				if (distSqr < -0.5f || tmpDistSqr < distSqr) {
 					distSqr = tmpDistSqr;
 					lastPickedObj = (*i)->getID();
+					lastPickedX = endX;
+					lastPickedY = endY;
 				}
 			}
 		}
 	}
 
-	lastPickedX = endX;
-	lastPickedY = endY;
 	lastPickedAngle = atan2(endY - obj->getY(), endX - obj->getX());
 }
 
