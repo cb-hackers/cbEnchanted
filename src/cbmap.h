@@ -46,7 +46,7 @@ class CBMap : public CBObject {
 
 		/** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
 		 * point to the referenced variables. */
-		bool mapRayCast(float startX, float startY, float endX, float endY, float &returnX, float &returnY);
+		bool mapRayCast(float x1, float y1, float x2, float y2, float &returnX, float &returnY);
 
 	private:
 		int32_t *layers[4];
@@ -70,7 +70,10 @@ class CBMap : public CBObject {
 		void worldCoordinatesToMapCoordinates(float &x, float &y);
 
 		/** Draws debug box for raycasting */
-		void drawRayCastDebugBox(float x, float y);
+		void drawRayCastDebugBox(float tileX, float tileY);
+
+		/** Are tile coordinates out of map bounds */
+		bool outOfBounds(int tileX, int tileY);
 };
 
 
