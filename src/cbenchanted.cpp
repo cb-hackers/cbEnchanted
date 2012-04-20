@@ -965,25 +965,9 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 	code++;
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
-		case 1: {
-			const Any &r = popValue();
-
-			pushValue(-r);
-			break;
-		}
-		case 2: {
-			const Any &r = popValue();
-
-			pushValue(+r);
-			break;
-		}
-		case 3: {
-			const Any& r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l ^ r);
-			break;
-		}
+		case 1: Any::unaryMinus(&internalStack); break;
+		case 2: Any::unaryPlus(&internalStack); break;
+		case 3: Any::power(&internalStack); break;
 		case 4: Any::addition(&internalStack); break;
 		case 5: Any::subtraction(&internalStack); break;
 		case 6: Any::multiplication(&internalStack); break;
@@ -992,88 +976,29 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 		case 9: Any::shl(&internalStack); break;
 		case 10: Any::shr(&internalStack); break;
 		case 11: Any::sar(&internalStack); break;
-		case 12: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l < r);
-			break;
-		}
-		case 13: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l > r);
-			break;
-		}
-		case 14: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l == r);
-			break;
-		}
-		case 15: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l != r);
-			break;
-		}
-		case 16: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l <= r);
-			break;
-		}
-		case 17: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l >= r);
-			break;
-		}
-		case 18: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l && r);
-			break;
-		}
-		case 19: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l || r);
-			break;
-		}
-		case 20: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue((l || r) && !(r && l));
-			break;
-		}
-		case 21: {
-			const Any &r = popValue();
-
-			pushValue(!r);
-			break;
-		}
+		case 12: Any::lessThan(&internalStack); break;
+		case 13: Any::greaterThan(&internalStack); break;
+		case 14: Any::equal(&internalStack); break;
+		case 15: Any::notEqual(&internalStack); break;
+		case 16: Any::lessThanOrEqual(&internalStack); break;
+		case 17: Any::greaterThanOrEqual(&internalStack); break;
+		case 18: Any::AND(&internalStack); break;
+		case 19: Any::OR(&internalStack); break;
+		case 20: Any::XOR(&internalStack); break;
+		case 21: Any::NOT(&internalStack); break;
 		default:
 			FIXME("Unimplemented mathematical operation: %i", op);
 	}
 }
 
 /*
- * CBEnchanted::handleJump - Jump if last operation was true
+ * CBEnchanted::handleJump - Jump if last operation was false
  */
 FORCEINLINE void CBEnchanted::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code);
 	code += 4;
 
-	if (!popValue().getInt()) {
+	if (!popValue().toBool()) {
 		code = codeBase + dest;
 	}
 }

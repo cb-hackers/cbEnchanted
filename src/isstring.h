@@ -10,10 +10,9 @@ class ISString {
 	public:
 		friend class Any;
 
-		ISString() : data(0){
+		ISString() : data(0){ }
+		ISString(const char *str):data(0){if (str && str[0] != '\0') data = new SharedData(string(str));}
 
-		}
-		ISString(const char *str):data(0){if (str[0] != '\0') data = new SharedData(string(str));}
 		ISString(const string &str):data(0){
 			if (str.length() != 0) data = new SharedData(str);
 		}
@@ -24,19 +23,23 @@ class ISString {
 				return;
 			}
 		}
+
 		~ISString() {
 			if (data) data->decreaseRefCount();
 		}
+
 		ISString & operator=(const ISString &o) {
 			if (data != 0) data->decreaseRefCount();
 			data = o.data;
 			if (data != 0) data->increaseRefCount();
 			return *this;
 		}
+
 		string getStdString()const{
 			if (data == 0) return "";
 			return data->str;
 		}
+
 		const string &getRef()const{
 			static string nullStdString;
 			if (data == 0) return nullStdString;
@@ -51,6 +54,7 @@ class ISString {
 			if (o.data == 0) return false;
 			return o.data->str == data->str;
 		}
+
 		bool operator!=(const ISString &o) {
 			if (this->data == 0) {
 				if (o.data == 0) return false;
@@ -59,6 +63,7 @@ class ISString {
 			if (o.data == 0) return true;
 			return o.data->str != data->str;
 		}
+
 		ISString operator+(const ISString &o) const{
 			if (o.data == 0) {
 				return *this;
@@ -68,12 +73,19 @@ class ISString {
 			}
 			return ISString(data->str+o.data->str);
 		}
+
 		ISString operator+(const string &o) const{
 			if (data == 0) {
 				return o;
 			}
 			return ISString(data->str+o);
 		}
+
+		bool operator > (const ISString &o) const;
+		bool operator < (const ISString &o) const;
+		bool operator >= (const ISString &o) const;
+		bool operator <= (const ISString &o) const;
+
 		static ISString add(const string&a,const ISString &b) {
 			if (b.data == 0) return a;
 			return a+b.data->str;
@@ -121,10 +133,6 @@ class ISString {
 			}
 		}
 		static ISString nullString;
-		/*static ISString operator +(const string &a,const ISString &b) {
-		if (b.data == 0) return a;
-		return a+b.data->str;
-	}*/
 	private:
 		class SharedData {
 			public:

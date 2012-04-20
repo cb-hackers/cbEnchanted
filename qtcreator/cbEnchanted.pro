@@ -30,7 +30,7 @@ QMAKE_CFLAGS_RELEASE += -MT -nologo -Zc:wchar_t
 
 contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
-	#DEFINES += VC_USE_FORCEINLINE
+	DEFINES += VC_USE_FORCEINLINE
 	QMAKE_LFLAGS_RELEASE += -DEBUG
 	QMAKE_CXXFLAGS_RELEASE += -Zi
 	QMAKE_CFLAGS_RELEASE += -Zi
@@ -52,7 +52,8 @@ contains(CBE_CONFIG,optimized_debug) {
 
 HEADERS += ../src/*.h
 
-SOURCES += ../src/*.cpp
+SOURCES += ../src/*.cpp \
+    ../src/isstring.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h

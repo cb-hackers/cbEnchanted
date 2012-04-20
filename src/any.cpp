@@ -88,7 +88,7 @@ int32_t Any::toInt() const {
 		return getInt();
 	}
 	if (type() == Any::Float) {
-		return ((int32_t)getFloat());
+		return ((int32_t)(getFloat()+0.5f));
 	}
 	if (type() == Any::String) {
 		if (dString == 0) return 0;
