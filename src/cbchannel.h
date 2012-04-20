@@ -7,7 +7,7 @@ class CBChannel
 {
 	public:
 		CBChannel();
-
+		~CBChannel();
 		inline void setMixer(ALLEGRO_MIXER* mix) {mixer = mix;}
 		void playSound(string str, float volume=100, float pan=0, int32_t freq=-1);
 		void playSound(CBSound& sound, float volume=100, float pan=0, int32_t freq=-1);

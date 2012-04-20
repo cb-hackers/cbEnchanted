@@ -1,11 +1,6 @@
 #include "cbsound.h"
 
-CBSound::CBSound(): looping(false), gain(1.0), balance(0.0), sample(0)
-{
-}
-CBSound::~CBSound()
-{
-	al_destroy_sample(sample);
+CBSound::CBSound(): looping(false), gain(1.0), balance(0.0), sample(0) {
 }
 
 CBSound::~CBSound() {
