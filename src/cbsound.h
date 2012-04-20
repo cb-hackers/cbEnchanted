@@ -8,6 +8,7 @@ class CBSound
 {
 	public:
 		CBSound();
+		~CBSound();
 		void loadSound(string file);
 		void setSound(bool loop, uint8_t vol, int8_t pan, int32_t freq=-1);
 		float getGain();
@@ -16,6 +17,7 @@ class CBSound
 		bool isLooping();
 		float getFreqScale();
 		ALLEGRO_SAMPLE* getSample();
+		void freeSound();
 	private:
 
 		ALLEGRO_SAMPLE* sample;

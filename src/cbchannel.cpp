@@ -3,16 +3,12 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
-CBChannel::CBChannel(): bufferCount(3), sampleCount(4000)
+CBChannel::CBChannel(): bufferCount(3), sampleCount(4000), flow(NULL), instance(NULL)
 {
 
 }
 
-CBChannel::~CBChannel()
-{
-	al_destroy_sample_instance(instance);
-	al_destroy_audio_stream(flow);
-}
+
 void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq) {
 
 	instance = al_create_sample_instance(sound.getSample());
@@ -95,6 +91,17 @@ bool CBChannel::isPlaying() {
 	}
 }
 
+void CBChannel::freeChannel() {
+	if (instance != NULL) {
+		//al_detach_sample_instance(instance);
+		al_destroy_sample_instance(instance);
+	}
+	if (flow != NULL) {
+		//al_detach_audio_stream(flow);
+		al_destroy_audio_stream(flow);
+	}
+	INFO("Vapautettu'd");
+}
 
 void CBChannel::stopSound() {
 	switch (playtype) {

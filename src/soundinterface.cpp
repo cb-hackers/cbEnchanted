@@ -30,6 +30,7 @@ void SoundInterface::functionPlaySound(void) {
 		CBChannel* channel = new CBChannel;
 		channel->setMixer(al_get_default_mixer());
 		string file = any.toString().getRef();
+		INFO(file.c_str())
 		channel->playSound(file, volume, balance, freg);
 		int32_t nextChannel = nextChannelId();
 		channels[nextChannel] = channel;
@@ -113,22 +114,39 @@ bool SoundInterface::initializeSounds()
 }
 
 void SoundInterface::updateAudio(void) {
-	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
-		if (channel->second->isPlaying() == false){
-			INFO("ASD");
+
+	map<int32_t, CBChannel*>::iterator i;
+	i = channels.begin();
+	bool last = false;
+	while (i != channels.end()){
+		if ((*i).second->isPlaying() == false){
+			(*i).second -> freeChannel();
+			if(i == channels.end())
+				last = true;
+			delete (*i).second;
+			channels.erase(i);
 		}
+		if(last == true)
+			break;
+		i++;
 	}
+
+
 }
 
 //Deletes all sounds.
 void SoundInterface::cleanupSoundInterface() {
-	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
-		if (channel->second->isPlaying())
-			channel->second->stopSound();
-		delete channel->second;
-		channels.erase(channel);
+	for (map<int32_t, CBChannel*>::iterator i = channels.begin(); i != channels.end(); i++) {
+		if ((*i).second->isPlaying() == false){
+			(*i).second->freeChannel();
+			delete (*i).second;
+			INFO("Olio tuhottu")
+			channels.erase(i);
+			INFO("Listasta tyhjennetty.")
+		}
 	}
 	for (map<int32_t, CBSound*>::iterator sound = sounds.begin(); sound != sounds.end(); sound++) {
+		sound->second->freeSound();
 		delete sound->second;
 		sounds.erase(sound);
 	}

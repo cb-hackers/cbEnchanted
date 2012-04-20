@@ -198,6 +198,7 @@ void GfxInterface::commandDrawScreen(void) {
 		lastSecTimer = clock();
 	}
 	cb->renderAddTexts(*windowRenderTarget);
+	cb->updateAudio();
 	if (cls) {
 		al_flip_display();
 		windowRenderTarget->clear(clearColor);
