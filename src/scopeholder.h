@@ -20,22 +20,25 @@ class ScopeHolder {
 		ScopeHolder();
 		void pushScope(int32_t byteCount,int32_t shortCount,int32_t stringCount,int32_t floatCount,int32_t integerCount,int32_t typePtrCount);
 		void popScope();
-		FORCEINLINE int32_t &getIntVar(int32_t i) const {return scopes.top().intVars[i-1];}
-		FORCEINLINE float &getFloatVar(int32_t i) const {return scopes.top().floatVars[i-1];}
-		FORCEINLINE uint16_t &getShortVar(int32_t i) const {return scopes.top().shortVars[i-1];}
-		FORCEINLINE uint8_t &getByteVar(int32_t i) const {return scopes.top().byteVars[i-1];}
-		FORCEINLINE ISString &getStringVar(int32_t i) const {return scopes.top().stringVars[i-1];}
-		FORCEINLINE void *&getTypePtrVar(int32_t i) const {return scopes.top().typePtrVars[i-1];}
+		FORCEINLINE int32_t &getIntVar(int32_t i) const {return currentScope->intVars[i-1];}
+		FORCEINLINE float &getFloatVar(int32_t i) const {return currentScope->floatVars[i-1];}
+		FORCEINLINE uint16_t &getShortVar(int32_t i) const {return currentScope->shortVars[i-1];}
+		FORCEINLINE uint8_t &getByteVar(int32_t i) const {return currentScope->byteVars[i-1];}
+		FORCEINLINE ISString &getStringVar(int32_t i) const {return currentScope->stringVars[i-1];}
+		FORCEINLINE void *&getTypePtrVar(int32_t i) const {return currentScope->typePtrVars[i-1];}
 
-		void setIntVar(int32_t i, int32_t v) const {scopes.top().intVars[i-1] = v;}
-		void setFloatVar(int32_t i, float v) const {scopes.top().floatVars[i-1] = v;}
-		void setShortVar(int32_t i, uint16_t v) const {scopes.top().shortVars[i-1] = v;}
-		void setByteVar(int32_t i, uint8_t v) const {scopes.top().byteVars[i-1] = v;}
-		void setStringVar(int32_t i, const ISString &v) const {scopes.top().stringVars[i-1] = v;}
-		void setTypePtrVar(int32_t i,void *v) const {scopes.top().typePtrVars[i-1] = v;}
-		int32_t depth() const {return scopes.size();}
+		FORCEINLINE void setIntVar(int32_t i, int32_t v) const {currentScope->intVars[i-1] = v;}
+		FORCEINLINE void setFloatVar(int32_t i, float v) const {currentScope->floatVars[i-1] = v;}
+		FORCEINLINE void setShortVar(int32_t i, uint16_t v) const {currentScope->shortVars[i-1] = v;}
+		FORCEINLINE void setByteVar(int32_t i, uint8_t v) const {currentScope->byteVars[i-1] = v;}
+		FORCEINLINE void setStringVar(int32_t i, const ISString &v) const {currentScope->stringVars[i-1] = v;}
+		FORCEINLINE void setTypePtrVar(int32_t i,void *v) const {currentScope->typePtrVars[i-1] = v;}
+		int32_t depth() const {return nextScopeIndex;}
 	private:
-		stack<Scope> scopes;
+		Scope *scopes;
+		uint32_t scopeStackSize;
+		Scope *currentScope;
+		uint32_t nextScopeIndex;
 };
 
 #endif // VARIABLESCOPE_H
