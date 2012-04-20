@@ -49,5 +49,6 @@ void ScopeHolder::popScope() {
 	for (int i = 0; i != scope.stringVarCount; ++i) {
 		scope.stringVars[i].~ISString();
 	}
+	currentScope = &scopes[nextScopeIndex-1];
 	delete[] scope.data;
 }
