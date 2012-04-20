@@ -9,7 +9,7 @@ class CBSound
 	public:
 		CBSound();
 		~CBSound();
-		void loadSound(string file);
+		bool loadSound(string file);
 		void setSound(bool loop, uint8_t vol, int8_t pan, int32_t freq=-1);
 		float getGain();
 		float getBalance();

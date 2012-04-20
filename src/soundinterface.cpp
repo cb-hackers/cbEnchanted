@@ -136,19 +136,12 @@ void SoundInterface::updateAudio(void) {
 
 //Deletes all sounds.
 void SoundInterface::cleanupSoundInterface() {
-	for (map<int32_t, CBChannel*>::iterator i = channels.begin(); i != channels.end(); i++) {
-		if ((*i).second->isPlaying() == false){
-			(*i).second->freeChannel();
-			delete (*i).second;
-			INFO("Olio tuhottu")
-			channels.erase(i);
-			INFO("Listasta tyhjennetty.")
-		}
+	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
+		delete channel->second;
 	}
 	for (map<int32_t, CBSound*>::iterator sound = sounds.begin(); sound != sounds.end(); sound++) {
 		sound->second->freeSound();
 		delete sound->second;
-		sounds.erase(sound);
 	}
 }
 

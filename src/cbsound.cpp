@@ -1,6 +1,6 @@
 #include "cbsound.h"
 
-CBSound::CBSound(): looping(false), gain(1.0), balance(0.0)
+CBSound::CBSound(): looping(false), gain(1.0), balance(0.0), sample(0)
 {
 }
 CBSound::~CBSound()
@@ -8,9 +8,16 @@ CBSound::~CBSound()
 	al_destroy_sample(sample);
 }
 
-void CBSound::loadSound(string file) {
+CBSound::~CBSound() {
+	if (sample) al_destroy_sample(sample);
+}
+
+
+bool CBSound::loadSound(string file) {
 	sample = al_load_sample(file.c_str());
+	if (sample == 0) return false;
 	frequency = al_get_sample_frequency(sample);
+	return true;
 }
 
 
@@ -20,10 +27,6 @@ void CBSound::setSound(bool loop, uint8_t vol, int8_t pan, int32_t freq) {
 	balance = pan / 100.0;
 	if(freq>=0)
 		frequency = freq;
-}
-
-void CBSound::freeSound() {
-	al_destroy_sample(sample);
 }
 
 float CBSound::getGain() {

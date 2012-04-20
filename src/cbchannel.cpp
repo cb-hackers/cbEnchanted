@@ -8,7 +8,14 @@ CBChannel::CBChannel(): bufferCount(3), sampleCount(4000), flow(NULL), instance(
 
 }
 
-
+CBChannel::~CBChannel() {
+	if (playtype == soundType) {
+		al_destroy_sample_instance(instance);
+	}
+	else {
+		al_destroy_audio_stream(flow);
+	}
+}
 void CBChannel::playSound(CBSound &sound,  float volume, float pan, int32_t freq) {
 
 	instance = al_create_sample_instance(sound.getSample());
