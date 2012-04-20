@@ -16,8 +16,14 @@ class CBObject{
 			Map,
 			ParticleEmitter
 		};
+		enum PickStyle {
+			NoPick,
+			BoxPick,
+			CirclePick,
+			PixelPick
+		};
 
-		CBObject(bool floor = false);
+		CBObject(bool isFloor = false);
 		virtual ~CBObject();
 		bool load(const string &file);
 		bool load(const string &file,const ALLEGRO_COLOR &mask);
@@ -51,7 +57,7 @@ class CBObject{
 		void setObjectSize(float x,float y){sizeX = x;sizeY = y;}
 		float getObjectSizeX()const{return sizeX;}
 		float getObjectSizeY()const{return sizeY;}
-		bool isFloorObject()const{return floor;}
+		bool isFloorObject()const{return isFloor;}
 		void setLife(uint32_t energy);
 		bool isPlaying()const{return playing;}
 		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
@@ -85,6 +91,13 @@ class CBObject{
 		/** Returns object ID */
 		int32_t getID() const { return id; }
 
+		/** Does a raycast from given object to this object. */
+		virtual bool rayCast(CBObject *fromObject, float &returnX, float &returnY);
+
+		/** Sets the way this object is picked. */
+		bool setPickStyle(int32_t style);
+
+
 		uint32_t getLife();
 		bool isLife();
 		//Draw order
@@ -94,7 +107,7 @@ class CBObject{
 		/** Is the object created as a copy */
 		bool copied;
 		/** Is the object a floor made with MakeObjectFloor() */
-		bool floor;
+		bool isFloor;
 		/** Is the object painted */
 		bool painted;
 
@@ -126,9 +139,6 @@ class CBObject{
 		uint16_t maxFrames;
 		/** Current frame */
 		float currentFrame;
-
-		/** Pick style. Unimplemented. */
-		uint8_t pickStyle;
 
 		/** Integer data stored with ObjectInteger */
 		int32_t objectIntData;
@@ -162,6 +172,17 @@ class CBObject{
 		bool checkCollisions;
 		/** Object range for collisions. */
 		float objectRange[2];
+
+		/** How the object can be picked if set. */
+		PickStyle pickStyle;
+
+		/** Does a raycast from given object to this circle-shaped object. */
+		bool circleRayCast(CBObject *fromObject, float &returnX, float &returnY);
+		/** Does a raycast from given object to this rectangle-shaped object. */
+		bool boxRayCast(CBObject *fromObject, float &returnX, float &returnY);
+
+		/** A helper function that tests whether two lines intersect. */
+		bool linesIntersect(float sx1, float sy1, float ex1, float ey1, float sx2, float sy2, float ex2, float ey2, float &retX, float &retY);
 };
 
 #endif // OBJECT_H

@@ -114,14 +114,14 @@ void StringInterface::functionRSet(void) {
 
 void StringInterface::functionChr(void) {
 	unsigned char AV = cb->popValue().getInt();
-	stringstream ss;
-	ss << AV;
-	cb->pushValue(ss.str());
+	char buffer[2];
+	buffer[0] = *(char*)&AV;
+	buffer[1] = 0;
+	cb->pushValue(buffer);
 }
 
 void StringInterface::functionAsc(void) {
-	string AC = cb->popValue().getString().getRef();
-	uint8_t AV = uint8_t(*AC.c_str());
+	uint8_t AV = uint8_t(*cb->popValue().getString().getRef().c_str());
 	cb->pushValue(int(AV));
 }
 

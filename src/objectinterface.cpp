@@ -13,7 +13,11 @@ ObjectInterface::ObjectInterface():
 	firstObject(0),
 	firstFloorObject(0),
 	lastObject(0),
-	lastFloorObject(0) {
+	lastFloorObject(0),
+	lastPickedObj(0),
+	lastPickedX(0.0),
+	lastPickedY(0.0),
+	lastPickedAngle(0.0) {
 	cb = static_cast<CBEnchanted*>(this);
 }
 
@@ -104,7 +108,7 @@ void ObjectInterface::commandPointObject(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	object1->rotateObject((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0);
+	object1->rotateObject((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / M_PI * 180.0);
 }
 
 void ObjectInterface::commandCloneObjectPosition(void) {
@@ -288,11 +292,57 @@ void ObjectInterface::commandObjectString(void) {
 }
 
 void ObjectInterface::commandObjectPickable(void) {
-	STUB;
+	int32_t pickStyle = cb->popValue().toInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	if (pickStyle == 0) {
+		// Zero means delete.
+		std::vector<CBObject*>::iterator i;
+		for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+			if ((*i)->getID() == id) {
+				// Yeah, this one should be deleted.
+				pickableObjects.erase(i);
+				return;
+			}
+		}
+	}
+
+	if (obj->setPickStyle(pickStyle)) {
+		// If pickStyle is valid, setPickStyle returns true
+		pickableObjects.push_back(obj);
+	}
 }
 
 void ObjectInterface::commandObjectPick(void) {
-	STUB;
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+
+	// Init lastPickedObj to nothing.
+	lastPickedObj = 0;
+
+	// Loop through every pickable object in pickableObjects vector and do the raycast,
+	// setting end coordinates to the following variables
+	float endX, endY;
+	// Save distance square to this, so we can perform fast distance checks without sqrt
+	float distSqr = -1.0f;
+	std::vector<CBObject*>::iterator i;
+	for (i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+		if ((*i)->getID() != id) {
+			if ((*i)->rayCast(obj, endX, endY)) {
+				// Picked object, find out if it's the nearest
+				float tmpDistSqr = (obj->getX() - endX) * (obj->getX() - endX) + (obj->getY() - endY) * (obj->getY() - endY);
+				if (distSqr < -0.5f || tmpDistSqr < distSqr) {
+					distSqr = tmpDistSqr;
+					lastPickedObj = (*i)->getID();
+					lastPickedX = endX;
+					lastPickedY = endY;
+				}
+			}
+		}
+	}
+
+	lastPickedAngle = atan2(endY - obj->getY(), endX - obj->getX());
 }
 
 void ObjectInterface::commandPixelPick(void) {
@@ -474,19 +524,19 @@ void ObjectInterface::functionObjectLife(void) {
 }
 
 void ObjectInterface::functionPickedObject(void) {
-	STUB;
+	cb->pushValue(lastPickedObj);
 }
 
 void ObjectInterface::functionPickedX(void) {
-	STUB;
+	cb->pushValue(lastPickedX);
 }
 
 void ObjectInterface::functionPickedY(void) {
-	STUB;
+	cb->pushValue(lastPickedY);
 }
 
 void ObjectInterface::functionPickedAngle(void) {
-	STUB;
+	cb->pushValue(lastPickedAngle);
 }
 
 void ObjectInterface::functionGetAngle2(void) {
@@ -495,7 +545,7 @@ void ObjectInterface::functionGetAngle2(void) {
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = objectMap[id1];
 
-	cb->pushValue((float)((3.14159265358979323 - atan2f(-object2->getY() + object1->getY(), object1->getX() - object2->getX())) / 3.14159265358979323 * 180.0));
+	cb->pushValue((float)((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / M_PI * 180.0));
 }
 inline double square(float num) {
 	return (double)num * (double)num;

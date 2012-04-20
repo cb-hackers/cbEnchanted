@@ -129,6 +129,7 @@ void GfxInterface::commandScreen(void) {
 		registerWindow();
 	}
 	windowRenderTarget->swapBitmap(al_get_backbuffer(window));
+	windowRenderTarget->clear(al_map_rgba_f(0,0,0,0));
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -185,6 +186,8 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
 			break;
 		}
 	}
