@@ -257,6 +257,11 @@ FORCEINLINE void Any::equal(VariableStack *s) {
 			return;
 		}
 	}
+	if (a.typeId == TypePtr && b.typeId == TypePtr) {
+		a.typeId = Int;
+		a.dInt = a.dPtr == b.dPtr;
+		return;
+	}
 	if (a.typeId == String) {
 		a.typeId = Int;
 		if (b.typeId == String) {
@@ -306,6 +311,11 @@ FORCEINLINE void Any::notEqual(VariableStack *s) {
 			a.dInt = a.toString() != b.getString();
 			return;
 		}
+	}
+	if (a.typeId == TypePtr && b.typeId == TypePtr) {
+		a.typeId = Int;
+		a.dInt = a.dPtr != b.dPtr;
+		return;
 	}
 	if (a.typeId == String) {
 		a.typeId = Int;

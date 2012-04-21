@@ -96,6 +96,7 @@ bool CBChannel::isPlaying() {
 			return al_get_audio_stream_playing(flow);
 		break;
 	}
+	return 0;
 }
 
 void CBChannel::freeChannel() {
