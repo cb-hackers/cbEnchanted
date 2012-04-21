@@ -527,7 +527,7 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 
 	rendertarget->useWorldCoords(true);
 	rendertarget->drawCircle(circleX, circleY, r, false, al_map_rgb(0, 128, 0));
-	rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 128, 0));
+	//rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 128, 0));
 	rendertarget->useWorldCoords(false);
 
 	// Direction vector of ray, from start to end
@@ -608,7 +608,8 @@ bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) 
 	float startY = fromObject->getY();
 
 	// If we're inside the rectangle, no collision shall be made.
-	if (rectX >= startX && rectX + rectW <= startX && rectY >= startY && rectY + rectH <= startY) {
+	if (startX > rectX && startX < rectX + rectW &&
+		startY > rectY && startY < rectY + rectH) {
 		return false;
 	}
 
@@ -646,7 +647,7 @@ bool CBObject::linesIntersect(float x1, float y1, float x2, float y2,
 							  float &retX, float &retY)
 {
 	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	// If d is zero, there is no intersection
+	// If determinant is zero, there is no intersection
 	if (fabs(d) < 0.00001f) return false;
 
 	// Debug drawing
