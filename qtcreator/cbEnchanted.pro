@@ -52,8 +52,7 @@ contains(CBE_CONFIG,optimized_debug) {
 
 HEADERS += ../src/*.h
 
-SOURCES += ../src/*.cpp \
-    ../src/isstring.cpp
+SOURCES += ../src/*.cpp
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
