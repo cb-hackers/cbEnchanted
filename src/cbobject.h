@@ -180,9 +180,6 @@ class CBObject{
 		bool circleRayCast(CBObject *fromObject, float &returnX, float &returnY);
 		/** Does a raycast from given object to this rectangle-shaped object. */
 		bool boxRayCast(CBObject *fromObject, float &returnX, float &returnY);
-
-		/** A helper function that tests whether two lines intersect. */
-		bool linesIntersect(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float &retX, float &retY);
 };
 
 #endif // OBJECT_H
