@@ -602,32 +602,44 @@ bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) 
 	float rectW = this->getRange1();
 	float rectH = this->getRange2();
 	float rectX = this->getX() - rectW/2;
-	float rectY = this->getY() - rectH/2;
+	float rectY = this->getY() + rectH/2;
+
+	// For simplicity, calculate rectangle side coordinates here
+	float left = rectX;
+	float top = rectY;
+	float right = rectX + rectW;
+	float bottom = rectY - rectH;
 
 	float startX = fromObject->getX();
 	float startY = fromObject->getY();
 
 	// If we're inside the rectangle, no collision shall be made.
-	if (startX > rectX && startX < rectX + rectW &&
-		startY > rectY && startY < rectY + rectH) {
+	/*
+	if (startX > left && startX < right &&
+		startY > bottom && startY < top) {
 		return false;
 	}
+	*/
 
-	// Calculate ray end coordinates
-	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
-	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+	// Calculate a point along the ray
+	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1000;
+	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1000;
+
+	// Debug drawing
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 0, 128));
+	rendertarget->useWorldCoords(false);
 
 	// Do line intersection for every side and find out which one is closest
 	bool intersected = false;
 
-	// Top left -> top right
-	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY, rectX + rectH, rectY, returnX, returnY)) return true;
-	// Top left -> bottom left
-	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY, rectX, rectY + rectH, returnX, returnY)) return true;
-	// Top right -> bottom right
-	if (this->linesIntersect(startX, startY, endX, endY, rectX + rectW, rectY, rectX + rectW, rectY + rectH, returnX, returnY)) return true;
-	// Bottom left -> bottom right
-	if (this->linesIntersect(startX, startY, endX, endY, rectX, rectY + rectH, rectX + rectW, rectY + rectH, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, left, top, right, top, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, left, top, left, bottom, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, right, top, right, bottom, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, right, bottom, left, bottom, returnX, returnY)) return true;
 
 	return false;
 }
@@ -646,35 +658,40 @@ bool CBObject::linesIntersect(float x1, float y1, float x2, float y2,
 							  float x3, float y3, float x4, float y4,
 							  float &retX, float &retY)
 {
+	// Epsilon for floating point errors
+	float epsilon = 1e-5f;
+
 	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 	// If determinant is zero, there is no intersection
-	if (fabs(d) < 0.00001f) return false;
+	if (fabs(d) < epsilon) return false;
 
 	// Debug drawing
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 	rendertarget->useWorldCoords(true);
-	rendertarget->drawLine(x1, y1, x2, y2, al_map_rgb(0, 128, 0));
 	rendertarget->drawLine(x3, y3, x4, y4, al_map_rgb(0, 128, 0));
-	rendertarget->useWorldCoords(false);
 
 	// Get the x and y
 	float pre = (x1*y2 - y1*y2), post = (x3*y4 - y3*x4);
 	float x = (pre * (x3 - x4) - (x1 - x2) * post) / d;
 	float y = (pre * (y3 - y4) - (y1 - y2) * post) / d;
 
+	rendertarget->drawCircle(x, y, 5, true, al_map_rgb(64, 64, 64));
+
+	rendertarget->useWorldCoords(false);
+
 	// Check if the x and y coordinates are within both lines
-	if (x < min(x1, x2) || x > max(x1, x2) ||
-		x < min(x3, x4) || x > max(x3, x4)
-	) {
-		return false;
-	}
-	if (y < min(y1, y2) || y > max(y1, y2) ||
-		y < min(y3, y4) || y > max(y3, y4)
-	) {
-		return false;
-	}
+	if (x < (min(x1, x2) - epsilon) ||
+		x > (max(x1, x2) + epsilon) ||
+		x < (min(x3, x4) - epsilon) ||
+		x > (max(x3, x4) + epsilon))
+			return false;
+	if (y < (min(y1, y2) - epsilon) ||
+		y > (max(y1, y2) + epsilon) ||
+		y < (min(y3, y4) - epsilon) ||
+		y > (max(y3, y4) + epsilon))
+			return false;
 
 	// Return the point of intersection
 	retX = x;

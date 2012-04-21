@@ -182,7 +182,7 @@ class CBObject{
 		bool boxRayCast(CBObject *fromObject, float &returnX, float &returnY);
 
 		/** A helper function that tests whether two lines intersect. */
-		bool linesIntersect(float sx1, float sy1, float ex1, float ey1, float sx2, float sy2, float ex2, float ey2, float &retX, float &retY);
+		bool linesIntersect(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float &retX, float &retY);
 };
 
 #endif // OBJECT_H
