@@ -625,23 +625,67 @@ bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) 
 	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1000;
 	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1000;
 
+	// Do line intersection for every side and find out which one is closest
+	bool intersected = false;
+
+	/*
+	if (this->linesIntersect(startX, startY, endX, endY, left, top, right, top, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, left, top, left, bottom, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, right, top, right, bottom, returnX, returnY)) return true;
+	if (this->linesIntersect(startX, startY, endX, endY, right, bottom, left, bottom, returnX, returnY)) return true;
+	*/
+
+	// Yläreuna
+	float k = (endY - startY) / (endX - startX);
+	float y = top;
+	float b = startY - k * startX;
+	float x = (y - b) / k;
+
+	if (x > left && x < right) {
+		returnX = x;
+		returnY = y;
+		intersected = true;
+	}
+
+	// Alareuna
+	y = bottom;
+	x = (y - b) / k;
+	if (x > left && x < right) {
+		returnX = x;
+		returnY = y;
+		intersected = true;
+	}
+
+	// Vasen laita
+	x = left;
+	y = k * x + b;
+	if (y > bottom && y < top) {
+		returnX = x;
+		returnY = y;
+		intersected = true;
+	}
+
+	// Oikea laita
+	x = right;
+	y = k * x + b;
+	if (y > bottom && y < top) {
+		returnX = x;
+		returnY = y;
+		intersected = true;
+	}
+
 	// Debug drawing
 	CBEnchanted *cb = CBEnchanted::instance();
 	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
 
 	rendertarget->useWorldCoords(true);
 	rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 0, 128));
+	if (intersected) {
+		rendertarget->drawCircle(returnX, returnY, 5, true, al_map_rgb(0, 0, 128));
+	}
 	rendertarget->useWorldCoords(false);
 
-	// Do line intersection for every side and find out which one is closest
-	bool intersected = false;
-
-	if (this->linesIntersect(startX, startY, endX, endY, left, top, right, top, returnX, returnY)) return true;
-	if (this->linesIntersect(startX, startY, endX, endY, left, top, left, bottom, returnX, returnY)) return true;
-	if (this->linesIntersect(startX, startY, endX, endY, right, top, right, bottom, returnX, returnY)) return true;
-	if (this->linesIntersect(startX, startY, endX, endY, right, bottom, left, bottom, returnX, returnY)) return true;
-
-	return false;
+	return intersected;
 }
 
 /** A helper function that tests whether two lines intersect.
@@ -661,25 +705,32 @@ bool CBObject::linesIntersect(float x1, float y1, float x2, float y2,
 	// Epsilon for floating point errors
 	float epsilon = 1e-5f;
 
+	// Move y-coordinates so that y1 is 0. Somehow it might work
+	float yFix = y1;
+	y1 -= yFix;
+	y2 -= yFix;
+	y3 -= yFix;
+	y4 -= yFix;
+
 	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 	// If determinant is zero, there is no intersection
 	if (fabs(d) < epsilon) return false;
 
-	// Debug drawing
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawLine(x3, y3, x4, y4, al_map_rgb(0, 128, 0));
 
 	// Get the x and y
 	float pre = (x1*y2 - y1*y2), post = (x3*y4 - y3*x4);
 	float x = (pre * (x3 - x4) - (x1 - x2) * post) / d;
 	float y = (pre * (y3 - y4) - (y1 - y2) * post) / d;
+	// Debug drawing
 
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+	//rendertarget->drawLine(x3, y3, x4, y4, al_map_rgb(0, 128, 0));
 	rendertarget->drawCircle(x, y, 5, true, al_map_rgb(64, 64, 64));
-
 	rendertarget->useWorldCoords(false);
+
 
 	// Check if the x and y coordinates are within both lines
 	if (x < (min(x1, x2) - epsilon) ||
@@ -695,6 +746,6 @@ bool CBObject::linesIntersect(float x1, float y1, float x2, float y2,
 
 	// Return the point of intersection
 	retX = x;
-	retY = y;
+	retY = y + yFix;
 	return true;
 }

@@ -9,8 +9,8 @@ pacman2=CloneObject(pacman1)
 pacman3=CloneObject(pacman1)
 
 ObjectPickable pacman1,1
-ObjectPickable pacman2,2
-ObjectPickable pacman3,2
+'ObjectPickable pacman2,2
+'ObjectPickable pacman3,2
 
 PositionObject pacman1, -100,0
 PositionObject pacman3, 100,0
@@ -54,7 +54,7 @@ Repeat
         ElseIf e=pacman3 Then
             Text 0,30,"pacman on the right"
         EndIf
-        Circle PickedX() - 5, PickedY() + 5, 10, ON
+        'Circle PickedX() - 5, PickedY() + 5, 10, ON
     EndIf
     
     'draw the check-zones
