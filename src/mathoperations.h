@@ -345,7 +345,7 @@ FORCEINLINE void Any::AND(VariableStack *s) {
 FORCEINLINE void Any::OR(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel-1];
-	a.dInt = a.toBool() && b.toBool();
+	a.dInt = a.toBool() || b.toBool();
 	a.typeId = Int;
 }
 

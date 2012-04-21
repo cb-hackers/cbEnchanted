@@ -233,10 +233,18 @@ class Any {
 
 
 FORCEINLINE bool Any::toBool() const {
-	if (typeId == String) {
-		return dString != 0 && dString->str != "";
+	switch (typeId) {
+		case Int:
+			return dInt != 0;
+		case Float:
+			return dFloat != 0.0f;
+		case String:
+			return dString != 0 && dString->str != "";
+		case TypePtr:
+			return dPtr != 0;
+		default:
+			return false;
 	}
-	return dInt != 0;
 }
 
 
