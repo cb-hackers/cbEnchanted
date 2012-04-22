@@ -263,17 +263,19 @@ FORCEINLINE void Any::equal(VariableStack *s) {
 		return;
 	}
 	if (a.typeId == String) {
-		a.typeId = Int;
 		if (b.typeId == String) {
 			a.dInt = a.getString() == b.getString();
+			a.typeId = Int;
 			return;
 		}
 		if (b.typeId == Int) {
 			a.dInt = a.getString() == b.toString();
+			a.typeId = Int;
 			return;
 		}
 		if (b.typeId == Float) {
 			a.dInt = a.getString() == b.toString();
+			a.typeId = Int;
 			return;
 		}
 	}
