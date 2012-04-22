@@ -48,4 +48,15 @@ using boost::dynamic_bitset;
 	#define FORCEINLINE inline
 #endif
 
+#ifdef BUILD_64_BIT
+	#undef BUILD_64_BIT
+#endif
+#ifdef BUILD_32_BIT
+	#undef BUILD_32_BIT
+#endif
+#define BUILD_32_BIT sizeof(void*) == 4
+#define BUILD_64_BIT sizeof(void*) == 8
+
+
+
 #endif

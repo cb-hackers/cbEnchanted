@@ -1114,11 +1114,25 @@ void CBEnchanted::functionRead(void) {
 }
 
 void CBEnchanted::functionConvertToInteger(void) {
-
+	void *typeMember = popValue().getTypePtr();
+	if (BUILD_32_BIT) {
+		pushValue(reinterpret_cast<int32_t>(typeMember));
+	}
+	else {
+		FIXME("ConvertToInteger() doesn't work yet on 64-bit builds!");
+		pushValue(0);
+	}
 }
 
 void CBEnchanted::functionConvertToType(void) {
-
+	int32_t typePtr = popValue().getInt();
+	if (BUILD_32_BIT) {
+		pushValue(reinterpret_cast<void*>(typePtr));
+	}
+	else {
+		FIXME("ConvertToType() doesn't work yet on 64-bit builds!");
+		pushValue(0);
+	}
 }
 
 FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
