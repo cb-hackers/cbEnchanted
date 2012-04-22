@@ -40,7 +40,6 @@ void StringInterface::functionMid(void) {
 	string str = cb->popValue().getString().getRef();
 
 	cb->pushValue(str.substr(pos-1, len));
-
 }
 
 void StringInterface::functionReplace(void) {
@@ -65,7 +64,6 @@ void StringInterface::functionInStr(void) {
 	string str = cb->popValue().getString().getRef();
 
 	cb->pushValue(int32_t(str.find(sep, pos-1)+1));
-
 }
 
 void StringInterface::functionUpper(void) {
@@ -86,7 +84,6 @@ void StringInterface::functionTrim(void) {
 	str = str.substr(0, str.find_last_not_of(" ")+1);
 
 	cb->pushValue(str);
-
 }
 
 void StringInterface::functionLSet(void) {
@@ -95,7 +92,6 @@ void StringInterface::functionLSet(void) {
 
 	str.resize(len, ' ');
 	cb->pushValue(str);
-
 }
 
 void StringInterface::functionRSet(void) {
@@ -109,7 +105,6 @@ void StringInterface::functionRSet(void) {
 	} else {
 		cb->pushValue(str.substr(str.length()-len));
 	}
-
 }
 
 void StringInterface::functionChr(void) {
@@ -216,10 +211,14 @@ void StringInterface::functionCountWords(void) {
 	string sep = cb->popValue().toString().getRef();
 	string str = cb->popValue().toString().getRef();
 
+	if(str=="") {
+		cb->pushValue(0);
+		return;
+	}
 	if(sep=="") {sep = ' ';}
 
 	string::size_type p = 0;
-	int32_t count = 0;
+	int32_t count = 1;
 
 	while ((p = str.find(sep, p))!=string::npos)
 	{
@@ -227,10 +226,7 @@ void StringInterface::functionCountWords(void) {
 		++count;
 	}
 
-	count++;
-
 	cb->pushValue(count);
-
 }
 
 void StringInterface::functionGetWord(void) {
@@ -256,5 +252,4 @@ void StringInterface::functionGetWord(void) {
 	} else {
 		cb->pushValue(str.substr(0));
 	}
-
 }
