@@ -357,7 +357,14 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 }
 
 /** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
- * point to the referenced variables. */
+ * point to the referenced variables.
+ *
+ * @param x1,y1 Start point, relative to tilemap
+ * @param x2,y2 End point, relative to tilemap
+ * @param returnX,returnY The point where ray hit the tilemap is stored in here, relative to tilemap.
+ *
+ * @returns True if the ray hit a wall, false otherwise.
+ */
 bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, float &returnY) {
 	// Floating point error correction
 	x1 += 0.00001f;
@@ -413,7 +420,6 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 	while ((testTileX != endTileX || testTileY != endTileY) &&
 			!this->outOfBounds(testTileX + 1, testTileY + 1)
 	) {
-		this->drawRayCastDebugBox(testTileX, testTileY);
 		if (maxX < maxY) {
 			maxX += deltaX;
 			testTileX += stepX;
@@ -451,13 +457,78 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 	return false;
 }
 
-/** Converts from tilemap based coordinates to world coordinates */
+/** Checks whether there's a wall between two points (relative to tilemap).
+ *
+ * @param x1,y1 Start point, relative to tilemap
+ * @param x2,y2 End point, relative to tilemap
+ *
+ * @returns True if the ray hit a wall, false otherwise.
+ */
+bool CBMap::mapRayCast(float x1, float y1, float x2, float y2) {
+	// Floating point error correction
+	x1 += 0.00001f;
+	y1 += 0.00001f;
+	x2 += 0.00001f;
+	y2 += 0.00001f;
+
+	// Tile to be tested
+	int testTileX = int(x1 / tileWidth);
+	int testTileY = int(y1 / tileHeight);
+
+	float dirX = x2 - x1;
+	float dirY = y2 - y1;
+
+	float distSqr = dirX * dirX + dirY * dirY;
+	if (distSqr < 0.00001f) {
+		// Start and end points are the same
+		return false;
+	}
+
+	float nf = 1.0f / sqrt(distSqr);
+	dirX *= nf;
+	dirY *= nf;
+
+	float deltaX = tileWidth / fabs(dirX);
+	float deltaY = tileHeight / fabs(dirY);
+
+	float maxX = testTileX * tileWidth - x1;
+	float maxY = testTileY * tileHeight - y1;
+	if (dirX >= 0.0f) maxX += tileWidth;
+	if (dirY >= 0.0f) maxY += tileHeight;
+	maxX /= dirX;
+	maxY /= dirY;
+
+	int stepX = dirX < 0 ? -1 : 1;
+	int stepY = dirY < 0 ? -1 : 1;
+	int endTileX = int(x2 / tileWidth);
+	int endTileY = int(y2 / tileHeight);
+
+	while ((testTileX != endTileX || testTileY != endTileY) &&
+			!this->outOfBounds(testTileX + 1, testTileY + 1)
+	) {
+		if (maxX < maxY) {
+			maxX += deltaX;
+			testTileX += stepX;
+		}
+		else {
+			maxY += deltaY;
+			testTileY += stepY;
+		}
+		if (this->getHit(testTileX, testTileY)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/** Converts tilemap based coordinates to world coordinates */
 void CBMap::worldCoordinatesToMapCoordinates(float &x, float &y) {
 	x = x + this->mapWidth * this->tileWidth / 2;
 	y = -y + this->mapHeight * this->tileHeight / 2;
 }
 
-/** Converts from wolrd coordinates to tilemap based coordinates */
+/** Converts world coordinates to tilemap based coordinates */
 void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
 	x = x - this->mapWidth * this->tileWidth / 2;
 	y = this->mapHeight * this->tileHeight / 2 - y;

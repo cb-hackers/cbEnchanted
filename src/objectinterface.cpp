@@ -608,7 +608,29 @@ void ObjectInterface::functionObjectsOverlap(void) {
 }
 
 void ObjectInterface::functionObjectSight(void) {
-	STUB;
+	int32_t objId2 = cb->popValue().getInt();
+	int32_t objId1 = cb->popValue().getInt();
+
+	CBObject *obj1 = getObject(objId1);
+	CBObject *obj2 = getObject(objId2);
+
+	CBMap* tileMap = cb->getTileMap();
+
+	float x1 = obj1->getX();
+	float y1 = obj1->getY();
+	float x2 = obj2->getX();
+	float y2 = obj2->getY();
+
+	tileMap->worldCoordinatesToMapCoordinates(x1, y1);
+	tileMap->worldCoordinatesToMapCoordinates(x2, y2);
+
+	if (!tileMap->mapRayCast(x1, y1, x2, y2)) {
+		// No wall between points
+		cb->pushValue(1);
+	}
+	else {
+		cb->pushValue(0);
+	}
 }
 
 void ObjectInterface::functionCountCollisions(void) {

@@ -48,6 +48,13 @@ class CBMap : public CBObject {
 		 * point to the referenced variables. */
 		bool mapRayCast(float x1, float y1, float x2, float y2, float &returnX, float &returnY);
 
+		/** Checks whether there's a wall between two points (relative to tilemap). */
+		bool mapRayCast(float x1, float y1, float x2, float y2);
+
+		/** Converts tilemap based coordinates to world coordinates */
+		void mapCoordinatesToWorldCoordinates(float &x, float &y);
+		/** Converts world coordinates to tilemap based coordinates */
+		void worldCoordinatesToMapCoordinates(float &x, float &y);
 	private:
 		int32_t *layers[4];
 
@@ -63,11 +70,6 @@ class CBMap : public CBObject {
 		int32_t *animSlowness;
 		float *currentFrame;
 		uint8_t layerShowing[2];
-
-		/** Converts from tilemap based coordinates to world coordinates */
-		void mapCoordinatesToWorldCoordinates(float &x, float &y);
-		/** Converts from wolrd coordinates to tilemap based coordinates */
-		void worldCoordinatesToMapCoordinates(float &x, float &y);
 
 		/** Draws debug box for raycasting */
 		void drawRayCastDebugBox(float tileX, float tileY);

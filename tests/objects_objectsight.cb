@@ -1,0 +1,47 @@
+FrameLimit 40
+DrawToWorld ON
+
+'Load the map 
+map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
+
+'Load player 
+soldier=LoadObject("Media\soldier.bmp",72)
+ObjectRange soldier,32
+
+'Load dumb immobile bot 
+bot=LoadObject("Media\soldier.bmp")
+ObjectRange bot,32
+PositionObject bot,50,200
+
+'setup some collisions 
+SetupCollision soldier,bot,2,2,2
+SetupCollision soldier,map,1,4,2
+
+Repeat
+
+    'Update controls
+    If LeftKey() Then TurnObject soldier,5
+    If RightKey() Then TurnObject soldier, -5
+    If UpKey() Then MoveObject soldier,3.5
+    If DownKey() Then MoveObject soldier, -2
+
+    'Camera follow
+    CloneCameraPosition soldier
+
+    'Enable additional graphics
+    DrawGame
+    
+    'draw line of sight
+    Color cborange
+    Line ObjectX(bot),ObjectY(bot),ObjectX(soldier),ObjectY(soldier)
+    
+    'determine if players can see each other
+    Color cbwhite
+    If ObjectSight(soldier,bot) Then
+        Text 0,0,"LINE OF SIGHT!"
+    EndIf
+
+    'render SCREEN
+    DrawScreen
+
+Until EscapeKey()
