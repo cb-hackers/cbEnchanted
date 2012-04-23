@@ -324,7 +324,7 @@ int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
 
 /** Does a raycast from given object to this map.
  *
- * @param fromObject From which object will the raycast start
+ * @param obj From which object will the raycast start
  * @param returnX This variable will be set to the x-coordinate of raycast collision point.
  * @param returnY This variable will be set to the y-coordinate of raycast collision point.
  *

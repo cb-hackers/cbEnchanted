@@ -1,10 +1,16 @@
 #ifndef CUSTOMFUNCTIONDEFINES_H
 #define CUSTOMFUNCTIONDEFINES_H
 
-/** Group id of cbE's custom functions */
+/** @addtogroup customfunctions
+ * @{
+ */
+
+/** Group ID of custom functions of cbEnchanted itself */
 #define CBE_CUSTOM_FUNCTION_GROUP 1
 
-//GFX
+/** ID for custom function commandTriangle() */
 #define CBE_CUSTOM_DRAWTRIANGLE 1
+
+/** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

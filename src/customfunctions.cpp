@@ -1,10 +1,11 @@
 #include "customfunctions.h"
 #include "cbenchanted.h"
-/** @addtogroup customfunctions
-  * @{ */
 
-/** @brief VesQ's awesome triangle drawing function
-  */
+/** @addtogroup customfunctions
+ * @{
+ */
+
+/** VesQ's awesome triangle drawing function */
 void commandTriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld());
 	bool fill = cb->popValue().toInt();
@@ -28,7 +29,5 @@ void commandTriangle(CBEnchanted *cb) {
 	);
 	cb->pushValue(0);
 }
-
-
 
 /** @} */
