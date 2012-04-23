@@ -116,8 +116,8 @@ bool ErrorSystem::execLastError() {
 					ALLEGRO_MESSAGEBOX_YES_NO
 		);
 		if (ret == 1) {
-			// Check if this is the 5th error and if so, ask the user whether they'd like to suppress future errors.
-			if (errorCount >= 5) {
+			// Every 5th error ask the user whether they'd like to suppress future errors.
+			if (errorCount % 5 == 0) {
 				int suppressMsg = al_show_native_message_box(
 							cb->getWindow(),
 							"Suppress future errors?",
