@@ -72,23 +72,23 @@ class Any {
 		/** Returns string stored in Any. Causes assertion if typeId isn't String
 		  * @return String stored in Any
 		  */
-		inline ISString getString() const { assert(typeId == String); return ISString(dString); }
+		FORCEINLINE ISString getString() const { assert(typeId == String); return ISString(dString); }
 		/** Returns int stored in Any. Causes assertion if typeId isn't Int
 		  * @return Int stored in Any
 		  */
-		inline int32_t getInt() const { assert(typeId == Int); return dInt; }
+		FORCEINLINE int32_t getInt() const { assert(typeId == Int); return dInt; }
 		/** Returns float stored in Any. Causes assertion if typeId isn't String
 		  * @return Float stored in Any
 		  */
-		inline float getFloat() const { assert(typeId == Float); return dFloat; }
+		FORCEINLINE float getFloat() const { assert(typeId == Float); return dFloat; }
 		/** Returns type pointer stored in Any. Causes assertion if typeId isn't TypePtr
 		  * @return Type pointer stored in Any
 		  */
-		inline void *getTypePtr() const { assert(typeId == TypePtr); return dPtr;}
+		FORCEINLINE void *getTypePtr() const { assert(typeId == TypePtr); return dPtr;}
 		/** Returns true if Any is constructed with default constructor.
 		  * @return Returns true if Any is constructed with default constructor.
 		  */
-		inline bool empty() const { return typeId == Empty; }
+		FORCEINLINE bool empty() const { return typeId == Empty; }
 
 		/**
 		  * @return Any::Type
@@ -121,6 +121,10 @@ class Any {
 		  * @return Converted byte value
 		  */
 		uint8_t toByte() const;
+
+		/** Optimized
+		  */
+		bool toBool() const;
 
 		/** Negation operator */
 		int32_t operator ! ()const;
@@ -163,30 +167,85 @@ class Any {
 		/** Less than operator */
 		int32_t operator < (const Any &r) const;
 
-		/** Optimized version of addition for handleMathCommand */
+		/** Optimized version of addition for handleMathOperation */
 		static void addition(VariableStack *s);
 
-		/** Optimized version of multiplication for handleMathCommand */
+		/** Optimized version of multiplication for handleMathOperation */
 		static void multiplication(VariableStack *s);
 
-		/** Optimized version of division for handleMathCommand */
+		/** Optimized version of division for handleMathOperation */
 		static void division(VariableStack *s);
 
-		/** Optimized version of subtraction for handleMathCommand */
+		/** Optimized version of subtraction for handleMathOperation */
 		static void subtraction(VariableStack *s);
 
-		/** Optimized version of modulo for handleMathCommand */
+		/** Optimized version of modulo for handleMathOperation */
 		static void modulo(VariableStack *s);
 
-		/** Optimized version of bitwise left shift for handleMathCommand */
+		/** Optimized version of bitwise left shift for handleMathOperation */
 		static void shl(VariableStack *s);
 
-		/** Optimized version of bitwise arithmetic right shift for handleMathCommand */
+		/** Optimized version of bitwise arithmetic right shift for handleMathOperation */
 		static void sar(VariableStack *s);
 
-		/** Optimized version of bitwise logical right shift for handleMathCommand */
+		/** Optimized version of bitwise logical right shift for handleMathOperation */
 		static void shr(VariableStack *s);
+
+		/** Optimized version of power for handleMathOperation */
+		static void power(VariableStack *s);
+
+		/** Optimized version of equal for handleMathOperation */
+		static void equal(VariableStack *s);
+
+		/** Optimized version of not-equal for handleMathOperation */
+		static void notEqual(VariableStack *s);
+
+		/** Optimized version of logical AND for handleMathOperation */
+		static void AND(VariableStack *s);
+
+		/** Optimized version of logical OR for handleMathOperation */
+		static void OR(VariableStack *s);
+
+		/** Optimized version of greater than -operator for handleMathOperation */
+		static void greaterThan(VariableStack *s);
+
+		/** Optimized version of less than -operator for handleMathOperation */
+		static void lessThan(VariableStack *s);
+
+		/** Optimized version of greater than or equal -operator for handleMathOperation */
+		static void greaterThanOrEqual(VariableStack *s);
+
+		/** Optimized version of less than or equal -operator for handleMathOperation */
+		static void lessThanOrEqual(VariableStack *s);
+
+		/** Optimized version of unary minus for handleMathOperation */
+		static void unaryMinus(VariableStack *s);
+
+		/** Optimized version of unary plus for handleMathOperation */
+		static void unaryPlus(VariableStack *s);
+
+		/** Optimized version of NOT for handleMathOperation */
+		static void NOT(VariableStack *s);
+
+		/** Optimized version of XOR for handleMathOperation */
+		static void XOR(VariableStack *s);
 };
+
+
+FORCEINLINE bool Any::toBool() const {
+	switch (typeId) {
+		case Int:
+			return dInt != 0;
+		case Float:
+			return dFloat != 0.0f;
+		case String:
+			return dString != 0 && dString->str != "";
+		case TypePtr:
+			return dPtr != 0;
+		default:
+			return false;
+	}
+}
 
 
 

@@ -1,6 +1,11 @@
 #include "scopeholder.h"
 
-ScopeHolder::ScopeHolder() {
+ScopeHolder::ScopeHolder() :
+	currentScope(0),
+	nextScopeIndex(0),
+	scopeStackSize(10)
+{
+	scopes = new Scope[scopeStackSize];
 }
 
 void ScopeHolder::pushScope(int32_t byteCount, int32_t shortCount, int32_t stringCount, int32_t floatCount, int32_t integerCount, int32_t typePtrCount) {
@@ -27,14 +32,23 @@ void ScopeHolder::pushScope(int32_t byteCount, int32_t shortCount, int32_t strin
 	scope.typePtrVars = (void**)pointer;
 	scope.stringVarCount = stringCount;
 
-	scopes.push(scope);
+	if (nextScopeIndex == scopeStackSize) {
+		uint32_t newSize = scopeStackSize * 2;
+		Scope *newStack = new Scope[newSize];
+		memcpy(newStack,scopes,scopeStackSize*sizeof(Scope));
+		delete[] scopes;
+		scopes = newStack;
+	}
+	scopes[nextScopeIndex] = scope;
+	currentScope = &scopes[nextScopeIndex];
+	++nextScopeIndex;
 }
 
 void ScopeHolder::popScope() {
-	Scope &scope = scopes.top();
+	Scope &scope = scopes[--nextScopeIndex];
 	for (int i = 0; i != scope.stringVarCount; ++i) {
 		scope.stringVars[i].~ISString();
 	}
+	currentScope = &scopes[nextScopeIndex-1];
 	delete[] scope.data;
-	scopes.pop();
 }

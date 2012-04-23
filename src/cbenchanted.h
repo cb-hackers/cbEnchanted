@@ -1,9 +1,6 @@
 #ifndef CBENCHANTED_H
 #define CBENCHANTED_H
 
-//#define M_PI  3.14159265358979323846264338327950288419716939937510
-#define M_HALF_PI  (3.14159265358979323846264338327950288419716939937510/2.0)
-
 #include "cbvariableholder.h"
 #include "debug.h"
 #include <vector>
@@ -13,6 +10,7 @@
 using std::vector;
 
 class GfxInterface;
+class ErrorSystem;
 
 
 class CBEnchanted : public CBVariableHolder
@@ -30,6 +28,9 @@ class CBEnchanted : public CBVariableHolder
 		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;}
 		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
+
+		/** Error system for public access */
+		ErrorSystem *errors;
 	private:
 
 		char *code;

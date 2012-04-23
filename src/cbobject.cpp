@@ -22,7 +22,7 @@ CBObject::CBObject(bool floor):
 	frameHeight(0),
 	currentFrame(0),
 	painted(false),
-	floor(floor),
+	isFloor(floor),
 	texture(0),
 	copied(false),
 	sizeX(0),
@@ -39,8 +39,11 @@ CBObject::CBObject(bool floor):
 	objectIntData(0),
 	objectStringData(),
 	objectFloatData(0),
-	checkCollisions(true)
+	checkCollisions(true),
+	pickStyle(NoPick)
 {
+	objectRange[0] = 0.0;
+	objectRange[1] = 0.0;
 	maskColor = al_map_rgba_f(0, 0, 0, 1);
 }
 
@@ -309,7 +312,7 @@ void CBObject::render(RenderTarget &target) {
 	float camX = CBEnchanted::instance()->getCameraX();
 	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
-		if (floor) {
+		if (isFloor) {
 			//Drawing floor objects
 
 			float snappedx = floorf(camX / renderTarget->width());
@@ -399,7 +402,7 @@ void CBObject::setDefaultVisible(bool t) {
 
 /** Copies an object so that this can use the texture from the master object */
 CBObject *CBObject::copyObject() const {
-	CBObject *obj = new CBObject(floor);
+	CBObject *obj = new CBObject(isFloor);
 	obj->texture = texture;
 	obj->renderTarget = renderTarget;
 	obj->copied = true;
@@ -412,6 +415,8 @@ CBObject *CBObject::copyObject() const {
 	obj->visible = true;
 	obj->maxFrames = this->maxFrames;
 	obj->painted = this->painted;
+	obj->objectRange[0] = this->sizeX;
+	obj->objectRange[1] = this->sizeY;
 	return obj;
 }
 
@@ -436,3 +441,225 @@ void CBObject::addCollision(Collision *collision) {
 	collisionList.push_back(collision);
 }
 
+/** Does a raycast from given object to this object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ */
+bool CBObject::rayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	switch (this->pickStyle) {
+		case BoxPick:
+			return this->boxRayCast(fromObject, returnX, returnY);
+		case CirclePick:
+			return this->circleRayCast(fromObject, returnX, returnY);
+		default:
+			return false;
+	}
+}
+
+/** Sets the way this object is picked.
+ *
+ * @param style The way this object is to be picked. 1 = Box, 2 = Circle, 3 = Pixel
+ * @returns Was the pick style OK
+ */
+bool CBObject::setPickStyle(int32_t style) {
+	switch (style) {
+		case 1:
+			pickStyle = BoxPick;
+			INFO("Set BoxPick for object %i", this->id);
+			return true;
+		case 2:
+			pickStyle = CirclePick;
+			INFO("Set CirclePick for object %i", this->id);
+			return true;
+		case 3:
+			pickStyle = PixelPick;
+			INFO("Set PixelPick for object %i", this->id);
+			return true;
+		default:
+			FIXME("Unsupported pick type %i", style);
+			return false;
+	}
+}
+
+/** Does a raycast from given object to this circle-shaped object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ *
+ * @see http://stackoverflow.com/a/1084899/1152564
+ */
+bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	// Start point
+	float startX = fromObject->getX();
+	float startY = fromObject->getY();
+
+	// Center of circle
+	float circleX = this->getX();
+	float circleY = this->getY();
+	// Radius of circle
+	float r = this->getRange1() / 2;
+
+	// Vector from center of circle to ray start
+	float cvX = startX - circleX;
+	float cvY = startY - circleY;
+
+	// If ray start point is inside this circle, don't pick this.
+	if ((cvX * cvX + cvY * cvY) < r*r) {
+		returnX = startX;
+		returnY = startY;
+		return false;
+	}
+
+	// Ray end point
+	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
+
+	// Debug drawing
+	CBEnchanted *cb = CBEnchanted::instance();
+	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+
+	rendertarget->useWorldCoords(true);
+	rendertarget->drawCircle(circleX, circleY, r, false, al_map_rgb(0, 128, 0));
+	//rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 128, 0));
+	rendertarget->useWorldCoords(false);
+
+	// Direction vector of ray, from start to end
+	float dirX = endX - startX;
+	float dirY = endY - startY;
+
+	// Solve quadratic product: t^2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r^2 ) = 0
+	// where d is direction vector and f is vector from center of circle to ray start
+
+	//float a = d.Dot( d );
+	float a = dirX * dirX + dirY * dirY;
+	//float b = 2*f.Dot( d ) ;
+	float b = 2 * (dirX * cvX + dirY * cvY);
+	//float c = f.Dot( f ) - r*r ;
+	float c = (cvX * cvX + cvY * cvY) - r * r;
+
+	float discriminant = b * b - 4 * a *c;
+	if( discriminant < 0 ) {
+		// no intersection
+		returnX = endX;
+		returnY = endY;
+		return false;
+	}
+	else {
+		// ray didn't totally miss sphere,
+		// so there is a solution to
+		// the equation.
+
+
+		discriminant = sqrt(discriminant);
+		float t1 = (-b + discriminant) / (2 * a);
+		float t2 = (-b - discriminant) / (2 * a);
+
+		if (t2 >= 0 && t2 <= 1) {
+			// solution on is ON THE RAY.
+			returnX = startX + t2 * dirX;
+			returnY = startY + t2 * dirY;
+			return true;
+		}
+		else {
+			// solution "out of range" of ray
+		}
+
+		// use t1 for second point
+		if (t1 >= 0 && t1 <= 1) {
+			// solution on is ON THE RAY.
+			returnX = startX + t1 * dirX;
+			returnY = startY + t1 * dirY;
+			return true;
+		}
+		else {
+			// solution "out of range" of ray
+		}
+
+		// If we get here, there's no hit.
+		returnX = endX;
+		returnY = endY;
+		return false;
+	}
+}
+
+/** Does a raycast from given object to this rectangle-shaped object.
+ *
+ * @param fromObject From which object will the raycast start
+ * @param returnX This variable will be set to the x-coordinate of raycast collision point.
+ * @param returnY This variable will be set to the y-coordinate of raycast collision point.
+ *
+ * @returns Whether the ray hit the object or not.
+ */
+bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) {
+	// Get box top left corner coordinates and width and height for collision box
+	float rectW = this->getRange1();
+	float rectH = this->getRange2();
+	float rectX = this->getX() - rectW/2;
+	float rectY = this->getY() + rectH/2;
+
+	// For simplicity, calculate rectangle side coordinates here
+	float left = rectX;
+	float top = rectY;
+	float right = rectX + rectW;
+	float bottom = rectY - rectH;
+
+	float startX = fromObject->getX();
+	float startY = fromObject->getY();
+	float angle = fromObject->getAngle();
+
+	float x,y;
+	float k = tan((angle / 180.0) * M_PI);
+	float b = startY - k * startX;
+
+	if (angle > 180) {
+		// Top side
+		y = top;
+		x = (y - b) / k;
+		if (startY > y && x > left && x < right) {
+			returnX = x;
+			returnY = y;
+			return true;
+		}
+	}
+	else {
+		// Bottom side
+		y = bottom;
+		x = (y - b) / k;
+		if (startY < y && x > left && x < right) {
+			returnX = x;
+			returnY = y;
+			return true;
+		}
+	}
+
+	if (angle < 90 || angle > 270) {
+		// Left side
+		x = left;
+		y = k * x + b;
+		if (startX < x && y > bottom && y < top) {
+			returnX = x;
+			returnY = y;
+			return true;
+		}
+	}
+	else {
+		// Right side
+		x = right;
+		y = k * x + b;
+		if (startX > x && y > bottom && y < top) {
+			returnX = x;
+			returnY = y;
+			return true;
+		}
+	}
+
+	// If we ended up here, ray doesn't cross the rectangle.
+	return false;
+}

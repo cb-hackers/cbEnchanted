@@ -3,7 +3,7 @@
 #include "precomp.h"
 class CBEnchanted;
 
-/** @defgroup customfunction Custom functions and commands
+/** @defgroup customfunctions Custom functions and commands
   */
 
 

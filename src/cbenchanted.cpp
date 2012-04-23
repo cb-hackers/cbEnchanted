@@ -8,6 +8,7 @@
 #include "mathinterface.h"
 #include "cbvariableholder.h"
 #include "mathoperations.h"
+#include "errorsystem.h"
 
 static CBEnchanted *cbInstance;
 
@@ -283,10 +284,37 @@ bool CBEnchanted::init(string file) {
 		}
 	}
 
-	if (!al_init()) return false;
+	// Initialize error system first, because we can.
+	errors = new ErrorSystem();
+
+	if (!al_init()) {
+		errors->createFatalError("Initialization error", "Failed to initialize Allegro");
+		return false;
+	}
 	eventQueue = al_create_event_queue();
+	if (!eventQueue) {
+		errors->createFatalError("Initialization error", "Failed to initialize event queue");
+		return false;
+	}
 	//Create screen
 	if (!caller.init()) return false;
+	if (!initializeGfx()) {
+		errors->createFatalError("Initialization error", "Failed to initialize graphics");
+		return false;
+	}
+	if (!initializeInputs()) {
+		errors->createFatalError("Initialization error", "Failed to initialize inputs");
+		return false;
+	}
+	if (!initializeSounds()){
+		errors->createFatalError("Initialization error", "Failed to initialize sounds");
+		return false;
+	}
+	if (!initializeFonts()) {
+		errors->createFatalError("Initialization error", "Failed to initialize fonts");
+		return false;
+	}
+
 	initialized = true;
 	INFO("Initialized");
 	return true;
@@ -952,25 +980,9 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 	code++;
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
-		case 1: {
-			const Any &r = popValue();
-
-			pushValue(-r);
-			break;
-		}
-		case 2: {
-			const Any &r = popValue();
-
-			pushValue(+r);
-			break;
-		}
-		case 3: {
-			const Any& r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l ^ r);
-			break;
-		}
+		case 1: Any::unaryMinus(&internalStack); break;
+		case 2: Any::unaryPlus(&internalStack); break;
+		case 3: Any::power(&internalStack); break;
 		case 4: Any::addition(&internalStack); break;
 		case 5: Any::subtraction(&internalStack); break;
 		case 6: Any::multiplication(&internalStack); break;
@@ -979,88 +991,29 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 		case 9: Any::shl(&internalStack); break;
 		case 10: Any::shr(&internalStack); break;
 		case 11: Any::sar(&internalStack); break;
-		case 12: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l < r);
-			break;
-		}
-		case 13: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l > r);
-			break;
-		}
-		case 14: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l == r);
-			break;
-		}
-		case 15: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l != r);
-			break;
-		}
-		case 16: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l <= r);
-			break;
-		}
-		case 17: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l >= r);
-			break;
-		}
-		case 18: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l && r);
-			break;
-		}
-		case 19: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue(l || r);
-			break;
-		}
-		case 20: {
-			const Any &r = popValue();
-			const Any &l = popValue();
-
-			pushValue((l || r) && !(r && l));
-			break;
-		}
-		case 21: {
-			const Any &r = popValue();
-
-			pushValue(!r);
-			break;
-		}
+		case 12: Any::lessThan(&internalStack); break;
+		case 13: Any::greaterThan(&internalStack); break;
+		case 14: Any::equal(&internalStack); break;
+		case 15: Any::notEqual(&internalStack); break;
+		case 16: Any::lessThanOrEqual(&internalStack); break;
+		case 17: Any::greaterThanOrEqual(&internalStack); break;
+		case 18: Any::AND(&internalStack); break;
+		case 19: Any::OR(&internalStack); break;
+		case 20: Any::XOR(&internalStack); break;
+		case 21: Any::NOT(&internalStack); break;
 		default:
 			FIXME("Unimplemented mathematical operation: %i", op);
 	}
 }
 
 /*
- * CBEnchanted::handleJump - Jump if last operation was true
+ * CBEnchanted::handleJump - Jump if last operation was false
  */
 FORCEINLINE void CBEnchanted::handleJump(void) {
 	uint32_t dest = *(uint32_t *)(code);
 	code += 4;
 
-	if (!popValue().getInt()) {
+	if (!popValue().toBool()) {
 		code = codeBase + dest;
 	}
 }
@@ -1176,11 +1129,25 @@ void CBEnchanted::functionRead(void) {
 }
 
 void CBEnchanted::functionConvertToInteger(void) {
-
+	void *typeMember = popValue().getTypePtr();
+	if (BUILD_32_BIT) {
+		pushValue(reinterpret_cast<int32_t>(typeMember));
+	}
+	else {
+		FIXME("ConvertToInteger() doesn't work yet on 64-bit builds!");
+		pushValue(0);
+	}
 }
 
 void CBEnchanted::functionConvertToType(void) {
-
+	int32_t typePtr = popValue().getInt();
+	if (BUILD_32_BIT) {
+		pushValue(reinterpret_cast<void*>(typePtr));
+	}
+	else {
+		FIXME("ConvertToType() doesn't work yet on 64-bit builds!");
+		pushValue(0);
+	}
 }
 
 FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)

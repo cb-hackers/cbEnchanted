@@ -6,22 +6,7 @@
 
 
 /** Class for tilemaps */
-class CBMap : public CBObject{
-		int32_t *layers[4];
-
-		int32_t tileCount;
-		int32_t mapWidth;
-		int32_t mapHeight;
-		int32_t tileWidth;
-		int32_t tileHeight;
-
-		uint8_t maskR, maskG, maskB;
-
-		int32_t *animLength;
-		int32_t *animSlowness;
-		float *currentFrame;
-		uint8_t layerShowing[2];
-
+class CBMap : public CBObject {
 	public:
 		CBMap();
 
@@ -54,6 +39,43 @@ class CBMap : public CBObject{
 		void setLayers(uint8_t back, uint8_t over);
 		void setTile(uint32_t tile, uint32_t length, uint32_t slowness);
 		bool updateObject(float timestep);
+
+		/** Does a raycast according to object position and angle and sets the raycast end point
+		 * to the referenced variables. */
+		bool rayCast(CBObject *obj, float &returnX, float &returnY);
+
+		/** Does a raycast between given coordinates (relative to tilemap) and sets the raycast end
+		 * point to the referenced variables. */
+		bool mapRayCast(float x1, float y1, float x2, float y2, float &returnX, float &returnY);
+
+		/** Checks whether there's a wall between two points (relative to tilemap). */
+		bool mapRayCast(float x1, float y1, float x2, float y2);
+
+		/** Converts tilemap based coordinates to world coordinates */
+		void mapCoordinatesToWorldCoordinates(float &x, float &y);
+		/** Converts world coordinates to tilemap based coordinates */
+		void worldCoordinatesToMapCoordinates(float &x, float &y);
+	private:
+		int32_t *layers[4];
+
+		int32_t tileCount;
+		int32_t mapWidth;
+		int32_t mapHeight;
+		int32_t tileWidth;
+		int32_t tileHeight;
+
+		uint8_t maskR, maskG, maskB;
+
+		int32_t *animLength;
+		int32_t *animSlowness;
+		float *currentFrame;
+		uint8_t layerShowing[2];
+
+		/** Draws debug box for raycasting */
+		void drawRayCastDebugBox(float tileX, float tileY);
+
+		/** Are tile coordinates out of map bounds */
+		bool outOfBounds(int tileX, int tileY);
 };
 
 

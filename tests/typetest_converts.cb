@@ -1,0 +1,29 @@
+Type TestType
+    Field field1
+    Field field2#
+    Field field3$
+EndType
+
+ptr.TestType = New(TestType)
+ptr\field1 = 1337
+ptr\field2 = 105.25
+ptr\field3 = "Awesome test"
+
+Text 0, 0,  "Type pointer contains these values:"
+Text 0, 13, "  field1 = " + ptr\field1
+Text 0, 26, "  field2 = " + ptr\field2
+Text 0, 39, "  field3 = " + ptr\field3
+
+testFunc(ConvertToInteger(ptr))
+
+DrawScreen
+WaitKey
+End
+
+Function testFunc(typePtr As Integer)
+    Text 0, 52, "Converting to type from int " + typePtr
+    ptr.TestType = ConvertToType(typePtr)
+    Text 0, 65, "  field1 = " + ptr\field1
+    Text 0, 78, "  field2 = " + ptr\field2
+    Text 0, 91, "  field3 = " + ptr\field3
+EndFunction 

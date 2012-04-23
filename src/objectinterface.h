@@ -104,6 +104,18 @@ class ObjectInterface {
 
 		/** Collision checks are stored in this vector */
 		std::vector<CollisionCheck*> collisionChecks;
+
+		/** Pickable objects are stored in this vector */
+		std::vector<CBObject*> pickableObjects;
+
+		/** ID of the last object that was picked. */
+		int32_t lastPickedObj;
+		/** ObjectPick X-coordinate */
+		float lastPickedX;
+		/** ObjectPick Y-coordinate */
+		float lastPickedY;
+		/** ObjectPick angle */
+		float lastPickedAngle;
 };
 
 #endif

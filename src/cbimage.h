@@ -24,7 +24,8 @@ class CBImage
 		void maskImage(const ALLEGRO_COLOR &c){maskColor = c;}
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
 		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begining,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begining;animLength = animL;}
-
+		void resize(int32_t w, int32_t h);
+		CBImage *clone();
 		static void initMaskShader();
 	private:
 		float hotspotX,hotspotY;

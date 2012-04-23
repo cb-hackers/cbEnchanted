@@ -57,6 +57,7 @@ const type_info &Any::typeInfo() const {
 		case Int: return typeid(int32_t);
 		case Float: return typeid(float);
 		case String: return typeid(ISString);
+		case TypePtr: return typeid(void*);
 		default: return typeid(void);
 	}
 }
@@ -88,7 +89,7 @@ int32_t Any::toInt() const {
 		return getInt();
 	}
 	if (type() == Any::Float) {
-		return ((int32_t)getFloat());
+		return ((int32_t)(getFloat()+0.5f));
 	}
 	if (type() == Any::String) {
 		if (dString == 0) return 0;
@@ -342,7 +343,7 @@ Any Any::operator << (const Any &r) const {
 }
 
 int32_t Any::sar (const Any &l, const Any &r) {
-	return l.toInt() >> l.toInt();
+	return l.toInt() >> r.toInt();
 	return 0;
 }
 

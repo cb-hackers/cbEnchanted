@@ -32,7 +32,7 @@ const char *screenGammaFragmentShaderCode =
 
 GfxInterface::GfxInterface() :
 	windowTitle(""),
-	window(),
+	window(0),
 	drawDrawCommandToWorld(false),
 	drawImageToWorld(false),
 	drawTextToWorld(false),
@@ -125,6 +125,7 @@ void GfxInterface::drawScreen(uint32_t width, uint32_t height, uint32_t depth, u
 		registerWindow();
 	}
 	windowRenderTarget->swapBitmap(al_get_backbuffer(window));
+	windowRenderTarget->clear(al_map_rgba_f(0,0,0,0));
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -181,6 +182,8 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
 			break;
 		}
 	}
@@ -194,6 +197,7 @@ void GfxInterface::commandDrawScreen(void) {
 		lastSecTimer = clock();
 	}
 	cb->renderAddTexts(*windowRenderTarget);
+	cb->updateAudio();
 	if (cls) {
 		al_flip_display();
 		windowRenderTarget->clear(clearColor);
