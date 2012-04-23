@@ -1,5 +1,5 @@
 #include "cbmap.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "precomp.h"
 
 /** Constructs a new CBMap and calls the constructor for CBObject */
@@ -195,8 +195,8 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 		return;
 	}
 
-	float camX = CBEnchanted::instance()->getCameraX() - posX;
-	float camY = CBEnchanted::instance()->getCameraY() - posY;
+	float camX = InterfaceSystem::instance()->getCameraX() - posX;
+	float camY = InterfaceSystem::instance()->getCameraY() - posY;
 
 
 	int32_t piirto_x = camX + getSizeX() / 2 - target.width() / 2;

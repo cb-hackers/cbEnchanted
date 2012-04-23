@@ -36,6 +36,7 @@ class InterfaceSystem:
 	public:
 		InterfaceSystem();
 		bool init();
+		static InterfaceSystem *instance();
 };
 
 #endif // INTERFACESYSTEM_H

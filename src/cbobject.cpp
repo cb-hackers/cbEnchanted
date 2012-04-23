@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "cbobject.h"
 #include <math.h>
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 
 static bool defaultVisible = true;
 
@@ -309,8 +309,8 @@ void CBObject::turnObject(float speed) {
  * @param target Target to render to
  */
 void CBObject::render(RenderTarget &target) {
-	float camX = CBEnchanted::instance()->getCameraX();
-	float camY = CBEnchanted::instance()->getCameraY();
+	float camX = InterfaceSystem::instance()->getCameraX();
+	float camY = InterfaceSystem::instance()->getCameraY();
 	if (visible && painted) {
 		if (isFloor) {
 			//Drawing floor objects

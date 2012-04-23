@@ -48,7 +48,7 @@ class FileInterface {
 		void functionReadString(void);
 		void functionReadLine(void);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 
 		int32_t rcount;
 		int32_t idC;

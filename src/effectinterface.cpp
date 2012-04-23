@@ -1,13 +1,13 @@
 #include "precomp.h"
 #include "effectinterface.h"
 #include "debug.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "cbimage.h"
 #include "cbparticleemitter.h"
 
 
 EffectInterface::EffectInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 EffectInterface::~EffectInterface() {

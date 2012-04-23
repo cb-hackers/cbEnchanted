@@ -24,7 +24,7 @@ class MemInterface {
 		void functionPeekFloat(void);
 		uint8_t* getMemblock(int32_t id) { return memblockMap[id];}
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		std::map<int32_t, uint8_t*> memblockMap;
 
 		int32_t nextId() const {

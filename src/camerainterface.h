@@ -1,6 +1,6 @@
 #ifndef CAMERAINTERFACE_H
 #define CAMERAINTERFACE_H
-class CBEnchanted;
+class InterfaceSystem;
 #include "precomp.h"
 
 class CameraInterface {
@@ -30,7 +30,7 @@ class CameraInterface {
 		float worldCoordToScreenX(float a);
 		float worldCoordToScreenY(float a);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		float cameraX;
 		float cameraY;
 		float cameraZ;

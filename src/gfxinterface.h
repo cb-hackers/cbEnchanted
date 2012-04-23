@@ -68,7 +68,7 @@ private:
 		void unregisterWindow();
 		void resizeTempBitmap(int32_t w, int32_t h);
 
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		float windowScaleX,windowScaleY;
 		string windowTitle;
 		ALLEGRO_DISPLAY *window;

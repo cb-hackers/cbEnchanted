@@ -92,7 +92,7 @@ class ObjectInterface {
 		CBObject *lastFloorObject;
 		CBObject *firstFloorObject;
 		int64_t lastUpdate;
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		std::map<int32_t,CBObject*> objectMap;
 		std::map<int32_t, CBObject*>::iterator iter;
 		//std::map<int32_t, CBObject*>::iterator;

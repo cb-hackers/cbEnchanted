@@ -32,7 +32,7 @@ class ImageInterface {
 
 		CBImage *getImage(int32_t id) { CBImage *img = cbImages[id];assert(img);return img; }
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		int32_t idCounter;
 		int32_t nextId();
 		map <int32_t, CBImage*> cbImages;

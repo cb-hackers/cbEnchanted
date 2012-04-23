@@ -1,5 +1,5 @@
 #include "customfunctionhandler.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "customfunctiondefines.h"
 #include "customfunctions.h"
 CustomFunctionHandler::CustomFunctionHandler() {

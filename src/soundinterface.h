@@ -33,7 +33,7 @@ class SoundInterface {
 		std::map<int32_t, CBSound*> sounds;
 		std::map<int32_t, CBChannel*> channels;
 
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		ALLEGRO_MIXER* cbMixer;
 };
 

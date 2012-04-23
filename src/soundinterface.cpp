@@ -1,11 +1,11 @@
 #include "precomp.h"
 #include "soundinterface.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "any.h"
 
 
 SoundInterface::SoundInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 SoundInterface::~SoundInterface() {

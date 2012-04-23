@@ -3,7 +3,7 @@
 #include <cmath>
 #include "cbmap.h"
 #include "debug.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "rendertarget.h"
 
 /** An empty constructor */

@@ -1,5 +1,5 @@
 #include "errorsystem.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "debug.h"
 #include <allegro5/allegro_native_dialog.h>
 

@@ -46,7 +46,7 @@ class InputInterface {
 
 		void updateInputs();
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		int32_t cbKeyMap[222];
 		ALLEGRO_KEYBOARD_STATE *currentKeyboardState;
 		ALLEGRO_KEYBOARD_STATE *lastKeyboardState;

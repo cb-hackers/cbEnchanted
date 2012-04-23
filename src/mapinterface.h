@@ -25,7 +25,7 @@ class MapInterface {
 
 		CBMap *getTileMap(){return tileMap;}
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		CBMap *tileMap;
 
 

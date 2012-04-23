@@ -1,5 +1,5 @@
 #include "cbimage.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 
 bool CBImage::useARBShaders;
 GLuint CBImage::maskShaderProgram;

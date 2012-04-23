@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "gfxinterface.h"
 #include "objectinterface.h"
 #ifdef WIN32
@@ -39,7 +39,7 @@ GfxInterface::GfxInterface() :
 	gameDrawn(false),
 	gameUpdated(false)
 {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
 	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;
@@ -182,8 +182,9 @@ void GfxInterface::commandDrawScreen(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
-			case ALLEGRO_EVENT_KEY_DOWN:
-				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
+// TODO: Safe-exit
+//			case ALLEGRO_EVENT_KEY_DOWN:
+//				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
 			break;
 		}
 	}

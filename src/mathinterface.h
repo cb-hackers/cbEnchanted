@@ -34,7 +34,7 @@ class MathInterface {
 		void functionDistance(void);
 		void functionBoxOverlap(void);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 };
 
 #endif

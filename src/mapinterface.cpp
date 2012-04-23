@@ -3,7 +3,7 @@
 #include "mapinterface.h"
 #include "cbobject.h"
 #include "debug.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 
 MapInterface::MapInterface() {
 	cb = static_cast<CBEnchanted*>(this);

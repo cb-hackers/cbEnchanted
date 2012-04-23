@@ -1,9 +1,9 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "inputinterface.h"
 
 InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0){
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 	currentKeyboardState = new ALLEGRO_KEYBOARD_STATE;
 	lastKeyboardState = new ALLEGRO_KEYBOARD_STATE;
 	currentMouseState = new ALLEGRO_MOUSE_STATE;

@@ -1,11 +1,11 @@
 #include "precomp.h"
 #include "imageinterface.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "cbimage.h"
 
 
 ImageInterface::ImageInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 ImageInterface::~ImageInterface() {

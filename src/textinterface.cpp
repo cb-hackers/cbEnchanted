@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "textinterface.h"
 #ifdef WIN32
 	#include <Windows.h>
@@ -19,7 +19,7 @@
 #include <iostream>
 
 TextInterface::TextInterface() : locationX(0), locationY(0) {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 TextInterface::~TextInterface() {

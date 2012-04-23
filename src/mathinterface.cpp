@@ -1,11 +1,11 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "mathinterface.h"
 #include <math.h>
 #include "util.h"
 
 MathInterface::MathInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 void MathInterface::commandRandomize(void) {

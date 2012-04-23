@@ -1,5 +1,5 @@
 #include "customfunctions.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 
 /** @addtogroup customfunctions
  * @{

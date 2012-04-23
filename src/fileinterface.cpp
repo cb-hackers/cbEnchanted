@@ -1,9 +1,9 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "fileinterface.h"
 
 FileInterface::FileInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 FileInterface::~FileInterface() {

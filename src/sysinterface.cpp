@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "gfxinterface.h"
 #include "sysinterface.h"
 #include <time.h>
@@ -14,7 +14,7 @@
 #include "util.h"
 
 SysInterface::SysInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 void SysInterface::commandWait(void) {

@@ -1,10 +1,10 @@
 #include "precomp.h"
 #include "camerainterface.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "cbobject.h"
 
 CameraInterface::CameraInterface(): cameraX(0), cameraY(0), cameraAngle(0) {
-	cb = static_cast <CBEnchanted *> (this);
+	sys = static_cast <InterfaceSystem *> (this);
 }
 
 CameraInterface::~CameraInterface() {
@@ -12,16 +12,16 @@ CameraInterface::~CameraInterface() {
 }
 
 void CameraInterface::commandCloneCameraPosition(void) {
-	int32_t id = cb->popValue().getInt();
+	int32_t id = sys->popValue().getInt();
 
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = sys->getObject(id);
 	cameraX = obj->getX();
 	cameraY = obj->getY();
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
-	int32_t id = cb->popValue().getInt();
-	CBObject *obj = cb->getObject(id);
+	int32_t id = sys->popValue().getInt();
+	CBObject *obj = sys->getObject(id);
 	cameraAngle = obj->getAngle();
 }
 
@@ -34,63 +34,63 @@ void CameraInterface::commandCameraPick(void) {
 }
 
 void CameraInterface::commandPointCamera(void) {
-	int32_t id = cb->popValue().toInt();
-	CBObject *obj = cb->getObject(id);
+	int32_t id = sys->popValue().toInt();
+	CBObject *obj = sys->getObject(id);
 	cameraAngle = (M_PI - atan2f(cameraY - obj->getY(), cameraX - obj->getY())) / M_PI * 180.0;
 }
 
 void CameraInterface::commandTurnCamera(void) {
-	cameraAngle += cb->popValue().toFloat();
+	cameraAngle += sys->popValue().toFloat();
 }
 
 void CameraInterface::commandRotateCamera(void) {
-	cameraAngle = cb->popValue().toFloat();
+	cameraAngle = sys->popValue().toFloat();
 }
 
 void CameraInterface::commandMoveCamera(void) {
-	cameraZ += cb->popValue().toFloat();
-	float fwrd = cb->popValue().toFloat();
-	float right = cb->popValue().toFloat();
+	cameraZ += sys->popValue().toFloat();
+	float fwrd = sys->popValue().toFloat();
+	float right = sys->popValue().toFloat();
 
 	cameraX += cosf(cameraAngle * M_PI / 180.0) * fwrd;
 	cameraY += sinf(cameraAngle * M_PI / 180.0) * fwrd;
 }
 
 void CameraInterface::commandTranslateCamera(void) {
-	cameraZ += cb->popValue().toFloat();
-	cameraY += cb->popValue().toFloat();
-	cameraX += cb->popValue().toFloat();
+	cameraZ += sys->popValue().toFloat();
+	cameraY += sys->popValue().toFloat();
+	cameraX += sys->popValue().toFloat();
 }
 
 void CameraInterface::commandPositionCamera(void) {
-	cameraZ = cb->popValue().toFloat();
-	cameraY = cb->popValue().toFloat();
-	cameraX = cb->popValue().toFloat();
+	cameraZ = sys->popValue().toFloat();
+	cameraY = sys->popValue().toFloat();
+	cameraX = sys->popValue().toFloat();
 }
 
 void CameraInterface::functionCameraX(void) {
-	cb->pushValue(cameraX);
+	sys->pushValue(cameraX);
 }
 
 void CameraInterface::functionCameraY(void) {
-	cb->pushValue(cameraY);
+	sys->pushValue(cameraY);
 }
 
 void CameraInterface::functionCameraAngle(void) {
-	cb->pushValue(cameraAngle);
+	sys->pushValue(cameraAngle);
 }
 float CameraInterface::screenCoordToWorldX(float a) {
-	return a - al_get_display_width(cb->getWindow()) *0.5f + cameraX;
+	return a - al_get_display_width(sys->getWindow()) *0.5f + cameraX;
 }
 
 float CameraInterface::screenCoordToWorldY(float a) {
-	return -a + al_get_display_height(cb->getWindow()) / 2.0f + cameraY;
+	return -a + al_get_display_height(sys->getWindow()) / 2.0f + cameraY;
 }
 
 float CameraInterface::worldCoordToScreenX(float a) {
-	return a + al_get_display_width(cb->getWindow()) / 2.0f - cameraX;
+	return a + al_get_display_width(sys->getWindow()) / 2.0f - cameraX;
 }
 
 float CameraInterface::worldCoordToScreenY(float a) {
-	return -a + al_get_display_height(cb->getWindow()) / 2.0f + cameraY;
+	return -a + al_get_display_height(sys->getWindow()) / 2.0f + cameraY;
 }

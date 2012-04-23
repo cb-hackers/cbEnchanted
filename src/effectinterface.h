@@ -19,7 +19,7 @@ class EffectInterface {
 		void deleteParticleEmitter(CBParticleEmitter *p);
 		void updateRogueParticles(void);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		vector<CBParticleEmitter*> rogueEmitters;
 };
 

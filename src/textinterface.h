@@ -37,7 +37,7 @@ class TextInterface {
 		bool initializeFonts();
 		ALLEGRO_FONT *getCurrentFont() { return currentFont; }
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 		map<int32_t, ALLEGRO_FONT*> fontMap;
 		ALLEGRO_FONT *currentFont;
 		int32_t locationX;

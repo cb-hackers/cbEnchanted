@@ -2,7 +2,7 @@
 #include "precomp.h"
 #include "debug.h"
 #include "cbimage.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "mapinterface.h"
 #include "gfxinterface.h"
 #include "util.h"

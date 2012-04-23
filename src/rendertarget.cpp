@@ -1,5 +1,5 @@
 #include "rendertarget.h"
-#include "cbenchanted.h"
+#include "interfacesystem.h"
 #include "cbimage.h"
 
 int32_t renderTargetIdCounter = 0;
@@ -178,8 +178,8 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 
 FORCEINLINE void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
-		x = x+ al_get_display_width(CBEnchanted::instance()->getWindow()) / 2.0f - CBEnchanted::instance()->getCameraX();
-		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraY();
+		x = x+ al_get_display_width(InterfaceSystem::instance()->getWindow()) / 2.0f - InterfaceSystem::instance()->getCameraX();
+		y = -y + al_get_display_height(InterfaceSystem::instance()->getWindow()) / 2.0f + InterfaceSystem::instance()->getCameraY();
 	}
 }
 

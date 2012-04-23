@@ -1,6 +1,9 @@
 #include "interfacesystem.h"
+InterfaceSystem *interfaceSystemInstance  = 0;
 
 InterfaceSystem::InterfaceSystem() {
+	assert(interfaceSystemInstance == 0 && "Multiple InterfaceSystems");
+	interfaceSystemInstance = this;
 }
 
 bool InterfaceSystem::init() {
@@ -20,4 +23,8 @@ bool InterfaceSystem::init() {
 		return false;
 	}
 	return true;
+}
+
+InterfaceSystem *InterfaceSystem::instance() {
+	return interfaceSystemInstance;
 }

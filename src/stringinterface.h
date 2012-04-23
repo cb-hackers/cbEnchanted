@@ -31,7 +31,7 @@ class StringInterface {
 		void functionCountWords(void);
 		void functionGetWord(void);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 
 };
 

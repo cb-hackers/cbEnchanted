@@ -29,7 +29,7 @@ class SysInterface {
 		void functionFPS(void);
 		void functionCrc32(void);
 	private:
-		CBEnchanted *cb;
+		InterfaceSystem *sys;
 };
 
 #endif
