@@ -413,8 +413,10 @@ void InterfaceCaller::commandPutPixel2(void) {
 	// ...
 }
 
+/** Math: Randomize() */
 void InterfaceCaller::commandRandomize(void) {
-	// ...
+	int32_t seed = stack->popValue().getInt();
+	system->randomize(seed);
 }
 
 void InterfaceCaller::commandReadByte(void) {
@@ -622,13 +624,21 @@ void InterfaceCaller::commandWriteString(void) {
 }
 
 
-
+/** Math: Abs() */
 void InterfaceCaller::functionAbs(void) {
-	// ...
+	Any v = stack->popValue();
+
+	if (v.type() == Any::Float) {
+		stack->pushValue(system->abs(v.getFloat()));
+		return;
+	}
+	stack->pushValue(system->abs(v.getInt()));
 }
 
+/** Math: ACos() */
 void InterfaceCaller::functionACos(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->acos(v));
 }
 
 void InterfaceCaller::functionAnimationHeight(void) {
@@ -647,20 +657,34 @@ void InterfaceCaller::functionAsc(void) {
 	// ...
 }
 
+/** Math: ASin() */
 void InterfaceCaller::functionASin(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->asin(v));
 }
 
+/** Math: ATan() */
 void InterfaceCaller::functionATan(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->atan(v));
 }
 
 void InterfaceCaller::functionBin(void) {
 	// ...
 }
 
+/** Math: BoxOverlap() */
 void InterfaceCaller::functionBoxOverlap(void) {
-	// ...
+	float h2 = stack->popValue().toFloat() * 0.5f;
+	float w2 = stack->popValue().toFloat() * 0.5f;
+	float y2 = stack->popValue().toFloat();
+	float x2 = stack->popValue().toFloat();
+	float h1 = stack->popValue().toFloat() * 0.5f;
+	float w1 = stack->popValue().toFloat() * 0.5f;
+	float y1 = stack->popValue().toFloat();
+	float x1 = stack->popValue().toFloat();
+
+	stack->pushValue(system->boxOverlap(x1, y1, w1, h1, x2, y2, w2, h2) ? 1 : 0);
 }
 
 void InterfaceCaller::functionCameraAngle(void) {
@@ -703,8 +727,10 @@ void InterfaceCaller::functionCommandLine(void) {
 	// ...
 }
 
+/** Math: Cos() */
 void InterfaceCaller::functionCos(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->cos(v));
 }
 
 void InterfaceCaller::functionCountCollisions(void) {
@@ -723,20 +749,35 @@ void InterfaceCaller::functionCurrentDir(void) {
 	// ...
 }
 
+/** Math: CurveAngle() */
 void InterfaceCaller::functionCurveAngle(void) {
-	// ...
+	float smoothness = stack->popValue().toFloat();
+	float oldA = stack->popValue().toFloat();
+	float newA = stack->popValue().toFloat();
+
+	stack->pushValue(system->curveAngle(newA, oldA, smoothness));
 }
 
+/** Math: CurveValue() */
 void InterfaceCaller::functionCurveValue(void) {
-	// ...
+	float smoothness = cb->popValue().toFloat();
+	float oldV = cb->popValue().toFloat();
+	float newV = cb->popValue().toFloat();
+
+	stack->pushValue(system->curveValue(newV, oldV, smoothness));
 }
 
 void InterfaceCaller::functionDate(void) {
 	// ...
 }
 
+/** Math: Distance() */
 void InterfaceCaller::functionDistance(void) {
-	// ...
+	float y2 = stack->popValue().toFloat();
+	float x2 = stack->popValue().toFloat();
+	float y1 = stack->popValue().toFloat();
+	float x1 = stack->popValue().toFloat();
+	stack->pushValue(system->distance(x1, y1, x2, y2));
 }
 
 void InterfaceCaller::functionDistance2(void) {
@@ -775,16 +816,23 @@ void InterfaceCaller::functionFlip(void) {
 	// ...
 }
 
+/** Math: Float() */
 void InterfaceCaller::functionFloat(void) {
-	// ...
+	stack->pushValue(stack->popValue().toFloat());
 }
 
 void InterfaceCaller::functionFPS(void) {
 	// ...
 }
 
+/** Math: GetAngle() */
 void InterfaceCaller::functionGetAngle(void) {
-	// ...
+	float y2 = stack->popValue().toFloat();
+	float x2 = stack->popValue().toFloat();
+	float y1 = stack->popValue().toFloat();
+	float x1 = stack->popValue().toFloat();
+
+	stack->pushValue(system->getAngle(x1, y1, x2, y2));
 }
 
 void InterfaceCaller::functionGetAngle2(void) {
@@ -867,8 +915,9 @@ void InterfaceCaller::functionInStr(void) {
 	// ...
 }
 
+/** Math: Int() */
 void InterfaceCaller::functionInt(void) {
-	// ...
+	stack->pushValue(stack->popValue().toInt());
 }
 
 void InterfaceCaller::functionIsDirectory(void) {
@@ -927,12 +976,16 @@ void InterfaceCaller::functionLoadSound(void) {
 	// ...
 }
 
+/** Math: Log() */
 void InterfaceCaller::functionLog(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->log(v));
 }
 
+/** Math: Log10() */
 void InterfaceCaller::functionLog10(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->log10(v));
 }
 
 void InterfaceCaller::functionLower(void) {
@@ -975,8 +1028,11 @@ void InterfaceCaller::functionMapWidth(void) {
 	// ...
 }
 
+/** Math: Max() */
 void InterfaceCaller::functionMax(void) {
-	// ...
+	Any b = stack->popValue();
+	Any a = stack->popValue();
+	stack->pushValue((a > b) ? a : b);
 }
 
 void InterfaceCaller::functionMEMBlockSize(void) {
@@ -987,8 +1043,11 @@ void InterfaceCaller::functionMid(void) {
 	// ...
 }
 
+/** Math: Min() */
 void InterfaceCaller::functionMin(void) {
-	// ...
+	Any b = stack->popValue();
+	Any a = stack->popValue();
+	stack->pushValue((a < b) ? a : b);
 }
 
 void InterfaceCaller::functionMouseDown(void) {
@@ -1143,8 +1202,12 @@ void InterfaceCaller::functionPlaySound(void) {
 	// ...
 }
 
+/** Math: Rand() */
 void InterfaceCaller::functionRand(void) {
-	// ...
+	int32_t high = stack->popValue().toInt();
+	int32_t low = stack->popValue().toInt();
+
+	stack->pushValue(system->rand(low, high));
 }
 
 void InterfaceCaller::functionReadByte(void) {
@@ -1183,16 +1246,24 @@ void InterfaceCaller::functionRightKey(void) {
 	// ...
 }
 
+/** Math: Rnd() */
 void InterfaceCaller::functionRnd(void) {
-	// ...
+	float high = stack->popValue().toFloat();
+	float low = stack->popValue().toFloat();
+
+	stack->pushValue(system->rand(low, high));
 }
 
+/** Math: RoundDown() */
 void InterfaceCaller::functionRoundDown(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->roundDown(v));
 }
 
+/** Math: RoundUp() */
 void InterfaceCaller::functionRoundUp(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->roundUp(v));
 }
 
 void InterfaceCaller::functionRSet(void) {
@@ -1215,16 +1286,20 @@ void InterfaceCaller::functionScreenWidth(void) {
 	// ...
 }
 
+/** Math: Sin() */
 void InterfaceCaller::functionSin(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->sin(v));
 }
 
 void InterfaceCaller::functionSoundPlaying(void) {
 	// ...
 }
 
+/** Math: Sqrt() */
 void InterfaceCaller::functionSqrt(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->sqrt(v));
 }
 
 void InterfaceCaller::functionStr(void) {
@@ -1247,8 +1322,10 @@ void InterfaceCaller::functionStrRemove(void) {
 	// ...
 }
 
+/** Math: Tan() */
 void InterfaceCaller::functionTan(void) {
-	// ...
+	float v = stack->popValue().toFloat();
+	stack->pushValue(system->tan(v));
 }
 
 void InterfaceCaller::functionTextHeight(void) {
@@ -1287,6 +1364,14 @@ void InterfaceCaller::functionWaitMouse(void) {
 	// ...
 }
 
+/** Math: WrapAngle() */
 void InterfaceCaller::functionWrapAngle(void) {
-	// ...
+	Any a = stack->popValue();
+	if (a.type() == Any::Float) {
+		stack->pushValue(system->wrapAngle(a.getFloat()));
+	}
+	else if (a.type() == Any::Int) {
+		stack->pushValue(system->wrapAngle(a.getInt()));
+	}
+	stack->pushValue(a);
 }

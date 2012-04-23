@@ -1,222 +1,125 @@
 #include "precomp.h"
-#include "interfacesystem.h"
 #include "mathinterface.h"
 #include <math.h>
 #include "util.h"
 
 MathInterface::MathInterface() {
-	sys = static_cast <InterfaceSystem *> (this);
+	// Nothing needs constructing
 }
 
-void MathInterface::commandRandomize(void) {
-	srand(cb->popValue().getInt());
+void MathInterface::randomize(int32_t seed) {
+	srand(seed);
 }
 
-void MathInterface::functionInt(void) {
-	int v = cb->popValue().toInt();
-	cb->pushValue(v);
+
+int32_t MathInterface::roundUp(float value) {
+	return int32_t(ceil(value));
 }
 
-void MathInterface::functionFloat(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue(v);
+int32_t MathInterface::roundDown(float value) {
+	return int32_t(floor(value));
 }
 
-void MathInterface::functionRoundUp(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue((int32_t)ceil(v));
+int32_t MathInterface::abs(int32_t value) {
+	return abs(value);
 }
 
-void MathInterface::functionRoundDown(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue((int32_t)floor(v));
+float MathInterface::abs(float value) {
+	return fabs(value);
 }
 
-void MathInterface::functionAbs(void)
-{
-	Any v = cb->popValue();
+float MathInterface::sqrt(float value) {
+	return sqrt(value);
+}
 
-	if (v.type() == Any::Float)
-	{
-		cb->pushValue(abs(v.getFloat()));
-		return;
+float MathInterface::sin(float angle) {
+	return sin(angle / 180.0f * M_PI);
+}
+
+float MathInterface::cos(float angle) {
+	return cos(angle / 180.0f * M_PI);
+}
+
+float MathInterface::tan(float angle) {
+	return tan(angle / 180.0f * M_PI);
+}
+
+float MathInterface::asin(float value) {
+	return asinf(value) / M_PI * 180.0f;
+}
+
+float MathInterface::acos(float value) {
+	return acosf(value) / M_PI * 180.0f;
+}
+
+float MathInterface::atan(float value) {
+	return atanf(value) / M_PI * 180.0f;
+}
+
+float MathInterface::getAngle(float x1, float y1, float x2, float y2) {
+	return (M_PI - atan2f(y1 - y2, x1 - x2)) / M_PI * 180.0f;
+}
+
+float MathInterface::log(float value) {
+	return logf(value);
+}
+
+float MathInterface::log10(float value) {
+	return log10f(v);
+}
+
+float MathInterface::rand(float low, float high) {
+	if (high < low) {
+		return randf() * low;
 	}
-	if (v.type() == Any::Int) //TODO: Check if necessary
-	{
-		cb->pushValue(abs(v.getInt()));
-	}
-	cb->pushValue(v);
+	return low + (randf() * (high - low));
 }
 
-void MathInterface::functionSqrt(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue(sqrt(v));
-}
-
-void MathInterface::functionSin(void) {
-	float angle = cb->popValue().toFloat();
-
-	cb->pushValue(float(sin(angle / 180.0 * M_PI)));
-}
-
-void MathInterface::functionCos(void) {
-	float angle = cb->popValue().toFloat();
-
-	cb->pushValue(float(cos(angle / 180.0 * M_PI)));
-}
-
-void MathInterface::functionTan(void) {
-	float angle = cb->popValue().toFloat();
-	cb->pushValue(float(tan(angle / 180.0 * M_PI)));
-}
-
-void MathInterface::functionASin(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(asinf(v) / M_PI * 180.0));
-}
-
-void MathInterface::functionACos(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(acosf(v) / M_PI * 180.0));
-}
-
-void MathInterface::functionATan(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue((float)(atanf(v) / M_PI * 180.0));
-}
-
-void MathInterface::functionGetAngle(void) {
-	float y2 = cb->popValue().toFloat();
-	float x2 = cb->popValue().toFloat();
-	float y1 = cb->popValue().toFloat();
-	float x1 = cb->popValue().toFloat();
-	cb->pushValue((float)((M_PI - atan2f(y1 - y2, x1 - x2)) / M_PI * 180.0));
-}
-
-void MathInterface::functionLog(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue(logf(v));
-}
-
-void MathInterface::functionLog10(void) {
-	float v = cb->popValue().toFloat();
-	cb->pushValue(log10f(v));
-}
-
-void MathInterface::functionRnd(void) {
-	float high = cb->popValue().toFloat();
-	float low = cb->popValue().toFloat();
-	if (high < low) {cb->pushValue(randf()*low);return;}
-	cb->pushValue(low + (randf() * (high - low)));
-}
-
-void MathInterface::functionRand(void) {
-	int32_t high = cb->popValue().toInt();
-	int32_t low = cb->popValue().toInt();
+int32_t MathInterface::rand(int32_t low, int32_t high) {
 	if (high < low) {cb->pushValue(rand(low)); return;}
 	cb->pushValue(low + rand(high - low));
 }
 
-void MathInterface::functionMin(void) {
-	Any b = cb->popValue();
-	Any a = cb->popValue();
-	cb->pushValue( (a < b) ? a : b);
+float MathInterface::curveValue(float newV, float oldV, float smoothness) {
+	return oldV + (newV - oldV) / smoothness;
 }
 
-void MathInterface::functionMax(void) {
-	Any b = cb->popValue();
-	Any a = cb->popValue();
-	cb->pushValue( (a > b) ? a : b);
-}
-
-void MathInterface::functionCurveValue(void) {
-	float smoothness = cb->popValue().toFloat();
-	float oldV = cb->popValue().toFloat();
-	float newV = cb->popValue().toFloat();
-	cb->pushValue(oldV + (newV - oldV) / smoothness);
-}
-
-inline float wrapAngle(float v) {
-	while(v > 360.0f) {
-		v -= 360.0f;
-	}
-	while (v < 0.0f)
-	{
-		v += 360.0f;
-	}
-	return v;
-}
-
-void MathInterface::functionCurveAngle(void) {
-	float smoothness = cb->popValue().toFloat();
-	float oldA = cb->popValue().toFloat();
-	float newA = cb->popValue().toFloat();
+float MathInterface::curveAngle(float newA, float oldA, float smoothness) {
 	oldA = wrapAngle(oldA);
 	newA = wrapAngle(newA);
 
-	if (abs(newA - oldA) < (360.0 - newA) + oldA)
-	{
-		cb->pushValue((oldA + (newA - oldA) / smoothness));
+	if (abs(newA - oldA) < (360.0 - newA) + oldA) {
+		return oldA + (newA - oldA) / smoothness;
 	}
-	else
-	{
-		cb->pushValue((oldA - ((360.0f - newA) + oldA) / smoothness) + 360.0f);
+	else {
+		return (oldA - ((360.0f - newA) + oldA) / smoothness) + 360.0f;
 	}
-
 }
 
-void MathInterface::functionWrapAngle(void) {
-	Any a = cb->popValue();
-	if (a.type() == Any::Float)
-	{
-		float angle = a.getFloat();
-		while (angle > 360.0) {
-			angle -= 360.0;
-		}
-		while (angle < 0.0) {
-			angle += 360.0;
-		}
-		cb->pushValue(angle);
-		return;
+float MathInterface::wrapAngle(float angle) {
+	while (angle > 360.0f) {
+		angle -= 360.0f;
 	}
-	if (a.type() == Any::Int)
-	{
-		int32_t angle = a.getInt();
-		while (angle > 360) {
-			angle -= 360;
-		}
-		while (angle < 0) {
-			angle += 360;
-		}
-		cb->pushValue(angle);
-		return;
+	while (angle < 0.0f) {
+		angle += 360.0f;
 	}
-	cb->pushValue(a);
+	return angle;
 }
 
-
-//Helper
-inline double square(float num) {
-	return (double)num * (double)num;
+int32_t MathInterface::wrapAngle(int32_t angle) {
+	while (angle > 360) {
+		angle -= 360;
+	}
+	while (angle < 0) {
+		angle += 360;
+	}
+	return angle;
 }
 
-void MathInterface::functionDistance(void) {
-	float y2 = cb->popValue().toFloat();
-	float x2 = cb->popValue().toFloat();
-	float y1 = cb->popValue().toFloat();
-	float x1 = cb->popValue().toFloat();
-	cb->pushValue((float)sqrt(square(x2-x1)+square(y2-y1)));
+float MathInterface::distance(float x1, float y1, float x2, float y2) {
+	return float(sqrt(square(x2 - x1) + square(y2 - y1)));
 }
 
-void MathInterface::functionBoxOverlap(void) {
-	float height2h = cb->popValue().toFloat() * 0.5f;
-	float width2h = cb->popValue().toFloat() * 0.5f;
-	float y2 = cb->popValue().toFloat();
-	float x2 = cb->popValue().toFloat();
-	float height1h = cb->popValue().toFloat() * 0.5f;
-	float width1h = cb->popValue().toFloat() * 0.5f;
-	float y1 = cb->popValue().toFloat();
-	float x1 = cb->popValue().toFloat();
-
-	cb->pushValue((abs(y1 - y2) < (height1h + height2h)) && ((abs(x1 - x2) < (width1h + width2h))) ? 1 : 0);
+bool MathInterface::boxOverlap(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+	return (abs(y1 - y2) < (h1 + h2)) && ((abs(x1 - x2) < (w1 + w2)));
 }
