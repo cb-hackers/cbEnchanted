@@ -9,16 +9,13 @@ class InterfaceCaller
 		bool init();
 
 		void commandAddText(void);
-		void commandArrayAssign(void);
 		void commandBox(void);
 		void commandCallDLL(void);
 		void commandCameraFollow(void);
 		void commandCameraPick(void);
-		void commandCase(void);
 		void commandCenterText(void);
 		void commandChDir(void);
 		void commandCircle(void);
-		void commandClearArray(void);
 		void commandClearCollisions(void);
 		void commandClearKeys(void);
 		void commandClearMouse(void);
@@ -38,14 +35,12 @@ class InterfaceCaller
 		void commandDecrypt(void);
 		void commandDefaultMask(void);
 		void commandDefaultVisible(void);
-		void commandDelete(void);
 		void commandDeleteFile(void);
 		void commandDeleteFont(void);
 		void commandDeleteImage(void);
 		void commandDeleteMEMBlock(void);
 		void commandDeleteObject(void);
 		void commandDeleteSound(void);
-		void commandDim(void);
 		void commandDot(void);
 		void commandDrawAnimation(void);
 		void commandDrawGame(void);
@@ -64,10 +59,7 @@ class InterfaceCaller
 		void commandErrors(void);
 		void commandExecute(void);
 		void commandFrameLimit(void);
-		void commandFunction(void);
 		void commandGhostObject(void);
-		void commandGosub(void);
-		void commandGoto(void);
 		void commandGotoSavedLocation(void);
 		void commandHotSpot(void);
 		void commandInitObjectList(void);
@@ -122,11 +114,9 @@ class InterfaceCaller
 		void commandReadLine(void);
 		void commandReadShort(void);
 		void commandReadString(void);
-		void commandReDim(void);
 		void commandResetObjectCollision(void);
 		void commandResizeImage(void);
 		void commandResizeMEMBlock(void);
-		void commandReturn(void);
 		void commandRotateCamera(void);
 		void commandRotateImage(void);
 		void commandRotateObject(void);
@@ -138,18 +128,11 @@ class InterfaceCaller
 		void commandScreenPositionObject(void);
 		void commandScreenShot(void);
 		void commandSeekFile(void);
-		void commandSelect(void);
-		void commandSetArrayNumbers(void);
 		void commandSetFont(void);
-		void commandSetGlobalVariable(void);
-		void commandSetGlobalVariableNumbers(void);
 		void commandSetMap(void);
 		void commandSetSound(void);
 		void commandSetTile(void);
-		void commandSetTypeMemberField(void);
 		void commandSetupCollision(void);
-		void commandSetVariable(void);
-		void commandSetVariableNumbers(void);
 		void commandSetWindow(void);
 		void commandShowMouse(void);
 		void commandShowObject(void);
@@ -163,7 +146,6 @@ class InterfaceCaller
 		void commandTranslateObject(void);
 		void commandTurnCamera(void);
 		void commandTurnObject(void);
-		void commandType(void);
 		void commandUnlock(void);
 		void commandUpdateGame(void);
 		void commandVerticalText(void);
@@ -181,14 +163,12 @@ class InterfaceCaller
 
 		void functionAbs(void);
 		void functionACos(void);
-		void functionAfter(void);
 		void functionAnimationHeight(void);
 		void functionAnimationPlaying(void);
 		void functionAnimationWidth(void);
 		void functionAsc(void);
 		void functionASin(void);
 		void functionATan(void);
-		void functionBefore(void);
 		void functionBin(void);
 		void functionBoxOverlap(void);
 		void functionCameraAngle(void);
@@ -201,8 +181,6 @@ class InterfaceCaller
 		void functionCollisionX(void);
 		void functionCollisionY(void);
 		void functionCommandLine(void);
-		void functionConvertToInteger(void);
-		void functionConvertToType(void);
 		void functionCos(void);
 		void functionCountCollisions(void);
 		void functionCountWords(void);
@@ -220,7 +198,6 @@ class InterfaceCaller
 		void functionFileOffset(void);
 		void functionFileSize(void);
 		void functionFindFile(void);
-		void functionFirst(void);
 		void functionFlip(void);
 		void functionFloat(void);
 		void functionFPS(void);
@@ -250,7 +227,6 @@ class InterfaceCaller
 		void functionKeyDown(void);
 		void functionKeyHit(void);
 		void functionKeyUp(void);
-		void functionLast(void);
 		void functionLeft(void);
 		void functionLeftKey(void);
 		void functionLen(void);
@@ -288,7 +264,6 @@ class InterfaceCaller
 		void functionMouseX(void);
 		void functionMouseY(void);
 		void functionMouseZ(void);
-		void functionNew(void);
 		void functionNextObject(void);
 		void functionObjectAngle(void);
 		void functionObjectFloat(void);
@@ -317,7 +292,6 @@ class InterfaceCaller
 		void functionPlayAnimation(void);
 		void functionPlaySound(void);
 		void functionRand(void);
-		void functionRead(void);
 		void functionReadByte(void);
 		void functionReadFloat(void);
 		void functionReadInt(void);

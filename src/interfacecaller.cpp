@@ -17,10 +17,6 @@ void InterfaceCaller::commandAddText(void) {
 	// ...
 }
 
-void InterfaceCaller::commandArrayAssign(void) {
-	// ...
-}
-
 void InterfaceCaller::commandBox(void) {
 	// ...
 }
@@ -37,10 +33,6 @@ void InterfaceCaller::commandCameraPick(void) {
 	// ...
 }
 
-void InterfaceCaller::commandCase(void) {
-	// ...
-}
-
 void InterfaceCaller::commandCenterText(void) {
 	// ...
 }
@@ -50,10 +42,6 @@ void InterfaceCaller::commandChDir(void) {
 }
 
 void InterfaceCaller::commandCircle(void) {
-	// ...
-}
-
-void InterfaceCaller::commandClearArray(void) {
 	// ...
 }
 
@@ -133,10 +121,6 @@ void InterfaceCaller::commandDefaultVisible(void) {
 	// ...
 }
 
-void InterfaceCaller::commandDelete(void) {
-	// ...
-}
-
 void InterfaceCaller::commandDeleteFile(void) {
 	// ...
 }
@@ -158,10 +142,6 @@ void InterfaceCaller::commandDeleteObject(void) {
 }
 
 void InterfaceCaller::commandDeleteSound(void) {
-	// ...
-}
-
-void InterfaceCaller::commandDim(void) {
 	// ...
 }
 
@@ -241,19 +221,7 @@ void InterfaceCaller::commandFrameLimit(void) {
 	// ...
 }
 
-void InterfaceCaller::commandFunction(void) {
-	// ...
-}
-
 void InterfaceCaller::commandGhostObject(void) {
-	// ...
-}
-
-void InterfaceCaller::commandGosub(void) {
-	// ...
-}
-
-void InterfaceCaller::commandGoto(void) {
 	// ...
 }
 
@@ -473,10 +441,6 @@ void InterfaceCaller::commandReadString(void) {
 	// ...
 }
 
-void InterfaceCaller::commandReDim(void) {
-	// ...
-}
-
 void InterfaceCaller::commandResetObjectCollision(void) {
 	// ...
 }
@@ -486,10 +450,6 @@ void InterfaceCaller::commandResizeImage(void) {
 }
 
 void InterfaceCaller::commandResizeMEMBlock(void) {
-	// ...
-}
-
-void InterfaceCaller::commandReturn(void) {
 	// ...
 }
 
@@ -537,23 +497,7 @@ void InterfaceCaller::commandSeekFile(void) {
 	// ...
 }
 
-void InterfaceCaller::commandSelect(void) {
-	// ...
-}
-
-void InterfaceCaller::commandSetArrayNumbers(void) {
-	// ...
-}
-
 void InterfaceCaller::commandSetFont(void) {
-	// ...
-}
-
-void InterfaceCaller::commandSetGlobalVariable(void) {
-	// ...
-}
-
-void InterfaceCaller::commandSetGlobalVariableNumbers(void) {
 	// ...
 }
 
@@ -569,19 +513,7 @@ void InterfaceCaller::commandSetTile(void) {
 	// ...
 }
 
-void InterfaceCaller::commandSetTypeMemberField(void) {
-	// ...
-}
-
 void InterfaceCaller::commandSetupCollision(void) {
-	// ...
-}
-
-void InterfaceCaller::commandSetVariable(void) {
-	// ...
-}
-
-void InterfaceCaller::commandSetVariableNumbers(void) {
 	// ...
 }
 
@@ -634,10 +566,6 @@ void InterfaceCaller::commandTurnCamera(void) {
 }
 
 void InterfaceCaller::commandTurnObject(void) {
-	// ...
-}
-
-void InterfaceCaller::commandType(void) {
 	// ...
 }
 
@@ -703,10 +631,6 @@ void InterfaceCaller::functionACos(void) {
 	// ...
 }
 
-void InterfaceCaller::functionAfter(void) {
-	// ...
-}
-
 void InterfaceCaller::functionAnimationHeight(void) {
 	// ...
 }
@@ -728,10 +652,6 @@ void InterfaceCaller::functionASin(void) {
 }
 
 void InterfaceCaller::functionATan(void) {
-	// ...
-}
-
-void InterfaceCaller::functionBefore(void) {
 	// ...
 }
 
@@ -780,14 +700,6 @@ void InterfaceCaller::functionCollisionY(void) {
 }
 
 void InterfaceCaller::functionCommandLine(void) {
-	// ...
-}
-
-void InterfaceCaller::functionConvertToInteger(void) {
-	// ...
-}
-
-void InterfaceCaller::functionConvertToType(void) {
 	// ...
 }
 
@@ -856,10 +768,6 @@ void InterfaceCaller::functionFileSize(void) {
 }
 
 void InterfaceCaller::functionFindFile(void) {
-	// ...
-}
-
-void InterfaceCaller::functionFirst(void) {
 	// ...
 }
 
@@ -976,10 +884,6 @@ void InterfaceCaller::functionKeyHit(void) {
 }
 
 void InterfaceCaller::functionKeyUp(void) {
-	// ...
-}
-
-void InterfaceCaller::functionLast(void) {
 	// ...
 }
 
@@ -1131,10 +1035,6 @@ void InterfaceCaller::functionMouseZ(void) {
 	// ...
 }
 
-void InterfaceCaller::functionNew(void) {
-	// ...
-}
-
 void InterfaceCaller::functionNextObject(void) {
 	// ...
 }
@@ -1244,10 +1144,6 @@ void InterfaceCaller::functionPlaySound(void) {
 }
 
 void InterfaceCaller::functionRand(void) {
-	// ...
-}
-
-void InterfaceCaller::functionRead(void) {
 	// ...
 }
 
