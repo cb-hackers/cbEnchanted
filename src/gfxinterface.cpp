@@ -32,7 +32,7 @@ const char *screenGammaFragmentShaderCode =
 
 GfxInterface::GfxInterface() :
 	windowTitle(""),
-	window(),
+	window(0),
 	drawDrawCommandToWorld(false),
 	drawImageToWorld(false),
 	drawTextToWorld(false),

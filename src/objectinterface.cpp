@@ -7,6 +7,7 @@
 #include "gfxinterface.h"
 #include "util.h"
 #include "collisioncheck.h"
+#include "errorsystem.h"
 
 ObjectInterface::ObjectInterface():
 	lastUpdate(0),
@@ -433,7 +434,7 @@ void ObjectInterface::functionLoadObject(void) {
 	string path = cb->popValue().getString().getRef();
 	CBObject *obj = new CBObject;
 	if (!obj->load(path)) {
-		FIXME("Can't load object: %s",path.c_str());
+		cb->errors->createError("LoadObject() failed!", "Failed to load file \"" + path + "\"");
 		cb->pushValue(0);
 		return;
 	}

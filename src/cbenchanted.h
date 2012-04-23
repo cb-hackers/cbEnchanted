@@ -24,6 +24,7 @@
 using std::vector;
 
 class GfxInterface;
+class ErrorSystem;
 
 
 class CBEnchanted :
@@ -58,6 +59,9 @@ class CBEnchanted :
 		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;}
 		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
+
+		/** Error system for public access */
+		ErrorSystem *errors;
 	private:
 
 		char *code;

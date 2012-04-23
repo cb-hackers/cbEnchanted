@@ -8,6 +8,7 @@
 #include "mathinterface.h"
 #include "cbvariableholder.h"
 #include "mathoperations.h"
+#include "errorsystem.h"
 
 static CBEnchanted *cbInstance;
 
@@ -281,22 +282,33 @@ bool CBEnchanted::init(string file) {
 		}
 	}
 
-	if (!al_init()) return false;
+	// Initialize error system first, because we can.
+	errors = new ErrorSystem();
+
+	if (!al_init()) {
+		errors->createFatalError("Initialization error", "Failed to initialize Allegro");
+		return false;
+	}
 	eventQueue = al_create_event_queue();
+	if (!eventQueue) {
+		errors->createFatalError("Initialization error", "Failed to initialize event queue");
+		return false;
+	}
 	//Create screen
 	if (!initializeGfx()) {
+		errors->createFatalError("Initialization error", "Failed to initialize graphics");
 		return false;
 	}
 	if (!initializeInputs()) {
-		INFO("InitializeInputs failed");
+		errors->createFatalError("Initialization error", "Failed to initialize inputs");
 		return false;
 	}
 	if (!initializeSounds()){
-		INFO("InitializeSounds failed");
+		errors->createFatalError("Initialization error", "Failed to initialize sounds");
 		return false;
 	}
 	if (!initializeFonts()) {
-		INFO("initializeFonts failed");
+		errors->createFatalError("Initialization error", "Failed to initialize fonts");
 		return false;
 	}
 
