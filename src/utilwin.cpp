@@ -16,4 +16,8 @@ int32_t rand(int32_t max) {
 	return rand() % (max + 1); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
 }
 
+char* findfont(const char* font, bool isBold, bool isItalic, bool isUnderlined) {
+	return "C:/Windows/Fonts/arial.ttf";
+}
+
 #endif // _WIN32

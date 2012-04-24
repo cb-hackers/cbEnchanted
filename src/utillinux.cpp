@@ -21,4 +21,8 @@ int32_t rand(int32_t max) {
 	return rand() % max;
 }
 
+char* findfont(const char* font, bool isBold, bool isItalic, bool isUnderlined = false) {
+	return "/usr/share/fonts/TTF/cour.ttf";
+}
+
 #endif // __linux

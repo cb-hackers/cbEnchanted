@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "textinterface.h"
+#include "util.h"
 #ifdef WIN32
 	#include <Windows.h>
 	#include <GL/GL.h>
@@ -131,17 +132,19 @@ void TextInterface::commandClearText(void) {
 
 void TextInterface::functionLoadFont(void) {
 	//TODO find fonts
-	string file = cb->popValue().toString().getRef();
-	uint16_t size = cb->popValue().toInt();
-	uint8_t bold = cb->popValue().toInt();
-	uint8_t italic = cb->popValue().toInt();
-	uint8_t underLine = cb->popValue().toInt();
+	bool underLine = cb->popValue().toBool();
+	bool italic = cb->popValue().toBool();
+	bool bold = cb->popValue().toBool();
+	int size = cb->popValue().toInt();
+	string fontname = cb->popValue().toString().getRef();
 
-	string path = FONT_PATH + file;
+	char* path = findfont(fontname.c_str(), bold, italic, underLine);
 
-	ALLEGRO_FONT *font = al_load_font(file.c_str(), size, ALLEGRO_TTF_MONOCHROME);
+	ALLEGRO_FONT *font = al_load_font(path, size, ALLEGRO_TTF_MONOCHROME);
 	int32_t keyId = nextfontid();
 	fontMap[keyId] = font;
+
+	cb->pushValue(keyId);
 }
 
 void TextInterface::renderAddTexts(RenderTarget &r){

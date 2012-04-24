@@ -47,6 +47,9 @@ contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += VC_USE_FORCEINLINE
 }
 
+contains(CBE_CONFIG,debug_hc) {
+	DEFINES += LOG_LEVEL_HCDEBUG
+}
 
 
 

@@ -43,6 +43,7 @@ class TextInterface {
 		int32_t locationX;
 		int32_t locationY;
 		std::vector<AddText*> texts;
-};		inline int32_t nextfontid(){static int32_t fontID = 0; return ++fontID;}
+		inline int32_t nextfontid(){static int32_t fontID = 0; return ++fontID;}
+};
 
 #endif
