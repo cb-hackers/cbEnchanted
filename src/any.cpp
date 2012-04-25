@@ -471,7 +471,7 @@ int32_t Any::operator == (const Any &r) const {
 			try {
 				return this->getFloat() == boost::lexical_cast<float>(r.getString().getRef());
 			}
-			catch( boost::bad_lexical_cast &error) {
+			catch( boost::bad_lexical_cast &) {
 				return 0;
 			}
 		}
