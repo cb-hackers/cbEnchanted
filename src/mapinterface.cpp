@@ -64,12 +64,10 @@ void MapInterface::functionMakeMap(void) {
 }
 
 void MapInterface::functionGetMap(void) {
-	int32_t posY = cb->popValue().toInt();
-	int32_t posX = cb->popValue().toInt();
+	float posY = cb->popValue().toFloat();
+	float posX = cb->popValue().toFloat();
 	uint8_t layer = cb->popValue().toInt();
-	uint32_t mapX = (tileMap->getSizeX()/2+posX) / tileMap->getTileWidth();
-	uint32_t mapY = (tileMap->getSizeX()/2+posX) / tileMap->getTileWidth();
-	cb->pushValue(tileMap->getMap(layer, mapX, mapY));
+	cb->pushValue(tileMap->getMapWorldCoordinates(layer, posX, posY));
 }
 
 void MapInterface::functionGetMap2(void) {

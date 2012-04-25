@@ -322,6 +322,12 @@ int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
 	return layers[maplayer][position];
 }
 
+int32_t CBMap::getMapWorldCoordinates(uint8_t maplayer, float x, float y) {
+	x = (x - posX + mapWidth * tileWidth * 0.5f) / tileWidth;
+	y = -(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight;
+	return getMap(maplayer, x, y);
+}
+
 /** Does a raycast from given object to this map.
  *
  * @param obj From which object will the raycast start

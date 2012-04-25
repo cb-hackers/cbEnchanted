@@ -22,6 +22,7 @@ class CBMap : public CBObject {
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t tileY, int32_t tileIndex);
 		int32_t getMap(uint8_t maplayer, int32_t MapX, int32_t tileY);
+		int32_t getMapWorldCoordinates(uint8_t maplayer, float x, float y);
 		int32_t getHit(int32_t x, int32_t y);
 		int32_t mapSizeX(){return mapWidth;}
 		int32_t mapSizeY(){return mapHeight;}
