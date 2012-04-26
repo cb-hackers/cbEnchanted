@@ -4,7 +4,7 @@ system=LoadFont("fixedsys")
 coolb=LoadFont("coolb")
 verdana=LoadFont("verdana",18,ON,OFF,ON) 'bold and underlined
 times=LoadFont("times new roman",20,OFF,ON) 'italic
-courier=LoadFont("courier new",40)
+customfont=LoadFont("testfont.ttf", 20) 'custom font for cbE
 
 Repeat
 
@@ -33,7 +33,7 @@ Repeat
     Text 150,180,"Night beckons"
 
     Color cbgreen
-    SetFont courier
+    SetFont customfont
     CenterText 200,130,"Don't worry, be happy!"
 
     DrawScreen

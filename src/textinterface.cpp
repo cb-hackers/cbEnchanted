@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include "textinterface.h"
 #include "util.h"
+#include "errorsystem.h"
 #ifdef WIN32
 	#include <Windows.h>
 	#include <GL/GL.h>
@@ -12,9 +13,11 @@
 #ifdef WIN32
 #define DEFAULT_FONT "C:/Windows/Fonts/cour.ttf"
 #define FONT_PATH "C:/Windows/Fonts/"
+#define FALLBACK_FONT "C:/Windows/Fonts/DejaVuSansMono.ttf"
 #else
 #define DEFAULT_FONT "/usr/share/fonts/TTF/cour.ttf"
 #define FONT_PATH "/usr/share/fonts/"
+#define FALLBACK_FONT "/usr/share/fonts/TTF/DejaVuSansMono.ttf"
 #endif
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
@@ -26,22 +29,44 @@ TextInterface::TextInterface() : locationX(0), locationY(0) {
 TextInterface::~TextInterface() {
 
 }
+
 bool TextInterface::initializeFonts() {
 	al_init_font_addon();
 	al_init_ttf_addon();
-	currentFont = al_load_font(DEFAULT_FONT, 12, 0);
-	if (currentFont == 0) return false;
+	currentFont = al_load_font(DEFAULT_FONT, 12, ALLEGRO_TTF_MONOCHROME);
+	if (currentFont == 0) {
+		// Unable to load courier. Try FALLBACK_FONT
+		INFO("Failed to load font \"%s\"", DEFAULT_FONT);
+		INFO("-> Trying to load \"%s\"", FALLBACK_FONT);
+		currentFont = al_load_font(FALLBACK_FONT, 12, ALLEGRO_TTF_MONOCHROME);
+		if (currentFont == 0) {
+			INFO(" -> Failed to load even the fallback font!");
+			INFO(" -> If you are using text in your program without first setting")
+			INFO("    a font with LoadFont and SetFont, your program might crash!");
+			return true;
+		}
+	}
 	fontMap[0] = currentFont;
 	return true;
 }
 
 void TextInterface::commandSetFont(void) {
 	int32_t id = cb->popValue().toInt();
-	currentFont = fontMap[id];
+	currentFont = 0;
+	if (fontMap.count(id)) {
+		currentFont = fontMap[id];
+	}
+	if (currentFont == 0) {
+		if (cb->errors->createError("SetFont() failed!", "Failed to load a font with id " + id)) {
+			// Try to continue
+			currentFont = fontMap[0];
+		}
+	}
 }
 
 void TextInterface::commandDeleteFont(void) {
-	STUB;
+	int32_t id = cb->popValue().toInt();
+	FIXME("DeleteFont not yet implemented");
 }
 
 void TextInterface::commandText(void) {
@@ -59,7 +84,7 @@ void TextInterface::commandCenterText(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
-	switch(style){
+	switch (style) {
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(
 				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::HCenter
@@ -117,14 +142,14 @@ void TextInterface::commandAddText(void) {
 	newtxt->txtY = locationY;
 	newtxt->col = cb->getDrawColor();
 	texts.push_back(newtxt);
-	locationY+=al_get_font_line_height(currentFont);
+	locationY += al_get_font_line_height(currentFont);
 }
 
 void TextInterface::commandClearText(void) {
 	locationX = 0;
 	locationY = 0;
 	vector<AddText*>::iterator i;
-	for(i = texts.begin(); i != texts.end(); i++){
+	for (i = texts.begin(); i != texts.end(); i++) {
 		delete (*i);
 	}
 	texts.clear();
@@ -138,9 +163,19 @@ void TextInterface::functionLoadFont(void) {
 	int size = cb->popValue().toInt();
 	string fontname = cb->popValue().toString().getRef();
 
-	char* path = findfont(fontname.c_str(), bold, italic, underLine);
+	ALLEGRO_PATH *path;
+	if (fontname.find_first_of('.') == fontname.npos) {
+		// If the fontname doesn't imply that it is a path to a font file, try to find it
+		// from systems own font dir
+		path = al_create_path(findfont(fontname.c_str(), bold, italic, underLine));
+	}
+	else {
+		// Font name had a dot in it, so we assume the programmer wanted to load a font
+		// relative to the program.
+		path = al_create_path(fontname.c_str());
+	}
 
-	ALLEGRO_FONT *font = al_load_font(path, size, ALLEGRO_TTF_MONOCHROME);
+	ALLEGRO_FONT *font = al_load_font(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), size, ALLEGRO_TTF_MONOCHROME);
 	int32_t keyId = nextfontid();
 	fontMap[keyId] = font;
 
