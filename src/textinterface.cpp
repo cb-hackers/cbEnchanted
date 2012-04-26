@@ -3,6 +3,7 @@
 #include "textinterface.h"
 #include "util.h"
 #include "errorsystem.h"
+#include <string>
 #ifdef WIN32
 	#include <Windows.h>
 	#include <GL/GL.h>
@@ -57,7 +58,7 @@ void TextInterface::commandSetFont(void) {
 		currentFont = fontMap[id];
 	}
 	if (currentFont == 0) {
-		if (cb->errors->createError("SetFont() failed!", "Failed to load a font with id " + id)) {
+		if (cb->errors->createError("SetFont() failed!", "Failed to load a font with id " + boost::lexical_cast<string>(id))) {
 			// Try to continue
 			currentFont = fontMap[0];
 		}
