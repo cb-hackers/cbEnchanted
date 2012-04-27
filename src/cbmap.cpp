@@ -378,11 +378,9 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2, float &returnX, f
 	x2 += 0.00001f;
 	y2 += 0.00001f;
 
-	// Normalized points
+	// Normalized start points
 	float nX1 = x1 / tileWidth;
-	float nX2 = x2 / tileWidth;
 	float nY1 = y1 / tileHeight;
-	float nY2 = y2 / tileHeight;
 
 	// Tile to be tested
 	int testTileX = int(x1 / tileWidth);
