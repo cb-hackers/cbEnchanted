@@ -45,6 +45,7 @@ list(APPEND LIBS "allegro_primitives")
 list(APPEND LIBS "allegro_audio")
 list(APPEND LIBS "allegro_acodec")
 list(APPEND LIBS "allegro_image")
+list(APPEND LIBS "allegro_dialog")
 
 list(APPEND LIBS "png")
 
