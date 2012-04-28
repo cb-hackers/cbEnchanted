@@ -24,6 +24,12 @@ endif()
 
 add_definitions(-DLOG_LEVEL_STUB -DLOG_LEVEL_FIXME -DLOG_LEVEL_DEBUG -DLOG_LEVEL_INFO)
 
+# If we want to build a testable CBEnchanted binary, we use flag -D TEST:bool=true
+if(TEST)
+	add_definitions(-DTEST)
+	message(STATUS "Added definition TEST")
+endif()
+
 # Include path for additional CMake library finding scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
