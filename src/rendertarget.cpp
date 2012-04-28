@@ -72,7 +72,7 @@ bool RenderTarget::load(const string &path) {
 	return false;
 }
 
-FORCEINLINE void RenderTarget::setAsCurrent(bool force) {
+void RenderTarget::setAsCurrent(bool force) {
 	if (bindRenderTarget != 0 && !force) {
 		if (bindRenderTarget->bitmap == this->bitmap) {
 			return;
