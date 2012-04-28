@@ -23,6 +23,10 @@
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 
+#ifdef FONTCONFIG_FOUND
+#include <fontconfig.h>
+#endif // FONTCONFIG_FOUND
+
 TextInterface::TextInterface() : locationX(0), locationY(0) {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -34,7 +38,16 @@ TextInterface::~TextInterface() {
 bool TextInterface::initializeFonts() {
 	al_init_font_addon();
 	al_init_ttf_addon();
+#ifdef FONTCONFIG_FOUND
+	if (!FcInit()) {
+		INFO("Failed to initialize fontconfig");
+		return false;
+	}
+	FcInitLoadConfigAndFonts();
+	currentFont = al_load_font(findfont("Courier New"), 12, ALLEGRO_TTF_MONOCHROME);
+#else
 	currentFont = al_load_font(DEFAULT_FONT, 12, ALLEGRO_TTF_MONOCHROME);
+#endif
 	if (currentFont == 0) {
 		// Unable to load courier. Try FALLBACK_FONT
 		INFO("Failed to load font \"%s\"", DEFAULT_FONT);
@@ -157,7 +170,7 @@ void TextInterface::commandClearText(void) {
 }
 
 void TextInterface::functionLoadFont(void) {
-	//TODO find fonts
+	//TODO find fonts on windows and do underlining with line primitives
 	bool underLine = cb->popValue().toBool();
 	bool italic = cb->popValue().toBool();
 	bool bold = cb->popValue().toBool();
@@ -168,7 +181,7 @@ void TextInterface::functionLoadFont(void) {
 	if (fontname.find_first_of('.') == fontname.npos) {
 		// If the fontname doesn't imply that it is a path to a font file, try to find it
 		// from systems own font dir
-		path = al_create_path(findfont(fontname.c_str(), bold, italic, underLine));
+		path = al_create_path(findfont(fontname.c_str(), bold, italic));
 	}
 	else {
 		// Font name had a dot in it, so we assume the programmer wanted to load a font
