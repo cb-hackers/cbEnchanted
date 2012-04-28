@@ -31,3 +31,7 @@ tools/cbcompiler/IDE/Editor.out
 
 # Don't put generated documentation to the repository
 docs
+
+# Temporary files
+*~
+*.kate-swp
