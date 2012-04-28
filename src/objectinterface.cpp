@@ -245,7 +245,7 @@ void ObjectInterface::commandPaintObject(void) {
 		object->paintObject(*object2);
 	}
 	else { //Image
-		CBImage *img = cb->getImage(p);
+		CBImage *img = cb->getImage(-p);
 		object->paintObject(*img->getRenderTarget());
 	}
 }
