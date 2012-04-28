@@ -20,7 +20,12 @@ This repository holds code for secret bytecode info so
 sharing any parts of the code is strictly forbidden.
 
 2)
-Linux: "make"
+Linux:
+- mkdir build
+- cd build
+- cmake ..
+  * You can optionally call cmake with parameter '-D TEST:bool=true' to tell make to create a test binary
+- make
 
 Windows: "insert_guide_here"
 
