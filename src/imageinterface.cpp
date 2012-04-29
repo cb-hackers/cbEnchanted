@@ -126,14 +126,18 @@ void ImageInterface::functionLoadAnimImage(void) {
 	int32_t startF = cb->popValue().toInt();
 	int32_t frameH = cb->popValue().toInt();
 	int32_t frameW = cb->popValue().toInt();
-	string path = cb->popValue().getString().getRef();
+	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
+	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
+
 	CBImage *image = new CBImage;
-	if (!image->load(path))
-	{
-		delete image;
-		FIXME("Loading image %s failed.",path.c_str());
+	if(!image->load(cpath)){
+		cb->errors->createError("LoadAnimImage() failed!", "Failed to load file \"" + string(cpath) + "\"");
 		cb->pushValue(0);
+		al_destroy_path(path);
+		return;
 	}
+	al_destroy_path(path);
+
 	image->setAnimParams(frameW,frameH,startF,animL);
 	int32_t id = nextId();
 	cbImages[id] = image;
