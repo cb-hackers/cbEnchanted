@@ -2,6 +2,7 @@
 #include "soundinterface.h"
 #include "cbenchanted.h"
 #include "any.h"
+#include "errorsystem.h"
 
 
 SoundInterface::SoundInterface() {
@@ -85,9 +86,18 @@ void SoundInterface::commandDeleteSound(void) {
 }
 
 void SoundInterface::functionLoadSound(void) {
-	string filepath = cb->popValue().toString().getRef();
+	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
+	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
+
 	CBSound *snd = new CBSound;
-	snd->loadSound(filepath);
+	if(!snd->loadSound(cpath)){
+		cb->errors->createError("LoadSound() failed!", "Failed to load file \"" + string(cpath) + "\"");
+		cb->pushValue(0);
+		al_destroy_path(path);
+		return;
+	}
+	al_destroy_path(path);
+
 	int32_t id = nextSampleId();
 	sounds[id] = snd;
 	cb->pushValue(id);
