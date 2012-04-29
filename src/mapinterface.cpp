@@ -4,6 +4,7 @@
 #include "cbobject.h"
 #include "debug.h"
 #include "cbenchanted.h"
+#include "errorsystem.h"
 
 MapInterface::MapInterface() {
 	cb = static_cast<CBEnchanted*>(this);
@@ -36,18 +37,29 @@ void MapInterface::commandSetTile(void) {
 }
 
 void MapInterface::functionLoadMap(void) {
-	string tilesetpath = cb->popValue().toString().getRef();
-	INFO(tilesetpath.c_str());
-	string mappath = cb->popValue().toString().getRef();
-	INFO(mappath.c_str());
+	ALLEGRO_PATH *tilesetpath = cb->popValue().getString().getPath();
+	const char *ctilesetpath = al_path_cstr(tilesetpath, ALLEGRO_NATIVE_PATH_SEP);
+	ALLEGRO_PATH *mappath = cb->popValue().getString().getPath();
+	const char *cmappath = al_path_cstr(mappath, ALLEGRO_NATIVE_PATH_SEP);
+
 	if (tileMap) delete tileMap;
 	tileMap = new CBMap();
-	if(tileMap->loadMap(mappath) == false){
-		INFO("Cannot load map!");
-	}else{
-		INFO("Map loading success!");
+	if(!tileMap->loadMap(cmappath)) {
+		cb->errors->createError("LoadMap() failed!", "Failed to load map file \"" + string(cmappath) + "\"");
+		cb->pushValue(0);
+		al_destroy_path(mappath);
+		return;
 	}
-	tileMap->loadTileset(tilesetpath);
+	al_destroy_path(mappath);
+
+	if(!tileMap->loadTileset(ctilesetpath)) {
+		cb->errors->createError("LoadMap() failed!", "Failed to load tileset \"" + string(ctilesetpath) + "\"");
+		cb->pushValue(0);
+		al_destroy_path(tilesetpath);
+		return;
+	}
+	al_destroy_path(tilesetpath);
+
 	int32_t id = cb->addMap(tileMap);
 	cb->pushValue(id);
 }
