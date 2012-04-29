@@ -431,13 +431,16 @@ void ObjectInterface::commandInitObjectList(void) {
 
 void ObjectInterface::functionLoadObject(void) {
 	cb->popValue(); //Rotation...
-	string path = cb->popValue().getString().getRef();
+	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
+	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
 	CBObject *obj = new CBObject;
-	if (!obj->load(path)) {
-		cb->errors->createError("LoadObject() failed!", "Failed to load file \"" + path + "\"");
+	if (!obj->load(cpath)) {
+		cb->errors->createError("LoadObject() failed!", "Failed to load file \"" + string(cpath) + "\"");
 		cb->pushValue(0);
+		al_destroy_path(path);
 		return;
 	}
+	al_destroy_path(path);
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
