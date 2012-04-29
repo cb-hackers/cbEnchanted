@@ -454,13 +454,16 @@ void ObjectInterface::functionLoadAnimObject(void) {
 	uint16_t startf = cb->popValue().toInt();
 	uint16_t frameH = cb->popValue().toInt();
 	uint16_t frameW = cb->popValue().toInt();
-	string path = cb->popValue().getString().getRef();
+	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
+	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
 	CBObject *obj = new CBObject;
-	if(!obj->loadAnimObject(path, frameW, frameH, startf, frames)){
-		FIXME("Can't load object: %s", path.c_str());
+	if(!obj->loadAnimObject(cpath, frameW, frameH, startf, frames)){
+		cb->errors->createError("LoadAnimObject() failed!", "Failed to load file \"" + string(cpath) + "\"");
 		cb->pushValue(0);
+		al_destroy_path(path);
 		return;
 	}
+	al_destroy_path(path);
 	addToDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
