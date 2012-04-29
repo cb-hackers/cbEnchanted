@@ -30,7 +30,7 @@ int32_t rand(int32_t max) {
 }
 
 char* findfont(const char* font, bool isBold, bool isItalic) {
-	char* fontpath = "";
+	char* fontpath = {'\0'};
 #ifdef FONTCONFIG_FOUND
 	// Create a font query
 	cout << "Trying to find font " << font;
@@ -44,7 +44,7 @@ char* findfont(const char* font, bool isBold, bool isItalic) {
 	                                    NULL);
 	//DEBUG FcPatternPrint(pattern);
 	
-	// Do default elimination and initialization for the pattern
+	// Add default initialization values to the pattern
 	FcDefaultSubstitute(pattern);
 	//DEBUG FcPatternPrint(pattern);
 	
@@ -56,15 +56,24 @@ char* findfont(const char* font, bool isBold, bool isItalic) {
 	// Did we find that font?
 	if (matched) {
 		// Oh yeah.
-		FcPatternGetString(matched, FC_FILE, 0, &fontpath);
+		FcChar8* fontconfig_path;
+		FcPatternGetString(matched, FC_FILE, 0, &fontconfig_path);
+		fontpath = (char*)fontconfig_path;
 		cout << " -> Best match: \"" << fontpath << "\"" << endl;
 	}
 	else {
 		// Uh oh, there's no such font. We can only error out in textinterface.cpp for this :(
 		cout << " -> font not found :(" << endl;
 	}
-#endif // FONTCONFIG_FOUND
+	
+	// Don't leak memory
+	FcPatternDestroy(pattern);
+	FcPatternDestroy(matched);
+	
 	return fontpath;
+#else
+	return fontpath;
+#endif // FONTCONFIG_FOUND
 }
 
 #endif // __linux
