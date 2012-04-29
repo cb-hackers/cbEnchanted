@@ -2,7 +2,7 @@
 
 SCREEN 200,200
 
-kuva = LoadImage("media/tatti.bmp") 'ihan hanurista n‰‰ mediat, t‰‰h‰n on ainoa hyv‰!
+kuva = LoadImage("Media\tatti.bmp") 'ihan hanurista n‰‰ mediat, t‰‰h‰n on ainoa hyv‰!
 ResizeImage kuva, 85,80
 
 w = ImageWidth(kuva)/2
