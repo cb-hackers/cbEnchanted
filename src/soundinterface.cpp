@@ -55,8 +55,9 @@ void SoundInterface::commandPlaySound(void) {
 	else {
 		CBChannel* channel = new CBChannel;
 		channel->setMixer(al_get_default_mixer());
-		string file = any.toString().getRef();
-		channel->playSound(file, volume, balance, freg);
+		ALLEGRO_PATH *path = any.toString().getPath();
+		const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
+		channel->playSound(cpath, volume, balance, freg);
 		int32_t nextChannel = nextChannelId();
 		channels[nextChannel] = channel;
 	}
