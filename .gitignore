@@ -35,3 +35,7 @@ docs
 # Temporary files
 *~
 *.kate-swp
+
+# Dolphin (KDE File Manager) created files
+.directory
+
