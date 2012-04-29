@@ -1,4 +1,5 @@
 #include "isstring.h"
+#include <allegro5/allegro.h>
 
 ISString::ISString(const char *str): data(0) {
 	if (str && str[0] != '\0') {
@@ -183,4 +184,10 @@ bool ISString::operator <=(const ISString &o) const {
 		return true;
 	}
 	return false;
+}
+
+/** Get a pointer to ALLEGRO_PATH from the string inside */
+ALLEGRO_PATH* ISString::getPath() const {
+	if (data == 0) return al_create_path(NULL);
+	return al_create_path(data->str.c_str());
 }

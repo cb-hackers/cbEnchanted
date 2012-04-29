@@ -45,6 +45,9 @@ class ISString {
 		uint8_t toByte() const;
 		uint16_t toShort() const;
 		static ISString nullString;
+
+		/** Get a pointer to ALLEGRO_PATH from the string inside */
+		ALLEGRO_PATH* getPath() const;
 	private:
 		/** Implicit-shared data */
 		class SharedData {
