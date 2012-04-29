@@ -2,6 +2,7 @@
 #include "imageinterface.h"
 #include "cbenchanted.h"
 #include "cbimage.h"
+#include "errorsystem.h"
 
 
 ImageInterface::ImageInterface() {
@@ -103,14 +104,18 @@ void ImageInterface::commandDeleteImage(void) {
 }
 
 void ImageInterface::functionLoadImage(void) {
-	string path = cb->popValue().getString().getRef();
+	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
+	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
+
 	CBImage *image = new CBImage;
-	if (!image->load(path))
-	{
-		delete image;
-		FIXME("Loading image %s failed.",path.c_str());
+	if(!image->load(cpath)){
+		cb->errors->createError("LoadImage() failed!", "Failed to load file \"" + string(cpath) + "\"");
 		cb->pushValue(0);
+		al_destroy_path(path);
+		return;
 	}
+	al_destroy_path(path);
+
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);
