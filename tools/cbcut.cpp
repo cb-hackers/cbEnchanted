@@ -6,6 +6,10 @@
 using namespace std;
 
 int main(int argc, char **argv) {
+	if (argc != 3) {
+		cerr << "Usage: cbcut myCoolBasicProgram.exe cbEnchanted.exe" << endl;
+		return -1;
+	}
 	string s1 = string(argv[1]);
 	string s2 = string(argv[2]);
 
