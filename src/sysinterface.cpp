@@ -61,7 +61,8 @@ void SysInterface::commandCallDLL(void) {
 }
 
 void SysInterface::commandErrors(void) {
-	STUB;
+	bool enabled = cb->popValue().toBool();
+	cb->errors->setErrorMessages(enabled);
 }
 
 void SysInterface::commandSetWindow(void) {

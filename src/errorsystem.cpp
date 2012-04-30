@@ -25,26 +25,42 @@ ErrorSystem::~ErrorSystem() {
  * @returns True if program should continue going forward.
  */
 bool ErrorSystem::createError(std::string heading, std::string message, std::string title) {
-	lastError.fatal = isFatalByDefault;
-	lastError.message = message;
-	lastError.heading = heading;
-	lastError.title = title;
+	if (isErrorMessagesOn) {
+		lastError.fatal = isFatalByDefault;
+		lastError.message = message;
+		lastError.heading = heading;
+		lastError.title = title;
+		printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
+	}
+	else {
+		// The developer wanted only MAVs, so he'll get fatal MAVs only.
+		lastError.fatal = true;
+		lastError.message = "";
+		lastError.heading = "Memory access violation";
+		lastError.title = "Error!";
+	}
 	errorCount++;
-
-	printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
 
 	return this->execLastError();
 }
 
 /** Creates a new fatal error. */
 void ErrorSystem::createFatalError(std::string heading, std::string message, std::string title) {
-	lastError.fatal = true;
-	lastError.message = message;
-	lastError.heading = heading;
-	lastError.title = title;
+	if (isErrorMessagesOn) {
+		lastError.fatal = true;
+		lastError.message = message;
+		lastError.heading = heading;
+		lastError.title = title;
+		printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
+	}
+	else {
+		// The developer wanted only MAVs, so he'll get fatal MAVs only.
+		lastError.fatal = true;
+		lastError.message = "";
+		lastError.heading = "Memory access violation";
+		lastError.title = "Error!";
+	}
 	errorCount++;
-
-	printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
 
 	this->execLastError();
 }
@@ -58,6 +74,11 @@ void ErrorSystem::setDefaultFatality(bool fatality) {
 /** Sets whether message boxes are displayed or not. */
 void ErrorSystem::setSuppressed(bool suppress) {
 	isSuppressed = suppress;
+}
+
+/** Sets whether errors contain debug messages or just plain "Memory Access Violation". */
+void ErrorSystem::setErrorMessages(bool showErrors) {
+	isErrorMessagesOn = showErrors;
 }
 
 /** Does the message box thingy to show the error.

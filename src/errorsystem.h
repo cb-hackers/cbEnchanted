@@ -26,6 +26,9 @@ class ErrorSystem {
 		/** Sets whether message boxes are displayed or not. */
 		void setSuppressed(bool suppress);
 
+		/** Sets whether errors contain debug messages or just plain "Memory Access Violation". */
+		void setErrorMessages(bool showErrors);
+
 	private:
 		/** A private struct for easily saving errors */
 		struct Error {
@@ -53,6 +56,9 @@ class ErrorSystem {
 
 		/** Are errors suppressed so that errors are only logged to console (no native message box). */
 		bool isSuppressed;
+
+		/** Should errors display only "Memory Access Violation" or the actual error text. */
+		bool isErrorMessagesOn;
 
 		/** Does the message box thingy to show the error. */
 		bool execLastError();
