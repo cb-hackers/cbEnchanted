@@ -108,8 +108,11 @@ void StringInterface::functionRSet(void) {
 }
 
 void StringInterface::functionChr(void) {
-	uint8_t asciiValue = cb->popValue().getInt();
-	cb->pushValue(string("#").replace(0, 1, 1, (unsigned char)asciiValue));
+	unsigned char AV = cb->popValue().getInt();
+	char buffer[2];
+	buffer[0] = *(char*)&AV;
+	buffer[1] = 0;
+	cb->pushValue(buffer);
 }
 
 void StringInterface::functionAsc(void) {
