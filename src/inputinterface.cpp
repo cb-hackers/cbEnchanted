@@ -157,7 +157,18 @@ void InputInterface::commandPositionMouse(void) {
 }
 
 void InputInterface::commandWaitMouse(void) {
-	STUB;
+	ALLEGRO_EVENT e;
+	while(true)
+	{
+		al_wait_for_event(cb->getEventQueue(),&e);
+		switch (e.type) {
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			return;
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				cb->stop();
+			return;
+		}
+	}
 }
 
 void InputInterface::commandShowMouse(void) {
@@ -322,6 +333,7 @@ bool InputInterface::initializeInputs() {
 	if (!al_install_keyboard()) return false;
 	if (!al_install_mouse()) return false;
 	al_register_event_source(cb->getEventQueue(),al_get_keyboard_event_source());
+	al_register_event_source(cb->getEventQueue(),al_get_mouse_event_source());
 	updateInputs();
 	return true;
 }
