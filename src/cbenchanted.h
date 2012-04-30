@@ -51,7 +51,7 @@ class CBEnchanted :
 		~CBEnchanted();
 
 		static CBEnchanted *instance();
-		bool init(string file);
+		bool init(const char* file);
 		void run();
 		void stop();
 		void cleanup();

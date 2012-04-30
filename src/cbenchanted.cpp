@@ -66,19 +66,44 @@ void CBEnchanted::run() {
 /*
  * CBEnchanted::init - Initialize the interpreter
  */
-bool CBEnchanted::init(string file) {
+bool CBEnchanted::init(const char* file) {
 	INFO("Initializing");
+	
+	// Initialize error system first, because we can.
+	errors = new ErrorSystem();
+
+	// Boot up allegro
+	if (!al_init()) {
+		errors->createFatalError("Initialization error", "Failed to initialize Allegro");
+		return false;
+	}
+	
 	int32_t startPos; // Beginning of the CoolBasic data
 	int32_t endPos; // End of the executable
 
 	uint32_t nStrings; // Number of strings
 	uint32_t size; // Length of CoolBasic data
 
-	// Open file for reading
-	ifstream input(file.c_str(), ios::binary);
+	// Input file, opened for reading only
+	ifstream input;
+	
+	// If file is NULL, we need to find the real path to the current executable
+	if (file == NULL) {
+		ALLEGRO_PATH *tmpPath = al_get_standard_path(ALLEGRO_EXENAME_PATH);
+		input.open(al_path_cstr(tmpPath, ALLEGRO_NATIVE_PATH_SEP), ios::in | ios::binary);
+		al_destroy_path(tmpPath);
+	}
+	else {
+		input.open(file, ios::in | ios::binary);
+	}
 
 	if (!input.is_open()) {
-		FIXME("Can't open exe! %s", file.c_str());
+		if (file != NULL) {
+			errors->createFatalError("Initialization error", "Can't open exe!\n" + string(file));
+		}
+		else {
+			errors->createFatalError("Initialization error", "Can't open exe!");
+		}
 		return false;
 	}
 
@@ -282,13 +307,6 @@ bool CBEnchanted::init(string file) {
 		}
 	}
 
-	// Initialize error system first, because we can.
-	errors = new ErrorSystem();
-
-	if (!al_init()) {
-		errors->createFatalError("Initialization error", "Failed to initialize Allegro");
-		return false;
-	}
 	eventQueue = al_create_event_queue();
 	if (!eventQueue) {
 		errors->createFatalError("Initialization error", "Failed to initialize event queue");
