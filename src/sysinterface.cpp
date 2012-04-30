@@ -116,7 +116,9 @@ void SysInterface::functionCommandLine(void) {
 }
 
 void SysInterface::functionGetEXEName(void) {
-	STUB;
+	ALLEGRO_PATH* exePath = al_get_standard_path(ALLEGRO_EXENAME_PATH);
+	cb->pushValue(string(al_path_cstr(exePath, ALLEGRO_NATIVE_PATH_SEP)));
+	al_destroy_path(exePath);
 }
 
 void SysInterface::functionFPS(void) {
