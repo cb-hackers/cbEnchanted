@@ -181,7 +181,8 @@ void InputInterface::commandClearMouse(void) {
 }
 
 void InputInterface::commandSAFEEXIT(void) {
-	STUB;
+	bool toggled = cb->popValue().toBool();
+	cb->setSafeExit(toggled);
 }
 
 void InputInterface::functionInput(void) {

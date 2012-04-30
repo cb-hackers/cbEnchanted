@@ -56,6 +56,7 @@ class CBEnchanted :
 		void stop();
 		void cleanup();
 		bool isSafeExit(){ return safeExit; }
+		void setSafeExit(bool toggled) { safeExit = toggled; }
 		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;}
 		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
