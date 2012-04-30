@@ -9,6 +9,11 @@ InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0){
 	currentMouseState = new ALLEGRO_MOUSE_STATE;
 	lastMouseState = new ALLEGRO_MOUSE_STATE;
 
+	// Init cbKeyMap values to 0
+	for (int i = 0; i < 222; ++i) {
+		cbKeyMap[i] = 0;
+	}
+
 	cbKeyMap[1] = ALLEGRO_KEY_ESCAPE;
 	cbKeyMap[2] = ALLEGRO_KEY_1;
 	cbKeyMap[3] = ALLEGRO_KEY_2;
@@ -200,10 +205,18 @@ void InputInterface::functionWaitKey(void) {
 	{
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
-			case ALLEGRO_EVENT_KEY_DOWN:
-				cb->pushValue((int32_t)e.keyboard.keycode);
-			return;
-            case ALLEGRO_EVENT_DISPLAY_CLOSE:
+			case ALLEGRO_EVENT_KEY_DOWN: {
+				int32_t key = e.keyboard.keycode;
+				for (int32_t i = 0; i < 222; ++i) {
+					if (cbKeyMap[i] == key) {
+						cb->pushValue(i);
+						return;
+					}
+				}
+				cb->pushValue(0);
+				return;
+			}
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 				cb->pushValue(0);
 			return;
