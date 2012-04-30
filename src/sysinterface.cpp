@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "sysinterface.h"
+#include "errorsystem.h"
 #include <time.h>
 #include <iostream>
 #include <boost/crc.hpp>
@@ -27,11 +28,7 @@ void SysInterface::commandWait(void) {
 }
 
 void SysInterface::commandMakeError(void) {
-#ifdef WIN32
-	MessageBoxA(NULL,cb->popValue().toString().getRef().c_str(), "Error", MB_OK);
-#else
-	assert("Linux MakeError uncomplete" != 0);
-#endif
+	cb->errors->createFatalError(cb->popValue().toString().getStdString(), "", "Error!");
 }
 
 void SysInterface::commandSaveProgram(void) {

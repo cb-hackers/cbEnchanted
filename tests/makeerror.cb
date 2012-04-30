@@ -1,0 +1,5 @@
+endl$=Chr(13)+Chr(10)
+
+Print "Hit any key to fire an error..."
+WaitKey
+MakeError "An awfully fatal system error has occurred, and this program is terminated by force." + endl + endl + "Just kidding.. this was only a test. This error was launched on purpose :)"
