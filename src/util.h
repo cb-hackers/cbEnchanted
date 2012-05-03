@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 #include "stdint.h"
+#include <string>
 
 /**
   * Returns system timer in milliseconds
