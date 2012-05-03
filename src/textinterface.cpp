@@ -153,7 +153,7 @@ void TextInterface::commandClearText(void) {
 }
 
 void TextInterface::functionLoadFont(void) {
-	//TODO find fonts on windows and do underlining with line primitives
+	//TODO do underlining with line primitives
 	bool underLine = cb->popValue().toBool();
 	bool italic = cb->popValue().toBool();
 	bool bold = cb->popValue().toBool();
@@ -173,10 +173,22 @@ void TextInterface::functionLoadFont(void) {
 	}
 
 	ALLEGRO_FONT *font = al_load_font(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), size, ALLEGRO_TTF_MONOCHROME);
-	int32_t keyId = nextfontid();
-	fontMap[keyId] = font;
-
-	cb->pushValue(keyId);
+	if (font != NULL) {
+		int32_t keyId = nextfontid();
+		fontMap[keyId] = font;
+		cb->pushValue(keyId);
+	}
+	else {
+		// Error, but what kind?
+		string strpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
+		if (strpath != "") {
+			cb->errors->createError("LoadFont() failed!", "Failed to load font " + fontname + "\nTried to load it from the following path:\n" + strpath);
+		}
+		else {
+			cb->errors->createError("LoadFont() failed!", "Failed to load font \"" + fontname + "\".\nThe font file could not be found.");
+		}
+		cb->pushValue(0);
+	}
 }
 
 void TextInterface::renderAddTexts(RenderTarget &r){
