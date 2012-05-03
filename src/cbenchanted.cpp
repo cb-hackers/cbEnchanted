@@ -9,6 +9,9 @@
 #include "cbvariableholder.h"
 #include "mathoperations.h"
 #include "errorsystem.h"
+#include "util.h"
+#include <locale>
+#include <locale.h>
 
 static CBEnchanted *cbInstance;
 
@@ -33,7 +36,7 @@ CBEnchanted *CBEnchanted::instance() {
 void CBEnchanted::run() {
 	// Make sure that we are initialized properly to avoid crashing
 	assert(initialized == true);
-
+	setlocale(LC_ALL,"fi_FI.ISO-8859-1");
 	// Run until told to quit
 	running = true;
 	while (running) {
@@ -115,15 +118,17 @@ bool CBEnchanted::init(const char* file) {
 
 	// Read and decrypt strings
 	initStrings(nStrings);
-	string key = "Mark Sibly is my idol!";
+	const char key[] = "Mark Sibly is my idol!";
 	for (uint32_t i = 1; i <= nStrings; i++) {
 		uint32_t len;
 		input.read((char *)(&len), 4);
-		string s = "";
+		string s;
 		char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
-			s += char(c - key[j % key.length()]);
+			c = c - key[j % 22];
+			if (c < 0) c--;
+			s += c;
 		}
 		setString(i, s);
 	}
