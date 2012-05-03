@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <math.h>
 #include <unordered_map>
 
 using namespace std;
@@ -26,6 +27,7 @@ int32_t rand(int32_t max) {
 // and their values as font file name.
 const unordered_map<string,string> getMapOfNormalFonts() {
 	unordered_map<string,string> fonts;
+	fonts.rehash(ceil(61 / fonts.max_load_factor()));
 
 	fonts["andalus"] = "andlso.ttf";
 	fonts["angsana new"] = "angsa.ttf";
@@ -96,6 +98,7 @@ const unordered_map<string,string> getMapOfNormalFonts() {
 // and their values as font file name.
 const unordered_map<string,string> getMapOfBoldFonts() {
 	unordered_map<string,string> fonts;
+	fonts.rehash(ceil(28 / fonts.max_load_factor()));
 
 	fonts["aharoni"] = "ahronbd.ttf";
 	fonts["angsana new"] = "angsab.ttf";
@@ -133,6 +136,7 @@ const unordered_map<string,string> getMapOfBoldFonts() {
 // and their values as font file name.
 const unordered_map<string,string> getMapOfItalicFonts() {
 	unordered_map<string,string> fonts;
+	fonts.rehash(ceil(21 / fonts.max_load_factor()));
 
 	fonts["angsana new"] = "angsai.ttf";
 	fonts["angsanaupc"] = "angsaui.ttf";
@@ -162,6 +166,7 @@ const unordered_map<string,string> getMapOfItalicFonts() {
 // and their values as font file name.
 const unordered_map<string,string> getMapOfBoldItalicFonts() {
 	unordered_map<string,string> fonts;
+	fonts.rehash(ceil(20 / fonts.max_load_factor()));
 
 	fonts["angsana new"] = "angsaz.ttf";
 	fonts["angsanaupc"] = "angsauz.ttf";
