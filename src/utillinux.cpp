@@ -8,9 +8,9 @@
 #include <sys/time.h>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
-using std::cout;
-using std::endl;
+using namespace std;
 
 int64_t mtimer() {
 	struct timeval tv;
@@ -29,9 +29,9 @@ int32_t rand(int32_t max) {
 	return rand() % max;
 }
 
-char* findfont(const char* font, bool isBold, bool isItalic) {
-	char* fontpath = {'\0'};
+string findfont(const char* font, bool isBold, bool isItalic) {
 #ifdef FONTCONFIG_FOUND
+	string fontpath = "";
 	// Create a font query
 	cout << "Trying to find font " << font;
 	if (isBold) cout << " [BOLD]";
@@ -43,36 +43,36 @@ char* findfont(const char* font, bool isBold, bool isItalic) {
 	                                    FC_SLANT, FcTypeInteger, isItalic ? FC_SLANT_ITALIC : FC_SLANT_ROMAN,
 	                                    NULL);
 	//DEBUG FcPatternPrint(pattern);
-	
+
 	// Add default initialization values to the pattern
 	FcDefaultSubstitute(pattern);
 	//DEBUG FcPatternPrint(pattern);
-	
+
 	// Find the best font
 	FcResult result;
 	FcPattern* matched = FcFontMatch(NULL, pattern, &result);
 	//DEBUG FcPatternPrint(matched);
-	
+
 	// Did we find that font?
 	if (matched) {
 		// Oh yeah.
 		FcChar8* fontconfig_path;
 		FcPatternGetString(matched, FC_FILE, 0, &fontconfig_path);
-		fontpath = (char*)fontconfig_path;
-		cout << " -> Best match: \"" << fontpath << "\"" << endl;
+		fontpath = string((char*)fontconfig_path);
+		cout << " -> Best match: \"" << fontpath.c_str() << "\"" << endl;
 	}
 	else {
 		// Uh oh, there's no such font. We can only error out in textinterface.cpp for this :(
 		cout << " -> font not found :(" << endl;
 	}
-	
+
 	// Don't leak memory
 	FcPatternDestroy(pattern);
 	FcPatternDestroy(matched);
-	
+
 	return fontpath;
 #else
-	return fontpath;
+	return "";
 #endif // FONTCONFIG_FOUND
 }
 

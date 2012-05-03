@@ -1,10 +1,7 @@
 arial=LoadFont("arial",20)
 impact=LoadFont("impact",28)
-system=LoadFont("fixedsys")
-coolb=LoadFont("coolb")
 verdana=LoadFont("verdana",18,ON,OFF,ON) 'bold and underlined
 times=LoadFont("times new roman",20,OFF,ON) 'italic
-customfont=LoadFont("testfont.ttf", 20) 'custom font for cbE
 
 Repeat
 
@@ -16,14 +13,6 @@ Repeat
     SetFont impact
     Text 100,100,"A sound plan!"
 
-    Color cbyellow
-    SetFont system
-    Text 260,270,"Dead man walking"
-    
-    Color cbcyan
-    SetFont system
-    Text 20,200,"This..is..my BOOMSTICK!"
-
     Color cbsilver
     SetFont verdana
     Text 70,220,"What do you want?!"
@@ -31,10 +20,6 @@ Repeat
     Color cblightred
     SetFont times
     Text 150,180,"Night beckons"
-
-    Color cbgreen
-    SetFont customfont
-    CenterText 200,130,"Don't worry, be happy!"
 
     DrawScreen
 

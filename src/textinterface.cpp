@@ -11,15 +11,6 @@
 	#include <GL/gl.h>
 #endif
 
-#ifdef WIN32
-#define DEFAULT_FONT "C:/Windows/Fonts/cour.ttf"
-#define FONT_PATH "C:/Windows/Fonts/"
-#define FALLBACK_FONT "C:/Windows/Fonts/DejaVuSansMono.ttf"
-#else
-#define DEFAULT_FONT "/usr/share/fonts/TTF/cour.ttf"
-#define FONT_PATH "/usr/share/fonts/"
-#define FALLBACK_FONT "/usr/share/fonts/TTF/DejaVuSansMono.ttf"
-#endif
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 
@@ -40,25 +31,17 @@ bool TextInterface::initializeFonts() {
 	al_init_ttf_addon();
 #ifdef FONTCONFIG_FOUND
 	if (!FcInit()) {
-		INFO("Failed to initialize fontconfig");
+		cerr << "Failed to initialize fontconfig" << endl;
 		return false;
 	}
 	FcInitLoadConfigAndFonts();
-	currentFont = al_load_font(findfont("Courier New"), 12, ALLEGRO_TTF_MONOCHROME);
-#else
-	currentFont = al_load_font(DEFAULT_FONT, 12, ALLEGRO_TTF_MONOCHROME);
 #endif
+	currentFont = al_load_font(findfont("Courier New").c_str(), 12, ALLEGRO_TTF_MONOCHROME);
 	if (currentFont == 0) {
-		// Unable to load courier. Try FALLBACK_FONT
-		INFO("Failed to load font \"%s\"", DEFAULT_FONT);
-		INFO("-> Trying to load \"%s\"", FALLBACK_FONT);
-		currentFont = al_load_font(FALLBACK_FONT, 12, ALLEGRO_TTF_MONOCHROME);
-		if (currentFont == 0) {
-			INFO(" -> Failed to load even the fallback font!");
-			INFO(" -> If you are using text in your program without first setting")
-			INFO("    a font with LoadFont and SetFont, your program might crash!");
-			return true;
-		}
+		cerr << " -> Failed to load the default font Courier New!" << endl;
+		cerr << " -> If you are using text in your program without first setting" << endl;
+		cerr << "    a font with LoadFont and SetFont, your program might crash!" << endl;
+		return true;
 	}
 	fontMap[0] = currentFont;
 	return true;
@@ -181,7 +164,7 @@ void TextInterface::functionLoadFont(void) {
 	if (fontname.find_first_of('.') == fontname.npos) {
 		// If the fontname doesn't imply that it is a path to a font file, try to find it
 		// from systems own font dir
-		path = al_create_path(findfont(fontname.c_str(), bold, italic));
+		path = al_create_path(findfont(fontname.c_str(), bold, italic).c_str());
 	}
 	else {
 		// Font name had a dot in it, so we assume the programmer wanted to load a font
