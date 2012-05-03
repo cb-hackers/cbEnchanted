@@ -8,6 +8,7 @@
 ErrorSystem::ErrorSystem() {
 	errorCount = 0;
 	isFatalByDefault = false;
+	isErrorMessagesOn = true;
 	lastError.fatal = false;
 	lastError.message = "";
 	lastError.heading = "";
