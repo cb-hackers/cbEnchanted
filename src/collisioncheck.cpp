@@ -167,8 +167,6 @@ void CollisionCheck::RectCircleTest() {
 
 /** A rectangle - rectangle collision test */
 void CollisionCheck::RectRectTest() {
-	DrawCollisionBoundaries();
-
 	// Get the object coordinates here and modify them freely, later position the object according to them
 	float objX = mObject1->getX();
 	float objY = mObject1->getY();
@@ -236,8 +234,6 @@ void CollisionCheck::RectRectTest() {
 
 /** A circle - circle collision test */
 void CollisionCheck::CircleCircleTest() {
-	DrawCollisionBoundaries();
-
 	// Get the object coordinates here and then modify them later on. Creates more readable code ;)
 	float objX = mObject1->getX();
 	float objY = mObject1->getY();
@@ -287,8 +283,6 @@ void CollisionCheck::CircleCircleTest() {
 
 /** A rectangle - map collision test */
 void CollisionCheck::RectMapTest() {
-	DrawCollisionBoundaries();
-
 	// Did we collide? Where?
 	//  * 0 = top
 	//  * 1 = right
@@ -395,8 +389,6 @@ void CollisionCheck::RectMapTest() {
 
 /** A circle - map collision test */
 void CollisionCheck::CircleMapTest() {
-	//DrawCollisionBoundaries();
-
 	// Did we collide? Where?
 	//  * 0 = top
 	//  * 1 = right
