@@ -5,6 +5,7 @@
 #include "cbenchanted.h"
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 /** A generic, portable error system. */
 class ErrorSystem {
@@ -23,8 +24,11 @@ class ErrorSystem {
 		/** Sets default fatality of all normal errors. */
 		void setDefaultFatality(bool fatality);
 
-		/** Sets whether message boxes are displayed or not. */
-		void setSuppressed(bool suppress);
+		/** Sets an error text to be suppressed. */
+		void suppressError(std::string errortxt);
+
+		/** Checks whether an error text is suppressed. */
+		bool isSuppressed(std::string errortxt);
 
 		/** Sets whether errors contain debug messages or just plain "Memory Access Violation". */
 		void setErrorMessages(bool showErrors);
@@ -54,15 +58,14 @@ class ErrorSystem {
 		/** Are errors fatal by default. */
 		bool isFatalByDefault;
 
-		/** Are errors suppressed so that errors are only logged to console (no native message box). */
-		bool isSuppressed;
-
 		/** Should errors display only "Memory Access Violation" or the actual error text. */
 		bool isErrorMessagesOn;
 
 		/** Does the message box thingy to show the error. */
 		bool execLastError();
 
+		/** The errors that should no longer be logged nor popped up */
+		std::unordered_set<string> suppressedErrors;
 };
 
 #endif // ERRORSYSTEM_H

@@ -2,12 +2,12 @@
 #include "cbenchanted.h"
 #include "debug.h"
 #include <allegro5/allegro_native_dialog.h>
+#include <iostream>
 
 /** A dull constructor. */
 ErrorSystem::ErrorSystem() {
 	errorCount = 0;
 	isFatalByDefault = false;
-	isSuppressed = false;
 	lastError.fatal = false;
 	lastError.message = "";
 	lastError.heading = "";
@@ -30,7 +30,6 @@ bool ErrorSystem::createError(std::string heading, std::string message, std::str
 		lastError.message = message;
 		lastError.heading = heading;
 		lastError.title = title;
-		printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
 	}
 	else {
 		// The developer wanted only MAVs, so he'll get fatal MAVs only.
@@ -51,7 +50,6 @@ void ErrorSystem::createFatalError(std::string heading, std::string message, std
 		lastError.message = message;
 		lastError.heading = heading;
 		lastError.title = title;
-		printf((string(title) + string(" -- ") + string(heading) + string(" -- ") + string(message) + string("\n")).c_str());
 	}
 	else {
 		// The developer wanted only MAVs, so he'll get fatal MAVs only.
@@ -71,9 +69,14 @@ void ErrorSystem::setDefaultFatality(bool fatality) {
 	isFatalByDefault = fatality;
 }
 
-/** Sets whether message boxes are displayed or not. */
-void ErrorSystem::setSuppressed(bool suppress) {
-	isSuppressed = suppress;
+/** Sets an error text to be suppressed. */
+void ErrorSystem::suppressError(std::string errortxt) {
+	suppressedErrors.insert(errortxt);
+}
+
+/** Checks whether an error text is suppressed. */
+bool ErrorSystem::isSuppressed(std::string errortxt) {
+	return suppressedErrors.count(errortxt) ? true : false;
 }
 
 /** Sets whether errors contain debug messages or just plain "Memory Access Violation". */
@@ -88,6 +91,18 @@ void ErrorSystem::setErrorMessages(bool showErrors) {
 bool ErrorSystem::execLastError() {
 	if (errorCount == 0) return true;
 
+	string concatError = lastError.title + " -- " + lastError.heading;
+	if (lastError.message != "") {
+		concatError += " -- " + lastError.message;
+	}
+
+	// If this error is not fatal and it is set to be suppressed, return true here already
+	if (!lastError.fatal && this->isSuppressed(concatError)) {
+		return true;
+	}
+
+	std::cerr << concatError.c_str() << std::endl;
+
 	if (lastError.fatal) {
 		al_show_native_message_box(
 					cb->getWindow(),
@@ -101,62 +116,56 @@ bool ErrorSystem::execLastError() {
 		return false;
 	}
 #ifndef _WIN32 // Allegro doesn't support custom messagebox buttons with Windows
-	else if (!isSuppressed) {
-		int ret = al_show_native_message_box(
-					cb->getWindow(),
-					lastError.title.c_str(),
-					lastError.heading.c_str(),
-					lastError.message.c_str(),
-					"Abort|Continue|Suppress errors",
-					ALLEGRO_MESSAGEBOX_OK_CANCEL
-		);
-		switch (ret) {
-			case 0: // No buttons clicked
-			case 2: // User clicked continue
-				return true;
-			case 1: // User clicked abort
-				cb->stop();
-				return false;
-			case 3: // Suppress errors
-				isSuppressed = true;
-				return true;
-			default:
-				FIXME("Undefined messagebox return value %i in ErrorSystem::execLastError()", ret);
-				cb->stop();
-				return false;
-		}
+	int ret = al_show_native_message_box(
+				cb->getWindow(),
+				lastError.title.c_str(),
+				lastError.heading.c_str(),
+				lastError.message.c_str(),
+				"Abort|Continue|Suppress this error",
+				ALLEGRO_MESSAGEBOX_OK_CANCEL
+	);
+	switch (ret) {
+		case 0: // No buttons clicked
+		case 2: // User clicked continue
+			return true;
+		case 1: // User clicked abort
+			cb->stop();
+			return false;
+		case 3: // Suppress errors
+			this->suppressError(concatError);
+			return true;
+		default:
+			FIXME("Undefined messagebox return value %i in ErrorSystem::execLastError()", ret);
+			cb->stop();
+			return false;
 	}
 #else
-	else if (!isSuppressed) {
-		int ret = al_show_native_message_box(
+	int ret = al_show_native_message_box(
+				cb->getWindow(),
+				lastError.title.c_str(),
+				lastError.heading.c_str(),
+				(lastError.message + "\n\nDo you still want to continue program execution?").c_str(),
+				NULL,
+				ALLEGRO_MESSAGEBOX_YES_NO
+	);
+	if (ret == 1) {
+		// Ask the user whether they'd like to suppress this error
+		int suppressMsg = al_show_native_message_box(
 					cb->getWindow(),
-					lastError.title.c_str(),
-					lastError.heading.c_str(),
-					(lastError.message + "\n\nDo you still want to continue program execution?").c_str(),
+					"Suppress future errors?",
+					"Do you want to stop this error from popping up later?",
+					"",
 					NULL,
 					ALLEGRO_MESSAGEBOX_YES_NO
 		);
-		if (ret == 1) {
-			// Every 5th error ask the user whether they'd like to suppress future errors.
-			if (errorCount % 5 == 0) {
-				int suppressMsg = al_show_native_message_box(
-							cb->getWindow(),
-							"Suppress future errors?",
-							"Do you want to suppress future non-fatal errors?",
-							"",
-							NULL,
-							ALLEGRO_MESSAGEBOX_YES_NO
-				);
-				if (suppressMsg == 1) {
-					isSuppressed = true;
-				}
-			}
-			return true;
+		if (suppressMsg == 1) {
+			this->suppressError(concatError);
 		}
-		else {
-			cb->stop();
-			return false;
-		}
+		return true;
+	}
+	else {
+		cb->stop();
+		return false;
 	}
 #endif // _WIN32
 
