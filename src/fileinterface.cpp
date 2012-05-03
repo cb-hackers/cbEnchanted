@@ -60,7 +60,9 @@ void FileInterface::commandMakeDir(void) {
 void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString().getRef();
 	string file_s1 = cb->popValue().toString().getRef();
-	//fs::copy_file(fs::path(file_s1), fs::path(file_s2));
+#ifdef _WIN32 // Doesn't work on linux for some reason
+	fs::copy_file(fs::path(file_s1), fs::path(file_s2));
+#endif
 }
 
 void FileInterface::commandDeleteFile(void) {
