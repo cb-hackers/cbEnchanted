@@ -54,7 +54,7 @@ void TextInterface::commandSetFont(void) {
 		currentFont = fontMap[id];
 	}
 	if (currentFont == 0) {
-		if (cb->errors->createError("SetFont() failed!", "Failed to load a font with id " + boost::lexical_cast<string>(id))) {
+		if (cb->errors->createError("SetFont() failed!", "Failed to load a font with id " + boost::lexical_cast<string>(id) + ". You probably have deleted it with DeleteFont() and then tried to use it.")) {
 			// Try to continue
 			currentFont = fontMap[0];
 		}
@@ -63,7 +63,15 @@ void TextInterface::commandSetFont(void) {
 
 void TextInterface::commandDeleteFont(void) {
 	int32_t id = cb->popValue().toInt();
-	FIXME("DeleteFont not yet implemented");
+	if (fontMap.count(id) == 0) {
+		// Font that we tried to delete didn't exist
+		cb->errors->createError("DeleteFont() failed!", "Font with id " + boost::lexical_cast<string>(id) + " is not loaded!");
+		return;
+	}
+
+	ALLEGRO_FONT *fontToDelete = fontMap[id];
+	al_destroy_font(fontToDelete);
+	fontMap.erase(id);
 }
 
 void TextInterface::commandText(void) {
