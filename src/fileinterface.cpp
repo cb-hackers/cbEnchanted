@@ -60,7 +60,7 @@ void FileInterface::commandMakeDir(void) {
 void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString().getRef();
 	string file_s1 = cb->popValue().toString().getRef();
-	fs::copy_file(fs::path(file_s1), fs::path(file_s2));
+	//fs::copy_file(fs::path(file_s1), fs::path(file_s2));
 }
 
 void FileInterface::commandDeleteFile(void) {
