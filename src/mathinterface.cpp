@@ -118,8 +118,11 @@ void MathInterface::functionRand(void) {
 }
 
 void MathInterface::functionMin(void) {
-	Any b = cb->popValue();
-	Any a = cb->popValue();
+	const Any &b = cb->popValue();
+	const Any &a = cb->popValue();
+	if (a.type() == Any::Int) {
+
+	}
 	cb->pushValue( (a < b) ? a : b);
 }
 

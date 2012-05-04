@@ -122,9 +122,11 @@ class Any {
 		  */
 		uint8_t toByte() const;
 
-		/** Optimized
+		/** Converts data to boolean and returns it
+		  * @return Coverted boolean value
 		  */
 		bool toBool() const;
+
 
 		/** Negation operator */
 		int32_t operator ! ()const;
@@ -239,7 +241,7 @@ FORCEINLINE bool Any::toBool() const {
 		case Float:
 			return dFloat != 0.0f;
 		case String:
-			return dString != 0 && dString->str != "";
+			return dString != 0;
 		case TypePtr:
 			return dPtr != 0;
 		default:

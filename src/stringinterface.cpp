@@ -10,11 +10,11 @@ void StringInterface::functionStr(void) {
 	Any a = cb->popValue();
 	switch (a.type()) {
 		case Any::Int:
-			cb->pushValue(lexical_cast<string>(a.getInt()));
-		return;
+			cb->pushValue(ISString::fromInt(a.getInt()));
+			return;
 		case Any::Float:
-			cb->pushValue(lexical_cast<string>(a.getFloat()));
-		return;
+			cb->pushValue(ISString::fromFloat(a.getFloat()));
+			return;
 		default:
 			cb->pushValue(a);
 	}
@@ -22,73 +22,60 @@ void StringInterface::functionStr(void) {
 
 void StringInterface::functionLeft(void) {
 	int32_t n = cb->popValue().toInt();
-	string s = cb->popValue().getString().getRef();
+	const ISString &s = cb->popValue().getString();
 
-	cb->pushValue(s.substr(0, n));
+	cb->pushValue(s.left(n));
 }
 
 void StringInterface::functionRight(void) {
 	int32_t n = cb->popValue().toInt();
-	string s = cb->popValue().getString().getRef();
+	const ISString &s = cb->popValue().getString();
 
-	cb->pushValue(s.substr(s.length() - n));
+	cb->pushValue(s.right(n));
 }
 
 void StringInterface::functionMid(void) {
 	int32_t len = cb->popValue().getInt();
 	int32_t pos = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	const ISString &str = cb->popValue().getString();
 
-	cb->pushValue(str.substr(pos-1, len));
+	cb->pushValue(str.mid(pos, len));
 }
 
 void StringInterface::functionReplace(void) {
-	string s3 = cb->popValue().getString().getRef();
-	string s2 = cb->popValue().getString().getRef();
-	string s = cb->popValue().getString().getRef();
+	const ISString &s3 = cb->popValue().getString();
+	const ISString &s2 = cb->popValue().getString();
+	const ISString &s = cb->popValue().getString();
 
-	string::size_type p = 0;
-
-	while ((p = s.find(s2, p))!=string::npos)
-	{
-		s.replace(p, s2.size(), s3);
-		++p;
-	}
-
-	cb->pushValue(s);
+	cb->pushValue(s.replace(s2, s3));
 }
 
 void StringInterface::functionInStr(void) {
 	int32_t pos = cb->popValue().getInt();
-	string sep = cb->popValue().getString().getRef();
-	string str = cb->popValue().getString().getRef();
+	const ISString &sep = cb->popValue().getString();
+	const ISString &str = cb->popValue().getString();
 
-	cb->pushValue(int32_t(str.find(sep, pos-1)+1));
+	cb->pushValue(str.inStr(sep,pos));
 }
 
 void StringInterface::functionUpper(void) {
-	string str = cb->popValue().getString().getRef();
-	cb->pushValue(boost::algorithm::to_upper_copy(str));
+	const ISString &str = cb->popValue().getString();
+	cb->pushValue(str.toUpper());
 }
 
 void StringInterface::functionLower(void) {
-	string str = cb->popValue().getString().getRef();
-
-	cb->pushValue(boost::algorithm::to_lower_copy(str));
+	const ISString &str = cb->popValue().getString();
+	cb->pushValue(str.toLower());
 }
 
 void StringInterface::functionTrim(void) {
-	string str = cb->popValue().getString().getRef();
-
-	str = str.substr(str.find_first_not_of(" "));
-	str = str.substr(0, str.find_last_not_of(" ")+1);
-
-	cb->pushValue(str);
+	const ISString &str = cb->popValue().getString();
+	cb->pushValue(str.trim());
 }
 
 void StringInterface::functionLSet(void) {
 	int32_t len = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	string str = cb->popValue().getString().toStdString();
 
 	str.resize(len, ' ');
 	cb->pushValue(str);
@@ -96,7 +83,7 @@ void StringInterface::functionLSet(void) {
 
 void StringInterface::functionRSet(void) {
 	int32_t len = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	string str = cb->popValue().getString().toStdString();
 
 	if(len>str.length()) {
 		string str2;
@@ -108,28 +95,22 @@ void StringInterface::functionRSet(void) {
 }
 
 void StringInterface::functionChr(void) {
-	unsigned char AV = cb->popValue().getInt();
-	string s;
-	if (AV > 128) {
-		char utfc[2];
-		al_utf8_encode(utfc, AV);
-		s += utfc[0];
-		s += utfc[1];
-	}
-	else {
-		s += AV;
-	}
-	cb->pushValue(ISString(s));
+	unsigned char s[2];
+	//ISString constructor automatically encodes char* to ALLEGRO_USTR.
+	s[0] = cb->popValue().getInt();
+	s[1] = 0;
+	cb->pushValue(ISString((char*)s));
 }
 
 void StringInterface::functionAsc(void) {
-	uint8_t AV = uint8_t(*cb->popValue().getString().getRef().c_str());
+	//TODO
+	uint8_t AV = uint8_t(*cb->popValue().getString().cString());
 	cb->pushValue(int(AV));
 }
 
 void StringInterface::functionLen(void) {
-	string s = cb->popValue().getString().getRef();
-	cb->pushValue(int(s.length()));
+	const ISString &s = cb->popValue().getString();
+	cb->pushValue(int32_t(s.length()));
 }
 
 void StringInterface::functionHex(void) {
@@ -156,17 +137,18 @@ void StringInterface::functionBin(void) {
 
 void StringInterface::functionString(void) {
 	int32_t n = cb->popValue().toInt();
-	string s = cb->popValue().getString().getRef();
-	string r = s;
+	ISString s = cb->popValue().getString();
+	ISString r = s;
 	for(int i = 1; i < n; i++)
 	{
-		r = r + s;
+		r += s;
 	}
 	cb->pushValue(r);
 }
 
 void StringInterface::functionFlip(void) {
-	string str = cb->popValue().getString().getRef();
+	//TODO: Fix this
+	string str = cb->popValue().getString().toStdString();
 	stringstream ss;
 	string::const_reverse_iterator rit;
 	for (rit = str.rbegin();rit < str.rend(); rit++)
@@ -179,9 +161,10 @@ void StringInterface::functionFlip(void) {
 }
 
 void StringInterface::functionStrInsert(void) {
-	string txt = cb->popValue().getString().getRef();
+	//TODO: Fix this
+	string txt = cb->popValue().getString().toStdString();
 	int32_t pos = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	string str = cb->popValue().getString().toStdString();
 
 	str.insert(pos, txt);
 
@@ -192,7 +175,7 @@ void StringInterface::functionStrInsert(void) {
 void StringInterface::functionStrRemove(void) {
 	int32_t len = cb->popValue().getInt();
 	int32_t pos = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	string str = cb->popValue().getString().toStdString();
 
 	str.erase(pos-1, len);
 
@@ -204,7 +187,7 @@ void StringInterface::functionStrMove(void) {
 	int32_t mov = cb->popValue().getInt();
 	int32_t len = cb->popValue().getInt();
 	int32_t pos = cb->popValue().getInt();
-	string str = cb->popValue().getString().getRef();
+	string str = cb->popValue().getString().toStdString();
 
 	string txt = str.substr(pos-1, len);
 	str.erase(pos-1, len);
@@ -215,8 +198,8 @@ void StringInterface::functionStrMove(void) {
 }
 
 void StringInterface::functionCountWords(void) {
-	string sep = cb->popValue().toString().getRef();
-	string str = cb->popValue().toString().getRef();
+	string sep = cb->popValue().toString().toStdString();
+	string str = cb->popValue().toString().toStdString();
 
 	if(str=="") {
 		cb->pushValue(0);
@@ -237,9 +220,9 @@ void StringInterface::functionCountWords(void) {
 }
 
 void StringInterface::functionGetWord(void) {
-	string sep = cb->popValue().toString().getRef();
+	string sep = cb->popValue().toString().toStdString();
 	int32_t w = cb->popValue().toInt();
-	string str = cb->popValue().toString().getRef();
+	string str = cb->popValue().toString().toStdString();
 
 	if(sep=="") {sep = ' ';}
 

@@ -30,7 +30,7 @@ void SoundInterface::functionPlaySound(void) {
 	else {
 		CBChannel* channel = new CBChannel;
 		channel->setMixer(al_get_default_mixer());
-		string file = any.toString().getRef();
+		string file = any.toString().toStdString();
 		INFO(file.c_str())
 		channel->playSound(file, volume, balance, freg);
 		int32_t nextChannel = nextChannelId();
