@@ -9,9 +9,6 @@
 #include "cbvariableholder.h"
 #include "mathoperations.h"
 #include "errorsystem.h"
-#include "util.h"
-#include <locale>
-#include <locale.h>
 
 static CBEnchanted *cbInstance;
 
@@ -36,7 +33,6 @@ CBEnchanted *CBEnchanted::instance() {
 void CBEnchanted::run() {
 	// Make sure that we are initialized properly to avoid crashing
 	assert(initialized == true);
-	setlocale(LC_ALL,"fi_FI.ISO-8859-1");
 	// Run until told to quit
 	running = true;
 	while (running) {
@@ -71,7 +67,7 @@ void CBEnchanted::run() {
  */
 bool CBEnchanted::init(const char* file) {
 	INFO("Initializing");
-	
+
 	// Initialize error system first, because we can.
 	errors = new ErrorSystem();
 
@@ -80,7 +76,7 @@ bool CBEnchanted::init(const char* file) {
 		errors->createFatalError("Initialization error", "Failed to initialize Allegro");
 		return false;
 	}
-	
+
 	int32_t startPos; // Beginning of the CoolBasic data
 	int32_t endPos; // End of the executable
 
@@ -89,7 +85,7 @@ bool CBEnchanted::init(const char* file) {
 
 	// Input file, opened for reading only
 	ifstream input;
-	
+
 	// If file is NULL, we need to find the real path to the current executable
 	if (file == NULL) {
 		ALLEGRO_PATH *tmpPath = al_get_standard_path(ALLEGRO_EXENAME_PATH);
@@ -123,12 +119,20 @@ bool CBEnchanted::init(const char* file) {
 		uint32_t len;
 		input.read((char *)(&len), 4);
 		string s;
-		char c;
+		unsigned char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
 			c = c - key[j % 22];
-			if (c < 0) c--;
-			s += c;
+			if (c > 128) {
+				c--;
+				char utfc[2];
+				al_utf8_encode(utfc, c);
+				s += utfc[0];
+				s += utfc[1];
+			}
+			else {
+				s += c;
+			}
 		}
 		setString(i, s);
 	}
