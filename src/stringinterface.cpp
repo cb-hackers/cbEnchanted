@@ -109,12 +109,17 @@ void StringInterface::functionRSet(void) {
 
 void StringInterface::functionChr(void) {
 	unsigned char AV = cb->popValue().getInt();
-	// We need to fiddle around with this buffer and ISString to be able to
-	// support ASCII values from 128 to 255, too.
-	char buffer[2];
-	buffer[0] = *(char*)&AV;
-	buffer[1] = 0;
-	cb->pushValue(ISString(buffer));
+	string s;
+	if (AV > 128) {
+		char utfc[2];
+		al_utf8_encode(utfc, AV);
+		s += utfc[0];
+		s += utfc[1];
+	}
+	else {
+		s += AV;
+	}
+	cb->pushValue(ISString(s));
 }
 
 void StringInterface::functionAsc(void) {
