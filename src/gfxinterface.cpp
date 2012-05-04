@@ -74,7 +74,6 @@ bool GfxInterface::initializeGfx()
 
 	al_init_image_addon();
 	al_init_primitives_addon();
-	CBImage::initMaskShader();
 
 	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
@@ -252,10 +251,14 @@ void GfxInterface::commandPutPixel(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	if (id == 0) {
-		currentRenderTarget->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
+		currentRenderTarget->putPixel(
+			x, y, al_map_rgb((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF)
+		);
 	}
 	else {
-		bufferMap[id]->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
+		bufferMap[id]->putPixel(
+			x, y, al_map_rgb((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF)
+		);
 	}
 }
 

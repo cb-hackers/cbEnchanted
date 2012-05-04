@@ -36,6 +36,10 @@ class ImageInterface {
 		int32_t idCounter;
 		int32_t nextId();
 		map <int32_t, CBImage*> cbImages;
+		/** Default mask color */
+		ALLEGRO_COLOR defaultMask;
+		/** Is default mask on */
+		bool defaultMaskToggled;
 };
 
 #endif

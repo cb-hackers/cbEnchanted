@@ -35,10 +35,6 @@ class CBImage
 		int32_t frameHeight;
 		int32_t animBegin;
 		int32_t animLength;
-
-		static GLuint maskShaderProgram;
-		static bool useARBShaders;
-		static GLuint maskColorUniformPos;
 };
 
 #endif // CBIMAGE_H
