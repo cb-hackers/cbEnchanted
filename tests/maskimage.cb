@@ -1,0 +1,54 @@
+Randomize Timer()
+
+img= MakeImage(256, 256)
+
+ClsColor 128, 128, 128
+Cls
+
+
+
+'Draw to it 
+DrawToImage img
+
+    'Draw 50 random colour boxes
+    For i=1 To 50
+        Color Rand(255), Rand(255), Rand(255)
+        Box Rand(255),Rand(255),Rand(20,100),Rand(20,100)
+    Next i
+    
+    'Draw a circle in the middle with full red
+    Color 255, 0, 0
+    Circle 113, 133, 30
+
+DrawToScreen
+
+'Put our master-piece onto screen 
+DrawImage img, 0, 0
+
+Color cbwhite
+Text 10,270,"Press any key to continue..."
+
+Print "1"
+
+'Refresh screen 
+DrawScreen
+
+WaitKey 
+
+Print "2"
+
+'mask image with full red
+MaskImage img, 255, 0, 0
+
+Print "3"
+
+DrawImage img, 0, 0
+
+Print "4"
+
+Text 10, 270, "Press any key to quit..."
+
+DrawScreen
+
+Print "5"
+WaitKey 
