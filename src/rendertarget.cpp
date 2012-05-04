@@ -147,7 +147,7 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 void RenderTarget::resize(int32_t w, int32_t h) {
 	ALLEGRO_BITMAP *newBitmap = al_create_bitmap(w,h);
 	al_set_target_bitmap(newBitmap);
-	al_clear_to_color(al_map_rgb_f(1.0f,1.0f,1.0f));
+	al_clear_to_color(al_map_rgb(0, 0, 0));
 	int32_t a,b,c;
 	al_get_blender(&a,&b,&c);
 	al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);

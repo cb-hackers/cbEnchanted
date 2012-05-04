@@ -21,12 +21,14 @@ class CBImage
 		void draw(RenderTarget &r,float x,float y,int frame, bool useMask);
 		void drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask);
 		void drawBox(RenderTarget &r,float sx,float sy, float sw, float sh, float tx, float ty, int frame, bool useMask);
-		void maskImage(const ALLEGRO_COLOR &c){maskColor = c;}
+		void maskImage(const ALLEGRO_COLOR &color);
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
 		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begining,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begining;animLength = animL;}
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
 		static void initMaskShader();
+		/** Set this CBImage ready for drawing operations or set it back for drawing. */
+		void setupForDrawOperations(bool toggle = true);
 	private:
 		float hotspotX,hotspotY;
 		RenderTarget renderTarget;
@@ -36,9 +38,10 @@ class CBImage
 		int32_t animBegin;
 		int32_t animLength;
 
-		static GLuint maskShaderProgram;
-		static bool useARBShaders;
-		static GLuint maskColorUniformPos;
+		/** The unmasked version of this image */
+		ALLEGRO_BITMAP* unmaskedBitmap;
+		/** The masked version of this image - is NULL before setupForDrawOperations() is called. */
+		ALLEGRO_BITMAP* maskedBitmap;
 };
 
 #endif // CBIMAGE_H

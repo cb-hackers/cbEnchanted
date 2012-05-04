@@ -7,6 +7,8 @@
 
 ImageInterface::ImageInterface() {
 	cb = static_cast <CBEnchanted *> (this);
+	defaultMask = al_map_rgb(0, 0, 0);
+	defaultMaskToggled = true;
 }
 
 ImageInterface::~ImageInterface() {
@@ -51,16 +53,22 @@ void ImageInterface::commandDrawImageBox(void) {
 }
 
 void ImageInterface::commandMaskImage(void) {
-
-	float b = cb->popValue().toFloat()/255.0f;
-	float g= cb->popValue().toFloat()/255.0f;
-	float r = cb->popValue().toFloat()/255.0f;
+	int32_t b = cb->popValue().getInt();
+	int32_t g = cb->popValue().getInt();
+	int32_t r = cb->popValue().getInt();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->maskImage(al_map_rgb_f(r,g,b));
+	img->maskImage(al_map_rgb(r, g, b));
 }
 
 void ImageInterface::commandDefaultMask(void) {
-	STUB;
+	int32_t b = cb->popValue().getInt();
+	int32_t g = cb->popValue().getInt();
+	int32_t r = cb->popValue().getInt();
+	defaultMaskToggled = cb->popValue().toBool();
+
+	if (defaultMaskToggled) {
+		defaultMask = al_map_rgb(r, g, b);
+	}
 }
 
 void ImageInterface::commandResizeImage(void) {
@@ -115,6 +123,9 @@ void ImageInterface::functionLoadImage(void) {
 		return;
 	}
 	al_destroy_path(path);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
 
 	int32_t id = nextId();
 	cbImages[id] = image;
@@ -138,7 +149,10 @@ void ImageInterface::functionLoadAnimImage(void) {
 	}
 	al_destroy_path(path);
 
-	image->setAnimParams(frameW,frameH,startF,animL);
+	image->setAnimParams(frameW, frameH, startF, animL);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);

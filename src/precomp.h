@@ -20,7 +20,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_opengl.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/transformations.h>

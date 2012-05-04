@@ -5,6 +5,7 @@
 #include "cbmap.h"
 
 class CBEnchanted;
+class CBImage;
 
 
 class GfxInterface {
@@ -93,6 +94,9 @@ class GfxInterface {
 
 		/** Buffer's returned by SCREEN() and Image() */
 		std::map<int32_t,RenderTarget*> bufferMap;
+
+		/** Holds the image DrawToImage() was called with. */
+		CBImage* imageToDrawTo;
 };
 
 #endif

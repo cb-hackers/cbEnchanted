@@ -37,7 +37,8 @@ GfxInterface::GfxInterface() :
 	drawImageToWorld(false),
 	drawTextToWorld(false),
 	gameDrawn(false),
-	gameUpdated(false)
+	gameUpdated(false),
+	imageToDrawTo(NULL)
 {
 	cb = static_cast <CBEnchanted *> (this);
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
@@ -74,7 +75,6 @@ bool GfxInterface::initializeGfx()
 
 	al_init_image_addon();
 	al_init_primitives_addon();
-	CBImage::initMaskShader();
 
 	currentRenderTarget = windowRenderTarget;
 	windowGammaR = 0;
@@ -252,10 +252,14 @@ void GfxInterface::commandPutPixel(void) {
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	if (id == 0) {
-		currentRenderTarget->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
+		currentRenderTarget->putPixel(
+			x, y, al_map_rgb((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF)
+		);
 	}
 	else {
-		bufferMap[id]->putPixel(x,y,al_map_rgb_f(((pixel>>16)&0xFF)/255.0f,((pixel>>8)&0xFF)/255.0f,(pixel&0xFF)/255.0f));
+		bufferMap[id]->putPixel(
+			x, y, al_map_rgb((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF)
+		);
 	}
 }
 
@@ -323,10 +327,18 @@ void GfxInterface::commandScreenGamma(void) {
 
 void GfxInterface::commandDrawToImage(void) {
 	int32_t id = cb->popValue().getInt();
-	setCurrentRenderTarget(cb->getImage(id)->getRenderTarget());
+	imageToDrawTo = cb->getImage(id);
+	imageToDrawTo->setupForDrawOperations(true);
+	setCurrentRenderTarget(imageToDrawTo->getRenderTarget());
 }
 
 void GfxInterface::commandDrawToScreen(void) {
+	if (imageToDrawTo != NULL) {
+		imageToDrawTo->setupForDrawOperations(false);
+	}
+	else {
+		FIXME("commandDrawToScreen didn't have an imageToDrawTo set!");
+	}
 	setCurrentRenderTarget(windowRenderTarget);
 }
 

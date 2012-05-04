@@ -1,11 +1,6 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
 
-bool CBImage::useARBShaders;
-GLuint CBImage::maskShaderProgram;
-GLuint CBImage::maskColorUniformPos;
-
-
 CBImage::CBImage() :
 	hotspotX(0),
 	hotspotY(0),
@@ -15,7 +10,9 @@ CBImage::CBImage() :
 	animBegin(0),
 	animLength(0)
 {
-	maskColor = al_map_rgb_f(0, 0, 0);
+	maskColor = al_map_rgb(0, 0, 0);
+	maskedBitmap = NULL;
+	unmaskedBitmap = NULL;
 }
 
 CBImage::~CBImage() {
@@ -23,28 +20,15 @@ CBImage::~CBImage() {
 }
 
 bool CBImage::load(const string &path) {
-	return renderTarget.load(path);
+	if (!renderTarget.load(path)) {
+		return false;
+	}
+	maskedBitmap = renderTarget.getBitmap();
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	return true;
 }
 
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
-	if (useMask && maskShaderProgram) {
-		if (useARBShaders) {
-			glUseProgramObjectARB(maskShaderProgram);
-			glUniform4fARB(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
-		}
-		else {
-			glUseProgram(maskShaderProgram);
-			glUniform4f(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
-		}
-		r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
-		if (useARBShaders) {
-			glUseProgramObjectARB(0);
-		}
-		else {
-			glUseProgram(0);
-		}
-		return;
-	}
 	r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
 }
 
@@ -90,24 +74,6 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 }
 
 void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask) {
-	if (useMask && maskShaderProgram) {
-		if (useARBShaders) {
-			glUseProgramObjectARB(maskShaderProgram);
-			glUniform4fARB(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
-		}
-		else {
-			glUseProgram(maskShaderProgram);
-			glUniform4f(maskColorUniformPos,maskColor.r,maskColor.g,maskColor.b,maskColor.a);
-		}
-		r.drawBitmapRegion(renderTarget.getBitmap(),sx,sy,sw,sh,tx,ty);
-		if (useARBShaders) {
-			glUseProgramObjectARB(0);
-		}
-		else {
-			glUseProgram(0);
-		}
-		return;
-	}
 	r.drawBitmapRegion(renderTarget.getBitmap(),sx,sy,sw,sh,tx,ty);
 }
 
@@ -128,6 +94,22 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 	drawBox(r,frameAreaLeft,frameAreaTop,sw,sh,tx,ty,useMask);
 }
 
+/** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
+void CBImage::maskImage(const ALLEGRO_COLOR &color) {
+	if (unmaskedBitmap == NULL) {
+		unmaskedBitmap = al_clone_bitmap(renderTarget.getBitmap());
+	}
+	else {
+		ALLEGRO_BITMAP* tmp = al_clone_bitmap(unmaskedBitmap);
+		al_destroy_bitmap(unmaskedBitmap);
+		unmaskedBitmap = tmp;
+	}
+	maskedBitmap = unmaskedBitmap;
+	al_convert_mask_to_alpha(maskedBitmap, color);
+	ALLEGRO_BITMAP* toBeDeleted = renderTarget.swapBitmap(maskedBitmap);
+	al_destroy_bitmap(toBeDeleted);
+}
+
 void CBImage::resize(int32_t w, int32_t h) {
 	renderTarget.resize(w,h);
 }
@@ -142,73 +124,26 @@ CBImage *CBImage::clone() {
 	newImg->frameHeight = this->frameHeight;
 	newImg->animBegin = this->animBegin;
 	newImg->animLength = this->animLength;
+	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
+	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
 	return newImg;
 }
 
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
-	renderTarget.clear(al_map_rgb_f(0, 0, 0));
+	renderTarget.clear(al_map_rgb(0, 0, 0));
+	maskedBitmap = renderTarget.getBitmap();
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
 }
 
-const char * imageMaskFragmentShaderCode =
-		"uniform sampler2D texture;\n"
-		"uniform vec4 maskColor;\n"
-		"const float offset = 0.00196078431372549019607843137255;\n"
-		"void main(void)\n"
-		"{\n"
-		"    vec4 color = texture2D(texture,gl_TexCoord[0].st);"
-		"    vec4 div = abs(maskColor - color);\n"
-		"    if ((div.r <= offset) && (div.g <= offset) && (div.b <= offset) && (div.a <= offset)) color = vec4(0.0);\n"
-		"    gl_FragColor = color;"
-		"}\n"
-		"";
-
-void CBImage::initMaskShader() {
-	maskShaderProgram = 0;
-	if (al_get_opengl_version() > 0x02000000) {
-		useARBShaders = false;
-		GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(shader,1,&imageMaskFragmentShaderCode,0);
-		glCompileShader(shader);
-		if (glGetError() != GL_NO_ERROR) {
-			INFO("Compiling image mask shader failed");
-			glDeleteShader(shader);
-			return;
-		}
-
-		maskShaderProgram = glCreateProgram();
-		glAttachShader(maskShaderProgram, shader);
-		glLinkProgram(maskShaderProgram);
-		if (glGetError() != GL_NO_ERROR) {
-			INFO("Linking image mask shader failed");
-			glDeleteProgram(maskShaderProgram);
-			glDeleteShader(shader);
-			maskShaderProgram = 0;
-			return;
-		}
-		maskColorUniformPos = glGetUniformLocationARB(maskShaderProgram,"maskColor");
+/** Set this CBImage ready for drawing operations or set it back for drawing. */
+void CBImage::setupForDrawOperations(bool toggle) {
+	if (toggle) {
+		maskedBitmap = renderTarget.swapBitmap(unmaskedBitmap);
 	}
-	else if (al_get_opengl_extension_list()->ALLEGRO_GL_ARB_fragment_shader) {
-		useARBShaders = true;
-		GLhandleARB shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-		glShaderSourceARB(shader,1,&imageMaskFragmentShaderCode,0);
-		glCompileShaderARB(shader);
-		if (glGetError()) {
-			INFO("Compiling image mask shader failed");
-			glDeleteObjectARB(shader);
-			return;
-		}
-
-		maskShaderProgram = glCreateProgramObjectARB();
-		glAttachObjectARB(maskShaderProgram,shader);
-		glLinkProgram(maskShaderProgram);
-		if (glGetError() != GL_NO_ERROR) {
-			INFO("Linking image mask shader failed");
-			glDeleteProgramsARB(1,&maskShaderProgram);
-			glDeleteObjectARB(shader);
-			maskShaderProgram = 0;
-			return;
-		}
-		maskColorUniformPos = glGetUniformLocation(maskShaderProgram,"maskColor");
+	else {
+		maskedBitmap = al_clone_bitmap(renderTarget.getBitmap());
+		al_convert_mask_to_alpha(maskedBitmap, maskColor);
+		unmaskedBitmap = renderTarget.swapBitmap(maskedBitmap);
 	}
 }
