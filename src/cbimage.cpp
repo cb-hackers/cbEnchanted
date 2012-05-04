@@ -11,6 +11,8 @@ CBImage::CBImage() :
 	animLength(0)
 {
 	maskColor = al_map_rgb(0, 0, 0);
+	maskedBitmap = NULL;
+	unmaskedBitmap = NULL;
 }
 
 CBImage::~CBImage() {
@@ -18,7 +20,12 @@ CBImage::~CBImage() {
 }
 
 bool CBImage::load(const string &path) {
-	return renderTarget.load(path);
+	if (!renderTarget.load(path)) {
+		return false;
+	}
+	maskedBitmap = renderTarget.getBitmap();
+	unmaskedBitmap = maskedBitmap;
+	return true;
 }
 
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
@@ -85,6 +92,22 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 	float frameAreaLeft = (copyX * frameWidth)+sx;
 	float frameAreaTop = (copyY * frameWidth)+sy;
 	drawBox(r,frameAreaLeft,frameAreaTop,sw,sh,tx,ty,useMask);
+}
+
+/** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
+void CBImage::maskImage(const ALLEGRO_COLOR &color) {
+	if (unmaskedBitmap == NULL) {
+		unmaskedBitmap = al_clone_bitmap(renderTarget.getBitmap());
+	}
+	else {
+		ALLEGRO_BITMAP* tmp = al_clone_bitmap(unmaskedBitmap);
+		al_destroy_bitmap(unmaskedBitmap);
+		unmaskedBitmap = tmp;
+	}
+	maskedBitmap = unmaskedBitmap;
+	al_convert_mask_to_alpha(maskedBitmap, color);
+	ALLEGRO_BITMAP* toBeDeleted = renderTarget.swapBitmap(maskedBitmap);
+	al_destroy_bitmap(toBeDeleted);
 }
 
 void CBImage::resize(int32_t w, int32_t h) {

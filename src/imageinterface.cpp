@@ -53,7 +53,6 @@ void ImageInterface::commandDrawImageBox(void) {
 }
 
 void ImageInterface::commandMaskImage(void) {
-
 	int32_t b = cb->popValue().getInt();
 	int32_t g = cb->popValue().getInt();
 	int32_t r = cb->popValue().getInt();
@@ -124,7 +123,9 @@ void ImageInterface::functionLoadImage(void) {
 		return;
 	}
 	al_destroy_path(path);
-	image->maskImage(defaultMask);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
 
 	int32_t id = nextId();
 	cbImages[id] = image;
@@ -148,7 +149,10 @@ void ImageInterface::functionLoadAnimImage(void) {
 	}
 	al_destroy_path(path);
 
-	image->setAnimParams(frameW,frameH,startF,animL);
+	image->setAnimParams(frameW, frameH, startF, animL);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);
