@@ -3,6 +3,55 @@
 #include "debug.h"
 #include <allegro5/allegro_native_dialog.h>
 #include <iostream>
+#ifdef _WIN32
+
+#include <allegro5/allegro_windows.h>
+// *******************************************
+// Code related to custom message boxes
+// *******************************************
+
+// Declare functions
+INT CBTMessageBox(HWND,LPSTR,LPSTR,UINT);
+LRESULT CALLBACK CBTProc(INT, WPARAM, LPARAM);
+
+// Global hook for message boxes
+HHOOK hhk;
+
+// Create the custom message box
+INT CBTMessageBox(HWND hwnd, LPSTR lpText, LPSTR lpCaption, UINT uType) {
+	hhk = SetWindowsHookEx(WH_CBT, &CBTProc, 0, GetCurrentThreadId());
+	return MessageBoxA(hwnd, lpText, lpCaption, uType);
+}
+
+// Callback that handles the modification of the message box
+LRESULT CALLBACK CBTProc(INT nCode, WPARAM wParam, LPARAM lParam) {
+	HWND hChildWnd; // msgbox is "child"
+	// notification that a window is about to be activated
+	// window handle is wParam
+	if (nCode == HCBT_ACTIVATE) {
+		// set window handles
+		hChildWnd = (HWND)wParam;
+		UINT result;
+
+		// Set buttons
+		if (GetDlgItem(hChildWnd, IDABORT) != NULL) {
+			result = SetDlgItemText(hChildWnd, IDABORT, L"Abort");
+		}
+		if (GetDlgItem(hChildWnd, IDRETRY) != NULL) {
+			result = SetDlgItemText(hChildWnd, IDRETRY, L"Continue");
+		}
+		if (GetDlgItem(hChildWnd, IDIGNORE) != NULL) {
+			result = SetDlgItemText(hChildWnd, IDIGNORE, L"Ignore");
+		}
+
+		// exit CBT hook
+		UnhookWindowsHookEx(hhk);
+	}
+	// otherwise, continue with any possible chained hooks
+	else CallNextHookEx(hhk, nCode, wParam, lParam);
+	return 0;
+}
+#endif // _WIN32
 
 /** A dull constructor. */
 ErrorSystem::ErrorSystem() {
@@ -141,35 +190,28 @@ bool ErrorSystem::execLastError() {
 			return false;
 	}
 #else
-	int ret = al_show_native_message_box(
-				cb->getWindow(),
-				lastError.title.c_str(),
-				lastError.heading.c_str(),
-				(lastError.message + "\n\nDo you still want to continue program execution?").c_str(),
-				NULL,
-				ALLEGRO_MESSAGEBOX_YES_NO
-	);
-	if (ret == 1) {
-		// Ask the user whether they'd like to suppress this error
-		int suppressMsg = al_show_native_message_box(
-					cb->getWindow(),
-					"Suppress future errors?",
-					"Do you want to stop this error from popping up later?",
-					"",
-					NULL,
-					ALLEGRO_MESSAGEBOX_YES_NO
-		);
-		if (suppressMsg == 1) {
-			this->suppressError(concatError);
-		}
-		return true;
+	string message;
+	if (lastError.message.empty()) {
+		message = lastError.heading;
 	}
 	else {
-		cb->stop();
-		return false;
+		message = lastError.heading + "\n\n" + lastError.message;
+	}
+	int ret = CBTMessageBox(al_get_win_window_handle(cb->getWindow()), (LPSTR)message.c_str(), (LPSTR)lastError.title.c_str(), MB_ABORTRETRYIGNORE | MB_ICONERROR);
+	switch (ret) {
+		case 0: // No buttons clicked
+		case IDRETRY: // User clicked continue
+			return true;
+		case IDABORT: // User clicked abort
+			cb->stop();
+			return false;
+		case IDIGNORE: // Suppress errors
+			this->suppressError(concatError);
+			return true;
+		default:
+			FIXME("Undefined messagebox return value %i in ErrorSystem::execLastError()", ret);
+			cb->stop();
+			return false;
 	}
 #endif // _WIN32
-
-	// If errors are suppressed, return true.
-	return true;
 }
