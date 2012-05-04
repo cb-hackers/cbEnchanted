@@ -27,6 +27,8 @@ class CBImage
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
 		static void initMaskShader();
+		/** Set this CBImage ready for drawing operations or set it back for drawing. */
+		void setupForDrawOperations(bool toggle = true);
 	private:
 		float hotspotX,hotspotY;
 		RenderTarget renderTarget;

@@ -37,7 +37,8 @@ GfxInterface::GfxInterface() :
 	drawImageToWorld(false),
 	drawTextToWorld(false),
 	gameDrawn(false),
-	gameUpdated(false)
+	gameUpdated(false),
+	imageToDrawTo(NULL)
 {
 	cb = static_cast <CBEnchanted *> (this);
 	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
@@ -326,10 +327,18 @@ void GfxInterface::commandScreenGamma(void) {
 
 void GfxInterface::commandDrawToImage(void) {
 	int32_t id = cb->popValue().getInt();
-	setCurrentRenderTarget(cb->getImage(id)->getRenderTarget());
+	imageToDrawTo = cb->getImage(id);
+	imageToDrawTo->setupForDrawOperations(true);
+	setCurrentRenderTarget(imageToDrawTo->getRenderTarget());
 }
 
 void GfxInterface::commandDrawToScreen(void) {
+	if (imageToDrawTo != NULL) {
+		imageToDrawTo->setupForDrawOperations(false);
+	}
+	else {
+		FIXME("commandDrawToScreen didn't have an imageToDrawTo set!");
+	}
 	setCurrentRenderTarget(windowRenderTarget);
 }
 

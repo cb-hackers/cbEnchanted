@@ -24,7 +24,7 @@ bool CBImage::load(const string &path) {
 		return false;
 	}
 	maskedBitmap = renderTarget.getBitmap();
-	unmaskedBitmap = maskedBitmap;
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
 	return true;
 }
 
@@ -124,10 +124,26 @@ CBImage *CBImage::clone() {
 	newImg->frameHeight = this->frameHeight;
 	newImg->animBegin = this->animBegin;
 	newImg->animLength = this->animLength;
+	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
+	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
 	return newImg;
 }
 
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
 	renderTarget.clear(al_map_rgb(0, 0, 0));
+	maskedBitmap = renderTarget.getBitmap();
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+}
+
+/** Set this CBImage ready for drawing operations or set it back for drawing. */
+void CBImage::setupForDrawOperations(bool toggle) {
+	if (toggle) {
+		maskedBitmap = renderTarget.swapBitmap(unmaskedBitmap);
+	}
+	else {
+		maskedBitmap = al_clone_bitmap(renderTarget.getBitmap());
+		al_convert_mask_to_alpha(maskedBitmap, maskColor);
+		unmaskedBitmap = renderTarget.swapBitmap(maskedBitmap);
+	}
 }
