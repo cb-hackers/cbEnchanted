@@ -122,17 +122,7 @@ bool CBEnchanted::init(const char* file) {
 		unsigned char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
-			c = c - key[j % 22];
-			if (c > 128) {
-				c--;
-				char utfc[2];
-				al_utf8_encode(utfc, c);
-				s += utfc[0];
-				s += utfc[1];
-			}
-			else {
-				s += c;
-			}
+			s += c - key[j % 22];
 		}
 		setString(i, s);
 	}

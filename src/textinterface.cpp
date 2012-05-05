@@ -75,7 +75,7 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-	string txt = cb->popValue().toString().getRef();
+	const ISString &txt = cb->popValue().toString();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 
@@ -85,24 +85,24 @@ void TextInterface::commandText(void) {
 
 void TextInterface::commandCenterText(void) {
 	uint8_t style = cb->popValue().toInt();
-	ISString str = cb->popValue().toString();
+	const ISString &str = cb->popValue().toString();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
 	switch (style) {
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::HCenter
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter
 			);
 		break;
 		case 1:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::VCenter
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter
 			);
 		break;
 		case 2:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::Center
+				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center
 			);
 		break;
 	}
@@ -207,7 +207,7 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 	vector<AddText*>::iterator i;
 	r.useWorldCoords(false);
 	for(i = texts.begin(); i != texts.end(); i++){
-		r.drawText((*i)->font,(*i)->txt.getRef(),(*i)->txtX,(*i)->txtY,(*i)->col);
+		r.drawText((*i)->font,(*i)->txt,(*i)->txtX,(*i)->txtY,(*i)->col);
 	}
 	//al_hold_bitmap_drawing(false);
 }

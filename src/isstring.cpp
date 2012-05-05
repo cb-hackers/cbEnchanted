@@ -1,6 +1,8 @@
 #include "isstring.h"
 #include <allegro5/allegro.h>
 
+const string ISString::nullStdString;
+
 ISString::ISString(const char *str): data(0) {
 	if (str && str[0] != '\0') {
 		data = new SharedData(string(str));
@@ -30,14 +32,18 @@ ISString & ISString::operator=(const ISString &o) {
 }
 
 string ISString::getStdString()const{
-	if (data == 0) return "";
+	if (data == 0) return string();
 	return data->str;
 }
 
 const string &ISString::getRef()const {
-	static string nullStdString;
 	if (data == 0) return nullStdString;
 	return data->str;
+}
+
+size_t ISString::length() const {
+	if (data == 0) return 0;
+	return data->str.length();
 }
 
 bool ISString::operator==(const ISString &o) const {
@@ -113,6 +119,28 @@ ISString ISString::add(const string&a,const ISString &b) {
 	return a+b.data->str;
 }
 
+const string &ISString::getUtf8Encoded() const {
+	if (this->data == 0) return nullStdString;
+	if (this->data->utfStr == 0) {
+		this->data->utfStr = new string;
+		this->data->utfStr->reserve(this->length()+5);
+		for (string::const_iterator i = this->data->str.begin(); i != this->data->str.end(); i++) {
+			unsigned char c = *i;
+			if (c > 128) {
+				c--;
+				char utfc[2];
+				al_utf8_encode(utfc, c);
+				*this->data->utfStr += utfc[0];
+				*this->data->utfStr += utfc[1];
+			}
+			else {
+				*this->data->utfStr += c;
+			}
+		}
+	}
+	return *this->data->utfStr;
+}
+
 ISString ISString::operator+(const string &o) const{
 	if (data == 0) {
 		return o;
@@ -125,9 +153,6 @@ bool ISString::operator >(const ISString &o) const {
 		return false;
 	}
 	if (o.data == 0) {
-		if (o.data->str == "") {
-			return false;
-		}
 		return true;
 	}
 	if (this->data->str.compare(o.data->str) > 0) {
@@ -141,9 +166,6 @@ bool ISString::operator <(const ISString &o) const {
 		return false;
 	}
 	if (this->data == 0) {
-		if (this->data->str == "") {
-			return false;
-		}
 		return true;
 	}
 	if (this->data->str.compare(o.data->str) < 0) {
@@ -153,15 +175,11 @@ bool ISString::operator <(const ISString &o) const {
 }
 
 bool ISString::operator >=(const ISString &o) const {
-	if (this->data == 0) {
-		if (o.data == 0 || o.data->str == "") return true;
-		return false;
-	}
 	if (o.data == 0) {
-		if (o.data->str == "" && this->data->str != "") {
-			return false;
-		}
 		return true;
+	}
+	if (this->data == 0) {
+		return false;
 	}
 	if (this->data->str.compare(o.data->str) >= 0) {
 		return true;
@@ -170,17 +188,13 @@ bool ISString::operator >=(const ISString &o) const {
 }
 
 bool ISString::operator <=(const ISString &o) const {
-	if (o.data == 0) {
-		if (this->data == 0 || this->data->str == "") return true;
-		return false;
-	}
 	if (this->data == 0) {
-		if (this->data->str == "" && o.data->str != "") {
-			return false;
-		}
 		return true;
 	}
-	if (this->data->str.compare(o.data->str) >= 0) {
+	if (o.data == 0) {
+		return false;
+	}
+	if (this->data->str.compare(o.data->str) <= 0) {
 		return true;
 	}
 	return false;

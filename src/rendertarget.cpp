@@ -236,11 +236,11 @@ void RenderTarget::copy(const RenderTarget *r) {
 	bitmap=al_clone_bitmap(r->bitmap);
 }
 
-void RenderTarget::drawText(const ALLEGRO_FONT *font, const string &text, float x, float y, const ALLEGRO_COLOR &color,int flags) {
+void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, float x, float y, const ALLEGRO_COLOR &color,int flags) {
 	setAsCurrent();
 	convertCoords(x,y);
 	if ((flags & Center) == Center) {
-		al_draw_text(font,color,x,y,ALLEGRO_ALIGN_CENTRE,text.c_str());
+		al_draw_text(font,color,x,y,ALLEGRO_ALIGN_CENTRE,text.getUtf8Encoded().c_str());
 		return;
 	}
 	if ((flags & VCenter)==VCenter) {
@@ -250,15 +250,15 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const string &text, float 
 		y -= al_get_font_ascent(font);
 	}
 	if ((flags & HCenter) == HCenter) {
-		al_get_text_width(font,text.c_str());
-		al_draw_text(font,color,x-al_get_text_width(font,text.c_str())*0.5f,y,0,text.c_str());
+		al_get_text_width(font,text.getUtf8Encoded().c_str());
+		al_draw_text(font,color,x-al_get_text_width(font,text.getUtf8Encoded().c_str())*0.5f,y,0,text.getUtf8Encoded().c_str());
 		return;
 	}
 	if (flags & Right) {
-		al_draw_text(font,color,x,y,ALLEGRO_ALIGN_RIGHT,text.c_str());
+		al_draw_text(font,color,x,y,ALLEGRO_ALIGN_RIGHT,text.getUtf8Encoded().c_str());
 		return;
 	}
-	al_draw_text(font,color,x,y,0,text.c_str());
+	al_draw_text(font,color,x,y,0,text.getUtf8Encoded().c_str());
 }
 
 void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill,const ALLEGRO_COLOR &color) {
