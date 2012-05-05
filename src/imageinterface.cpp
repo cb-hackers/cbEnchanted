@@ -24,12 +24,12 @@ void ImageInterface::commandSaveImage(void) {
 
 void ImageInterface::commandDrawImage(void) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
-	int32_t mask = cb->popValue().toInt();
+	bool useMask = cb->popValue().toInt();
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->draw(*cb->getCurrentRenderTarget(),x,y,frame,mask);
+	img->draw(*cb->getCurrentRenderTarget(), x, y, frame, useMask);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
@@ -40,7 +40,7 @@ void ImageInterface::commandDrawGhostImage(void) {
 
 void ImageInterface::commandDrawImageBox(void) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
-	bool mask = cb->popValue().toBool();
+	bool useMask = cb->popValue().toBool();
 	int32_t frame = cb->popValue().toInt();
 	float sh = cb->popValue().toFloat();
 	float sw = cb->popValue().toFloat();
@@ -49,7 +49,7 @@ void ImageInterface::commandDrawImageBox(void) {
 	float ty = cb->popValue().toFloat();
 	float tx = cb->popValue().toFloat();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->drawBox(*cb->getCurrentRenderTarget(),sx,sy,sw,sh,tx,ty,frame,mask);
+	img->drawBox(*cb->getCurrentRenderTarget(), sx, sy, sw, sh, tx, ty, frame, useMask);
 }
 
 void ImageInterface::commandMaskImage(void) {
@@ -75,7 +75,7 @@ void ImageInterface::commandResizeImage(void) {
 	int32_t h = cb->popValue().toInt();
 	int32_t w = cb->popValue().toInt();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->resize(w,h);
+	img->resize(w, h);
 }
 
 void ImageInterface::commandRotateImage(void) {
@@ -87,7 +87,7 @@ void ImageInterface::commandPickImageColor(void) {
 	int32_t x = cb->popValue().toInt();
 	int32_t imgId = cb->popValue().toInt();
 	CBImage *image = getImage(imgId);
-	cb->setDrawColor(image->getRenderTarget()->getPixel(x,y));
+	cb->setDrawColor(image->getRenderTarget()->getPixel(x, y));
 }
 
 void ImageInterface::commandPickImageColor2(void) {
@@ -95,14 +95,14 @@ void ImageInterface::commandPickImageColor2(void) {
 	int32_t x = cb->popValue().toInt();
 	int32_t imgId = cb->popValue().toInt();
 	CBImage *image = getImage(imgId);
-	cb->setDrawColor(image->getRenderTarget()->getPixel(x,y));
+	cb->setDrawColor(image->getRenderTarget()->getPixel(x, y));
 }
 
 void ImageInterface::commandHotSpot(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	cbImages[id]->setHotspot(x,y);
+	cbImages[id]->setHotspot(x, y);
 }
 
 void ImageInterface::commandDeleteImage(void) {
@@ -163,7 +163,7 @@ void ImageInterface::functionMakeImage(void) {
 	int32_t h = cb->popValue().toInt();
 	int32_t w = cb->popValue().toInt();
 	CBImage *image = new CBImage;
-	image->makeImage(w,h);
+	image->makeImage(w, h);
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);

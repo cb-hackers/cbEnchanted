@@ -29,13 +29,18 @@ bool CBImage::load(const string &path) {
 }
 
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
-	r.drawBitmap(renderTarget.getBitmap(), x - hotspotX, y - hotspotY);
+	if (useMask) {
+		r.drawBitmap(maskedBitmap, x - hotspotX, y - hotspotY);
+	}
+	else {
+		r.drawBitmap(unmaskedBitmap, x - hotspotX, y - hotspotY);
+	}
 }
 
 void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 {
 	if (animLength == 0) { //Not anim image
-		draw(r,x,y,useMask);
+		draw(r, x, y, useMask);
 		return;
 	}
 	//INFO("%i", frame)
@@ -49,9 +54,8 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 	float frameAreaHeight = frameHeight;
 	float frameAreaWidth = frameWidth;
 	if (useMask) {
-		//TODO MASKING
 		r.drawBitmapRegion(
-			renderTarget.getBitmap(),
+			maskedBitmap,
 			frameAreaLeft,
 			frameAreaTop,
 			frameAreaWidth,
@@ -62,7 +66,7 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 	}
 	else {
 		r.drawBitmapRegion(
-			renderTarget.getBitmap(),
+			unmaskedBitmap,
 			frameAreaLeft,
 			frameAreaTop,
 			frameAreaWidth,
@@ -74,13 +78,18 @@ void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
 }
 
 void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask) {
-	r.drawBitmapRegion(renderTarget.getBitmap(),sx,sy,sw,sh,tx,ty);
+	if (useMask) {
+		r.drawBitmapRegion(maskedBitmap, sx, sy, sw, sh, tx, ty);
+	}
+	else {
+		r.drawBitmapRegion(unmaskedBitmap, sx, sy, sw, sh, tx, ty);
+	}
 }
 
 void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, int frame, bool useMask) {
 
 	if (animLength == 0) { //Not anim image
-		drawBox(r,sx,sy,sw,sh,tx,ty,useMask);
+		drawBox(r, sx, sy, sw, sh, tx, ty, useMask);
 		return;
 	}
 	//INFO("%i", frame)
@@ -89,9 +98,9 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 	int32_t copyX = frame % framesX;
 	int32_t copyY = (frame - copyX) / framesY;
 
-	float frameAreaLeft = (copyX * frameWidth)+sx;
-	float frameAreaTop = (copyY * frameWidth)+sy;
-	drawBox(r,frameAreaLeft,frameAreaTop,sw,sh,tx,ty,useMask);
+	float frameAreaLeft = (copyX * frameWidth) + sx;
+	float frameAreaTop = (copyY * frameWidth) + sy;
+	drawBox(r, frameAreaLeft, frameAreaTop, sw, sh, tx, ty, useMask);
 }
 
 /** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
