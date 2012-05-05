@@ -3,16 +3,19 @@
 
 const string ISString::nullStdString;
 
+/** Constructs an ISString with str data. */
 ISString::ISString(const char *str): data(0) {
 	if (str && str[0] != '\0') {
 		data = new SharedData(string(str));
 	}
 }
 
+/** Constructs an ISString with str data. */
 ISString::ISString(const string &str): data(0){
 	if (str.length() != 0) data = new SharedData(str);
 }
 
+/** Copy constructor */
 ISString::ISString(const ISString &str): data(str.data) {
 	if (data != 0) {
 		++data->refCounter;
@@ -20,10 +23,12 @@ ISString::ISString(const ISString &str): data(str.data) {
 	}
 }
 
+/** Destructor */
 ISString::~ISString() {
 	if (data) data->decreaseRefCount();
 }
 
+/** Assignment operator */
 ISString & ISString::operator=(const ISString &o) {
 	if (data != 0) data->decreaseRefCount();
 	data = o.data;
@@ -31,21 +36,26 @@ ISString & ISString::operator=(const ISString &o) {
 	return *this;
 }
 
+/** Returns copy of string data. */
 string ISString::getStdString()const{
 	if (data == 0) return string();
 	return data->str;
 }
 
+/** Returns a reference to string data.
+  * This reference will be valid until all references to the underlying string are destroyed. */
 const string &ISString::getRef()const {
 	if (data == 0) return nullStdString;
 	return data->str;
 }
 
+/** Returns the number of characters in the string */
 size_t ISString::length() const {
 	if (data == 0) return 0;
 	return data->str.length();
 }
 
+/** Equality operator */
 bool ISString::operator==(const ISString &o) const {
 	if (this->data == 0) {
 		if (o.data == 0) return true;
@@ -55,6 +65,7 @@ bool ISString::operator==(const ISString &o) const {
 	return o.data->str == data->str;
 }
 
+/** Unequality operator */
 bool ISString::operator!=(const ISString &o) const {
 	if (this->data == 0) {
 		if (o.data == 0) return false;
@@ -64,6 +75,7 @@ bool ISString::operator!=(const ISString &o) const {
 	return o.data->str != data->str;
 }
 
+/** Addition operator */
 ISString ISString::operator+(const ISString &o) const {
 	if (o.data == 0) {
 		return *this;
@@ -74,6 +86,15 @@ ISString ISString::operator+(const ISString &o) const {
 	return ISString(data->str+o.data->str);
 }
 
+/** Addition operator */
+ISString ISString::operator+(const string &o) const{
+	if (data == 0) {
+		return o;
+	}
+	return ISString(data->str+o);
+}
+
+/** Converts the string to a int. Will return 0 if conversion fails.*/
 int32_t ISString::toInt() const {
 	if (data == 0) return 0;
 	try {
@@ -84,6 +105,7 @@ int32_t ISString::toInt() const {
 	}
 }
 
+/** Converts the string to a float. Will return 0 if conversion fails.*/
 float ISString::toFloat() const {
 	if (data == 0) return 0.0f;
 	try {
@@ -94,6 +116,7 @@ float ISString::toFloat() const {
 	}
 }
 
+/** Converts the string to a byte. Will return 0 if conversion fails.*/
 uint8_t ISString::toByte() const {
 	if (data == 0) return 0;
 	try {
@@ -104,6 +127,7 @@ uint8_t ISString::toByte() const {
 	}
 }
 
+/** Converts the string to a short. Will return 0 if conversion fails.*/
 uint16_t ISString::toShort()const{
 	if (data == 0) return 0;
 	try {
@@ -114,11 +138,14 @@ uint16_t ISString::toShort()const{
 	}
 }
 
-ISString ISString::add(const string&a,const ISString &b) {
+/** std::string and ISString addition operator */
+ISString operator +(const string &a,const ISString&b) {
 	if (b.data == 0) return a;
 	return a+b.data->str;
 }
 
+/** Returns a reference to the UTF-8 encoded string data.
+  * This reference will be valid until all references to the underlying string are destroyed. */
 const string &ISString::getUtf8Encoded() const {
 	if (this->data == 0) return nullStdString;
 	if (this->data->utfStr == 0) {
@@ -141,13 +168,7 @@ const string &ISString::getUtf8Encoded() const {
 	return *this->data->utfStr;
 }
 
-ISString ISString::operator+(const string &o) const{
-	if (data == 0) {
-		return o;
-	}
-	return ISString(data->str+o);
-}
-
+/** Returns true if the left operand is considered greater than the right operand, otherwise returns false. */
 bool ISString::operator >(const ISString &o) const {
 	if (this->data == 0) {
 		return false;
@@ -161,6 +182,7 @@ bool ISString::operator >(const ISString &o) const {
 	return false;
 }
 
+/** Returns true if the left operand is considered smaller than the right operand, otherwise returns false. */
 bool ISString::operator <(const ISString &o) const {
 	if (o.data == 0) {
 		return false;
@@ -174,6 +196,7 @@ bool ISString::operator <(const ISString &o) const {
 	return false;
 }
 
+/** Returns true if the left operand is considered smaller than or equal to the right operand, otherwise returns false. */
 bool ISString::operator >=(const ISString &o) const {
 	if (o.data == 0) {
 		return true;
@@ -187,6 +210,7 @@ bool ISString::operator >=(const ISString &o) const {
 	return false;
 }
 
+		/** Returns true if the left operand is considered smaller than or equal to the right operand, otherwise returns false. */
 bool ISString::operator <=(const ISString &o) const {
 	if (this->data == 0) {
 		return true;
