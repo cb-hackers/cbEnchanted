@@ -16,14 +16,12 @@ void FileInterface::commandCloseFile(void) {
 	if (filestrs[ID] == NULL)
 	{
 		cb->errors->createFatalError("CloseFile failed.");
-		cb->pushValue(0);
 		return;
 	}
 
 	if(fclose(filestrs[ID]) != 0)
 	{
 		cb->errors->createError("CloseFile failed.");
-		cb->pushValue(0);
 	}
 }
 
@@ -63,7 +61,8 @@ void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString().getRef();
 	string file_s1 = cb->popValue().toString().getRef();
 #ifdef _WIN32 // Doesn't work on linux for some reason
-	fs::copy_file(fs::path(file_s1), fs::path(file_s2));
+	if(fs::exists(file_s1) && !fs::exists(file_s2))
+		fs::copy_file(fs::path(file_s1), fs::path(file_s2));
 #endif
 }
 
