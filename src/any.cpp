@@ -10,7 +10,7 @@ Any::Any(int32_t a) : typeId(Int), dInt(a) { }
 
 Any::Any(const string &a) : typeId(String) {
 	if (a.length() != 0) {
-		dString = new ISString::SharedData(ISString::createUStr(a));
+		dString = new ISString::SharedData(a);
 		return;
 	}
 	dString = 0;
@@ -18,17 +18,20 @@ Any::Any(const string &a) : typeId(String) {
 
 Any::Any(const ISString &a) : typeId(String), dString(a.data) {
 	if (dString != 0) {
-		dString->increaseRefCount();
+		++dString->refCounter;
 		return;
 	}
 }
 
-Any::Any(const Any &a) : typeId(a.typeId), dPtr(a.dPtr) {
-	if (a.typeId == String && this->dString) {
-		this->dString->increaseRefCount();
+Any::Any(const Any &a) : typeId(a.typeId) {
+	if (a.typeId == String) {
+		this->dString = a.dString;
+		if (this->dString) {
+			this->dString->increaseRefCount();
+		}
 		return;
 	}
-
+	this->dPtr = a.dPtr;
 }
 
 Any::~Any() {
@@ -165,8 +168,20 @@ uint8_t Any::toByte() const {
 }
 
 
+
+
+
+
 int32_t Any::operator ! () const {
-	return !toBool();
+	if (this->type() == Any::Float) {
+		return !this->getFloat();
+	}
+	if (this->type() == Any::Int) {
+		return !this->getInt();
+	}
+	if (this->type() == Any::TypePtr) {
+		return !this->getTypePtr();
+	}
 	FIXME("Unsupported operation !%s", this->typeInfo().name());
 	return 0;
 }
@@ -243,7 +258,7 @@ Any Any::operator + (const Any &r) const {
 			return this->getFloat() + r.getInt();
 		}
 		if (r.type() == Any::String) {
-			return ISString::fromFloat(this->getFloat()) + r.getString();
+			return boost::lexical_cast<string>(this->getFloat()) + r.getString();
 		}
 	}
 	if (this->type() == Any::Int) {
@@ -254,15 +269,15 @@ Any Any::operator + (const Any &r) const {
 			return this->getInt() + r.getInt();
 		}
 		if (r.type() == Any::String) {
-			return ISString::fromInt(this->getInt()) + r.getString();
+			return boost::lexical_cast<string>(this->getInt()) + r.getString();
 		}
 	}
 	if (this->type() == Any::String) {
 		if (r.type() == Any::Float) {
-			return this->getString() + ISString::fromFloat(r.getFloat());
+			return this->getString() + boost::lexical_cast<string>(r.getFloat());
 		}
 		if (r.type() == Any::Int) {
-			return this->getString() + ISString::fromInt(r.getInt());
+			return this->getString() + boost::lexical_cast<string>(r.getInt());
 		}
 		if (r.type() == Any::String) {
 			return this->getString() + r.getString();
@@ -374,9 +389,6 @@ int32_t Any::operator != (const Any &r) const {
 		if (r.type() == Any::Int) {
 			return this->getFloat() != r.getInt();
 		}
-		if (r.type() == Any::String) {
-			return ISString::fromFloat(this->getFloat()) != r.getString();
-		}
 	}
 	if (this->type() == Any::Int) {
 		if (r.type() == Any::Float) {
@@ -385,19 +397,10 @@ int32_t Any::operator != (const Any &r) const {
 		if (r.type() == Any::Int) {
 			return this->getInt() != r.getInt();
 		}
-		if (r.type() == Any::String) {
-			return ISString::fromInt(this->getInt()) != r.getString();
-		}
 	}
 	if (this->type() == Any::String) {
 		if (r.type() == Any::String) {
 			return this->getString() != r.getString();
-		}
-		if (r.type() == Any::Int) {
-			return this->getString() != ISString::fromInt(r.getInt());
-		}
-		if (r.type() == Any::Float) {
-			return this->getString() != ISString::fromFloat(r.getFloat());
 		}
 	}
 	if (this->type() == Any::TypePtr) {
@@ -607,7 +610,6 @@ int32_t Any::operator < (const Any &r) const {
 	FIXME("Unsupported operation %s >= %s", this->typeInfo().name(), r.typeInfo().name());
 	return 0;
 }
-
 
 
 

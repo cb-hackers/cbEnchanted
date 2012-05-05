@@ -3,16 +3,8 @@
 #include "any.h"
 #include "variablestack.h"
 #include <cmath>
-#include <limits>
 
 FORCEINLINE int32_t cbpow(int32_t a, int32_t b) {
-	if (b == 0) return 1;
-	if (b == 1) return a;
-	if (b == 2) {
-		int64_t result = int64_t(a)*int64_t(a);
-		if (result > INT_MAX) return 0xFFFFFFFF;
-		return result;
-	}
 	double ret = pow(double(a), double(b));
 	if (ret > 0x7FFFFFFF) {
 		return 0xFFFFFFFF;
@@ -34,7 +26,7 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString() + ISString::fromInt(b.dInt);
+			a = a.getString().getRef() + boost::lexical_cast<string>(b.dInt);
 			return;
 		}
 	}
@@ -49,21 +41,21 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString() + ISString::fromFloat(b.dFloat);
+			a = a.getString().getRef() + boost::lexical_cast<string>(b.dFloat);
 			return;
 		}
 	}
 	if (b.typeId == String) {
 		if (a.typeId == Float) {
-			a = ISString::fromFloat(a.dFloat) + b.getString();
+			a = boost::lexical_cast<string>(a.dFloat) + b.getString().getRef();
 			return;
 		}
 		if (a.typeId == Int) {
-			a = ISString::fromInt(a.dInt) + b.getString();
+			a = boost::lexical_cast<string>(a.dInt) + b.getString().getRef();
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString() + b.getString();
+			a = a.getString().getRef() + b.getString().getRef();
 			return;
 		}
 	}

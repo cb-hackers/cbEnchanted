@@ -114,7 +114,7 @@ bool CBEnchanted::init(const char* file) {
 
 	// Read and decrypt strings
 	initStrings(nStrings);
-	const unsigned char key[] = "Mark Sibly is my idol!";
+	const char key[] = "Mark Sibly is my idol!";
 	for (uint32_t i = 1; i <= nStrings; i++) {
 		uint32_t len;
 		input.read((char *)(&len), 4);
@@ -122,7 +122,17 @@ bool CBEnchanted::init(const char* file) {
 		unsigned char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
-			s += c - key[j % 22];
+			c = c - key[j % 22];
+			if (c > 128) {
+				c--;
+				char utfc[2];
+				al_utf8_encode(utfc, c);
+				s += utfc[0];
+				s += utfc[1];
+			}
+			else {
+				s += c;
+			}
 		}
 		setString(i, s);
 	}

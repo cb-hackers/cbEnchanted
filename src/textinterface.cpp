@@ -75,7 +75,7 @@ void TextInterface::commandDeleteFont(void) {
 }
 
 void TextInterface::commandText(void) {
-	const ISString &txt = cb->popValue().toString();
+	string txt = cb->popValue().toString().getRef();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 
@@ -85,24 +85,24 @@ void TextInterface::commandText(void) {
 
 void TextInterface::commandCenterText(void) {
 	uint8_t style = cb->popValue().toInt();
-	const ISString &str = cb->popValue().toString();
+	ISString str = cb->popValue().toString();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
 	switch (style) {
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::HCenter
 			);
 		break;
 		case 1:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::VCenter
 			);
 		break;
 		case 2:
 			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center
+				currentFont, str.getRef(), x, y, cb->getDrawColor(), RenderTarget::Center
 			);
 		break;
 	}
@@ -111,7 +111,7 @@ void TextInterface::commandCenterText(void) {
 void TextInterface::commandVerticalText(void) {
 	STUB;
 	/*
-	string str = cb->popValue().toString();
+	string str = cb->popValue().toString().getRef();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
 	uint16_t chars = str.length();
@@ -127,11 +127,11 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-	std::cout << cb->popValue().toString().cString() << std::endl;
+	std::cout << cb->popValue().toString().getRef() << std::endl;
 }
 
 void TextInterface::commandWrite(void) {
-	std::cout << cb->popValue().toString().cString();
+	std::cout << cb->popValue().toString().getRef();
 }
 
 void TextInterface::commandLocate(void) {
@@ -166,7 +166,7 @@ void TextInterface::functionLoadFont(void) {
 	bool italic = cb->popValue().toBool();
 	bool bold = cb->popValue().toBool();
 	int size = cb->popValue().toInt();
-	string fontname = cb->popValue().toString().toStdString();
+	string fontname = cb->popValue().toString().getRef();
 
 	ALLEGRO_PATH *path;
 	if (fontname.find_first_of('.') == fontname.npos) {
@@ -207,18 +207,18 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 	vector<AddText*>::iterator i;
 	r.useWorldCoords(false);
 	for(i = texts.begin(); i != texts.end(); i++){
-		r.drawText((*i)->font,(*i)->txt,(*i)->txtX,(*i)->txtY,(*i)->col);
+		r.drawText((*i)->font,(*i)->txt.getRef(),(*i)->txtX,(*i)->txtY,(*i)->col);
 	}
 	//al_hold_bitmap_drawing(false);
 }
 
 void TextInterface::functionTextWidth(void) {
-	cb->pushValue(al_get_ustr_width(currentFont, cb->popValue().getString().getUStr()));
+	cb->pushValue(al_get_text_width(currentFont, cb->popValue().getString().getRef().c_str()));
 }
 
 void TextInterface::functionTextHeight(void) {
 	int dummy;
 	int height;
-	al_get_ustr_dimensions(currentFont, cb->popValue().getString().getUStr(), &dummy, &dummy, &dummy, &height);
+	al_get_text_dimensions(currentFont, cb->popValue().getString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
 	cb->pushValue(height);
 }

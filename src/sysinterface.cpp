@@ -28,7 +28,7 @@ void SysInterface::commandWait(void) {
 }
 
 void SysInterface::commandMakeError(void) {
-	cb->errors->createFatalError(cb->popValue().toString().toStdString(), "", "Error!");
+	cb->errors->createFatalError(cb->popValue().toString().getStdString(), "", "Error!");
 }
 
 void SysInterface::commandSaveProgram(void) {
@@ -66,14 +66,14 @@ void SysInterface::commandErrors(void) {
 }
 
 void SysInterface::commandSetWindow(void) {
-	const ISString &quit = cb->popValue().toString();
+	string quit = cb->popValue().toString().getRef();
 	uint32_t mode = cb->popValue().toInt();
-	const ISString &caption = cb->popValue().toString();
+	string caption = cb->popValue().toString().getRef();
 
 	if (quit != "") {
 		FIXME("FIXME: setWindow quitmsg");
 	}
-	al_set_window_title(cb->getWindow(),caption.cString());
+	al_set_window_title(cb->getWindow(),caption.c_str());
 }
 
 void SysInterface::commandEnd(void) {
@@ -127,9 +127,8 @@ void SysInterface::functionFPS(void) {
 }
 
 void SysInterface::functionCrc32(void) {
-	//TODO: Fix this
 	const ISString &str = cb->popValue().getString();
 	boost::crc_32_type result;
-	result.process_bytes(str.cString(), str.length());
+	result.process_bytes(str.getRef().c_str(), str.getRef().length());
 	cb->pushValue((int32_t)result.checksum());
 }
