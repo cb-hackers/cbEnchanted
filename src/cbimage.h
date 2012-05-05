@@ -28,7 +28,7 @@ class CBImage
 		CBImage *clone();
 		static void initMaskShader();
 		/** Set this CBImage ready for drawing operations or set it back for drawing. */
-		void setupForDrawOperations(bool toggle = true);
+		void switchMaskBitmaps(bool switchToUnmasked);
 	private:
 		float hotspotX,hotspotY;
 		RenderTarget renderTarget;

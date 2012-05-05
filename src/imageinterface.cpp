@@ -40,7 +40,7 @@ void ImageInterface::commandDrawGhostImage(void) {
 
 void ImageInterface::commandDrawImageBox(void) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
-	int32_t mask = cb->popValue().toInt();
+	bool mask = cb->popValue().toBool();
 	int32_t frame = cb->popValue().toInt();
 	float sh = cb->popValue().toFloat();
 	float sw = cb->popValue().toFloat();

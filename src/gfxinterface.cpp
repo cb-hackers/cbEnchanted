@@ -328,13 +328,13 @@ void GfxInterface::commandScreenGamma(void) {
 void GfxInterface::commandDrawToImage(void) {
 	int32_t id = cb->popValue().getInt();
 	imageToDrawTo = cb->getImage(id);
-	imageToDrawTo->setupForDrawOperations(true);
+	imageToDrawTo->switchMaskBitmaps(true);
 	setCurrentRenderTarget(imageToDrawTo->getRenderTarget());
 }
 
 void GfxInterface::commandDrawToScreen(void) {
 	if (imageToDrawTo != NULL) {
-		imageToDrawTo->setupForDrawOperations(false);
+		imageToDrawTo->switchMaskBitmaps(false);
 	}
 	else {
 		FIXME("commandDrawToScreen didn't have an imageToDrawTo set!");

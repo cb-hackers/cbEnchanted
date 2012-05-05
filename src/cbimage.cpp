@@ -96,22 +96,20 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 
 /** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
 void CBImage::maskImage(const ALLEGRO_COLOR &color) {
-	if (unmaskedBitmap == NULL) {
-		unmaskedBitmap = al_clone_bitmap(renderTarget.getBitmap());
-	}
-	else {
-		ALLEGRO_BITMAP* tmp = al_clone_bitmap(unmaskedBitmap);
-		al_destroy_bitmap(unmaskedBitmap);
-		unmaskedBitmap = tmp;
-	}
-	maskedBitmap = unmaskedBitmap;
-	al_convert_mask_to_alpha(maskedBitmap, color);
+	maskColor = color;
+	maskedBitmap = al_clone_bitmap(unmaskedBitmap);
+	al_destroy_bitmap(unmaskedBitmap);
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	al_convert_mask_to_alpha(maskedBitmap, maskColor);
 	ALLEGRO_BITMAP* toBeDeleted = renderTarget.swapBitmap(maskedBitmap);
 	al_destroy_bitmap(toBeDeleted);
 }
 
 void CBImage::resize(int32_t w, int32_t h) {
-	renderTarget.resize(w,h);
+	this->switchMaskBitmaps(true);
+	renderTarget.resize(w, h);
+	al_destroy_bitmap(maskedBitmap);
+	this->switchMaskBitmaps(false);
 }
 
 CBImage *CBImage::clone() {
@@ -137,8 +135,8 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 }
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
-void CBImage::setupForDrawOperations(bool toggle) {
-	if (toggle) {
+void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
+	if (switchToUnmasked) {
 		maskedBitmap = renderTarget.swapBitmap(unmaskedBitmap);
 	}
 	else {
