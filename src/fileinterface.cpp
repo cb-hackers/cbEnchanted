@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "fileinterface.h"
+#include "errorsystem.h"
 
 FileInterface::FileInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -14,13 +15,14 @@ void FileInterface::commandCloseFile(void) {
 	ID = cb->popValue().getInt();
 	if (filestrs[ID] == NULL)
 	{
-		FIXME("CloseFile failed.");
+		cb->errors->createFatalError("CloseFile failed.");
 		cb->pushValue(0);
+		return;
 	}
 
 	if(fclose(filestrs[ID]) != 0)
 	{
-		FIXME("CloseFile failed.");
+		cb->errors->createError("CloseFile failed.");
 		cb->pushValue(0);
 	}
 }
@@ -126,59 +128,53 @@ void FileInterface::commandWriteLine(void) {
 
 void FileInterface::commandReadByte(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	uint8_t byte;
-	fread((char*)&byte, 1, 1, file);
-	cb->pushValue(byte);
+	fseek(file, ftell(file) + 1, SEEK_SET);
 }
 
 void FileInterface::commandReadShort(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	uint16_t shortint;
-	fread((char*)&shortint, 2, 1, file);
-	cb->pushValue(shortint);
+	fseek(file, ftell(file) + 2, SEEK_SET);
 }
 
 void FileInterface::commandReadInt(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	int32_t integer;
-	fread((char*)&integer, 4, 1, file);
-	cb->pushValue(integer);
+	fseek(file, ftell(file) + 4, SEEK_SET);
 }
 
 void FileInterface::commandReadFloat(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	float decimal;
-	fread((char*)&decimal, 4, 1, file);
-	cb->pushValue(decimal);
+	fseek(file, ftell(file) + 4, SEEK_SET);
 }
 
 void FileInterface::commandReadString(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	int32_t lenght;
-	fread((char*)&lenght, 4, 1, file);
-	char *txt = new char[lenght];
-	fread((char*)txt, 1, lenght, file);
-	string text = txt;
-	cb->pushValue(text);
-	delete [] txt;
+
+	int32_t i;
+	fread(&i, sizeof(int32_t), 1, file);
+
+	fseek(file, ftell(file) + i, SEEK_SET);
 }
 
 void FileInterface::commandReadLine(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-	string str;
-	char txt[10000];
-	fgets(txt, 10000, file);
-	str = txt;
-	cb->pushValue(str);
+
+	while(1) {
+		int c = fgetc(file);
+		if (c == '\n' || c == EOF) {
+			break;
+		}
+	}
 }
 
 void FileInterface::functionOpenToRead(void) {
 	int32_t id = ++idC;
+	string file = cb->popValue().toString().getRef();
 
-	filestrs[id] = fopen(cb->popValue().toString().getRef().c_str(), "r");;
+	filestrs[id] = fopen(file.c_str(), "r");;
 	if (filestrs[id] == NULL) {
-		FIXME("OpenToRead failed.");
+		cb->errors->createFatalError("OpenToRead failed! File: \"" + file + "\"");
 		cb->pushValue(0);
+		return;
 	}
 
 	cb->pushValue(id);
@@ -186,29 +182,32 @@ void FileInterface::functionOpenToRead(void) {
 
 void FileInterface::functionOpenToWrite(void) {
 	int32_t id = ++idC;
+	string file = cb->popValue().toString().getRef();
 
-	filestrs[id] = fopen(cb->popValue().getString().getRef().c_str(), "w");
+	filestrs[id] = fopen(file.c_str(), "w");
 	if (filestrs[id] == NULL) {
-		FIXME("OpenToWrite failed.");
+		cb->errors->createFatalError("OpenToWrite failed! File: \"" + file + "\"");
 		cb->pushValue(0);
+		return;
 	}
 
 	cb->pushValue(id);
 }
 
 void FileInterface::functionOpenToEdit(void) {
-	string file_s = cb->popValue().toString().getRef();
+	string file = cb->popValue().toString().getRef();
 	int32_t id = ++idC;
 
-	if(fs::exists(file_s))
+	if(fs::exists(file))
 	{
-		filestrs[id] = fopen(file_s.c_str(), "r+");
+		filestrs[id] = fopen(file.c_str(), "r+");
 	} else {
-		filestrs[id] = fopen(file_s.c_str(), "w+");
+		filestrs[id] = fopen(file.c_str(), "w+");
 	}
 	if (filestrs[id] == NULL) {
-		FIXME("OpenToEdit failed.");
+		cb->errors->createFatalError("OpenToEdit failed! File: \"" + file + "\"");
 		cb->pushValue(0);
+		return;
 	}
 	cb->pushValue(id);
 }
