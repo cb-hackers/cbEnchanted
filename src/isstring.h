@@ -119,11 +119,11 @@ class ISString {
 ISString operator +(const string &,const ISString&);
 
 
-FORCEINLINE ISString::SharedData::increaseRefCount() {
+FORCEINLINE void ISString::SharedData::increaseRefCount() {
 	refCounter++;
 }
 
-FORCEINLINE ISString::SharedData::decreaseRefCount() {
+FORCEINLINE void ISString::SharedData::decreaseRefCount() {
 	if (--refCounter == 0) {
 		delete this;
 	}
