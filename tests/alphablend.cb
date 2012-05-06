@@ -1,0 +1,44 @@
+FrameLimit 40
+
+img = LoadImage("..\alphablend.png")
+
+rgb = 128
+dir = 1
+
+Repeat
+    ClsColor rgb, rgb, rgb
+    Cls
+    DrawImage img, 0, 0
+    
+    rgb = rgb + dir
+    If rgb > 255 Then rgb = 255 : dir = -1
+    If rgb < 0 Then rgb = 0 : dir = 1
+    
+    DrawScreen
+Until KeyHit(cbKeyReturn)
+
+ClsColor 128, 128, 128
+
+doitagain:
+newimg = MakeImage(ImageWidth(img), ImageHeight(img))
+DrawToImage newimg
+    DrawImage img, x, y
+    Color cbRed
+    Circle 40, 40, 10, True
+    Color cbWhite
+DrawToScreen
+
+Repeat
+    ClsColor rgb, rgb, rgb
+    Cls
+    DrawImage newimg, 0, 0
+    
+    rgb = rgb + dir
+    If rgb > 255 Then rgb = 255 : dir = -1
+    If rgb < 0 Then rgb = 0 : dir = 1
+    
+    DrawScreen
+Until KeyHit(cbKeyReturn)
+img = CloneImage(newimg)
+DeleteImage newimg
+Goto doitagain

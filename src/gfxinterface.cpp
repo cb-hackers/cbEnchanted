@@ -68,6 +68,7 @@ bool GfxInterface::initializeGfx()
 	al_set_window_title(window,"");
 
 	al_set_new_bitmap_flags(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+	al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
 	windowRenderTarget = new RenderTarget;
 	windowRenderTarget->create(al_get_backbuffer(window));
@@ -83,8 +84,6 @@ bool GfxInterface::initializeGfx()
 	windowGammaR = 0;
 	windowGammaG = 0;
 	windowGammaB = 0;
-
-	al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
 	return true;
 }
