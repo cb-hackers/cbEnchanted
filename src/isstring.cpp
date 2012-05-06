@@ -161,7 +161,15 @@ const string &ISString::getUtf8Encoded() const {
 				*this->data->utfStr += utfc[1];
 			}
 			else {
-				*this->data->utfStr += c;
+				if (c == 0) {
+					char utfc[2];
+					al_utf8_encode(utfc, 255);
+					*this->data->utfStr += utfc[0];
+					*this->data->utfStr += utfc[1];
+				}
+				else {
+					*this->data->utfStr += c;
+				}
 			}
 		}
 	}

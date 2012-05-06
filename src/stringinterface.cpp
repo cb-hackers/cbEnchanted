@@ -109,21 +109,17 @@ void StringInterface::functionRSet(void) {
 
 void StringInterface::functionChr(void) {
 	unsigned char AV = cb->popValue().getInt();
+	if (AV == 255) AV = 0;
+	if (AV > 127) AV++;
 	string s;
-	if (AV > 128) {
-		char utfc[2];
-		al_utf8_encode(utfc, AV);
-		s += utfc[0];
-		s += utfc[1];
-	}
-	else {
-		s += AV;
-	}
-	cb->pushValue(ISString(s));
+	s += AV;
+	cb->pushValue(s);
 }
 
 void StringInterface::functionAsc(void) {
 	uint8_t AV = uint8_t(*cb->popValue().getString().getRef().c_str());
+	if (AV >= 127) AV--;
+	if (AV == 0) AV = 255;
 	cb->pushValue(int(AV));
 }
 
