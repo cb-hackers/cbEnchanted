@@ -327,6 +327,9 @@ void GfxInterface::commandScreenGamma(void) {
 
 void GfxInterface::commandDrawToImage(void) {
 	int32_t id = cb->popValue().getInt();
+	if (imageToDrawTo != NULL) {
+		imageToDrawTo->switchMaskBitmaps(false);
+	}
 	imageToDrawTo = cb->getImage(id);
 	imageToDrawTo->switchMaskBitmaps(true);
 	setCurrentRenderTarget(imageToDrawTo->getRenderTarget());

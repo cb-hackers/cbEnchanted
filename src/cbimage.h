@@ -10,6 +10,7 @@ class CBImage
 		CBImage();
 		~CBImage();
 		bool load(const string &path);
+		bool save(const string &path);
 		void lock();
 		void unlock();
 		int32_t width()const{return renderTarget.width();}

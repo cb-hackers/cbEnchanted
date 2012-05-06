@@ -16,10 +16,11 @@ ImageInterface::~ImageInterface() {
 }
 
 void ImageInterface::commandSaveImage(void) {
-	/*string path = cb->popValue().toString();
-	int32_t id = cb->popValue().toInt();*/
-	STUB;
-
+	int32_t frame = cb->popValue().toInt();
+	const ISString &path = cb->popValue().toString();
+	int32_t id = cb->popValue().toInt();
+	CBImage *img = getImage(id);
+	img->save(path.getUtf8Encoded());
 }
 
 void ImageInterface::commandDrawImage(void) {

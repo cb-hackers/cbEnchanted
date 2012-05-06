@@ -28,6 +28,10 @@ bool CBImage::load(const string &path) {
 	return true;
 }
 
+bool CBImage::save(const string &path) {
+	return al_save_bitmap(path.c_str(),unmaskedBitmap);
+}
+
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
 	if (useMask) {
 		r.drawBitmap(maskedBitmap, x - hotspotX, y - hotspotY);
