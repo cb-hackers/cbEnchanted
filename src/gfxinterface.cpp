@@ -338,6 +338,7 @@ void GfxInterface::commandDrawToImage(void) {
 void GfxInterface::commandDrawToScreen(void) {
 	if (imageToDrawTo != NULL) {
 		imageToDrawTo->switchMaskBitmaps(false);
+		imageToDrawTo = NULL;
 	}
 	else {
 		FIXME("commandDrawToScreen didn't have an imageToDrawTo set!");

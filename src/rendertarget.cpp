@@ -271,4 +271,11 @@ void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3
 	}
 }
 
-
+/** Changes to a new bitmap and destroys the current one */
+void RenderTarget::changeBitmap(ALLEGRO_BITMAP *bm) {
+	al_destroy_bitmap(this->bitmap);
+	this->bitmap = bm;
+	if (bindRenderTarget == this) {
+		bindRenderTarget = 0;
+	}
+}

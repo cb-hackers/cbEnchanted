@@ -54,6 +54,9 @@ class RenderTarget
 		int32_t height()const{return al_get_bitmap_height(bitmap);}
 		ALLEGRO_BITMAP *getBitmap(){return bitmap;}
 		int32_t getId()const{return id;}
+
+		/** Changes to a new bitmap and destroys the current one */
+		void changeBitmap(ALLEGRO_BITMAP *bm);
 	private:
 		void convertCoords(float &x,float &y);
 
