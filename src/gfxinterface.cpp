@@ -151,7 +151,7 @@ void GfxInterface::commandColor(void) {
 }
 
 void GfxInterface::commandCircle(void) {
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !imageToDrawTo);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
 	bool fill = cb->popValue().toInt();
 	float r = cb->popValue().toFloat()*0.5;
 	float cy = cb->popValue().toFloat() + (drawDrawCommandToWorld ? -r :r);
@@ -160,7 +160,7 @@ void GfxInterface::commandCircle(void) {
 }
 
 void GfxInterface::commandLine(void){
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !imageToDrawTo);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
 	float y2 = cb->popValue().toFloat()+0.5f;
 	float x2 = cb->popValue().toFloat()+0.5f;
 	float y1 = cb->popValue().toFloat()+0.5f;
@@ -286,14 +286,14 @@ void GfxInterface::commandCls(void) {
 }
 
 void GfxInterface::commandDot(void) {
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !imageToDrawTo);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
 	float y = cb->popValue().toFloat()+0.5f;
 	float x = cb->popValue().toFloat()+0.5f;
 	currentRenderTarget->drawDot(x,y,drawColor);
 }
 
 void GfxInterface::commandBox(void) {
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !imageToDrawTo);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
@@ -303,7 +303,7 @@ void GfxInterface::commandBox(void) {
 }
 
 void GfxInterface::commandEllipse(void) {
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !imageToDrawTo);
+	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
 	bool fill = cb->popValue().toInt();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();

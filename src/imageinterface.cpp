@@ -24,7 +24,7 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 	bool useMask = cb->popValue().toInt();
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
@@ -40,7 +40,7 @@ void ImageInterface::commandDrawGhostImage(void) {
 }
 
 void ImageInterface::commandDrawImageBox(void) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 	bool useMask = cb->popValue().toBool();
 	int32_t frame = cb->popValue().toInt();
 	float sh = cb->popValue().toFloat();

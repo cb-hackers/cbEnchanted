@@ -79,7 +79,7 @@ void TextInterface::commandText(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
 	cb->getCurrentRenderTarget()->drawText(currentFont, txt, x, y, cb->getDrawColor());
 }
 
@@ -88,7 +88,7 @@ void TextInterface::commandCenterText(void) {
 	const ISString &str = cb->popValue().toString();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
 	switch (style) {
 		case 0:
 			cb->getCurrentRenderTarget()->drawText(

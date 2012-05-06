@@ -59,7 +59,7 @@ class GfxInterface {
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
 		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
 		void setCurrentRenderTarget(RenderTarget *t);
-
+		bool drawingOnImage() const { return imageToDrawTo != 0; }
 		bool initializeGfx();
 		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
 
