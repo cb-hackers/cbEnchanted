@@ -1,0 +1,114 @@
+
+Const WAITKEY_AFTER_TEST = 1
+
+SCREEN 800,600
+
+InitTesting("test.log")
+
+functionLeftTest()
+functionRightTest()
+functionMidTest()
+functionReplaceTest()
+functionAscTest()
+functionChrTest()
+ShutdownTesting()
+
+
+Function functionLeftTest()
+    StartTest("functionLeft")
+        s$="Hämähäkki"
+        r$=Left(s$,4)
+        TestInfo("Original string: "+s$)
+        TestResult("First 4 characters: "+r$)
+    EndTest()
+EndFunction
+
+Function functionRightTest()
+    StartTest("functionRight")
+        s$="Ärinää"
+        r$=Right(s$,4)
+        TestInfo("Original String: "+s$)
+        TestResult("Last 4 characters: "+r$)
+    EndTest()
+EndFunction
+
+Function functionMidTest()
+    StartTest("functionMid")
+        s$="Lehmä"
+        r$=Mid(s$,3,3)
+        TestInfo("Original String: "+s$)
+        TestResult("Characters 3-5: "+r$)
+    EndTest()
+EndFunction
+
+Function functionReplaceTest()
+    StartTest("functionReplace")
+        s$="Lehmä käveli tien yli"
+        r$=Replace(s$,"käveli","ui")
+        TestInfo("Original String: "+s$)
+        TestResult(Chr(34)+"käveli"+Chr(34)+" replaced with "+Chr(34)+"ui"+Chr(34)+": "+r$)
+    EndTest()
+EndFunction
+
+Function functionChrTest()
+    StartTest("functionChr")
+        TestResult("ISO 8859-1 character 231 is: "+Chr(231))
+    EndTest()
+EndFunction
+
+Function functionAscTest()
+    StartTest("functionAsc")
+        TestResult("The ISO 8859-1 number of character 'ä' is: "+Asc("ä"))
+    EndTest()
+EndFunction
+
+
+
+
+Global currentTestName As String
+Global testLogFile
+Global testStartTime
+
+Function InitTesting(filename$)
+    testLogFile = OpenToWrite(filename$)
+EndFunction
+
+Function ShutdownTesting()
+    CloseFile testLogFile
+EndFunction
+
+Function StartTest(name$)
+    currentTestName = name$
+    l$ = Date()+ " "+Time()+": Starting test "+name
+    WriteLine testLogFile,l$
+    AddText l$
+    DrawScreen
+    testStartTime = Timer()
+EndFunction
+
+Function TestInfo(info$)
+    l$ = Date()+ " "+Time()+": "+info
+    WriteLine testLogFile,l$
+    AddText l$
+    DrawScreen
+EndFunction
+
+
+Function TestResult(result$)
+    l$ = Date()+ " "+Time()+": Result: "+result$
+    WriteLine testLogFile,l$
+    AddText l$
+    DrawScreen
+EndFunction
+
+Function EndTest()
+    l$ = Date()+ " "+Time()+": Test "+currentTestName+ " finished"
+    WriteLine testLogFile,l$
+    WriteLine testLogFile,""
+    AddText l$
+    AddText "Test took "+(Timer()-testStartTime)+"ms"
+    AddText ""
+    Repeat
+        DrawScreen
+    Until KeyHit(cbKeySpace) Or KeyHit(cbKeyReturn) Or (Not WAITKEY_AFTER_TEST)
+EndFunction
