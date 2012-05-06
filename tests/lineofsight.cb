@@ -1,0 +1,95 @@
+'Täytettyihin kolmiohin ja poimintaan perustuva valoefekti CoolBasicille
+'koodaillut cce 13.11.2010
+
+// ----- START cbEnchanted custom functions -----
+Const CBE_CUSTOM_FUNCTION_GROUP = 1
+
+Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float = 0.0, fill = 1)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 1
+EndFunction
+
+Function cbeColor(r,g,b,a)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 2
+EndFunction
+
+Function cbeClsColor(r,g,b,a)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 3
+EndFunction
+// ----- END cbEnchanted custom functions -----
+
+
+kartta = LoadMap("Media\cdm2.til","Media\tileset.bmp")
+PlayObject kartta,0,0,1
+ObjectPickable kartta, ON
+
+ukko = LoadObject ("Media\guy.bmp",72)
+
+SetupCollision ukko, kartta, 1, 4, 2
+
+imgMask = MakeImage(ScreenWidth(), ScreenHeight())
+MaskImage imgMask, 255, 255, 255
+
+'Awesome Commodore-64 stylish font, cbE rocks!
+c64font = LoadFont("Media\C64_User_Mono_v1.0-STYLE.ttf")
+SetFont c64font
+
+lastUpdate = Timer()
+Repeat
+    multiplier# = Float(Timer() - lastUpdate)/10.0
+    lastUpdate = Timer()
+    
+    'Ukon ohjaus
+    If LeftKey() Then TurnObject ukko,3*multiplier
+    If RightKey() Then TurnObject ukko,-3*multiplier
+    If UpKey() Then MoveObject ukko,1*multiplier
+    If DownKey() Then MoveObject ukko,-1*multiplier
+    
+    UpdateGame
+    
+    CloneCameraPosition ukko
+    
+    DrawGame
+    
+    fov# = 45   ' valaistuksen leveys asteina
+    quality# = 180 ' kuinka monta kolmiota piirretään, enempi parempi
+    turn# = fov / quality
+    old_angle# = ObjectAngle(ukko)
+    circle_size = 40 ' ukkoa ympäröivän valoympyrän koko
+    
+    DrawToImage imgMask
+        ' Täytetään maski aluksi ahdistavan värisellä taustalla. 196 on alphan määrä
+        cbeColor(32, 0, 16, 196)
+        Box -1, -1, ImageWidth(imgMask) + 1, ImageHeight(imgMask) + 1, 1
+        cbeColor(255, 255, 255, 255) ' takaisin täyteen valkoiseen, maskiväriin
+        
+        Circle 200 - circle_size/2, 150 - circle_size/2, circle_size, 1
+        
+        For i# = -quality/2 To quality/2 ' tässä on cbE:n suhteen tärkeää että i määritellään liukuluvuksi. Muuten tapahtuisi jänniä.
+            RotateObject ukko, old_angle + i * turn
+            ObjectPick ukko
+            cam_x = -CameraX()
+            cam_y = CameraY()
+            pos_x = cam_x + 199 + PickedX()
+            pos_y = cam_y + 149 - PickedY()
+            
+            If i > -quality / 2 Then
+                cbeTriangle(cam_x + 200 + ObjectX(ukko), cam_y + 150 - ObjectY(ukko), pos_x, pos_y, old_pos_x, old_pos_y)
+            EndIf
+            
+            old_pos_x = pos_x ' tallennetaan nykyisen poiminnan tiedot seuraavalle kierrokselle
+            old_pos_y = pos_y
+        Next i#
+        
+        RotateObject ukko, old_angle
+        
+    DrawToScreen
+    
+    DrawImage imgMask, 1, 1
+    
+    Text 0, 2, "FPS: "+FPS()
+    DrawScreen
+
+Forever 
