@@ -153,11 +153,17 @@ void CBObject::positionObject(float x, float y) {
  * @param tex The new texture
  */
 void CBObject::paintObject(const RenderTarget &tex) {
-	if (!renderTarget) {
-		renderTarget = new RenderTarget;
+	if (!this->copied) {
+		if (!renderTarget) {
+			renderTarget = new RenderTarget;
+		}
+		if (texture) {
+			al_destroy_bitmap(texture);
+		}
 	}
-	if (texture) {
-		al_destroy_bitmap(texture);
+	else {
+		renderTarget = new RenderTarget;
+		this->copied = false;
 	}
 	renderTarget->copy(&tex);
 	texture = al_clone_bitmap(renderTarget->getBitmap());
@@ -169,11 +175,17 @@ void CBObject::paintObject(const RenderTarget &tex) {
  * @param obj The object whose texture is to be copied to this object
  */
 void CBObject::paintObject(const CBObject &obj) {
-	if (!renderTarget) {
-		renderTarget = new RenderTarget;
+	if (!this->copied) {
+		if (!renderTarget) {
+			renderTarget = new RenderTarget;
+		}
+		if (texture) {
+			al_destroy_bitmap(texture);
+		}
 	}
-	if (texture) {
-		al_destroy_bitmap(texture);
+	else {
+		renderTarget = new RenderTarget;
+		this->copied = false;
 	}
 	renderTarget->copy(obj.renderTarget);
 	texture = al_clone_bitmap(renderTarget->getBitmap());
