@@ -50,15 +50,16 @@ Function functionReplaceTest()
     EndTest()
 EndFunction
 
-Function functionChrTest()
-    StartTest("functionChr")
-        TestResult("ISO 8859-1 character 231 is: "+Chr(231))
-    EndTest()
-EndFunction
 
 Function functionAscTest()
     StartTest("functionAsc")
-        TestResult("The ISO 8859-1 number of character 'ä' is: "+Asc("ä"))
+        TestResult("The ISO 8859-1 number of character 'ÿ' is: "+Asc("ÿ"))
+    EndTest()
+EndFunction
+
+Function functionChrTest()
+    StartTest("functionChr")
+        TestResult("ISO 8859-1 character 255 is: "+Chr(255))
     EndTest()
 EndFunction
 
