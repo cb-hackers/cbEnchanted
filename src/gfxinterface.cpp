@@ -151,10 +151,11 @@ void GfxInterface::commandColor(void) {
 }
 
 void GfxInterface::commandCircle(void) {
-	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
+	bool dw = drawDrawCommandToWorld && !drawingOnImage();
+	currentRenderTarget->useWorldCoords(dw);
 	bool fill = cb->popValue().toInt();
 	float r = cb->popValue().toFloat()*0.5;
-	float cy = cb->popValue().toFloat() + (drawDrawCommandToWorld ? -r :r);
+	float cy = cb->popValue().toFloat() + (dw ? -r :r);
 	float cx = cb->popValue().toFloat() + r;
 	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
 }
