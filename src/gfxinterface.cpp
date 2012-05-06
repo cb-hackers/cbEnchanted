@@ -340,9 +340,6 @@ void GfxInterface::commandDrawToScreen(void) {
 		imageToDrawTo->switchMaskBitmaps(false);
 		imageToDrawTo = NULL;
 	}
-	else {
-		FIXME("commandDrawToScreen didn't have an imageToDrawTo set!");
-	}
 	setCurrentRenderTarget(windowRenderTarget);
 }
 
