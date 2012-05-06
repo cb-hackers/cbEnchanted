@@ -64,7 +64,7 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncId(CBE_CUSTOM_COLOR);
 	this->add(func);
 
-	func.setFuncPtr(&cbEColor);
+	func.setFuncPtr(&cbEClsColor);
 	func.setFuncId(CBE_CUSTOM_CLSCOLOR);
 	this->add(func);
 }
