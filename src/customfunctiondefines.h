@@ -11,6 +11,10 @@
 /** ID for custom function commandTriangle() */
 #define CBE_CUSTOM_DRAWTRIANGLE 1
 
+#define CBE_CUSTOM_COLOR 2
+
+#define CBE_CUSTOM_CLSCOLOR 3
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

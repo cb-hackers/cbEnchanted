@@ -52,11 +52,16 @@ class GfxInterface {
 		void sleep(int64_t time);
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }
-		const ALLEGRO_COLOR &getDrawColor() { return drawColor; }
-		void setDrawColor(const ALLEGRO_COLOR &c){drawColor = c;}
+
+		const ALLEGRO_COLOR &getDrawColor() const { return drawColor; }
+		void setDrawColor(const ALLEGRO_COLOR &c) {drawColor = c;}
+		const ALLEGRO_COLOR &getClearColor() const {return clearColor; }
+		void setClearColor(const ALLEGRO_COLOR &c) {clearColor = c;}
+
 		inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
 		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
+
 		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
 		void setCurrentRenderTarget(RenderTarget *t);
 		bool drawingOnImage() const { return imageToDrawTo != 0; }

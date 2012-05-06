@@ -56,8 +56,16 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setGroupId(CBE_CUSTOM_FUNCTION_GROUP);
 
 
-	func.setFuncPtr(&commandTriangle);
+	func.setFuncPtr(&cbETriangle);
 	func.setFuncId(CBE_CUSTOM_DRAWTRIANGLE);
+	this->add(func);
+
+	func.setFuncPtr(&cbEColor);
+	func.setFuncId(CBE_CUSTOM_COLOR);
+	this->add(func);
+
+	func.setFuncPtr(&cbEColor);
+	func.setFuncId(CBE_CUSTOM_CLSCOLOR);
 	this->add(func);
 }
 

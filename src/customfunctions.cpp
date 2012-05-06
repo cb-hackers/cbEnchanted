@@ -6,7 +6,7 @@
  */
 
 /** VesQ's awesome triangle drawing function */
-void commandTriangle(CBEnchanted *cb) {
+void cbETriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld());
 	bool fill = cb->popValue().toInt();
 	float thickness = cb->popValue().toFloat();
@@ -27,6 +27,26 @@ void commandTriangle(CBEnchanted *cb) {
 		fill,
 		cb->getDrawColor()
 	);
+	cb->pushValue(0);
+}
+
+/** Sets draw color with alpha */
+void cbEColor(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	int32_t b= cb->popValue().toInt();
+	int32_t g = cb->popValue().toInt();
+	int32_t r = cb->popValue().toInt();
+	cb->setDrawColor(al_map_rgba(r,g,b,a));
+	cb->pushValue(0);
+}
+
+/** Sets clear color with alpha */
+void cbEClsColor(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	int32_t b= cb->popValue().toInt();
+	int32_t g = cb->popValue().toInt();
+	int32_t r = cb->popValue().toInt();
+	cb->setClearColor(al_map_rgba(r,g,b,a));
 	cb->pushValue(0);
 }
 

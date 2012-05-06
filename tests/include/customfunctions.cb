@@ -1,6 +1,16 @@
 Const CBE_CUSTOM_FUNCTION_GROUP = 1
 
-Function Triangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float, fill)
+Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float, fill)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 1
+EndFunction
+
+Function cbeColor(r,g,b,a)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 2
+EndFunction
+
+Function cbeClsColor(r,g,b,a)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 3
 EndFunction

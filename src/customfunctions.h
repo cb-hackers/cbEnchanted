@@ -6,7 +6,11 @@ class CBEnchanted;
  * @{
  */
 
-void commandTriangle(CBEnchanted *cb);
+void cbETriangle(CBEnchanted *cb);
+
+void cbEColor(CBEnchanted *cb);
+
+void cbEClsColor(CBEnchanted *cb);
 
 /** @} */
 
