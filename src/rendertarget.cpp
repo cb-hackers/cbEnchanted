@@ -176,7 +176,7 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 	al_clear_to_color(c);
 }
 
-FORCEINLINE void RenderTarget::convertCoords(float &x, float &y) {
+void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		x = x+ al_get_display_width(CBEnchanted::instance()->getWindow()) / 2.0f - CBEnchanted::instance()->getCameraX();
 		y = -y + al_get_display_height(CBEnchanted::instance()->getWindow()) / 2.0f + CBEnchanted::instance()->getCameraY();
