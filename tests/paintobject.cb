@@ -1,0 +1,47 @@
+'load a map 
+map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
+
+'load an alternative tileset 
+newset1=LoadImage("Media\negative.bmp")
+newset2=LoadImage("Media\tileset.bmp")
+
+'Load object
+guyImg = LoadImage("Media\guy.bmp")
+guy = MakeObject()
+PaintObject guy, -guyImg
+
+'Load a new texture for guy
+soldierImg = LoadImage("Media\soldier.bmp")
+
+'Load another object
+guy2 = CloneObject(guy)
+PositionObject guy2, 40, 0
+
+'Load an object to use as a texture
+ukkeliObj = LoadObject("Media\ukkeli3.bmp")
+ShowObject ukkeliObj, OFF
+
+'add some info onto screen 
+Color cborange
+AddText "Press SPACE to change tileset"
+
+Repeat
+
+    'change the look?
+    If KeyHit(cbkeyspace) Then
+        set=Not set
+        If set Then
+            PaintObject map,newset1
+            PaintObject guy, -soldierImg
+            PaintObject guy2, ukkeliObj
+        Else
+            PaintObject map,newset2
+            PaintObject guy, -guyImg
+            PaintObject guy2, guy
+        EndIf
+    EndIf
+
+    'don't forget this!
+    DrawScreen
+
+Until EscapeKey()

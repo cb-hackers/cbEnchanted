@@ -250,7 +250,7 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 	fX = tile % framesX;
 	fY = tile / framesY;
 
-    target.drawBitmapRegion(texture, fX * tileWidth, fY * tileHeight, tileWidth, tileHeight, x, y);
+	target.drawBitmapRegion(texture, fX * tileWidth, fY * tileHeight, tileWidth, tileHeight, x, y);
 }
 
 /** Updates the map animation.

@@ -240,13 +240,21 @@ void ObjectInterface::commandPaintObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
 
-	if (p > 0 && !object->isFloorObject()) { //Object
-		CBObject *object2 = objectMap[p];
-		object->paintObject(*object2);
-	}
-	else { //Image
-		CBImage *img = cb->getImage(-p);
+	if (object->isMap()) {
+		// Maps can only be painted with an image
+		CBImage *img = cb->getImage(p);
 		object->paintObject(*img->getRenderTarget());
+	}
+	else {
+		// Painting a regular object
+		if (p > 0 && !object->isFloorObject()) { //Object
+			CBObject *object2 = objectMap[p];
+			object->paintObject(*object2);
+		}
+		else { //Image
+			CBImage *img = cb->getImage(-p);
+			object->paintObject(*img->getRenderTarget());
+		}
 	}
 }
 

@@ -18,6 +18,8 @@ class CBMap : public CBObject {
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
 
+		bool isMap() const { return true; }
+
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);
 
 		void edit(uint8_t maplayer, int32_t MapX, int32_t tileY, int32_t tileIndex);
