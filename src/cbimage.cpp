@@ -107,6 +107,11 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 	drawBox(r, frameAreaLeft, frameAreaTop, sw, sh, tx, ty, useMask);
 }
 
+/** Draws this image with the given level (0.0f to 1.0f) of alpha blending. */
+void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, float alpha) {
+	r.drawBitmap(unmaskedBitmap, x, y, al_map_rgba_f(1.0f, 1.0f, 1.0f, alpha));
+}
+
 /** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
 void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 	maskColor = color;

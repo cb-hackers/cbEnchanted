@@ -259,11 +259,18 @@ void ObjectInterface::commandPaintObject(void) {
 }
 
 void ObjectInterface::commandGhostObject(void) {
-	float a = cb->popValue().toFloat() / 100.0;
+	float alpha = cb->popValue().toFloat() / 100.0f;
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = objectMap[id];
-	object->ghostObject((uint8_t)(a*255.0));
 
+	if (alpha < 0.0f) {
+		alpha = 0.0f;
+	}
+	else if (alpha > 1.0f) {
+		alpha = 1.0f;
+	}
+
+	object->ghostObject(alpha);
 }
 
 void ObjectInterface::commandMirrorObject(void) {

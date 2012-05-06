@@ -22,6 +22,8 @@ class CBImage
 		void draw(RenderTarget &r,float x,float y,int frame, bool useMask);
 		void drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, bool useMask);
 		void drawBox(RenderTarget &r,float sx,float sy, float sw, float sh, float tx, float ty, int frame, bool useMask);
+		/** Draws this image with the given level (0.0f to 1.0f) of alpha blending. */
+		void drawAlphaBlended(RenderTarget &r, float x, float y, float alpha);
 		void maskImage(const ALLEGRO_COLOR &color);
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
 		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begining,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begining;animLength = animL;}

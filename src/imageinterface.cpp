@@ -34,9 +34,22 @@ void ImageInterface::commandDrawImage(void) {
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
-	//int32_t id = cb->popValue().getInt();
-	//CBImage *img = cbImages[cb->popValue().getInt()];
-	STUB;
+	// TODO: Draw with frames
+	float alpha = cb->popValue().toFloat() / 100.0f;
+	int32_t frame = cb->popValue().toInt();
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	int32_t id = cb->popValue().getInt();
+
+	if (alpha < 0.0f) {
+		alpha = 0.0f;
+	}
+	else if (alpha > 1.0f) {
+		alpha = 1.0f;
+	}
+
+	CBImage *img = cbImages[id];
+	img->drawAlphaBlended(*cb->getCurrentRenderTarget(), x, y, alpha);
 }
 
 void ImageInterface::commandDrawImageBox(void) {

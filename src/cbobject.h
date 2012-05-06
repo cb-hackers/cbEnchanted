@@ -37,7 +37,7 @@ class CBObject{
 		virtual void render(RenderTarget &target);
 		void setPosition(float x, float y);
 		void rotateObject(float a){angle = a;}
-		void ghostObject(uint8_t ab);
+		void ghostObject(float ab);
 		void maskObject(uint8_t r, uint8_t g, uint8_t b);
 		virtual bool isMap()const{return false;}
 		virtual Type type()const{return Object;}
@@ -126,8 +126,8 @@ class CBObject{
 		ALLEGRO_BITMAP *texture;
 		/** Mask color */
 		ALLEGRO_COLOR maskColor;
-		/** Amount of alpha blending, 0...255 */
-		uint8_t alphaBlend;
+		/** Amount of alpha blending, 0.0f ... 1.0f */
+		float alphaBlend;
 
 		/** Width of a single frame, px */
 		uint16_t frameWidth;

@@ -224,6 +224,11 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, co
 	al_draw_tinted_rotated_bitmap(r,tint,(float)al_get_bitmap_width(r)*0.5f,(float)al_get_bitmap_height(r)*0.5f,x,y,rot,0);
 }
 
+void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, const ALLEGRO_COLOR &tint) {
+	setAsCurrent();
+	convertCoords(x, y);
+	al_draw_tinted_bitmap(r, tint, x, y, 0);
+}
 
 RenderTarget *RenderTarget::clone() {
 	RenderTarget *ret = new RenderTarget;

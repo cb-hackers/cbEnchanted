@@ -258,9 +258,9 @@ bool CBObject::updateObject(float timestep) {
 }
 
 /** Sets the amount of alpha blending of the object.
- * @param ab The amount of blending, range 0...255
+ * @param ab The amount of blending, range 0.0f ... 1.0f
  */
-void CBObject::ghostObject(uint8_t ab) {
+void CBObject::ghostObject(float ab) {
 	alphaBlend = ab;
 }
 
@@ -362,18 +362,18 @@ void CBObject::render(RenderTarget &target) {
 					al_map_rgba(255, 255, 255, alphaBlend),
 					posX,
 					posY,
-					(angle * M_PI) / 180.0f
+					-(angle / 180.0) * M_PI
 				);
 				return;
 			}
-			if (alphaBlend != 255) {
+			if (alphaBlend < 1.0f) {
 				// Draw alpha blended objects
 				target.drawBitmap(
 					texture,
 					posX,
 					posY,
-					(angle / 180.0) * M_PI,
-					al_map_rgba(255, 255, 255, alphaBlend)
+					-(angle / 180.0) * M_PI,
+					al_map_rgba_f(1.0f, 1.0f, 1.0f, alphaBlend)
 				);
 				return;
 			}
