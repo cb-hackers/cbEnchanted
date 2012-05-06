@@ -521,15 +521,6 @@ bool CBObject::circleRayCast(CBObject *fromObject, float &returnX, float &return
 	float endX = startX + cos((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
 	float endY = startY + sin((fromObject->getAngle() / 180.0) * M_PI) * 1e7;
 
-	// Debug drawing
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawCircle(circleX, circleY, r, false, al_map_rgb(0, 128, 0));
-	//rendertarget->drawLine(startX, startY, endX, endY, al_map_rgb(0, 128, 0));
-	rendertarget->useWorldCoords(false);
-
 	// Direction vector of ray, from start to end
 	float dirX = endX - startX;
 	float dirY = endY - startY;

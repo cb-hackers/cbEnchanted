@@ -351,14 +351,6 @@ bool CBMap::rayCast(CBObject *obj, float &returnX, float &returnY) {
 	// Convert returned values from tilemap based coordinates back to world coordinates
 	mapCoordinatesToWorldCoordinates(returnX, returnY);
 
-	// Draw a debug line
-	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
-
-	rendertarget->useWorldCoords(true);
-	rendertarget->drawLine(obj->getX(), obj->getY(), returnX, returnY, al_map_rgb(255, 255, 0));
-	rendertarget->useWorldCoords(false);
-
 	return didRayHit;
 }
 
