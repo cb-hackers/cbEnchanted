@@ -7,7 +7,7 @@
 
 ImageInterface::ImageInterface() {
 	cb = static_cast <CBEnchanted *> (this);
-	defaultMask = al_map_rgb(0, 0, 0);
+	defaultMask = al_map_rgba_f(0, 0, 0, 1);
 	defaultMaskToggled = true;
 }
 
@@ -71,7 +71,7 @@ void ImageInterface::commandMaskImage(void) {
 	int32_t g = cb->popValue().getInt();
 	int32_t r = cb->popValue().getInt();
 	CBImage *img = cbImages[cb->popValue().getInt()];
-	img->maskImage(al_map_rgb(r, g, b));
+	img->maskImage(al_map_rgba(r, g, b, 255));
 }
 
 void ImageInterface::commandDefaultMask(void) {
@@ -81,7 +81,7 @@ void ImageInterface::commandDefaultMask(void) {
 	defaultMaskToggled = cb->popValue().toBool();
 
 	if (defaultMaskToggled) {
-		defaultMask = al_map_rgb(r, g, b);
+		defaultMask = al_map_rgba(r, g, b, 255);
 	}
 }
 

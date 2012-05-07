@@ -10,7 +10,7 @@ CBImage::CBImage() :
 	animBegin(0),
 	animLength(0)
 {
-	maskColor = al_map_rgb(0, 0, 0);
+	maskColor = al_map_rgba(0, 0, 0, 255);
 	maskedBitmap = NULL;
 	unmaskedBitmap = NULL;
 }
