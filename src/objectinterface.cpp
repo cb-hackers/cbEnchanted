@@ -378,7 +378,8 @@ void ObjectInterface::commandPlayObject(void) {
 	CBObject *object = objectMap[id];
 
 	if (endf == -1) {
-		object->stopPlaying();
+		// Stop playing and reset current frame to 0
+		object->stopPlaying(false);
 	}
 	else {
 		object->startPlaying(startf, endf, speed, continuous);
@@ -399,7 +400,10 @@ void ObjectInterface::commandLoopObject(void) {
 }
 
 void ObjectInterface::commandStopObject(void) {
-	STUB;
+	int32_t id = cb->popValue().toInt();
+	CBObject *object = objectMap[id];
+	// Stop playing and keep current frame
+	object->stopPlaying(true);
 }
 
 void ObjectInterface::commandResetObjectCollision(void) {

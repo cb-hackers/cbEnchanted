@@ -63,7 +63,7 @@ class CBObject{
 		/** Start playing the animation for this object. */
 		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
 		/** Stops playing the objects animation. */
-		void stopPlaying();
+		void stopPlaying(bool keepCurrentFrame);
 		void setLooping(bool t){animLooping = t;}
 		bool isLooping()const{return animLooping;}
 		inline uint8_t isAnimated()const{return (maxFrames > 0);}

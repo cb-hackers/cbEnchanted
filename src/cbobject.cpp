@@ -217,10 +217,15 @@ void CBObject::startPlaying(uint16_t startf, uint16_t endf, float spd, bool cont
 	playing = true;
 }
 
-/** Stops playing the objects animation. */
-void CBObject::stopPlaying() {
+/** Stops playing the objects animation.
+ *
+ * @param keepCurrentFrame If true, doesn't reset the current frame to 0.
+ */
+void CBObject::stopPlaying(bool keepCurrentFrame) {
 	playing = false;
-	currentFrame = 0;
+	if (!keepCurrentFrame) {
+		currentFrame = 0;
+	}
 }
 
 /** Updates the animation and life of an object and also clears the collisions.
