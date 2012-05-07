@@ -6,11 +6,15 @@ class CBEnchanted;
  * @{
  */
 
-void cbETriangle(CBEnchanted *cb);
+void cbeTriangle(CBEnchanted *cb);
 
-void cbEColor(CBEnchanted *cb);
+void cbeColor(CBEnchanted *cb);
 
-void cbEClsColor(CBEnchanted *cb);
+void cbeClsColor(CBEnchanted *cb);
+
+void cbeSetBlendMode(CBEnchanted *cb);
+
+void cbeResetBlendMode(CBEnchanted *cb);
 
 /** @} */
 

@@ -55,17 +55,24 @@ void CustomFunctionHandler::importCustomFunctions() {
 	CustomFunction func;
 	func.setGroupId(CBE_CUSTOM_FUNCTION_GROUP);
 
-
-	func.setFuncPtr(&cbETriangle);
+	func.setFuncPtr(&cbeTriangle);
 	func.setFuncId(CBE_CUSTOM_DRAWTRIANGLE);
 	this->add(func);
 
-	func.setFuncPtr(&cbEColor);
+	func.setFuncPtr(&cbeColor);
 	func.setFuncId(CBE_CUSTOM_COLOR);
 	this->add(func);
 
-	func.setFuncPtr(&cbEClsColor);
+	func.setFuncPtr(&cbeClsColor);
 	func.setFuncId(CBE_CUSTOM_CLSCOLOR);
+	this->add(func);
+
+	func.setFuncPtr(&cbeSetBlendMode);
+	func.setFuncId(CBE_CUSTOM_SET_BLEND_MODE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeResetBlendMode);
+	func.setFuncId(CBE_CUSTOM_RESET_BLEND_MODE);
 	this->add(func);
 }
 

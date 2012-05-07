@@ -6,7 +6,7 @@
  */
 
 /** VesQ's awesome triangle drawing function */
-void cbETriangle(CBEnchanted *cb) {
+void cbeTriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld());
 	bool fill = cb->popValue().toInt();
 	float thickness = cb->popValue().toFloat();
@@ -31,7 +31,7 @@ void cbETriangle(CBEnchanted *cb) {
 }
 
 /** Sets draw color with alpha */
-void cbEColor(CBEnchanted *cb) {
+void cbeColor(CBEnchanted *cb) {
 	int32_t a = cb->popValue().toInt();
 	int32_t b= cb->popValue().toInt();
 	int32_t g = cb->popValue().toInt();
@@ -41,13 +41,23 @@ void cbEColor(CBEnchanted *cb) {
 }
 
 /** Sets clear color with alpha */
-void cbEClsColor(CBEnchanted *cb) {
+void cbeClsColor(CBEnchanted *cb) {
 	int32_t a = cb->popValue().toInt();
 	int32_t b= cb->popValue().toInt();
 	int32_t g = cb->popValue().toInt();
 	int32_t r = cb->popValue().toInt();
 	cb->setClearColor(al_map_rgba(r,g,b,a));
 	cb->pushValue(0);
+}
+
+/** Sets a custom blending mode. */
+void cbeSetBlendMode(CBEnchanted *cb) {
+	// ...
+}
+
+/** Resets the blend mode to the state it was in before calling cbeSetBlendMode() */
+void cbeResetBlendMode(CBEnchanted *cb) {
+	// ...
 }
 
 /** @} */
