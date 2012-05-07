@@ -146,14 +146,34 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 
 void RenderTarget::resize(int32_t w, int32_t h) {
 	ALLEGRO_BITMAP *newBitmap = al_create_bitmap(w,h);
+
+	// Check if we have changed Smooth2D in between creating this rendertarget
+	// and calling this function. If so, we need to clone this bitmap, because
+	// bitmap resize operation flags have changed.
+	ALLEGRO_BITMAP *bitmapToDrawResized;
+	int bmFlags = al_get_bitmap_flags(this->bitmap);
+	int32_t origW = this->width();
+	int32_t origH = this->height();
+	bool smooth2d = CBEnchanted::instance()->isSmooth2D();
+	if ((!smooth2d && (bmFlags & ALLEGRO_MAG_LINEAR) == ALLEGRO_MAG_LINEAR) ||
+		(smooth2d && (bmFlags & ALLEGRO_MAG_LINEAR) != ALLEGRO_MAG_LINEAR))
+	{
+		// We need to clone.
+		bitmapToDrawResized = al_clone_bitmap(this->bitmap);
+		al_destroy_bitmap(this->bitmap);
+	}
+	else {
+		// Phew, no need to clone.
+		bitmapToDrawResized = this->bitmap;
+	}
 	al_set_target_bitmap(newBitmap);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
-	int32_t a,b,c;
-	al_get_blender(&a,&b,&c);
+	int32_t a, b, c;
+	al_get_blender(&a, &b, &c);
 	al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-	al_draw_scaled_bitmap(this->getBitmap(),0,0,this->width(),this->height(),0,0,w,h,0);
-	al_set_blender(a,b,c);
-	al_destroy_bitmap(this->getBitmap());
+	al_draw_scaled_bitmap(bitmapToDrawResized, 0, 0, origW, origH, 0, 0, w, h, 0);
+	al_set_blender(a, b, c);
+	al_destroy_bitmap(bitmapToDrawResized);
 	this->bitmap = newBitmap;
 	bindRenderTarget = this;
 }
