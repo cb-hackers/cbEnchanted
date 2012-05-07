@@ -413,15 +413,15 @@ void CollisionCheck::CircleMapTest() {
 	uint16_t checkTilesY = 1;
 
 	// Calculate tile coordinates that are one up and one left from the object
-	int32_t startTileX = (int32_t) (objX + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
-	int32_t startTileY = (int32_t) (-objY + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
+	int32_t startTileX = (int32_t) (objX + cbmap->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
+	int32_t startTileY = (int32_t) (-objY + cbmap->getY() + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
 	// Check collision to nearby tiles
 	for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 		for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 			if (cbmap->getHit(tileX, tileY)) {
-				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
-				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2 - cbmap->getX();
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight + cbmap->getY();
 
 				float centerY = y - tileHeight/2;
 
@@ -517,8 +517,8 @@ void CollisionCheck::CircleMapTest() {
 	for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 		for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 			if (cbmap->getHit(tileX, tileY)) {
-				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
-				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2 - cbmap->getX();
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight + cbmap->getY();
 
 				float centerX = x + tileWidth/2;
 
