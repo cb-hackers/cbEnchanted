@@ -308,15 +308,15 @@ void CollisionCheck::RectMapTest() {
 	uint16_t checkTilesY = 1;
 
 	// Calculate tile coordinates that are one up and one left from the object
-	int32_t startTileX = (int32_t) (mObject1->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
-	int32_t startTileY = (int32_t) (-mObject1->getY() + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
+	int32_t startTileX = (int32_t) ((mObject1->getX() + cbmap->getX()) + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
+	int32_t startTileY = (int32_t) (-(mObject1->getY() - cbmap->getY()) + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
 	// First check x-directional collision with obj position as safeY
 	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 			if (cbmap->getHit(tileX, tileY)) {
-				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
-				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2 - cbmap->getX();
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight + cbmap->getY();
 
 				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
 				if (this->RectRectTest(objX - objWidth/2, safeY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
@@ -325,12 +325,12 @@ void CollisionCheck::RectMapTest() {
 					if (tileX < startTileX + checkTilesX) {
 						// It seems to be left.
 						collided[3] = true;
-						objX = x + tileWidth + 1.0f + objWidth/2;
+						objX = x + tileWidth + 1.0f + objWidth/2 + cbmap->getX();
 					}
 					else if (tileX > startTileX + checkTilesX) {
 						// It seems to be right.
 						collided[1] = true;
-						objX = x - 1.0f - objWidth/2;
+						objX = x - 1.0f - objWidth/2 + cbmap->getX();
 					}
 				}
 			}
@@ -341,8 +341,8 @@ void CollisionCheck::RectMapTest() {
 	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 			if (cbmap->getHit(tileX, tileY)) {
-				float x = tileX * tileWidth - cbmap->getSizeX() / 2;
-				float y = cbmap->getSizeY() / 2 - tileY * tileHeight;
+				float x = tileX * tileWidth - cbmap->getSizeX() / 2 - cbmap->getX();
+				float y = cbmap->getSizeY() / 2 - tileY * tileHeight + cbmap->getY();
 
 				// We got ourselves some real coordinates. Now we can just do regular rect-rect test to see if we collide.
 				if (this->RectRectTest(objX - objWidth/2, objY + objHeight/2, objWidth, objHeight, x, y, tileWidth, tileHeight)) {
