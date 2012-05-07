@@ -60,7 +60,10 @@ class CBObject{
 		bool isFloorObject()const{return isFloor;}
 		void setLife(uint32_t energy);
 		bool isPlaying()const{return playing;}
+		/** Start playing the animation for this object. */
 		void startPlaying(uint16_t startf, uint16_t endf, float spd, bool continuous);
+		/** Stops playing the objects animation. */
+		void stopPlaying();
 		void setLooping(bool t){animLooping = t;}
 		bool isLooping()const{return animLooping;}
 		inline uint8_t isAnimated()const{return (maxFrames > 0);}

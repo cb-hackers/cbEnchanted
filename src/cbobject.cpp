@@ -188,8 +188,7 @@ void CBObject::paintObject(const CBObject &obj) {
 		this->copied = false;
 	}
 	renderTarget->copy(obj.renderTarget);
-	texture = al_clone_bitmap(renderTarget->getBitmap());
-	al_convert_mask_to_alpha(texture, maskColor);
+	texture = al_clone_bitmap(obj.texture);
 	painted = true;
 }
 
@@ -216,6 +215,12 @@ void CBObject::startPlaying(uint16_t startf, uint16_t endf, float spd, bool cont
 	animEndingFrame = endf;
 	animSpeed = spd;
 	playing = true;
+}
+
+/** Stops playing the objects animation. */
+void CBObject::stopPlaying() {
+	playing = false;
+	currentFrame = 0;
 }
 
 /** Updates the animation and life of an object and also clears the collisions.
@@ -348,10 +353,10 @@ void CBObject::render(RenderTarget &target) {
 				// Draw animated objects
 				int32_t frame = (int)currentFrame;
 				//INFO("%i", frame)
-				int32_t framesX = renderTarget->width() / frameWidth;
-				int32_t framesY = renderTarget->height() / frameHeight;
-				int32_t copyX = frame % framesX;
-				int32_t copyY = (frame - copyX) / framesY;
+				float framesX = renderTarget->width() / frameWidth;
+				float framesY = renderTarget->height() / frameHeight;
+				float copyX = fmod((float)frame, framesX) + 0.0001f;
+				float copyY = (frame - copyX) / framesY + 0.0001f;
 				//INFO("X, Y: %i,%i", copyX, copyY)
 				target.drawBitmapRegion(
 					texture,

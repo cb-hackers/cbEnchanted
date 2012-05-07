@@ -372,13 +372,18 @@ void ObjectInterface::commandObjectLife(void) {
 void ObjectInterface::commandPlayObject(void) {
 	bool continuous = cb->popValue().toInt();
 	float speed = cb->popValue().toFloat();
-	uint16_t endf = cb->popValue().toInt();
-	uint16_t startf = cb->popValue().toInt();
+	int32_t endf = cb->popValue().toInt();
+	int32_t startf = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
 	CBObject *object = objectMap[id];
 
-	object->startPlaying(startf, endf, speed, continuous);
-	object->setLooping(false);
+	if (endf == -1) {
+		object->stopPlaying();
+	}
+	else {
+		object->startPlaying(startf, endf, speed, continuous);
+		object->setLooping(false);
+	}
 }
 
 void ObjectInterface::commandLoopObject(void) {
@@ -465,10 +470,10 @@ void ObjectInterface::functionLoadObject(void) {
 
 void ObjectInterface::functionLoadAnimObject(void) {
 	cb->popValue().toInt();
-	uint16_t frames = cb->popValue().toInt();
-	uint16_t startf = cb->popValue().toInt();
-	uint16_t frameH = cb->popValue().toInt();
-	uint16_t frameW = cb->popValue().toInt();
+	uint16_t frames = cb->popValue().getInt();
+	uint16_t startf = cb->popValue().getInt();
+	uint16_t frameH = cb->popValue().getInt();
+	uint16_t frameW = cb->popValue().getInt();
 	ALLEGRO_PATH *path = cb->popValue().getString().getPath();
 	const char *cpath = al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP);
 	CBObject *obj = new CBObject;
