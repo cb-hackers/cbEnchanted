@@ -125,7 +125,7 @@ void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 void CBImage::resize(int32_t w, int32_t h) {
 	this->switchMaskBitmaps(true);
 	renderTarget.resize(w, h);
-	al_destroy_bitmap(maskedBitmap);
+	unmaskedBitmap = renderTarget.getBitmap();
 	this->switchMaskBitmaps(false);
 }
 

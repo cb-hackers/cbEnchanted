@@ -180,7 +180,13 @@ void TextInterface::functionLoadFont(void) {
 		path = al_create_path(fontname.c_str());
 	}
 
-	ALLEGRO_FONT *font = al_load_font(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), size, ALLEGRO_TTF_MONOCHROME);
+	ALLEGRO_FONT *font;
+	if (cb->isSmooth2D()) {
+		// If Smooth2D is set, use font antialiasing
+		font = al_load_font(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), size, 0);
+	} else {
+		font = al_load_font(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), size, ALLEGRO_TTF_MONOCHROME);
+	}
 	if (font != NULL) {
 		int32_t keyId = nextfontid();
 		fontMap[keyId] = font;

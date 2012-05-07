@@ -57,6 +57,8 @@ class CBEnchanted :
 		void cleanup();
 		bool isSafeExit(){ return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
+		bool isSmooth2D() { return smooth2d; }
+		void setSmooth2D(bool toggled) { smooth2d = toggled; }
 		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;}
 		inline float getFrameLimit(){return framesMs;}
 		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
@@ -71,6 +73,7 @@ class CBEnchanted :
 		bool initialized;
 		bool running;
 		bool safeExit;
+		bool smooth2d;
 		float framesMs;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;

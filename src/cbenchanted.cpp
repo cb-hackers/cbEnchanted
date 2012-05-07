@@ -17,6 +17,7 @@ CBEnchanted::CBEnchanted() {
 	initialized = false;
 	running = false;
 	safeExit = 1;
+	smooth2d = false;
 }
 
 CBEnchanted::~CBEnchanted() {
