@@ -5,7 +5,7 @@
 #include "cbenchanted.h"
 #include <string>
 #include <vector>
-#include <unordered_set>
+#include <set>
 
 /** A generic, portable error system. */
 class ErrorSystem {
@@ -65,7 +65,7 @@ class ErrorSystem {
 		bool execLastError();
 
 		/** The errors that should no longer be logged nor popped up */
-		std::unordered_set<string> suppressedErrors;
+		std::set<string> suppressedErrors;
 };
 
 #endif // ERRORSYSTEM_H
