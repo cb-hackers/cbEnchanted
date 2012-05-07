@@ -3,7 +3,6 @@
 
 #include "precomp.h"
 
-class cbEnchanted;
 class FileInterface {
 	public:
 		FileInterface();
