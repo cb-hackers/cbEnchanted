@@ -3,6 +3,8 @@ DrawToWorld ON
 
 'Load the map 
 map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
+' Move it just a little bit
+TranslateObject map, 10, 0
 
 'Load player 
 soldier=LoadObject("Media\soldier.bmp",72)

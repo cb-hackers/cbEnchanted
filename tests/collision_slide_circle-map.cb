@@ -4,6 +4,7 @@ DrawToWorld ON
 
 kartta = LoadMap("Media\cdm2.til","Media\tileset.bmp")
 PlayObject kartta,0,0,1
+TranslateObject kartta, 50, 50
 
 ukko = LoadObject ("Media\soldier.bmp",72)
 ukkoW = ObjectSizeX(ukko)
@@ -40,7 +41,7 @@ Repeat
 
     CloneCameraPosition ukko
 
-    Text 0, 0, "kartta " + kartta + " -- ukko: " + ukko 
+    Text 200, 0, "kartta " + kartta + " -- ukko: " + ukko 
 
     DrawScreen
 
