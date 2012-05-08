@@ -71,8 +71,8 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncId(CBE_CUSTOM_SET_BLEND_MODE);
 	this->add(func);
 
-	func.setFuncPtr(&cbeResetBlendMode);
-	func.setFuncId(CBE_CUSTOM_RESET_BLEND_MODE);
+	func.setFuncPtr(&cbeSetBlendModeAdvanced);
+	func.setFuncId(CBE_CUSTOM_SET_BLEND_MODE_ADVANCED);
 	this->add(func);
 }
 

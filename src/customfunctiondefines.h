@@ -20,8 +20,8 @@
 /** ID for custom function cbeSetBlendMode() */
 #define CBE_CUSTOM_SET_BLEND_MODE 4
 
-/** ID for custom function cbeResetBlendMode() */
-#define CBE_CUSTOM_RESET_BLEND_MODE 5
+/** ID for custom function cbeSetAdvancedBlendMode() */
+#define CBE_CUSTOM_SET_BLEND_MODE_ADVANCED 5
 
 /** @} */
 

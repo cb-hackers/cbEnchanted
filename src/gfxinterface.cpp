@@ -68,6 +68,8 @@ bool GfxInterface::initializeGfx()
 	al_set_window_title(window,"");
 
 	al_set_new_bitmap_flags(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+	// If you change the blender below, make sure to change it from the default case
+	// in cbeSetBlendMode() in customfunctions.cpp, too.
 	al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
 	windowRenderTarget = new RenderTarget;

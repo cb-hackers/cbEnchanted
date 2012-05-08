@@ -1,6 +1,6 @@
 Const CBE_CUSTOM_FUNCTION_GROUP = 1
 
-Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float, fill)
+Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float = 0.0, fill = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 1
 EndFunction
@@ -13,4 +13,27 @@ EndFunction
 Function cbeClsColor(r,g,b,a)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 3
+EndFunction
+
+// Use these constants when using cbeSetBlendMode()
+Const CBE_BLEND_RESET = 0
+Const CBE_BLEND_ADDITIVE = 1
+Const CBE_BLEND_OVERWRITE = 2
+Function cbeSetBlendMode(blendType)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 4
+EndFunction
+
+// Use these constants when using cbeSetBlendModeAdvanced()
+// See http://liballeg.org/a5docs/5.0.6/graphics.html#al_set_blender for more info
+Const CBE_BLEND_ADD = 1
+Const CBE_BLEND_DEST_MINUS_SRC = 2
+Const CBE_BLEND_SRC_MINUS_DEST = 3
+Const CBE_BLEND_ZERO = 1
+Const CBE_BLEND_ONE = 2
+Const CBE_BLEND_ALPHA = 3
+Const CBE_BLEND_INVERSE_ALPHA = 4
+Function cbeSetBlendModeAdvanced(op, src, dst)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 5
 EndFunction

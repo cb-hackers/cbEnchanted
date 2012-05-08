@@ -14,7 +14,7 @@ void cbeClsColor(CBEnchanted *cb);
 
 void cbeSetBlendMode(CBEnchanted *cb);
 
-void cbeResetBlendMode(CBEnchanted *cb);
+void cbeSetBlendModeAdvanced(CBEnchanted *cb);
 
 /** @} */
 
