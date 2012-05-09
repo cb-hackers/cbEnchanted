@@ -76,10 +76,4 @@ win32{
 	LIBS += -L"$$(BOOST_LIB)"
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
 	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"
-	SOURCES += ../src/utilwin.cpp
 }
-else {
-	SOURCES += ../src/utillinux.cpp
-}
-
-
