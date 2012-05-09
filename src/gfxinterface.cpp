@@ -8,6 +8,7 @@
 #include "cbimage.h"
 #include <allegro5/allegro_image.h>
 #include "util.h"
+#include "errorsystem.h"
 
 const char *screenGammaFragmentShaderCode =
 		"uniform sampler2D screenBuf; \n"
@@ -52,8 +53,7 @@ GfxInterface::GfxInterface() :
 GfxInterface::~GfxInterface() {
 }
 
-bool GfxInterface::initializeGfx()
-{
+bool GfxInterface::initializeGfx() {
 	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
 	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
 	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP,1,ALLEGRO_SUGGEST);
@@ -61,11 +61,16 @@ bool GfxInterface::initializeGfx()
 	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY,1,ALLEGRO_REQUIRE);
 	window = al_create_display(400,300);
 	if (!window) {
-		INFO("FATAL: Failed to create a window!");
+		cb->errors->createFatalError("Can't create window","Can't create default window.");
 		return false;
 	}
+
+	//Register event source
 	registerWindow();
 	al_set_window_title(window,"");
+
+	//Screen is not resizable
+	resizableWindow = false;
 
 	al_set_new_bitmap_flags(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
 	// If you change the blender below, make sure to change it from the default case
@@ -112,8 +117,7 @@ void GfxInterface::commandScreen(void) {
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
 		if (state != 2) {
-			al_resize_display(window,width,height);
-
+			al_resize_display(window, width, height);
 			resizeTempBitmap(width, height);
 		}
 	}
@@ -122,20 +126,31 @@ void GfxInterface::commandScreen(void) {
 		unregisterWindow();
 		if (state != 2) {
 			al_destroy_display(window);
-			window = al_create_display(width,height);
-
+			window = al_create_display(width, height);
+			if (window == 0) {
+				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+				return;
+			}
 			resizeTempBitmap(width, height);
+			windowRenderTarget->swapBitmap( al_get_backbuffer(window) );
+			resizableWindow = false;
 		}
-		else {
+		else { //cbSizable
 			int32_t w = al_get_display_width(window);
 			int32_t h = al_get_display_height(window);
 			al_destroy_display(window);
 			window = al_create_display(w,h);
+			if (window == 0) {
+				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+				return;
+			}
+			resizeTempBitmap(width, height);
+			windowRenderTarget->swapBitmap(drawscreenTempBitmap);
+			resizableWindow = true;
 		}
 		registerWindow();
 	}
-	windowRenderTarget->swapBitmap(al_get_backbuffer(window));
-	windowRenderTarget->clear(al_map_rgba_f(0,0,0,0));
+	windowRenderTarget->clear(al_map_rgba_f(0,0,0,1.0f));
 }
 
 void GfxInterface::commandClsColor(void) {
@@ -189,15 +204,19 @@ void GfxInterface::commandDrawScreen(void) {
 	gameUpdated = false;
 	gameDrawn = false;
 	ALLEGRO_EVENT e;
+	bool windowResized = false;
 	while (al_get_next_event(cb->getEventQueue(),&e)) {
 		switch (e.type) {
-			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
+			case ALLEGRO_EVENT_DISPLAY_CLOSE: cb->stop(); break;
 			case ALLEGRO_EVENT_KEY_DOWN:
 				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
-			break;
+				break;
+			case ALLEGRO_EVENT_DISPLAY_RESIZE:
+				windowResized = true;
+				break;
 		}
 	}
+	if (windowResized) al_acknowledge_resize(window);
 	cb->updateInputs();
 
 	fpsCounter++;
@@ -209,27 +228,41 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 	cb->renderAddTexts(*windowRenderTarget);
 	cb->updateAudio();
-	if (cls) {
+	if (resizableWindow) {
+		al_set_target_backbuffer(window);
+		al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),
+							  0, 0, windowRenderTarget->width(), windowRenderTarget->height(),
+							  0, 0, al_get_display_width(window), al_get_display_height(window),
+							  0);
 		al_flip_display();
-		windowRenderTarget->clear(clearColor);
+		currentRenderTarget->setAsCurrent(true);
+		if (cls) {
+			windowRenderTarget->clear(al_map_rgba_f(0, 0, 0, 1.0f));
+		}
 	}
 	else {
-		//Setting target to temporary bitmap
-		al_set_target_bitmap(drawscreenTempBitmap);
-		//Saving blender state
-		int32_t a,b,c;
-		al_get_blender(&a,&b,&c);
-		//Setting blender state to replace
-		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-		//Drawing backbuffer to temporary bitmap
-		al_draw_bitmap(windowRenderTarget->getBitmap(),0,0,0);
-		//Swaping window buffers
-		al_flip_display();
-		windowRenderTarget->setAsCurrent(true);
-		//Drawing temporary bitmap on backbuffer.
-		al_draw_bitmap(drawscreenTempBitmap,0,0,0);
-		//Restoring blender state
-		al_set_blender(a,b,c);
+		if (cls) {
+			al_flip_display();
+			windowRenderTarget->clear(clearColor);
+		}
+		else {
+			//Setting target to temporary bitmap
+			al_set_target_bitmap(drawscreenTempBitmap);
+			//Saving blender state
+			int32_t a,b,c;
+			al_get_blender(&a,&b,&c);
+			//Setting blender state to replace
+			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+			//Drawing backbuffer to temporary bitmap
+			al_draw_bitmap(windowRenderTarget->getBitmap(),0,0,0);
+			//Swaping window buffers
+			al_flip_display();
+			windowRenderTarget->setAsCurrent(true);
+			//Drawing temporary bitmap on backbuffer.
+			al_draw_bitmap(drawscreenTempBitmap,0,0,0);
+			//Restoring blender state
+			al_set_blender(a,b,c);
+		}
 	}
 }
 

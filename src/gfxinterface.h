@@ -91,6 +91,7 @@ class GfxInterface {
 		float windowGammaR;
 		float windowGammaG;
 		float windowGammaB;
+		bool resizableWindow; //cbSizable enabled
 		bool drawDrawCommandToWorld;
 		bool drawImageToWorld;
 		bool drawTextToWorld;
