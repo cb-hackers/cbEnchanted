@@ -5,6 +5,9 @@
 Include "include\customfunctions.cb"
 // ----- END cbEnchanted custom functions -----
 
+Smooth2D ON
+SCREEN 400, 300
+DefaultMask OFF
 
 kartta = LoadMap("Media\cdm2.til","Media\tileset.bmp")
 PlayObject kartta,0,0,1
@@ -15,7 +18,7 @@ ukko = LoadObject ("Media\guy.bmp",72)
 SetupCollision ukko, kartta, 1, 4, 2
 
 imgMask = MakeImage(ScreenWidth(), ScreenHeight())
-MaskImage imgMask, 255, 255, 255
+'MaskImage imgMask, 255, 255, 255
 
 'Awesome Commodore-64 stylish font, cbE rocks!
 'c64font = LoadFont("Media\C64_User_Mono_v1.0-STYLE.ttf")
@@ -44,37 +47,42 @@ Repeat
     old_angle# = ObjectAngle(ukko)
     circle_size = 40 ' ukkoa ympäröivän valoympyrän koko
     
-    ' Täytetään maski aluksi ahdistavan värisellä taustalla. 196 on alphan määrä
-    cbeColor(32, 0, 16, 196)
-    Box -1, -1, ImageWidth(imgMask) + 1, ImageHeight(imgMask) + 1, 1
-    ' Asetetaan blendausmoodiksi ylikirjoitus
-    cbeSetBlendMode(CBE_BLEND_OVERWRITE)
-    ' Kirjoitetaan yli täysin läpinäkyvällä valkoisella
-    cbeColor(255, 255, 255, 0)
-    
-    Circle 200 - circle_size/2, 150 - circle_size/2, circle_size, 1
-    
-    For i# = -quality/2 To quality/2 ' tässä on cbE:n suhteen tärkeää että i määritellään liukuluvuksi. Muuten tapahtuisi jänniä.
-        RotateObject ukko, old_angle + i * turn
-        ObjectPick ukko
-        cam_x = -CameraX()
-        cam_y = CameraY()
-        pos_x = cam_x + 199 + PickedX()
-        pos_y = cam_y + 149 - PickedY()
+    DrawToImage imgMask
+        ' Asetetaan blendausmoodiksi ylikirjoitus
+        cbeSetBlendMode(CBE_BLEND_OVERWRITE)
+        ' Täytetään maski aluksi ahdistavan värisellä taustalla. 196 on alphan määrä
+        'cbeSetBlendModeAdvanced(CBE_BLEND_ADD, CBE_BLEND_ONE, CBE_BLEND_ALPHA)
+        cbeColor(32, 0, 16, 196)
+        Box -1, -1, ImageWidth(imgMask) + 1, ImageHeight(imgMask) + 1, 1
+        ' Kirjoitetaan yli täysin läpinäkyvällä valkoisella
+        cbeColor(0, 0, 0, 0)
         
-        If i > -quality / 2 Then
-            cbeTriangle(cam_x + 200 + ObjectX(ukko), cam_y + 150 - ObjectY(ukko), pos_x, pos_y, old_pos_x, old_pos_y)
-        EndIf
+        Circle 200 - circle_size/2, 150 - circle_size/2, circle_size, 1
         
-        old_pos_x = pos_x ' tallennetaan nykyisen poiminnan tiedot seuraavalle kierrokselle
-        old_pos_y = pos_y
-    Next i#
+        For i# = -quality/2 To quality/2 ' tässä on cbE:n suhteen tärkeää että i määritellään liukuluvuksi. Muuten tapahtuisi jänniä.
+            RotateObject ukko, old_angle + i * turn
+            ObjectPick ukko
+            cam_x = -CameraX()
+            cam_y = CameraY()
+            pos_x = cam_x + 199 + PickedX()
+            pos_y = cam_y + 149 - PickedY()
+            
+            If i > -quality / 2 Then
+                cbeTriangle(cam_x + 200 + ObjectX(ukko), cam_y + 150 - ObjectY(ukko), pos_x, pos_y, old_pos_x, old_pos_y)
+            EndIf
+            
+            old_pos_x = pos_x ' tallennetaan nykyisen poiminnan tiedot seuraavalle kierrokselle
+            old_pos_y = pos_y
+        Next i#
+        
+        RotateObject ukko, old_angle
+        
+        ' Palautetaan tavallinen blendaustila ja valkoinen väri
+        cbeSetBlendMode(CBE_BLEND_RESET)
+        cbeColor(255, 255, 255, 255)
+    DrawToScreen
     
-    RotateObject ukko, old_angle
-    
-    ' Palautetaan tavallinen blendaustila ja valkoinen väri
-    cbeSetBlendMode(CBE_BLEND_RESET)
-    cbeColor(255, 255, 255, 255)
+    DrawImage imgMask, 0, 0
     
     Text 0, 2, "FPS: "+FPS()
     DrawScreen

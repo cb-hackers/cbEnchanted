@@ -31,6 +31,8 @@ class ImageInterface {
 		void functionImagesCollide(void);
 
 		CBImage *getImage(int32_t id) { CBImage *img = cbImages[id];assert(img);return img; }
+
+		bool isDefaultMaskToggled() const { return defaultMaskToggled; }
 	private:
 		CBEnchanted *cb;
 		int32_t idCounter;

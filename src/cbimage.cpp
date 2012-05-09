@@ -153,6 +153,10 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
 void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
+	// If we don't have masking on, we don't need to do anything.
+	if (!CBEnchanted::instance()->isDefaultMaskToggled()) {
+		return;
+	}
 	if (switchToUnmasked) {
 		renderTarget.changeBitmap(unmaskedBitmap);
 		maskedBitmap = NULL;
