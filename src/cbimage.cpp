@@ -8,12 +8,11 @@ CBImage::CBImage() :
 	frameWidth(0),
 	frameHeight(0),
 	animBegin(0),
-	animLength(0)
-{
-	maskColor = al_map_rgba(0, 0, 0, 255);
-	maskedBitmap = NULL;
-	unmaskedBitmap = NULL;
-}
+	animLength(0),
+	isMasked(false),
+	maskedBitmap(NULL),
+	unmaskedBitmap(NULL)
+{}
 
 CBImage::~CBImage() {
 
@@ -114,6 +113,7 @@ void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, float alpha) {
 
 /** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
 void CBImage::maskImage(const ALLEGRO_COLOR &color) {
+	isMasked = true;
 	maskColor = color;
 	maskedBitmap = al_clone_bitmap(unmaskedBitmap);
 	al_destroy_bitmap(unmaskedBitmap);
@@ -154,7 +154,7 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
 void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
 	// If we don't have masking on, we don't need to do anything.
-	if (!CBEnchanted::instance()->isDefaultMaskToggled()) {
+	if (!isMasked) {
 		return;
 	}
 	if (switchToUnmasked) {

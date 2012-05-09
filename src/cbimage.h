@@ -45,6 +45,8 @@ class CBImage
 		ALLEGRO_BITMAP* unmaskedBitmap;
 		/** The masked version of this image - is NULL before setupForDrawOperations() is called. */
 		ALLEGRO_BITMAP* maskedBitmap;
+		/** Is this image masked or not */
+		bool isMasked;
 };
 
 #endif // CBIMAGE_H
