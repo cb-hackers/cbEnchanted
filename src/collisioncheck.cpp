@@ -311,6 +311,9 @@ void CollisionCheck::RectMapTest() {
 	int32_t startTileX = (int32_t) (objX - cbmap->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
 	int32_t startTileY = (int32_t) (-objY + cbmap->getY() + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
+	// The epsilon amount we use for floating point error corrections
+	const float eps = 1e-5f;
+
 	// First check x-directional collision with obj position as safeY
 	for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
 		for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
@@ -325,12 +328,12 @@ void CollisionCheck::RectMapTest() {
 					if (tileX < startTileX + checkTilesX) {
 						// It seems to be left.
 						collided[3] = true;
-						objX = x + tileWidth + 1.0f + objWidth/2;
+						objX = x + tileWidth + eps + objWidth/2;
 					}
 					else if (tileX > startTileX + checkTilesX) {
 						// It seems to be right.
 						collided[1] = true;
-						objX = x - 1.0f - objWidth/2;
+						objX = x - eps - objWidth/2;
 					}
 				}
 			}
@@ -351,12 +354,12 @@ void CollisionCheck::RectMapTest() {
 					if (tileY < startTileY + checkTilesY) {
 						// It seems to be top.
 						collided[0] = true;
-						objY = y - tileHeight - 1.0f - objHeight/2;
+						objY = y - tileHeight - eps - objHeight/2;
 					}
 					else if (tileY > startTileY + checkTilesY) {
 						// It seems to be bottom.
 						collided[2] = true;
-						objY = y + 1.0f + objHeight/2;
+						objY = y + eps + objHeight/2;
 					}
 				}
 			}
@@ -706,6 +709,9 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	float left1, right1, top1, bottom1;
 	float left2, right2, top2, bottom2;
 
+	// The epsilon amount we use for floating point error corrections
+	const float eps = 1e-5f;
+
 	left1 = x1;
 	right1 = x1 + w1;
 	top1 = y1 - h1;
@@ -716,11 +722,11 @@ bool CollisionCheck::RectRectTest(float x1, float y1, float w1, float h1, float 
 	top2 = y2 - h2;
 	bottom2 = y2;
 
-	if (bottom1 < top2) return false;
-	if (top1 > bottom2) return false;
+	if (bottom1 < top2 + eps) return false;
+	if (top1 > bottom2 - eps) return false;
 
-	if (right1 < left2) return false;
-	if (left1 > right2) return false;
+	if (right1 < left2 + eps) return false;
+	if (left1 > right2 - eps) return false;
 
 	return true;
 }
@@ -733,7 +739,6 @@ bool CollisionCheck::CircleRectTest(float circleX, float circleY, float circleR,
 	// Rectangle width and height are needed in every calculation, so calculate them here already
 	float halfRectW = rectW / 2;
 	float halfRectH = rectH / 2;
-
 
 	float circleDistX = abs(circleX - rectX - halfRectW);
 	float circleDistY = abs(circleY - rectY - halfRectH);
