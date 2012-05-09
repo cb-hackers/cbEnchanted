@@ -1,5 +1,6 @@
 # Ignore binary
 CBEmu
+release
 
 # Ignore object files
 *.o
