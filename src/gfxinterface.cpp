@@ -40,8 +40,6 @@ GfxInterface::GfxInterface() :
 	imageToDrawTo(NULL)
 {
 	cb = static_cast <CBEnchanted *> (this);
-	drawColor = al_map_rgba_f(1.0f,1.0f,1.0f,1.0f);
-	clearColor = al_map_rgba_f(0,0,0,1.0f);
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -52,6 +50,10 @@ GfxInterface::~GfxInterface() {
 }
 
 bool GfxInterface::initializeGfx() {
+	// Initialize colors
+	drawColor = al_map_rgb(255, 255, 255);
+	clearColor = al_map_rgb(0, 0, 0);
+
 	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
 	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
 	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP,1,ALLEGRO_SUGGEST);

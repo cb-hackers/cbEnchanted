@@ -7,6 +7,7 @@ class ImageInterface {
 	public:
 		ImageInterface();
 		~ImageInterface();
+		void initializeImages();
 
 		void commandSaveImage(void);
 		void commandDrawImage(void);

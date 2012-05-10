@@ -18,8 +18,9 @@ ObjectInterface::ObjectInterface():
 	lastPickedObj(0),
 	lastPickedX(0.0),
 	lastPickedY(0.0),
-	lastPickedAngle(0.0) {
-	cb = static_cast<CBEnchanted*>(this);
+	lastPickedAngle(0.0)
+{
+	cb = static_cast<CBEnchanted *>(this);
 }
 
 ObjectInterface::~ObjectInterface() {

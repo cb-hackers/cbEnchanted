@@ -7,12 +7,15 @@
 
 ImageInterface::ImageInterface() {
 	cb = static_cast <CBEnchanted *> (this);
-	defaultMask = al_map_rgba_f(0, 0, 0, 1);
 	defaultMaskToggled = true;
 }
 
 ImageInterface::~ImageInterface() {
 
+}
+
+void ImageInterface::initializeImages() {
+	defaultMask = al_map_rgb(0, 0, 0);
 }
 
 void ImageInterface::commandSaveImage(void) {

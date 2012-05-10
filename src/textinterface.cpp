@@ -4,13 +4,6 @@
 #include "util.h"
 #include "errorsystem.h"
 #include <string>
-#ifdef WIN32
-	#include <Windows.h>
-	#include <GL/GL.h>
-#else
-	#include <GL/gl.h>
-#endif
-
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 

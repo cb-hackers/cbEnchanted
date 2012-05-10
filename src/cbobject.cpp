@@ -44,7 +44,7 @@ CBObject::CBObject(bool floor):
 {
 	objectRange[0] = 0.0;
 	objectRange[1] = 0.0;
-	maskColor = al_map_rgba_f(0, 0, 0, 1);
+	maskColor = al_map_rgb(0, 0, 0);
 }
 
 /** Destructor for CBObject.
@@ -369,7 +369,7 @@ void CBObject::render(RenderTarget &target) {
 					copyY * frameHeight,
 					frameWidth,
 					frameHeight,
-					al_map_rgba(255, 255, 255, alphaBlend),
+					al_map_rgba_f(1.0f, 1.0f, 1.0f, alphaBlend),
 					posX,
 					posY,
 					-(angle / 180.0) * M_PI

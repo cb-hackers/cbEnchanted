@@ -329,6 +329,7 @@ bool CBEnchanted::init(const char* file) {
 		errors->createFatalError("Initialization error", "Failed to initialize fonts");
 		return false;
 	}
+	initializeImages();
 
 	initialized = true;
 	INFO("Initialized");
