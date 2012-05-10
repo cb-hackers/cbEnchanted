@@ -6,12 +6,13 @@ int32_t renderTargetIdCounter = 0;
 RenderTarget *bindRenderTarget = 0;
 
 void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime, int32_t animLength) {
+	ALLEGRO_BITMAP *bm = tex->getMaskedBitmap();
 	if (animLength == 0 || tex->animLength == 0) {
-		float w = tex->getRenderTarget()->width();
-		float h = tex->getRenderTarget()->height();
+		float w = tex->width();
+		float h = tex->height();
 		for (vector<Particle>::const_iterator i = particles.begin(); i != particles.end(); i++) {
 			this->drawBitmap(
-				tex->getRenderTarget()->getBitmap(),
+				bm,
 				i->x - w * 0.5f - tex->hotspotX,
 				i->y + h * 0.5f - tex->hotspotY
 			);
@@ -20,7 +21,7 @@ void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles
 	else {
 		float pLifeTime = static_cast<float>(particleLifeTime);
 		float drawAreaWidth = tex->frameWidth;
-		float drawAreaHeight = -tex->frameHeight;
+		float drawAreaHeight = tex->frameHeight;
 		float frameAreaHeight = tex->frameHeight;
 		float frameAreaWidth = tex->frameWidth;
 		for (vector<Particle>::const_iterator i = particles.begin(); i != particles.end(); i++) {
@@ -29,17 +30,17 @@ void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles
 				frame = animLength - 1;
 			}
 			frame += tex->animBegin;
-			int32_t framesX = tex->renderTarget.width() / tex->frameWidth;
-			int32_t framesY = tex->renderTarget.height() / tex->frameHeight;
+			int32_t framesX = tex->width() / tex->frameWidth;
+			int32_t framesY = tex->height() / tex->frameHeight;
 			int32_t copyX = frame % framesX;
 			int32_t copyY = (frame - copyX) / framesY;
 
 			float frameAreaLeft = ((framesX-copyX-1)*tex->frameWidth);
 			float frameAreaTop = (copyY * tex->frameWidth);
 			float drawAreaLeft = i->x - tex->hotspotX;
-			float drawAreaTop = tex->frameHeight + i->y - tex->hotspotY;
+			float drawAreaTop = i->y - tex->hotspotY;
 			this->drawBitmapRegion(
-				tex->getRenderTarget()->getBitmap(),
+				bm,
 				frameAreaLeft,
 				frameAreaTop,
 				frameAreaWidth,

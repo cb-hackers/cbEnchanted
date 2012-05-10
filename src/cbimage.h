@@ -26,12 +26,13 @@ class CBImage
 		void drawAlphaBlended(RenderTarget &r, float x, float y, float alpha);
 		void maskImage(const ALLEGRO_COLOR &color);
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
-		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begining,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begining;animLength = animL;}
+		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begin;animLength = animL;}
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
-		static void initMaskShader();
+		ALLEGRO_BITMAP *getMaskedBitmap() const {return maskedBitmap;}
 		/** Set this CBImage ready for drawing operations or set it back for drawing. */
 		void switchMaskBitmaps(bool switchToUnmasked);
+
 	private:
 		float hotspotX,hotspotY;
 		RenderTarget renderTarget;
