@@ -40,13 +40,14 @@ void CBParticleEmitter::setParticleEmission(float density, int count, float spre
 
 bool CBParticleEmitter::updateObject(float timestep) {
 	particleSpawnCounter += 1.0f;
-	for (vector<Particle>::iterator i = particles.begin();i != particles.end();)
+	for (vector<Particle>::iterator i = particles.begin(); i != particles.end();)
 	{
 		i->x += i->velX;
 		i->y += i->velY;
-		i->velX *= particleAcceleration;
-		i->velY = i->velY *particleAcceleration - particleGravity;
-		if (--i->lifeTime<0) {
+		i->velX = i->velX * particleAcceleration;
+		i->velY = i->velY * particleAcceleration - particleGravity;
+		i->lifeTime--;
+		if (i->lifeTime < 0) {
 			i = particles.erase(i);
 		}
 		else {
@@ -64,16 +65,16 @@ bool CBParticleEmitter::updateObject(float timestep) {
 				return true; //Delete object
 			}
 		}
-		while (particleSpawnCounter > particleDensity) {//Spawn particles
+		while (particleSpawnCounter > particleDensity) { //Spawn particles
 			particleSpawnCounter -= particleDensity;
-			for (int32_t i = 0; i < particleCount;++i) {
+			for (int32_t i = 0; i < particleCount; ++i) {
 				Particle newParticle;
 				newParticle.lifeTime = particleLifeTime;
-				float pa = (angle + particleSpread-randf()*particleSpread*2.0f)*M_PI/180.0f;
-				newParticle.velX = cos(pa)*particleSpeed;
-				newParticle.velY = sin(pa)*particleSpeed;
-				newParticle.x = posX + newParticle.velX*particleSpawnCounter;
-				newParticle.y = posY + newParticle.velY*particleSpawnCounter;
+				float pa = (angle + particleSpread - randf() * particleSpread * 2.0f) * M_PI / 180.0f;
+				newParticle.velX = cos(pa) * particleSpeed;
+				newParticle.velY = sin(pa) * particleSpeed;
+				newParticle.x = posX + newParticle.velX * particleSpawnCounter;
+				newParticle.y = posY + newParticle.velY * particleSpawnCounter;
 				particles.push_back(newParticle);
 			}
 		}
@@ -82,5 +83,5 @@ bool CBParticleEmitter::updateObject(float timestep) {
 }
 
 void CBParticleEmitter::render(RenderTarget &target) {
-	target.drawParticles(particleTexture,particles,particleLifeTime,frameCount);
+	target.drawParticles(particleTexture, particles, particleLifeTime, frameCount);
 }

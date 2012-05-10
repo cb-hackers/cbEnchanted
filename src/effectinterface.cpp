@@ -20,7 +20,7 @@ void EffectInterface::commandParticleMovement(void) {
 	float speed = cb->popValue().toFloat();
 	int32_t emitterId = cb->popValue().toInt();
 	CBParticleEmitter *e = static_cast<CBParticleEmitter*>(cb->getObject(emitterId));
-	e->setParticleMovement(speed,gravity,acc);
+	e->setParticleMovement(speed, gravity, acc);
 }
 
 void EffectInterface::commandParticleAnimation(void) {
@@ -36,7 +36,7 @@ void EffectInterface::commandParticleEmission(void) {
 	float density = cb->popValue().toFloat();
 	int32_t emitterId = cb->popValue().toInt();
 	CBParticleEmitter *e = static_cast<CBParticleEmitter*>(cb->getObject(emitterId));
-	e->setParticleEmission(density,count,spread);
+	e->setParticleEmission(density, count, spread);
 }
 
 void EffectInterface::functionMakeEmitter(void) {
@@ -44,7 +44,7 @@ void EffectInterface::functionMakeEmitter(void) {
 	int32_t imageId = cb->popValue().toInt();
 	CBImage *image = cb->getImage(imageId);
 	CBParticleEmitter *emitter = new CBParticleEmitter;
-	emitter->create(image,lifeTime);
+	emitter->create(image, lifeTime);
 	int32_t id = cb->addObject(emitter);
 	cb->addToDrawOrder(emitter);
 	cb->pushValue(id);
@@ -54,13 +54,12 @@ void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p)
 {
 	p->stopEmitting();
 	rogueEmitters.push_back(p);
-
 }
 
 void EffectInterface::updateRogueParticles(void)
 {
-	for (vector<CBParticleEmitter*>::iterator i = rogueEmitters.begin();i != rogueEmitters.end();) {
-		if((*i)->updateObject(0)){ //updateObject returns true if object should be deleted
+	for (vector<CBParticleEmitter*>::iterator i = rogueEmitters.begin(); i != rogueEmitters.end();) {
+		if ((*i)->updateObject(0)) { //updateObject returns true if object should be deleted
 			cb->removeFromDrawOrder(*i);
 			delete (*i);
 			i = rogueEmitters.erase(i);
