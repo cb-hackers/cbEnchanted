@@ -6,6 +6,8 @@ class CBEnchanted;
 class SysInterface {
 	public:
 		SysInterface();
+		~SysInterface();
+		void initializeSysInterface();
 
 		void commandWait(void);
 		void commandSetWindow(void);

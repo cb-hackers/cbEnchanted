@@ -331,6 +331,7 @@ bool CBEnchanted::init(const char* file) {
 		return false;
 	}
 	initializeImages();
+	initializeSysInterface();
 
 	initialized = true;
 	INFO("Initialized");

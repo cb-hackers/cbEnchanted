@@ -1,5 +1,3 @@
-Randomize Timer()
-
 img= MakeImage(256, 256)
 
 ClsColor 128, 128, 128

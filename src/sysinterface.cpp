@@ -18,6 +18,14 @@ SysInterface::SysInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
 
+SysInterface::~SysInterface() {
+	// ...
+}
+
+void SysInterface::initializeSysInterface() {
+	srand(mtimer());
+}
+
 void SysInterface::commandWait(void) {
 #ifdef WIN32
 	Sleep(cb->popValue().toInt());
