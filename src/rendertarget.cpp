@@ -317,7 +317,7 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 	if ((flags & VCenter) == VCenter) {
 		y -= al_get_font_ascent(font) * 0.5f;
 	}
-	else if (flags & Bottom) {
+	else if ((flags & Bottom) == Bottom) {
 		y -= al_get_font_ascent(font);
 	}
 	if ((flags & HCenter) == HCenter) {
@@ -332,7 +332,7 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 		);
 		return;
 	}
-	if (flags & Right) {
+	if ((flags & Right) == Right) {
 		al_draw_text(font, color, x, y, ALLEGRO_ALIGN_RIGHT, text.getUtf8Encoded().c_str());
 		return;
 	}
