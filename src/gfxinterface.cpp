@@ -2,13 +2,11 @@
 #include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "objectinterface.h"
-#ifdef WIN32
-#include <Windows.h>
-#endif
 #include "cbimage.h"
 #include <allegro5/allegro_image.h>
 #include "util.h"
 #include "errorsystem.h"
+#include <iostream>
 
 const char *screenGammaFragmentShaderCode =
 		"uniform sampler2D screenBuf; \n"
@@ -194,10 +192,10 @@ void GfxInterface::commandLine(void){
 void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
-	if ((mtimer()-lastFrameTime)<=cb->getFrameLimit()){
-		sleep(cb->getFrameLimit()-(mtimer()-lastFrameTime));
-	}
+
+	float waitTime = 1.0f / (cb->getFrameLimit() - ((mtimer() - lastFrameTime) / 1000.0f));
 	lastFrameTime = mtimer();
+
 	if (!gameUpdated) cb->updateObjects();
 	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 
@@ -205,17 +203,28 @@ void GfxInterface::commandDrawScreen(void) {
 	gameDrawn = false;
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
-	while (al_get_next_event(cb->getEventQueue(),&e)) {
-		switch (e.type) {
-			case ALLEGRO_EVENT_DISPLAY_CLOSE: cb->stop(); break;
-			case ALLEGRO_EVENT_KEY_DOWN:
-				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) cb->stop();
-				break;
-			case ALLEGRO_EVENT_DISPLAY_RESIZE:
-				windowResized = true;
-				break;
+	while (1) {
+		if (al_wait_for_event_timed(cb->getEventQueue(), &e, waitTime)) {
+			switch (e.type) {
+				case ALLEGRO_EVENT_DISPLAY_CLOSE:
+					cb->stop();
+					goto drawscreenBreak;
+				case ALLEGRO_EVENT_KEY_DOWN:
+					if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+						cb->stop();
+						goto drawscreenBreak;
+					}
+					break;
+				case ALLEGRO_EVENT_DISPLAY_RESIZE:
+					windowResized = true;
+					goto drawscreenBreak;
+			}
+		}
+		else {
+			goto drawscreenBreak;
 		}
 	}
+	drawscreenBreak:
 	if (windowResized) al_acknowledge_resize(window);
 	cb->updateInputs();
 

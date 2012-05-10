@@ -55,13 +55,13 @@ class CBEnchanted :
 		void run();
 		void stop();
 		void cleanup();
-		bool isSafeExit(){ return safeExit; }
+		bool isSafeExit() const { return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
-		bool isSmooth2D() { return smooth2d; }
+		bool isSmooth2D() const { return smooth2d; }
 		void setSmooth2D(bool toggled) { smooth2d = toggled; }
-		inline void setFrameLimit(float frameLimit){framesMs = 1000.0 / frameLimit;}
-		inline float getFrameLimit(){return framesMs;}
-		ALLEGRO_EVENT_QUEUE *getEventQueue(){return eventQueue;}
+		inline void setFrameLimit(float pFrameLimit) { frameLimit = pFrameLimit; }
+		inline float getFrameLimit() const { return frameLimit; }
+		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
 
 		/** Error system for public access */
 		ErrorSystem *errors;
@@ -74,7 +74,7 @@ class CBEnchanted :
 		bool running;
 		bool safeExit;
 		bool smooth2d;
-		float framesMs;
+		float frameLimit;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;
 		int32_t selectValue;
