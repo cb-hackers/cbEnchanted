@@ -419,6 +419,9 @@ void CollisionCheck::CircleMapTest() {
 	int32_t startTileX = (int32_t) (objX - cbmap->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
 	int32_t startTileY = (int32_t) (-objY + cbmap->getY() + cbmap->getSizeY() / 2) / tileHeight - checkTilesY;
 
+	// The epsilon amount we use for floating point error corrections
+	const float eps = 1e-5f;
+
 	// Check collision to nearby tiles
 	for (int32_t tileY = startTileY; tileY <= startTileY + checkTilesY*2; tileY++) {
 		for (int32_t tileX = startTileX; tileX <= startTileX + checkTilesX*2; tileX++) {
@@ -439,12 +442,12 @@ void CollisionCheck::CircleMapTest() {
 							if (tileX < startTileX + checkTilesX) {
 								// It seems to be left.
 								collided[3] = true;
-								objX = x + tileWidth + 0.5f + objR;
+								objX = x + tileWidth + eps + objR;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								collided[1] = true;
-								objX = x - 0.5f - objR;
+								objX = x - eps - objR;
 							}
 						}
 						else {
@@ -466,7 +469,7 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - safeY, cornerX - objX);
-								objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								objX = cornerX - cos(radAngle) * (objR + eps);
 							}
 						}
 					}
@@ -477,12 +480,12 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileX < startTileX + checkTilesX) {
 								// It seems to be left.
-								objX = x + tileWidth + 0.5f + objR;
+								objX = x + tileWidth + eps + objR;
 								collided[3] = true;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
-								objX = x - 0.5f - objR;
+								objX = x - eps - objR;
 								collided[1] = true;
 							}
 						}
@@ -505,7 +508,7 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - safeY, cornerX - objX);
-								objX = cornerX - cos(radAngle) * (objR + 0.5f);
+								objX = cornerX - cos(radAngle) * (objR + eps);
 							}
 						}
 					}
@@ -535,12 +538,12 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
-								objY = y - tileHeight - 0.5f - objR;
+								objY = y - tileHeight - eps - objR;
 								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
-								objY = y + 0.5f + objR;
+								objY = y + eps + objR;
 								collided[2] = true;
 							}
 						}
@@ -563,7 +566,7 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - objY, cornerX - objX);
-								objY = cornerY - sin(radAngle) * (objR + 0.5f);
+								objY = cornerY - sin(radAngle) * (objR + eps);
 							}
 						}
 					}
@@ -574,12 +577,12 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
-								objY = y - tileHeight - 0.5f - objR;
+								objY = y - tileHeight - eps - objR;
 								collided[0] = true;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
-								objY = y + 0.5f + objR;
+								objY = y + eps + objR;
 								collided[2] = true;
 							}
 						}
@@ -602,7 +605,7 @@ void CollisionCheck::CircleMapTest() {
 
 							if (isCornerSet) {
 								float radAngle = atan2(cornerY - objY, cornerX - objX);
-								objY = cornerY - sin(radAngle) * (objR + 0.5f);
+								objY = cornerY - sin(radAngle) * (objR + eps);
 							}
 						}
 					}
@@ -740,21 +743,24 @@ bool CollisionCheck::CircleRectTest(float circleX, float circleY, float circleR,
 	float halfRectW = rectW / 2;
 	float halfRectH = rectH / 2;
 
+	// The epsilon amount we use for floating point error corrections
+	const float eps = 1e-5f;
+
 	float circleDistX = abs(circleX - rectX - halfRectW);
 	float circleDistY = abs(circleY - rectY - halfRectH);
 
 	// If we're too far away, we can't collide
-	if (circleDistX > (halfRectW + circleR)) { return false; }
-	if (circleDistY > (halfRectH + circleR)) { return false; }
+	if (circleDistX > (halfRectW + circleR - eps)) { return false; }
+	if (circleDistY > (halfRectH + circleR - eps)) { return false; }
 
 	// If we're close enough, we always collide
-	if (circleDistX <= halfRectW) { return true; }
-	if (circleDistY <= halfRectH) { return true; }
+	if (circleDistX <= halfRectW + eps) { return true; }
+	if (circleDistY <= halfRectH + eps) { return true; }
 
 	// Then the computationally more expensive part, the corner.
 	float cornerDistance_sq = (circleDistX - halfRectW)*(circleDistX - halfRectW) +
 			(circleDistY - halfRectH)*(circleDistY - halfRectH);
 
-	return (cornerDistance_sq <= (circleR * circleR));
+	return (cornerDistance_sq <= (circleR * circleR + eps));
 }
 
