@@ -18,6 +18,7 @@ CBEnchanted::CBEnchanted() {
 	running = false;
 	safeExit = 1;
 	smooth2d = false;
+	frameLimit = -1;
 }
 
 CBEnchanted::~CBEnchanted() {

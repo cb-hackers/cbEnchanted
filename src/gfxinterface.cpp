@@ -206,24 +206,31 @@ void GfxInterface::commandDrawScreen(void) {
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
 	while (1) {
-		if (al_wait_for_event_timed(cb->getEventQueue(), &e, waitTime)) {
-			switch (e.type) {
-				case ALLEGRO_EVENT_DISPLAY_CLOSE:
-					cb->stop();
-					goto drawscreenBreak;
-				case ALLEGRO_EVENT_KEY_DOWN:
-					if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-						cb->stop();
-						goto drawscreenBreak;
-					}
-					break;
-				case ALLEGRO_EVENT_DISPLAY_RESIZE:
-					windowResized = true;
-					goto drawscreenBreak;
+		// To break out from this loop, we use `got drawscreenBreak;` to avoid
+		// confusion with the switch statement and breaks inside it
+		if (waitTime > 0) {
+			if (!al_wait_for_event_timed(cb->getEventQueue(), &e, waitTime)) {
+				goto drawscreenBreak;
 			}
 		}
 		else {
-			goto drawscreenBreak;
+			if (!al_get_next_event(cb->getEventQueue(), &e)) {
+				goto drawscreenBreak;
+			}
+		}
+		switch (e.type) {
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				cb->stop();
+				goto drawscreenBreak;
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+					cb->stop();
+					goto drawscreenBreak;
+				}
+				break;
+			case ALLEGRO_EVENT_DISPLAY_RESIZE:
+				windowResized = true;
+				goto drawscreenBreak;
 		}
 	}
 	drawscreenBreak:
