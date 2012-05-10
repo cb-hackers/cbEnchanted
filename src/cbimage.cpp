@@ -146,7 +146,7 @@ CBImage *CBImage::clone() {
 
 void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.create(w, h);
-	renderTarget.clear(al_map_rgba(0, 0, 0, 0));
+	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
 }

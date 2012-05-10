@@ -181,6 +181,10 @@ void ImageInterface::functionMakeImage(void) {
 	int32_t w = cb->popValue().toInt();
 	CBImage *image = new CBImage;
 	image->makeImage(w, h);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
+
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);
