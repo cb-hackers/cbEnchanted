@@ -16,7 +16,7 @@ class CBImage
 		int32_t width()const{return renderTarget.width();}
 		int32_t height()const{return renderTarget.height();}
 		void makeImage(int32_t w, int32_t h);
-		void setHotspot(float x,float y) {hotspotX = x;hotspotY = y;}
+		void setHotspot(float x,float y);
 		RenderTarget *getRenderTarget(){return &renderTarget;}
 		void draw(RenderTarget &r,float x,float y,bool useMask);
 		void draw(RenderTarget &r,float x,float y,int frame, bool useMask);
@@ -26,7 +26,7 @@ class CBImage
 		void drawAlphaBlended(RenderTarget &r, float x, float y, float alpha);
 		void maskImage(const ALLEGRO_COLOR &color);
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
-		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begin;animLength = animL;}
+		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL);
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
 		ALLEGRO_BITMAP *getMaskedBitmap() const {return maskedBitmap;}

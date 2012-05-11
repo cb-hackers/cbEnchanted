@@ -126,6 +126,13 @@ void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 	renderTarget.changeBitmap(maskedBitmap);
 }
 
+void CBImage::setAnimParams(int32_t frameW, int32_t frameH, int32_t begin, int32_t animL) {
+	frameWidth = frameW;
+	frameHeight = frameH;
+	animBegin = begin;
+	animLength = animL;
+}
+
 void CBImage::resize(int32_t w, int32_t h) {
 	this->switchMaskBitmaps(true);
 	renderTarget.resize(w, h);
@@ -154,6 +161,11 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+}
+
+void CBImage::setHotspot(float x, float y) {
+	hotspotX = x;
+	hotspotY = y;
 }
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
