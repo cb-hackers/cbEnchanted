@@ -167,3 +167,26 @@ void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
 		renderTarget.swapBitmap(maskedBitmap);
 	}
 }
+
+/** Rotates an image with the given angle (in degrees) clockwise. */
+void CBImage::rotate(float angle) {
+	float radAngle = ((angle + 90.0f) / 180.0f) * M_PI;
+	float oldWidth = al_get_bitmap_width(maskedBitmap);
+	float oldHeight = al_get_bitmap_height(maskedBitmap);
+
+	float mSin = fabs(sin(radAngle));
+	float mCos = fabs(cos(radAngle));
+
+	float x1 = -0.5f * (oldWidth * mCos + oldHeight * mSin);
+	float x2 =  0.5f * (oldWidth * mCos + oldHeight * mSin);
+
+	float y1 = -0.5f * (oldWidth * mSin + oldHeight * mCos);
+	float y2 =  0.5f * (oldWidth * mSin + oldHeight * mCos);
+
+	float newHeight, newWidth;
+	newHeight = (x1 > x2) ? x1 - x2 : x2 - x1;
+	newWidth = (y1 > y2) ? y1 - y2 : y2 - y1;
+
+	cout << "Old dimensions: " << oldWidth << "*" << oldHeight << endl;
+	cout << "New dimensions: " << newWidth << "*" << newHeight << endl << endl;
+}

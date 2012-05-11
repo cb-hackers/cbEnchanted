@@ -96,7 +96,9 @@ void ImageInterface::commandResizeImage(void) {
 }
 
 void ImageInterface::commandRotateImage(void) {
-	STUB;
+	float angle = cb->popValue().toFloat();
+	CBImage *img = cbImages[cb->popValue().getInt()];
+	img->rotate(angle);
 }
 
 void ImageInterface::commandPickImageColor(void) {

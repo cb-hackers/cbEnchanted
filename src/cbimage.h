@@ -32,6 +32,8 @@ class CBImage
 		ALLEGRO_BITMAP *getMaskedBitmap() const {return maskedBitmap;}
 		/** Set this CBImage ready for drawing operations or set it back for drawing. */
 		void switchMaskBitmaps(bool switchToUnmasked);
+		/** Rotates an image with the given angle (in degrees) clockwise. */
+		void rotate(float angle);
 
 	private:
 		float hotspotX,hotspotY;
