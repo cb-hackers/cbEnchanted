@@ -141,6 +141,7 @@ CBImage *CBImage::clone() {
 	newImg->animLength = this->animLength;
 	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
 	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
+	newImg->isMasked = this->isMasked;
 	return newImg;
 }
 
@@ -170,7 +171,7 @@ void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
 
 /** Rotates an image with the given angle (in degrees) clockwise. */
 void CBImage::rotate(float angle) {
-	float radAngle = ((angle + 90.0f) / 180.0f) * M_PI;
+	float radAngle = (angle / 180.0f) * M_PI;
 	float oldWidth = al_get_bitmap_width(maskedBitmap);
 	float oldHeight = al_get_bitmap_height(maskedBitmap);
 
@@ -184,9 +185,28 @@ void CBImage::rotate(float angle) {
 	float y2 =  0.5f * (oldWidth * mSin + oldHeight * mCos);
 
 	float newHeight, newWidth;
-	newHeight = (x1 > x2) ? x1 - x2 : x2 - x1;
-	newWidth = (y1 > y2) ? y1 - y2 : y2 - y1;
+	newWidth = (x1 > x2) ? x1 - x2 : x2 - x1;
+	newHeight = (y1 > y2) ? y1 - y2 : y2 - y1;
 
-	cout << "Old dimensions: " << oldWidth << "*" << oldHeight << endl;
-	cout << "New dimensions: " << newWidth << "*" << newHeight << endl << endl;
+	hotspotX = ceil(newWidth * 0.5f);
+	hotspotY = ceil(newHeight * 0.5f);
+
+	ALLEGRO_BITMAP* newUnmaskedBitmap = al_create_bitmap(int(ceil(newWidth) + 1e-5f), int(ceil(newHeight) + 1e-5f));
+	ALLEGRO_BITMAP* newMaskedBitmap;
+
+	renderTarget.changeBitmap(newUnmaskedBitmap);
+	renderTarget.drawBitmap(unmaskedBitmap, hotspotX, hotspotY, radAngle);
+
+	if (isMasked) {
+		newMaskedBitmap = al_clone_bitmap(newUnmaskedBitmap);
+		al_convert_mask_to_alpha(newMaskedBitmap, maskColor);
+		al_destroy_bitmap(unmaskedBitmap);
+	}
+	else {
+		newMaskedBitmap = newUnmaskedBitmap;
+	}
+
+	renderTarget.swapBitmap(newMaskedBitmap);
+	maskedBitmap = newMaskedBitmap;
+	unmaskedBitmap = newUnmaskedBitmap;
 }
