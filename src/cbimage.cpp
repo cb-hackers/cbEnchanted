@@ -15,7 +15,11 @@ CBImage::CBImage() :
 {}
 
 CBImage::~CBImage() {
-
+	renderTarget.swapBitmap(NULL);
+	if (unmaskedBitmap != NULL) {
+		al_destroy_bitmap(unmaskedBitmap);
+	}
+	al_destroy_bitmap(maskedBitmap);
 }
 
 bool CBImage::load(const string &path) {
