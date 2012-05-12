@@ -30,7 +30,7 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 	tileWidth = tileW;
 	tileHeight = tileH;
 	for (int i = 0; i < 4; ++i) {
-		layers[i] = new int32_t[mapWidth * mapHeight];
+		layers[i] = Array2D(width, height);
 	}
 	return true;
 }
@@ -87,7 +87,7 @@ bool CBMap::loadMap(string file) {
 		mapStream.read((char*)&mapHeight, 4);
 
 		for (int i = 0; i < 4; ++i) {
-			layers[i] = new int32_t [mapWidth * mapHeight];
+			layers[i] = Array2D(mapWidth, mapHeight);
 		}
 
 		mapStream.read((char*)checkNum, 4);
@@ -100,9 +100,13 @@ bool CBMap::loadMap(string file) {
 		) {
 			FIXME("Map layer0: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
 		}
-
-		mapStream.read((char*)layers[0], 4 * mapHeight * mapWidth);
-
+		INFO("Reading data from back layer...")
+		for(int y = 0; y < mapHeight; y++) {
+			for (int x = 0; x < mapWidth; x++) {
+				mapStream.read((char*)&layers[0][x][y], 4);
+			}
+		}
+		INFO("Data has been ridden!")
 		mapStream.read((char*)checkNum, 4);
 
 		if (checkNum[0] != 253 ||
@@ -114,8 +118,11 @@ bool CBMap::loadMap(string file) {
 		}
 
 		//Collision layer
-		mapStream.read((char*)layers[2], 4 * mapHeight * mapWidth);
-
+		for(int y = 0; y < mapHeight; y++) {
+			for (int x = 0; x < mapWidth; x++) {
+				mapStream.read((char*)&layers[2][x][y], 4);
+			}
+		}
 		mapStream.read((char*)checkNum, 4);
 
 		if (checkNum[0] != 252 ||
@@ -126,7 +133,12 @@ bool CBMap::loadMap(string file) {
 			FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
 		}
 
-		mapStream.read((char*)layers[1], 4*mapHeight*mapWidth);
+
+		for(int y = 0; y < mapHeight; y++) {
+			for (int x = 0; x < mapWidth; x++) {
+				mapStream.read((char*)&layers[1][x][y], 4);
+			}
+		}
 
 		mapStream.read((char*)checkNum, 4);
 
@@ -138,7 +150,12 @@ bool CBMap::loadMap(string file) {
 			FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
 		}
 
-		mapStream.read((char*)layers[3], 4 * mapHeight * mapWidth);
+		for(int y = 0; y < mapHeight; y++) {
+			for (int x = 0; x < mapWidth; x++) {
+				mapStream.read((char*)&layers[3][x][y], 4);
+			}
+		}
+		//mapStream.read((char*)(*layers[3]), 4 * mapHeight * mapWidth);
 
 		mapStream.read((char*)checkNum, 4);
 
@@ -199,21 +216,21 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 	float camY = CBEnchanted::instance()->getCameraY() - posY;
 
 
-	int32_t piirto_x = camX + getSizeX() / 2 - target.width() / 2;
-	int32_t piirto_y = -camY + getSizeY() / 2 - target.height() / 2;
-	int32_t tile_y = piirto_y / tileHeight;
-	int32_t jarjestys_y = -(piirto_y % tileHeight);
+	int32_t draw_x = camX + getSizeX() / 2 - target.width() / 2;
+	int32_t draw_y = -camY + getSizeY() / 2 - target.height() / 2;
+	int32_t tile_y = draw_y / tileHeight;
+	int32_t order_y = -(draw_y % tileHeight);
 
-	while (jarjestys_y < target.height()) {
+	while (order_y < target.height()) {
 		tile_y %= getSizeY();
 		if (tile_y >= mapHeight) {
 			break;
 		}
 
-		int32_t tile_x = piirto_x / tileWidth;
-		int32_t jarjestys_x = -(piirto_x % tileHeight);
+		int32_t tile_x = draw_x / tileWidth;
+		int32_t order_x = -(draw_x % tileHeight);
 
-		while (jarjestys_x < target.width()) {
+		while (order_x < target.width()) {
 			int32_t getX = tile_x % getSizeX();
 			if (getX >= mapWidth) {
 				break;
@@ -221,14 +238,14 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 
 			int32_t tileNum = getMap(level, getX, tile_y);
 			if (tileNum > 0) {
-				drawTile(target, tileNum+(int)currentFrame[tileNum], jarjestys_x, jarjestys_y);
+				drawTile(target, tileNum+(int)currentFrame[tileNum], order_x, order_y);
 			}
 
 			tile_x++;
-			jarjestys_x += tileWidth;
+			order_x += tileWidth;
 		}
 		tile_y++;
-		jarjestys_y += tileHeight;
+		order_y += tileHeight;
 	}
 }
 
@@ -289,8 +306,10 @@ void CBMap::setTile(uint32_t tile, uint32_t length, uint32_t slowness) {
  * @param tileIndex The index of the tile to be drawn
  */
 void CBMap::edit(uint8_t maplayer, int32_t tileX, int32_t tileY, int32_t tileIndex) {
-	int32_t position = tileY * mapWidth + tileX;
-	layers[maplayer][position] = tileIndex;
+	if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight) {
+		return;
+	}
+	layers[maplayer][tileX][tileY] = tileIndex;
 }
 
 /** Returns the hit data in the given tile coordinates.
@@ -303,8 +322,7 @@ int32_t CBMap::getHit(int32_t x, int32_t y) {
 		return 0;
 	}
 	// Calculate index position and return the data in hit layer (layer2)
-	int32_t position = y * mapWidth + x;
-	return layers[2][position];
+	return layers[2][x][y];
 }
 
 /** Returns data from the given map layer.
@@ -317,15 +335,17 @@ int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
 		// There's no data outside the map region
 		return 0;
 	}
-	// Calculate index position and return the data in the given layer
-	int32_t position = tileY * mapWidth + tileX;
-	return layers[maplayer][position];
+	return layers[maplayer][tileX][tileY];
 }
 
 int32_t CBMap::getMapWorldCoordinates(uint8_t maplayer, float x, float y) {
 	x = (x - posX + mapWidth * tileWidth * 0.5f) / tileWidth;
 	y = -(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight;
-	return getMap(maplayer, x, y);
+	if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) {
+		// There's no data outside the map region
+		return 0;
+	}
+	return layers[maplayer][int(x)][int(y)];
 }
 
 /** Does a raycast from given object to this map.
@@ -550,3 +570,14 @@ void CBMap::drawRayCastDebugBox(float tileX, float tileY) {
 bool CBMap::outOfBounds(int tileX, int tileY) {
 	return (tileX < 1 || tileX > mapWidth || tileY < 1 || tileY > mapHeight);
 }
+
+int32_t** CBMap::Array2D(uint32_t w, uint32_t h) {
+	INFO("Creating array %u x %u: ", w, h)
+	int32_t **data = new int32_t*[w];
+	for(uint8_t i = 0; i < w; i++) {
+		data[i] = new int32_t[h];
+	}
+	INFO("Layer created in %p", data);
+	return data;
+}
+
