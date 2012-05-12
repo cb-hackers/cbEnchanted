@@ -1,0 +1,43 @@
+FrameLimit 60
+
+'First make two images 
+img1= MakeImage(50,50)
+img2= MakeImage(100,100)
+DrawToImage img1
+    Color cbred
+    Circle 0,0,50
+DrawToImage img2
+    Color cbyellow
+    Circle 0,0,100
+DrawToScreen
+
+'Initialize... 
+Color cbwhite
+AddText "Arrows to move..."
+
+x1=20
+y1=20
+
+x2=200
+y2=150
+
+'The game 
+Repeat
+
+    'Update controls
+    If LeftKey() Then x1=x1-1
+    If RightKey() Then x1=x1+1
+    If UpKey() Then y1=y1-1
+    If DownKey() Then y1=y1+1
+
+    'Draw both images
+    DrawImage img1,x1,y1
+    DrawImage img2,x2,y2
+    
+    'Check for collisions
+    Text 10,280,"Overlap: "+ImagesOverlap(img1,x1,y1,img2,x2,y2) 
+    Text 290,280,"Collision: "+ImagesCollide(img1,x1,y1,0,img2,x2,y2,0)
+    
+    DrawScreen
+
+Until EscapeKey()

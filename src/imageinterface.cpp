@@ -211,12 +211,45 @@ void ImageInterface::functionImageHeight(void) {
 }
 
 void ImageInterface::functionImagesOverlap(void) {
-	STUB;
+	float y2 = cb->popValue().toFloat();
+	float x2 = cb->popValue().toFloat();
+	int32_t id2 = cb->popValue().getInt();
+	float y1 = cb->popValue().toFloat();
+	float x1 = cb->popValue().toFloat();
+	int32_t id1 = cb->popValue().getInt();
+
+	CBImage *img1 = cbImages[id1];
+	CBImage *img2 = cbImages[id2];
+
+	if (img1->overlaps(img2, x1, y1, x2, y2)) {
+		cb->pushValue(1);
+	}
+	else {
+		cb->pushValue(0);
+	}
 }
 
 void ImageInterface::functionImagesCollide(void) {
-	STUB;
+	int32_t startFrame2 = cb->popValue().toInt();
+	float y2 = cb->popValue().toFloat();
+	float x2 = cb->popValue().toFloat();
+	int32_t id2 = cb->popValue().getInt();
+	int32_t startFrame1 = cb->popValue().toInt();
+	float y1 = cb->popValue().toFloat();
+	float x1 = cb->popValue().toFloat();
+	int32_t id1 = cb->popValue().getInt();
+
+	CBImage *img1 = cbImages[id1];
+	CBImage *img2 = cbImages[id2];
+
+	if (img1->collides(img2, x1, y1, x2, y2)) {
+		cb->pushValue(1);
+	}
+	else {
+		cb->pushValue(0);
+	}
 }
+
 int32_t ImageInterface::nextId()
 {
 	return ++idCounter;

@@ -1,5 +1,6 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
+#include "collisioncheck.h"
 
 CBImage::CBImage() :
 	hotspotX(0),
@@ -225,4 +226,43 @@ void CBImage::rotate(float angle) {
 	renderTarget.swapBitmap(newMaskedBitmap);
 	maskedBitmap = newMaskedBitmap;
 	unmaskedBitmap = newUnmaskedBitmap;
+}
+
+/** Checks if an image overlaps another image on their bounding boxes.
+ *
+ * @param img Image to check overlapping against
+ * @param x1,y1 Top left coordinates of this image
+ * @param x2,y2 Top left coordinates of the given image
+ */
+bool CBImage::overlaps(CBImage *img, float x1, float y1, float x2, float y2) {
+	float w1 = al_get_bitmap_width(this->maskedBitmap);
+	float h1 = al_get_bitmap_height(this->maskedBitmap);
+	float w2 = al_get_bitmap_width(img->maskedBitmap);
+	float h2 = al_get_bitmap_height(img->maskedBitmap);
+
+	// Flip y-coordinates because RectRectTest uses world coordinates
+	return CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2);
+}
+
+/** Checks if an image collides with another image on a pixel precise level.
+ *
+ * @param img Image to check overlapping against
+ * @param x1,y1 Top left coordinates of this image
+ * @param x2,y2 Top left coordinates of the given image
+ */
+bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
+	float w1 = al_get_bitmap_width(this->maskedBitmap);
+	float h1 = al_get_bitmap_height(this->maskedBitmap);
+	float w2 = al_get_bitmap_width(img->maskedBitmap);
+	float h2 = al_get_bitmap_height(img->maskedBitmap);
+
+	// First check for a simple rectangle collision. If there's no rectangle overlapping,
+	// there can't be any pixel-precise overlapping either.
+	// Flip y-coordinates because RectRectTest uses world coordinates
+	if (!CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2)) {
+		return false;
+	}
+
+	// TODO: Pixel precise check
+	return true;
 }

@@ -34,6 +34,10 @@ class CBImage
 		void switchMaskBitmaps(bool switchToUnmasked);
 		/** Rotates an image with the given angle (in degrees) clockwise. */
 		void rotate(float angle);
+		/** Checks if an image overlaps another image on their bounding boxes. */
+		bool overlaps(CBImage *img, float x1, float y1, float x2, float y2);
+		/** Checks if an image collides with another image on a pixel precise level. */
+		bool collides(CBImage *img, float x1, float y1, float x2, float y2);
 
 	private:
 		float hotspotX,hotspotY;
