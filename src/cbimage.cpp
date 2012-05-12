@@ -1,5 +1,6 @@
 #include "cbimage.h"
 #include "cbenchanted.h"
+#include "collisioncheck.h"
 
 CBImage::CBImage() :
 	hotspotX(0),
@@ -15,7 +16,11 @@ CBImage::CBImage() :
 {}
 
 CBImage::~CBImage() {
-
+	renderTarget.swapBitmap(NULL);
+	if (unmaskedBitmap != NULL) {
+		al_destroy_bitmap(unmaskedBitmap);
+	}
+	al_destroy_bitmap(maskedBitmap);
 }
 
 bool CBImage::load(const string &path) {
@@ -122,6 +127,13 @@ void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 	renderTarget.changeBitmap(maskedBitmap);
 }
 
+void CBImage::setAnimParams(int32_t frameW, int32_t frameH, int32_t begin, int32_t animL) {
+	frameWidth = frameW;
+	frameHeight = frameH;
+	animBegin = begin;
+	animLength = animL;
+}
+
 void CBImage::resize(int32_t w, int32_t h) {
 	this->switchMaskBitmaps(true);
 	renderTarget.resize(w, h);
@@ -141,6 +153,7 @@ CBImage *CBImage::clone() {
 	newImg->animLength = this->animLength;
 	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
 	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
+	newImg->isMasked = this->isMasked;
 	return newImg;
 }
 
@@ -149,6 +162,11 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+}
+
+void CBImage::setHotspot(float x, float y) {
+	hotspotX = x;
+	hotspotY = y;
 }
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
@@ -166,4 +184,85 @@ void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
 		al_convert_mask_to_alpha(maskedBitmap, maskColor);
 		renderTarget.swapBitmap(maskedBitmap);
 	}
+}
+
+/** Rotates an image with the given angle (in degrees) clockwise. */
+void CBImage::rotate(float angle) {
+	float radAngle = (angle / 180.0f) * M_PI;
+	float oldWidth = al_get_bitmap_width(maskedBitmap);
+	float oldHeight = al_get_bitmap_height(maskedBitmap);
+
+	float mSin = fabs(sin(radAngle));
+	float mCos = fabs(cos(radAngle));
+
+	float x1 = -0.5f * (oldWidth * mCos + oldHeight * mSin);
+	float x2 =  0.5f * (oldWidth * mCos + oldHeight * mSin);
+
+	float y1 = -0.5f * (oldWidth * mSin + oldHeight * mCos);
+	float y2 =  0.5f * (oldWidth * mSin + oldHeight * mCos);
+
+	float newHeight, newWidth;
+	newWidth = (x1 > x2) ? x1 - x2 : x2 - x1;
+	newHeight = (y1 > y2) ? y1 - y2 : y2 - y1;
+
+	hotspotX = ceil(newWidth * 0.5f);
+	hotspotY = ceil(newHeight * 0.5f);
+
+	ALLEGRO_BITMAP* newUnmaskedBitmap = al_create_bitmap(int(ceil(newWidth) + 1e-5f), int(ceil(newHeight) + 1e-5f));
+	ALLEGRO_BITMAP* newMaskedBitmap;
+
+	renderTarget.changeBitmap(newUnmaskedBitmap);
+	renderTarget.drawBitmap(unmaskedBitmap, hotspotX, hotspotY, radAngle);
+
+	if (isMasked) {
+		newMaskedBitmap = al_clone_bitmap(newUnmaskedBitmap);
+		al_convert_mask_to_alpha(newMaskedBitmap, maskColor);
+		al_destroy_bitmap(unmaskedBitmap);
+	}
+	else {
+		newMaskedBitmap = newUnmaskedBitmap;
+	}
+
+	renderTarget.swapBitmap(newMaskedBitmap);
+	maskedBitmap = newMaskedBitmap;
+	unmaskedBitmap = newUnmaskedBitmap;
+}
+
+/** Checks if an image overlaps another image on their bounding boxes.
+ *
+ * @param img Image to check overlapping against
+ * @param x1,y1 Top left coordinates of this image
+ * @param x2,y2 Top left coordinates of the given image
+ */
+bool CBImage::overlaps(CBImage *img, float x1, float y1, float x2, float y2) {
+	float w1 = al_get_bitmap_width(this->maskedBitmap);
+	float h1 = al_get_bitmap_height(this->maskedBitmap);
+	float w2 = al_get_bitmap_width(img->maskedBitmap);
+	float h2 = al_get_bitmap_height(img->maskedBitmap);
+
+	// Flip y-coordinates because RectRectTest uses world coordinates
+	return CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2);
+}
+
+/** Checks if an image collides with another image on a pixel precise level.
+ *
+ * @param img Image to check overlapping against
+ * @param x1,y1 Top left coordinates of this image
+ * @param x2,y2 Top left coordinates of the given image
+ */
+bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
+	float w1 = al_get_bitmap_width(this->maskedBitmap);
+	float h1 = al_get_bitmap_height(this->maskedBitmap);
+	float w2 = al_get_bitmap_width(img->maskedBitmap);
+	float h2 = al_get_bitmap_height(img->maskedBitmap);
+
+	// First check for a simple rectangle collision. If there's no rectangle overlapping,
+	// there can't be any pixel-precise overlapping either.
+	// Flip y-coordinates because RectRectTest uses world coordinates
+	if (!CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2)) {
+		return false;
+	}
+
+	// TODO: Pixel precise check
+	return true;
 }

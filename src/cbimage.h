@@ -16,7 +16,7 @@ class CBImage
 		int32_t width()const{return renderTarget.width();}
 		int32_t height()const{return renderTarget.height();}
 		void makeImage(int32_t w, int32_t h);
-		void setHotspot(float x,float y) {hotspotX = x;hotspotY = y;}
+		void setHotspot(float x,float y);
 		RenderTarget *getRenderTarget(){return &renderTarget;}
 		void draw(RenderTarget &r,float x,float y,bool useMask);
 		void draw(RenderTarget &r,float x,float y,int frame, bool useMask);
@@ -26,12 +26,18 @@ class CBImage
 		void drawAlphaBlended(RenderTarget &r, float x, float y, float alpha);
 		void maskImage(const ALLEGRO_COLOR &color);
 		ALLEGRO_COLOR getMaskColor()const{return maskColor;}
-		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL){frameWidth = frameW;frameHeight = frameH;animBegin = begin;animLength = animL;}
+		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL);
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
 		ALLEGRO_BITMAP *getMaskedBitmap() const {return maskedBitmap;}
 		/** Set this CBImage ready for drawing operations or set it back for drawing. */
 		void switchMaskBitmaps(bool switchToUnmasked);
+		/** Rotates an image with the given angle (in degrees) clockwise. */
+		void rotate(float angle);
+		/** Checks if an image overlaps another image on their bounding boxes. */
+		bool overlaps(CBImage *img, float x1, float y1, float x2, float y2);
+		/** Checks if an image collides with another image on a pixel precise level. */
+		bool collides(CBImage *img, float x1, float y1, float x2, float y2);
 
 	private:
 		float hotspotX,hotspotY;
