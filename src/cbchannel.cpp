@@ -66,12 +66,6 @@ bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq)
 			return false;
 		}
 	}
-	else {
-		if (!al_set_sample_instance_speed(instance, sound.getFreqScale())) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance frequency.\nSource file: " + sound.getSourceFile());
-			return false;
-		}
-	}
 
 
 	if (sound.isLooping()) {
@@ -122,7 +116,7 @@ bool CBChannel::playSound(string file, float volume, float pan, int32_t freq) {
 		return false;
 	}
 
-	if (freq != frequency) {
+	if (freq != frequency && freq > 0) {
 		float speed = float(freq) / float(frequency);
 		if (!al_set_audio_stream_speed(flow, speed)) {
 			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream frequency to " + boost::lexical_cast<string>(freq) + ".\nSource file: " + file);
