@@ -102,21 +102,23 @@ void TextInterface::commandCenterText(void) {
 }
 
 void TextInterface::commandVerticalText(void) {
-	STUB;
-	/*
-	string str = cb->popValue().toString().getRef();
-	int32_t y = cb->popValue().toInt();
+	const ISString &str = cb->popValue().toString();
 	int32_t x = cb->popValue().toInt();
-	uint16_t chars = str.length();
-	bool bold = (currentFont->style == 1 << 0);
-	uint16_t fontH = currentFont->font.getGlyph((char)str[0], currentFont->fontSize, bold).textureRect.height;
-	for(uint16_t i = 0; i < chars; i++){
-		sf::Text text(str[i], currentFont->font, currentFont->fontSize);
-		text.setStyle(currentFont->style);
-		text.setColor(cb->getDrawColor());
-		text.setPosition(x, y+i*fontH);
-		cb->getCurrentRenderTarget()->draw(text);
-	}*/
+	int32_t y = cb->popValue().toInt();
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
+	uint16_t textLen = str.length();
+	uint16_t textHeight = al_get_font_line_height(currentFont);
+	string Str = str.getStdString();
+
+	for(uint16_t i = 0; i < textLen; i++) {
+		string charac;
+		charac = Str[i];
+		cb->getCurrentRenderTarget()->drawText(
+			currentFont, ISString(charac), x, y, cb->getDrawColor()
+		);
+		y+=textHeight;
+	}
+
 }
 
 void TextInterface::commandPrint(void) {

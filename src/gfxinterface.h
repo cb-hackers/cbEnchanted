@@ -62,6 +62,9 @@ class GfxInterface {
 		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
 
+		inline int32_t screenWidth() {return windowRenderTarget->width();}
+		inline int32_t screenHeight() {return windowRenderTarget->height();}
+
 		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
 		void setCurrentRenderTarget(RenderTarget *t);
 		bool drawingOnImage() const { return imageToDrawTo != 0; }

@@ -1,6 +1,7 @@
 #include "cbmap.h"
 #include "cbenchanted.h"
 #include "precomp.h"
+#include "errorsystem.h"
 
 /** Constructs a new CBMap and calls the constructor for CBObject */
 CBMap::CBMap() : CBObject() {
@@ -11,6 +12,9 @@ CBMap::CBMap() : CBObject() {
 /** Destroys all layers and frees resources */
 CBMap::~CBMap() {
 	for (int i = 0; i < 4; ++i) {
+		for (int x = 0; x < mapWidth; x++) {
+			delete [] layers[i][x];
+		}
 		delete [] layers[i];
 	}
 	delete [] animLength;
@@ -49,7 +53,8 @@ bool CBMap::loadMap(string file) {
 		mapStream.read((char*)checkNum, 4);
 
 		if (checkNum[0] != 40 || checkNum[1] != 192 || checkNum[2] != 13 || checkNum[3] != 139) {
-			FIXME("Map: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1] ,checkNum[2], checkNum[3]);
+			//FIXME("Map: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1] ,checkNum[2], checkNum[3]);
+
 		}
 
 
@@ -100,13 +105,13 @@ bool CBMap::loadMap(string file) {
 		) {
 			FIXME("Map layer0: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
 		}
-		INFO("Reading data from back layer...")
+
 		for(int y = 0; y < mapHeight; y++) {
 			for (int x = 0; x < mapWidth; x++) {
 				mapStream.read((char*)&layers[0][x][y], 4);
 			}
 		}
-		INFO("Data has been ridden!")
+
 		mapStream.read((char*)checkNum, 4);
 
 		if (checkNum[0] != 253 ||
@@ -572,12 +577,11 @@ bool CBMap::outOfBounds(int tileX, int tileY) {
 }
 
 int32_t** CBMap::Array2D(uint32_t w, uint32_t h) {
-	INFO("Creating array %u x %u: ", w, h)
 	int32_t **data = new int32_t*[w];
 	for(uint8_t i = 0; i < w; i++) {
 		data[i] = new int32_t[h];
 	}
-	INFO("Layer created in %p", data);
+
 	return data;
 }
 

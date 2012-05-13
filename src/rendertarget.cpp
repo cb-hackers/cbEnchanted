@@ -228,8 +228,8 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		CBEnchanted* cb = CBEnchanted::instance();
-		x = x + al_get_display_width(cb->getWindow()) / 2.0f - cb->getCameraX();
-		y = -y + al_get_display_height(cb->getWindow()) / 2.0f + cb->getCameraY();
+		x = x + cb->GfxInterface::screenWidth() / 2.0f - cb->getCameraX();
+		y = -y + cb->GfxInterface::screenHeight() / 2.0f + cb->getCameraY();
 	}
 }
 
