@@ -35,8 +35,13 @@ void ObjectInterface::commandDeleteObject(void) {
 		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
 		return;
 	}
-	removeFromDrawOrder(object);
-	delete object;
+	if (object->type() == CBObject::Object) {
+		removeFromDrawOrder(object);
+		delete object;
+	}
+	else if (object->type() == CBObject::Map) {
+		cb->deleteTileMap();
+	}
 	objectMap.erase(id);
 }
 
