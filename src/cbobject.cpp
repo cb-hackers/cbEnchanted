@@ -463,6 +463,16 @@ void CBObject::addCollision(Collision *collision) {
 	collisionList.push_back(collision);
 }
 
+/** Gets a collision from collisionList */
+Collision* CBObject::getCollision(int32_t id) {
+	if (collisionList.size() >= id) {
+		return collisionList.at(id - 1);
+	}
+	else {
+		return NULL;
+	}
+}
+
 /** Does a raycast from given object to this object.
  *
  * @param fromObject From which object will the raycast start

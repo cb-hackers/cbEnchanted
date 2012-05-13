@@ -83,7 +83,7 @@ class CBObject{
 		/** Gets the amount of collisions. */
 		int32_t getCollisionCount() const { return collisionList.size(); }
 		/** Gets a collision from collisionList */
-		Collision* getCollision(int32_t id) { return collisionList.at(id - 1); }
+		Collision* getCollision(int32_t id);
 		/** Sets collisions to be skipped or checked until next updateObject comes along. */
 		void setCollisionChecking(bool checkOrNot) { checkCollisions = checkOrNot; }
 		/** Should collision checking be made for this object or not. */
