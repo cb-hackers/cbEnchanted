@@ -29,7 +29,7 @@ QMAKE_CFLAGS_DEBUG += -MTd -nologo -Zc:wchar_t
 QMAKE_CFLAGS_RELEASE += -MT -nologo -Zc:wchar_t
 
 contains(CBE_CONFIG,optimized_debug) {
-	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
+	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME LOG_LEVEL_STUB
 	#DEFINES += VC_USE_FORCEINLINE
 	QMAKE_LFLAGS_RELEASE += -DEBUG
 	QMAKE_CXXFLAGS_RELEASE += -Zi
@@ -37,7 +37,7 @@ contains(CBE_CONFIG,optimized_debug) {
 } else {
 	!contains(CBE_CONFIG,full_optimization) {
 		CONFIG += precompiled_header
-		DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME
+		DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME LOG_LEVEL_STUB
 	}
 	# Compiler flags:
 	#  - Enable whole program optimization
