@@ -1,6 +1,6 @@
-
 #ifndef CBCHANNEL_H
 #define CBCHANNEL_H
+
 #include "cbsound.h"
 
 class CBChannel
@@ -9,8 +9,8 @@ class CBChannel
 		CBChannel();
 		~CBChannel();
 		inline void setMixer(ALLEGRO_MIXER* mix) {mixer = mix;}
-		void playSound(string str, float volume=100, float pan=0, int32_t freq=-1);
-		void playSound(CBSound& sound, float volume=100, float pan=0, int32_t freq=-1);
+		bool playSound(string file, float volume=100, float pan=0, int32_t freq=-1);
+		bool playSound(CBSound& sound, float volume=100, float pan=0, int32_t freq=-1);
 		void freeChannel();
 		bool isPlaying();
 		void stopSound();

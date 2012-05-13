@@ -18,8 +18,10 @@ class CBSound
 		float getFreqScale();
 		ALLEGRO_SAMPLE* getSample();
 		void freeSound();
+		string getSourceFile() const { return sourceFile; }
 	private:
 
+		string sourceFile;
 		ALLEGRO_SAMPLE* sample;
 		float gain;
 		float balance;
