@@ -29,7 +29,7 @@ ObjectInterface::~ObjectInterface() {
 
 void ObjectInterface::commandDeleteObject(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	if (object->type() == CBObject::ParticleEmitter) {
 		objectMap.erase(id);
 		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
@@ -54,7 +54,7 @@ void ObjectInterface::commandMoveObject(void) {
 	float side = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->moveObject(fwrd,side);
 }
 
@@ -63,7 +63,7 @@ void ObjectInterface::commandTranslateObject(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->translateObject(x,y,z);
 }
 
@@ -72,7 +72,7 @@ void ObjectInterface::commandPositionObject(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->positionObject(x,y);
 }
 
@@ -80,7 +80,7 @@ void ObjectInterface::commandScreenPositionObject(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->positionObject(cb->screenCoordToWorldX(x),cb->screenCoordToWorldY(y));
 }
 
@@ -91,7 +91,7 @@ void ObjectInterface::commandTurnObject(void) {
 
 	float a = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->turnObject(a);
 }
 
@@ -100,39 +100,39 @@ void ObjectInterface::commandRotateObject(void) {
 	cb->popValue(); //Something?
 	float a = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->rotateObject(a);
 }
 
 void ObjectInterface::commandPointObject(void) {
 	int32_t id2 = cb->popValue().getInt();
-	CBObject *object2 = objectMap[id2];
+	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
-	CBObject *object1 = objectMap[id1];
+	CBObject *object1 = getObject(id1);
 
 	object1->rotateObject((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / M_PI * 180.0);
 }
 
 void ObjectInterface::commandCloneObjectPosition(void) {
 	int32_t id2 = cb->popValue().getInt();
-	CBObject *object2 = objectMap[id2];
+	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
-	CBObject *object1 = objectMap[id1];
+	CBObject *object1 = getObject(id1);
 	object1->positionObject(object2->getX(),object2->getY());
 }
 
 void ObjectInterface::commandCloneObjectOrientation(void) {
 	int32_t id2 = cb->popValue().getInt();
-	CBObject *object2 = objectMap[id2];
+	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
-	CBObject *object1 = objectMap[id1];
+	CBObject *object1 = getObject(id1);
 	object1->rotateObject(object2->getAngle());
 }
 
 void ObjectInterface::commandObjectOrder(void) {
 	int32_t select = cb->popValue().toInt();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	if (object->isFloorObject()) {
 		if (select == 1) {//Move to top
 			if (object == firstFloorObject) return;
@@ -220,14 +220,14 @@ void ObjectInterface::commandMaskObject(void) {
 	uint8_t g = cb->popValue().toByte();
 	uint8_t r = cb->popValue().toByte();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->maskObject(r,g,b);
 }
 
 void ObjectInterface::commandShowObject(void) {
 	bool t = cb->popValue().toInt();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->showObject(t);
 }
 
@@ -239,7 +239,7 @@ void ObjectInterface::commandDefaultVisible(void) {
 void ObjectInterface::commandPaintObject(void) {
 	int p = cb->popValue().getInt();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 
 	if (object->isMap()) {
 		// Maps can only be painted with an image
@@ -249,7 +249,7 @@ void ObjectInterface::commandPaintObject(void) {
 	else {
 		// Painting a regular object
 		if (p > 0 && !object->isFloorObject()) { //Object
-			CBObject *object2 = objectMap[p];
+			CBObject *object2 = getObject(p);
 			object->paintObject(*object2);
 		}
 		else { //Image
@@ -262,7 +262,7 @@ void ObjectInterface::commandPaintObject(void) {
 void ObjectInterface::commandGhostObject(void) {
 	float alpha = cb->popValue().toFloat() / 100.0f;
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 
 	if (alpha < 0.0f) {
 		alpha = 0.0f;
@@ -376,7 +376,7 @@ void ObjectInterface::commandPlayObject(void) {
 	int32_t endf = cb->popValue().toInt();
 	int32_t startf = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 
 	if (endf == -1) {
 		// Stop playing and reset current frame to 0
@@ -394,7 +394,7 @@ void ObjectInterface::commandLoopObject(void) {
 	uint16_t endf = cb->popValue().toInt();
 	uint16_t startf = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 
 	object->startPlaying(startf, endf, speed, continuous);
 	object->setLooping(true);
@@ -402,7 +402,7 @@ void ObjectInterface::commandLoopObject(void) {
 
 void ObjectInterface::commandStopObject(void) {
 	int32_t id = cb->popValue().toInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	// Stop playing and keep current frame
 	object->stopPlaying(true);
 }
@@ -428,8 +428,8 @@ void ObjectInterface::commandSetupCollision(void) {
 	DEBUG("Called SetupCollision %i, %i, %i, %i, %i", obj1id, obj2id, obj1colType, obj2colType, handling);
 
 	// Fetch CBObject's based on object IDs
-	CBObject *obj1 = objectMap[obj1id];
-	CBObject *obj2 = objectMap[obj2id];
+	CBObject *obj1 = getObject(obj1id);
+	CBObject *obj2 = getObject(obj2id);
 
 	// Create a new collision check
 	CollisionCheck *colChk = new CollisionCheck(obj1, obj2);
@@ -516,7 +516,7 @@ void ObjectInterface::functionMakeObjectFloor(void) {
 
 void ObjectInterface::functionCloneObject(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	CBObject *obj = object->copyObject();
 	if (obj->isFloorObject()) {
 		addToFloorDrawOrder(obj);
@@ -532,26 +532,26 @@ void ObjectInterface::functionCloneObject(void) {
 
 void ObjectInterface::functionObjectInteger(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getObjectInteger());
 }
 
 void ObjectInterface::functionObjectFloat(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getObjectFloat());
 }
 
 void ObjectInterface::functionObjectString(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getObjectString());
 }
 
 void ObjectInterface::functionObjectLife(void) {
 	int32_t life = cb->popValue().getInt();
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	object->setLife(life);
 }
 
@@ -573,9 +573,9 @@ void ObjectInterface::functionPickedAngle(void) {
 
 void ObjectInterface::functionGetAngle2(void) {
 	int32_t id2 = cb->popValue().getInt();
-	CBObject *object2 = objectMap[id2];
+	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
-	CBObject *object1 = objectMap[id1];
+	CBObject *object1 = getObject(id1);
 
 	cb->pushValue((float)((M_PI - atan2f(-object1->getY() + object2->getY(), object1->getX() - object2->getX())) / M_PI * 180.0));
 }
@@ -585,53 +585,53 @@ inline double square(float num) {
 
 void ObjectInterface::functionDistance2(void) {
 	int32_t id2 = cb->popValue().getInt();
-	CBObject *object2 = objectMap[id2];
+	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
-	CBObject *object1 = objectMap[id1];
+	CBObject *object1 = getObject(id1);
 	cb->pushValue((float)sqrt(square(object2->getX()-object1->getX())+square(object2->getY()-object1->getY())));
 }
 
 void ObjectInterface::functionObjectX(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getX());
 }
 
 void ObjectInterface::functionObjectY(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getY());
 }
 
 void ObjectInterface::functionObjectAngle(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getAngle());
 }
 
 void ObjectInterface::functionObjectSizeX(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	float size = object->getObjectSizeX()*cos(object->getAngle() / 180.0 * M_PI)+sin(object->getAngle() / 180.0 * M_PI)*object->getObjectSizeY();
 	cb->pushValue(size);
 }
 
 void ObjectInterface::functionObjectSizeY(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	float size = object->getObjectSizeY()*cos(object->getAngle() / 180.0 * M_PI)-sin(object->getAngle() / 180.0 * M_PI)*object->getObjectSizeX();
 	cb->pushValue(size);
 }
 
 void ObjectInterface::functionObjectPlaying(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue((int32_t)object->isPlaying());
 }
 
 void ObjectInterface::functionObjectFrame(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *object = objectMap[id];
+	CBObject *object = getObject(id);
 	cb->pushValue(object->getCurrentFrame());
 }
 
@@ -712,6 +712,14 @@ void ObjectInterface::functionNextObject(void) {
 	int32_t handle = (*iter).first;
 	iter++;
 	cb->pushValue(handle);
+}
+
+CBObject* ObjectInterface::getObject(int32_t key) {
+	if (objectMap.count(key) == 0) {
+		cb->errors->createError("Object Access Violation", "Could not find object with ID " + boost::lexical_cast<string>(key));
+		return 0;
+	}
+	return objectMap[key];
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {

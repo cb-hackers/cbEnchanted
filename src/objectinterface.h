@@ -81,7 +81,7 @@ class ObjectInterface {
 		int32_t addMap(CBMap *mapObj);
 
 		void drawObjects(RenderTarget &target);
-		inline CBObject *getObject(int32_t key){return objectMap[key];}
+		CBObject *getObject(int32_t key);
 		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
 		void addToDrawOrder(CBObject *o);
 		void addToFloorDrawOrder(CBObject *o);
