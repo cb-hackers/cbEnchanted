@@ -682,7 +682,12 @@ void ObjectInterface::functionGetCollision(void) {
 	int32_t objId = cb->popValue().getInt();
 	CBObject *obj = getObject(objId);
 	Collision *collision = obj->getCollision(collisionId);
-	cb->pushValue(collision->b->getID());
+	if (collision == NULL) {
+		cb->pushValue(0);
+	}
+	else {
+		cb->pushValue(collision->b->getID());
+	}
 }
 
 void ObjectInterface::functionCollisionX(void) {
@@ -690,7 +695,12 @@ void ObjectInterface::functionCollisionX(void) {
 	int32_t objId = cb->popValue().getInt();
 	CBObject *obj = getObject(objId);
 	Collision *collision = obj->getCollision(collisionId);
-	cb->pushValue(collision->x);
+	if (collision == NULL) {
+		cb->pushValue(0);
+	}
+	else {
+		cb->pushValue(collision->x);
+	}
 }
 
 void ObjectInterface::functionCollisionY(void) {
@@ -698,7 +708,12 @@ void ObjectInterface::functionCollisionY(void) {
 	int32_t objId = cb->popValue().getInt();
 	CBObject *obj = getObject(objId);
 	Collision *collision = obj->getCollision(collisionId);
-	cb->pushValue(collision->y);
+	if (collision == NULL) {
+		cb->pushValue(0);
+	}
+	else {
+		cb->pushValue(collision->y);
+	}
 }
 
 void ObjectInterface::functionCollisionAngle(void) {
@@ -706,7 +721,12 @@ void ObjectInterface::functionCollisionAngle(void) {
 	int32_t objId = cb->popValue().getInt();
 	CBObject *obj = getObject(objId);
 	Collision *collision = obj->getCollision(collisionId);
-	cb->pushValue(collision->angle);
+	if (collision == NULL) {
+		cb->pushValue(0);
+	}
+	else {
+		cb->pushValue(collision->angle);
+	}
 }
 
 void ObjectInterface::functionNextObject(void) {
