@@ -37,7 +37,7 @@ class VariableStack {
 			Any *newStack = new Any[newStackSize];
 			memcpy(newStack,stackArray,sizeof(Any)*stackSize);
 			memset(newStack+stackSize,0,(newStackSize-stackSize)*sizeof(Any));
-			delete stackArray;
+			delete [] stackArray;
 			stackArray = newStack;
 			stackSize = newStackSize;
 			INFO("Stack resized to %i",stackSize);
