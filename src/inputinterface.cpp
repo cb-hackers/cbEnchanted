@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "inputinterface.h"
-
-InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0){
+#include "cbimage.h"
+InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0), cursor(NULL){
 	cb = static_cast <CBEnchanted *> (this);
 	currentKeyboardState = new ALLEGRO_KEYBOARD_STATE;
 	lastKeyboardState = new ALLEGRO_KEYBOARD_STATE;
@@ -172,7 +172,38 @@ void InputInterface::commandWaitMouse(void) {
 }
 
 void InputInterface::commandShowMouse(void) {
-	STUB;
+	int32_t mouse = cb->popValue().toInt();
+	INFO("Doing some stuff with mouse, given parameter is %i", mouse)
+	switch (mouse) {
+		case 0:
+			al_hide_mouse_cursor(cb->getWindow());
+		break;
+		case 1:
+			al_show_mouse_cursor(cb->getWindow());
+		break;
+		default: {
+			if (mouse > 0) {
+				if (cursor != NULL) {
+					al_destroy_mouse_cursor(cursor);
+				}
+				CBImage* img = cb->getImage(mouse);
+				if (img == NULL)
+					INFO("Can not get image id %i", mouse)
+
+				cursor = al_create_mouse_cursor(img->getMaskedBitmap(), img->width() / 2, img->height()/2);
+
+				if (cursor == NULL)
+					INFO("Can not create mouse cursor from image: %i", mouse)
+
+				al_set_mouse_cursor(cb->getWindow(), cursor);
+			}
+			else if(mouse < 0) {
+				al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
+			}
+		}
+		break;
+	}
+
 }
 
 void InputInterface::commandClearMouse(void) {

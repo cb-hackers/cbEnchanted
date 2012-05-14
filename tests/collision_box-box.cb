@@ -1,21 +1,26 @@
 FrameLimit 40
 DrawToWorld ON
 
+SCREEN 640, 480, 32, 0
+
 'Load the map 
 map=LoadMap("Media\cdm2.til","Media\tileset.bmp")
 
 'Load player 
-soldier=LoadObject("Media\guy.bmp",72)
+soldier=LoadObject("Media\Soldier.bmp",72)
 'ObjectRange soldier,32
 
 'Load dumb immobile bot 
-bot=LoadObject("Media\guy.bmp")
+bot=LoadObject("Media\Soldier.bmp")
 'ObjectRange bot,32
 PositionObject bot,50,200
 
 'setup some collisions 
 SetupCollision soldier,bot,1,1,2
-'SetupCollision soldier,map,1,4,2
+SetupCollision soldier,map,1,4,2
+
+imgCursor = LoadImage("Media\Cursor.bmp")
+ShowMouse imgCursor
 
 Repeat
 
@@ -31,6 +36,8 @@ Repeat
     'Enable additional graphics
     DrawGame
     UpdateGame
+    
+    VerticalText 0, 0, "DA FUQ MAN?!"
     
     collisions=CountCollisions(soldier)
     

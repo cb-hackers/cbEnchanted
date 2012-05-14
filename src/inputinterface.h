@@ -52,7 +52,7 @@ class InputInterface {
 		ALLEGRO_KEYBOARD_STATE *lastKeyboardState;
 		ALLEGRO_MOUSE_STATE *currentMouseState;
 		ALLEGRO_MOUSE_STATE *lastMouseState;
-
+		ALLEGRO_MOUSE_CURSOR* cursor;
 		//For MouseMove*
 		int32_t lastMouseX,lastMouseY,lastMouseZ;
 };
