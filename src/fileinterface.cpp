@@ -50,11 +50,15 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	fs::current_path(fs::path(cb->popValue().toString().getRef()));
+	string file = cb->popValue().toString().getRef();
+	if(fs::exists(file) && fs::is_directory(file))
+		fs::current_path(fs::path(file));
 }
 
 void FileInterface::commandMakeDir(void) {
-	fs::create_directory(fs::path(cb->popValue().toString().getRef()));
+	string file = cb->popValue().toString().getRef();
+	if(!fs::exists(file))
+		fs::create_directory(fs::path(file));
 }
 
 void FileInterface::commandCopyFile(void) {
