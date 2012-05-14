@@ -764,3 +764,21 @@ bool CollisionCheck::CircleRectTest(float circleX, float circleY, float circleR,
 	return (cornerDistance_sq <= (circleR * circleR + eps));
 }
 
+
+/** Tests a circle - circle collision, with parameter. */
+bool CollisionCheck::CircleCircleTest(float x1, float y1, float r1, float x2, float y2, float r2) {
+	// Calculate the differentials between coordinates
+	float dx = x2 - x1;
+	float dy = y2 - y1;
+
+	float dist = dx * dx + dy * dy;
+	float minDist = r1 + r2;
+
+	// Check for collision
+	if (dist < minDist * minDist) {
+		return true;
+	}
+
+	return false;
+}
+

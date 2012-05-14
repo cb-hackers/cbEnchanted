@@ -641,7 +641,59 @@ void ObjectInterface::functionObjectFrame(void) {
 }
 
 void ObjectInterface::functionObjectsOverlap(void) {
-	STUB;
+	int32_t touchType = cb->popValue().getInt();
+	int32_t id2 = cb->popValue().getInt();
+	int32_t id1 = cb->popValue().getInt();
+	CBObject *obj1 = getObject(id1);
+	CBObject *obj2 = getObject(id2);
+
+	if (obj1 == 0 || obj2 == 0 || touchType < 1 || touchType > 3) {
+		cb->pushValue(0);
+		return;
+	}
+	switch (touchType) {
+		case 1: { // Box-pick
+			float w1 = obj1->getRange1();
+			float h1 = obj1->getRange2();
+			float x1 = obj1->getX() - w1 / 2;
+			float y1 = obj1->getY() + h1 / 2;
+
+			float w2 = obj2->getRange1();
+			float h2 = obj2->getRange2();
+			float x2 = obj2->getX() - w2 / 2;
+			float y2 = obj2->getY() + h2 / 2;
+
+			if (CollisionCheck::RectRectTest(x1, y1, w1, h1, x2, y2, w2, h2)) {
+				cb->pushValue(1);
+			}
+			else {
+				cb->pushValue(0);
+			}
+			break;
+		}
+		case 2: { // Circle-pick
+			float x1 = obj1->getX();
+			float y1 = obj1->getY();
+			float r1 = obj1->getRange1() / 2.0f;
+
+			float x2 = obj2->getX();
+			float y2 = obj2->getY();
+			float r2 = obj2->getRange1() / 2.0f;
+
+			if (CollisionCheck::CircleCircleTest(x1, y1, r1, x2, y2, r2)) {
+				cb->pushValue(1);
+			}
+			else {
+				cb->pushValue(0);
+			}
+			break;
+		}
+		case 3: { // Pixel-pick
+			cb->errors->createError("ObjectsOverlap() with pixel picking is not working yet.");
+			cb->pushValue(0);
+			break;
+		}
+	}
 }
 
 void ObjectInterface::functionObjectSight(void) {

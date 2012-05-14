@@ -45,6 +45,9 @@ class CollisionCheck
 
 		/** Tests a circle - rectangle collision, with parameters. */
 		static bool CircleRectTest(float circleX, float circleY, float circleR, float rectX, float rectY, float rectW, float rectH);
+
+		/** Tests a circle - circle collision, with parameter. */
+		static bool CircleCircleTest(float x1, float y1, float r1, float x2, float y2, float r2);
 	private:
 		/** Object that has the collision set */
 		CBObject *mObject1;
