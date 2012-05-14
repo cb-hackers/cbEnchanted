@@ -80,8 +80,10 @@ void StringInterface::functionLower(void) {
 void StringInterface::functionTrim(void) {
 	string str = cb->popValue().getString().getRef();
 
-	str = str.substr(str.find_first_not_of(" "));
-	str = str.substr(0, str.find_last_not_of(" ")+1);
+	if (!str.empty()) {
+		str = str.substr(str.find_first_not_of(" "));
+		str = str.substr(0, str.find_last_not_of(" ")+1);
+	}
 
 	cb->pushValue(str);
 }
