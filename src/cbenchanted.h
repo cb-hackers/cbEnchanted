@@ -74,6 +74,7 @@ class CBEnchanted :
 		bool running;
 		bool safeExit;
 		bool smooth2d;
+		bool clearArray;
 		float frameLimit;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;

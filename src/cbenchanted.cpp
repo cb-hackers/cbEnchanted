@@ -19,6 +19,7 @@ CBEnchanted::CBEnchanted() {
 	safeExit = 1;
 	smooth2d = false;
 	frameLimit = -1;
+	clearArray = true;
 }
 
 CBEnchanted::~CBEnchanted() {
@@ -825,51 +826,31 @@ void CBEnchanted::commandDim(void) {
 	switch (type){
 		case 3: {
 			Array<int32_t> a;
-			for (int i = n - 1; i >= 0;--i) {
-				a.setDimensions(i, size);
-				size *= dimensions[i];
-			}
-			a.init(size);
+			a.init(dimensions, n);
 			setArray(arrId, a);
 			break;
 		}
 		case 7: {
 			Array<uint16_t> a;
-			for (int i = n - 1; i >= 0;--i) {
-				a.setDimensions(i, size);
-				size *= dimensions[i];
-			}
-			a.init(size);
+			a.init(dimensions, n);
 			setArray(arrId, a);
 			break;
 		}
 		case 8: {
 			Array<uint8_t> a;
-			for (int i = n - 1; i >= 0;--i) {
-				a.setDimensions(i, size);
-				size *= dimensions[i];
-			}
-			a.init(size);
+			a.init(dimensions, n);
 			setArray(arrId, a);
 			break;
 		}
 		case 4: {
 			Array<float> a;
-			for (int i = n - 1; i >= 0;--i) {
-				a.setDimensions(i, size);
-				size *= dimensions[i];
-			}
-			a.init(size);
+			a.init(dimensions, n);
 			setArray(arrId, a);
 			break;
 		}
 		case 6: {
 			Array<ISString> a;
-			for (int i = n - 1; i >= 0;--i) {
-				a.setDimensions(i, size);
-				size *= dimensions[i];
-			}
-			a.init(size);
+			a.init(dimensions, n);
 			setArray(arrId, a);
 			break;
 		}
@@ -1091,11 +1072,53 @@ void CBEnchanted::commandInsert(void) {
 }
 
 void CBEnchanted::commandClearArray(void) {
-	STUB;
+	clearArray = (bool)popValue().toBool();
 }
 
 void CBEnchanted::commandReDim(void) {
-	STUB;
+	code ++;
+	uint32_t n = *(uint32_t *)(code); // Number of dimensions
+	code += 4;
+	code += 1;
+	uint32_t type = *(uint32_t *)(code);
+	code += 4;
+	code += 1;
+	uint32_t arrId = *(uint32_t *)(code); // Array ID
+	code += 4;
+	uint32_t size = 1;
+	uint32_t dimensions[5] = {0};
+	for (int32_t i = 0; i != n; ++i) {
+		dimensions[i] = popValue().toInt() + 1; // Size of dimension
+	}
+
+
+	switch (type){
+		case 3: {
+			Array<int32_t> &a = getIntegerArray(arrId);
+			a.resize(dimensions, n, !clearArray);
+			break;
+		}
+		case 7: {
+			Array<uint16_t> & a = getShortArray(arrId);
+			a.resize(dimensions, n, !clearArray);
+			break;
+		}
+		case 8: {
+			Array<uint8_t> &a = getByteArray(arrId);
+			a.resize(dimensions, n, !clearArray);
+			break;
+		}
+		case 4: {
+			Array<float> &a = getFloatArray(arrId);
+			a.resize(dimensions, n, !clearArray);
+			break;
+		}
+		case 6: {
+			Array<ISString> a = getStringArray(arrId);
+			a.resize(dimensions, n, !clearArray);
+			break;
+		}
+	}
 }
 
 FORCEINLINE void CBEnchanted::commandReturn(void) {
@@ -1175,35 +1198,35 @@ FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n
 		case 1: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 4: {
 			Array<uint16_t> &a = getShortArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 5: {
 			Array<uint8_t> &a = getByteArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 2: {
 			Array<float> &a = getFloatArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 3: {
 			Array<ISString> &a = getStringArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
@@ -1217,35 +1240,35 @@ FORCEINLINE uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n
 		case 3: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 7: {
 			Array<uint16_t> &a = getShortArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 8: {
 			Array<uint8_t> &a = getByteArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 4: {
 			Array<float> &a = getFloatArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
 		case 6: {
 			Array<ISString> &a = getStringArray(arrayId);
 			for (int32_t i = 0; i != n; ++i) {
-				pos += popValue().getInt() * a.getDimensions(i);
+				pos += popValue().getInt() * a.getDimensionMultiplier(i);
 			}
 			break;
 		}
