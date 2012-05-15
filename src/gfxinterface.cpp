@@ -154,21 +154,17 @@ void GfxInterface::commandScreen(void) {
 }
 
 void GfxInterface::commandClsColor(void) {
-	float b = cb->popValue().toFloat()/255.0f;
-	float g = cb->popValue().toFloat()/255.0f;
-	float r = cb->popValue().toFloat()/255.0f;
-	clearColor.r = r;
-	clearColor.g = g;
-	clearColor.b = b;
+	int b = cb->popValue().toInt();
+	int g = cb->popValue().toInt();
+	int r = cb->popValue().toInt();
+	clearColor = al_map_rgb(r, g, b);
 }
 
 void GfxInterface::commandColor(void) {
-	float b = cb->popValue().toFloat()/255.0f;
-	float g = cb->popValue().toFloat()/255.0f;
-	float r = cb->popValue().toFloat()/255.0f;
-	drawColor.r = r;
-	drawColor.g = g;
-	drawColor.b = b;
+	float b = cb->popValue().toInt();
+	float g = cb->popValue().toInt();
+	float r = cb->popValue().toInt();
+	drawColor = al_map_rgb(r, g, b);
 }
 
 void GfxInterface::commandCircle(void) {
