@@ -53,10 +53,10 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 		for (int i = dimCount - 1; i >= 0; --i) {
 			s *= dims[i];
 		}
-		size = s;
-		T *newData = new T[size];
-		memset(newData, 0, size * sizeof(T));
-		uint32_t copySize[5] = {1, 1, 1, 1, 1};
+		s;
+		T *newData = new T[s];
+		memset(newData, 0, s * sizeof(T));
+		uint32_t copySize[5] = {0};
 		for (uint32_t i = 0; i != dimCount; i++) {
 			copySize[i] = dims[i] < dimensionSizes[i] ? dims[i] : dimensionSizes[i];
 		}
@@ -75,19 +75,23 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 						tempDims[2] = i3;
 						uint32_t i4 = 0;
 						do {
-							debug_breakpoint_place();
 							tempDims[3] = i4;
 							uint32_t indexStart1 = getCellIndex(dims, tempDims, dimCount);
 							uint32_t indexStart2 = getCellIndex(dimensionSizes, tempDims, dimCount);
-							memcpy(newData + indexStart1, data + indexStart2, sizeof(T) * copySize[dimCount - 1]);
+
+							size_t count = sizeof(T) * copySize[dimCount - 1];
+
+							DEBUG("Copying memory to newData position %i from data position %i, count %i", indexStart1, indexStart2, count);
+
+							memcpy(newData + indexStart1, data + indexStart2, count);
 							i4++;
-						} while (i4 != copySize[3]);
+						} while (i4 < copySize[4]);
 						i3++;
-					} while (i3 != copySize[2]);
+					} while (i3 < copySize[3]);
 					i2++;
-				} while (i2 != copySize[1]);
+				} while (i2 < copySize[2]);
 				i1++;
-			} while (i1 != copySize[0]);
+			} while (i1 < copySize[1]);
 		}
 
 		if (typeid(T) == typeid(ISString)) {
