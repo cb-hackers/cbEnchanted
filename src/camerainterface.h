@@ -2,7 +2,7 @@
 #define CAMERAINTERFACE_H
 class CBEnchanted;
 #include "precomp.h"
-
+#include "cbobject.h"
 class CameraInterface {
 	public:
 		CameraInterface();
@@ -29,12 +29,21 @@ class CameraInterface {
 		float screenCoordToWorldY(float a);
 		float worldCoordToScreenX(float a);
 		float worldCoordToScreenY(float a);
+
+		void updateCamFollow();
+		inline bool isCamFollowing() {return isFollowing;}
+
 	private:
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
 		float cameraZ;
 		float cameraAngle;
+
+		bool isFollowing;
+		CBObject* followTarget;
+		uint8_t followStyle;
+		float followSetting;
 };
 
 #endif

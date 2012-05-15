@@ -3,7 +3,15 @@
 #include "cbenchanted.h"
 #include "cbobject.h"
 
-CameraInterface::CameraInterface(): cameraX(0), cameraY(0), cameraAngle(0) {
+CameraInterface::CameraInterface():
+	cameraX(0),
+	cameraY(0),
+	cameraAngle(0),
+	isFollowing(false),
+	followTarget(NULL),
+	followStyle(0),
+	followSetting(0.0f)
+{
 	cb = static_cast <CBEnchanted *> (this);
 }
 
@@ -13,7 +21,7 @@ CameraInterface::~CameraInterface() {
 
 void CameraInterface::commandCloneCameraPosition(void) {
 	int32_t id = cb->popValue().getInt();
-
+	isFollowing = false;
 	CBObject *obj = cb->getObject(id);
 	cameraX = obj->getX();
 	cameraY = obj->getY();
@@ -26,7 +34,10 @@ void CameraInterface::commandCloneCameraOrientation(void) {
 }
 
 void CameraInterface::commandCameraFollow(void) {
-	STUB;
+	isFollowing = true;
+	followSetting = cb->popValue().toFloat();
+	followStyle = cb->popValue().toInt();
+	followTarget = cb->getObject(cb->popValue().toInt());
 }
 
 void CameraInterface::commandCameraPick(void) {
@@ -93,4 +104,37 @@ float CameraInterface::worldCoordToScreenX(float a) {
 
 float CameraInterface::worldCoordToScreenY(float a) {
 	return -a + al_get_display_height(cb->getWindow()) / 2.0f + cameraY;
+}
+
+void CameraInterface::updateCamFollow() {
+	switch (followStyle) {
+		case 1: {
+			cameraX = cameraX + float(followTarget->getX() - cameraX) / followSetting;
+			cameraY = cameraY + float(followTarget->getY() - cameraY) / followSetting;
+		}
+		break;
+		case 2: {
+
+			if (followTarget->getX() < cameraX - cb->screenWidth()/2 + followSetting) {
+				cameraX = cameraX + (followTarget->getX() - (cameraX - cb->screenWidth()/2 + followSetting));
+			}
+			if (followTarget->getX() > cameraX + cb->screenWidth()/2 - followSetting) {
+				cameraX = cameraX + (followTarget->getX() - (cameraX + cb->screenWidth()/2 - followSetting));
+			}
+			if (followTarget->getY() < cameraY - cb->screenHeight()/2 + followSetting) {
+				cameraY = cameraY + (followTarget->getY() - (cameraY - cb->screenHeight()/2 + followSetting));
+			}
+			if (followTarget->getY() > cameraY + cb->screenHeight()/2 - followSetting) {
+				cameraY = cameraY + (followTarget->getY() - (cameraY + cb->screenHeight()/2 - followSetting));
+			}
+		}
+		break;
+		case 3: {
+
+			float radAng = followTarget->getAngle() / 180.0 * M_PI;
+			cameraX = followTarget->getX() + cos(radAng) * followSetting;
+			cameraY = followTarget->getY() + sin(radAng) * followSetting;
+		}
+		break;
+	}
 }

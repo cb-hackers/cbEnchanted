@@ -201,6 +201,7 @@ void GfxInterface::commandDrawScreen(void) {
 	lastFrameTime = mtimer();
 
 	if (!gameUpdated) cb->updateObjects();
+	if (cb->isCamFollowing()) cb->updateCamFollow();
 	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
 
 	gameUpdated = false;
@@ -416,7 +417,8 @@ void GfxInterface::commandSmooth2D(void) {
 }
 
 void GfxInterface::commandScreenShot(void) {
-	STUB;
+	const ISString& str = cb->popValue().toString();
+	al_save_bitmap(str.getStdString().c_str(), windowRenderTarget->getBitmap());
 }
 
 void GfxInterface::commandUpdateGame(void) {
