@@ -195,7 +195,9 @@ void GfxInterface::commandDrawScreen(void) {
 	bool vSync = cb->popValue().toInt();
 	bool cls = cb->popValue().toInt();
 
-	float waitTime = 1.0f / (cb->getFrameLimit() - ((mtimer() - lastFrameTime) / 1000.0f));
+	if ((mtimer() - lastFrameTime) <= 1000.0 / cb->getFrameLimit()) {
+		al_rest(((1000.0 / cb->getFrameLimit()) - (mtimer() - lastFrameTime)) / 1000.0);
+	}
 	lastFrameTime = mtimer();
 
 	if (!gameUpdated) cb->updateObjects();
@@ -205,35 +207,22 @@ void GfxInterface::commandDrawScreen(void) {
 	gameDrawn = false;
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
-	while (1) {
-		// To break out from this loop, we use `got drawscreenBreak;` to avoid
-		// confusion with the switch statement and breaks inside it
-		if (waitTime > 0) {
-			if (!al_wait_for_event_timed(cb->getEventQueue(), &e, waitTime)) {
-				goto drawscreenBreak;
-			}
-		}
-		else {
-			if (!al_get_next_event(cb->getEventQueue(), &e)) {
-				goto drawscreenBreak;
-			}
-		}
+	while (al_get_next_event(cb->getEventQueue(), &e)) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
-				goto drawscreenBreak;
+				break;
 			case ALLEGRO_EVENT_KEY_DOWN:
 				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
 					cb->stop();
-					goto drawscreenBreak;
 				}
 				break;
 			case ALLEGRO_EVENT_DISPLAY_RESIZE:
 				windowResized = true;
-				goto drawscreenBreak;
+				break;
 		}
 	}
-	drawscreenBreak:
+
 	if (windowResized) al_acknowledge_resize(window);
 	cb->updateInputs();
 
