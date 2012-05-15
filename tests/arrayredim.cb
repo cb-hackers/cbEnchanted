@@ -1,53 +1,170 @@
-Dim ARRAY(5)
+Print "##############################"
+Print "########### TEST 1 ###########"
+Print "##############################"
+Print "# 1-dimensional integer array"
+
+Dim ARRAY1(5)
 
 Print "------"
 For i=0 To 5
-    Print i + ". -- " + ARRAY(i)
+    Print i + " => " + ARRAY1(i)
 Next i
 
 Print "------"
 For i=0 To 5
-    Print "Setting ARRAY(" + i + ") t" + "o " + i
-    ARRAY(i) = i
+    Print "Setting ARRAY1(" + i + ") => " + i
+    ARRAY1(i) = i
 Next i
 
 Print "------"
 For i=0 To 5
-    Print i + ". -- " + ARRAY(i)
+    Print i + ". -- " + ARRAY1(i)
 Next i
 
 Print "------"
-Print "ReDim ARRAY to size 10"
-ReDim ARRAY(10)
+Print "ReDim ARRAY1 to size 10"
+ReDim ARRAY1(10)
 
 Print "------"
 For i=0 To 10
-    Print i + ". -- " + ARRAY(i)
-Next i
-
-Print "------"
-For i=0 To 10
-    Print "Setting ARRAY(" + i + ") t" + "o " + (100 + i)
-    ARRAY(i) = 100 + i
+    Print i + " => " + ARRAY1(i)
 Next i
 
 Print "------"
 For i=0 To 10
-    Print i + ". -- " + ARRAY(i)
+    Print "Setting ARRAY1(" + i + ") => " + (100 + i)
+    ARRAY1(i) = 100 + i
+Next i
+
+Print "------"
+For i=0 To 10
+    Print i + " => " + ARRAY1(i)
 Next i
 
 ClearArray OFF
 
 Print "------"
-Print "ReDim ARRAY to size 20, ClearArray OFF"
-ReDim ARRAY(20)
+Print "ReDim ARRAY1 to size 20, ClearArray OFF"
+ReDim ARRAY1(20)
 
 Print "------"
 For i=0 To 20
-    Print i + ". -- " + ARRAY(i)
+    Print i + " => " + ARRAY1(i)
 Next i
 
 Print "------"
-Print "All done. Press any key to quit..."
+Print "All done. Press any key to continue to next test..."
 
-WaitKey 
+WaitKey
+ClearArray ON
+
+Print "##############################"
+Print "########### TEST 2 ###########"
+Print "##############################"
+Print "# 2-dimensional integer array"
+
+Dim ARRAY2(2, 3)
+
+Print "------"
+For a=0 To 2
+    For b=0 To 3
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+
+Print "------"
+For a=0 To 2
+    For b=0 To 3
+        Print "Setting ARRAY2(" + a + ", " + b + ") => " + (a*10 + b)
+        ARRAY2(a, b) = (a*10 + b)
+    Next b
+Next a
+
+Print "------"
+For a=0 To 2
+    For b=0 To 3
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+Print "ReDim ARRAY2 to size (5, 2), ClearArray ON"
+ReDim ARRAY2(5, 2)
+
+Print "------"
+For a=0 To 5
+    For b=0 To 2
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+For a=0 To 5
+    For b=0 To 2
+        Print "Setting ARRAY2(" + a + ", " + b + ") => " + (a*100 + b*10)
+        ARRAY2(a, b) = (a*100 + b*10)
+    Next b
+Next a
+
+Print "------"
+For a=0 To 5
+    For b=0 To 2
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+ClearArray OFF
+
+Print "------"
+Print "ReDim ARRAY2 to size (10, 1), ClearArray OFF"
+ReDim ARRAY2(10, 1)
+
+Print "------"
+For a=0 To 10
+    For b=0 To 1
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+Print "ReDim ARRAY2 to size (2, 5), ClearArray OFF"
+ReDim ARRAY2(2, 5)
+
+Print "------"
+For a=0 To 2
+    For b=0 To 5
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+For a=0 To 2
+    For b=0 To 5
+        Print "Setting ARRAY2(" + a + ", " + b + ") => " + (a*100 + b*10)
+        ARRAY2(a, b) = (a*100 + b*10)
+    Next b
+Next a
+
+Print "------"
+For a=0 To 2
+    For b=0 To 5
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+Print "ReDim ARRAY2 to size (10, 5), ClearArray OFF"
+ReDim ARRAY2(10, 5)
+
+Print "------"
+For a=0 To 10
+    For b=0 To 5
+        Print "(" + a + ", " + b + ") => " + ARRAY2(a, b)
+    Next b
+Next a
+
+Print "------"
+Print "All done. Press any key to continue to next test..."
+
+WaitKey
