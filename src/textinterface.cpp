@@ -214,12 +214,12 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 }
 
 void TextInterface::functionTextWidth(void) {
-	cb->pushValue(al_get_text_width(currentFont, cb->popValue().getString().getRef().c_str()));
+	cb->pushValue(al_get_text_width(currentFont, cb->popValue().toString().getRef().c_str()));
 }
 
 void TextInterface::functionTextHeight(void) {
 	int dummy;
 	int height;
-	al_get_text_dimensions(currentFont, cb->popValue().getString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
+	al_get_text_dimensions(currentFont, cb->popValue().toString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
 	cb->pushValue(height);
 }
