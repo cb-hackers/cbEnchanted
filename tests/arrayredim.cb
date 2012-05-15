@@ -1,0 +1,53 @@
+Dim ARRAY(5)
+
+Print "------"
+For i=0 To 5
+    Print i + ". -- " + ARRAY(i)
+Next i
+
+Print "------"
+For i=0 To 5
+    Print "Setting ARRAY(" + i + ") t" + "o " + i
+    ARRAY(i) = i
+Next i
+
+Print "------"
+For i=0 To 5
+    Print i + ". -- " + ARRAY(i)
+Next i
+
+Print "------"
+Print "ReDim ARRAY to size 10"
+ReDim ARRAY(10)
+
+Print "------"
+For i=0 To 10
+    Print i + ". -- " + ARRAY(i)
+Next i
+
+Print "------"
+For i=0 To 10
+    Print "Setting ARRAY(" + i + ") t" + "o " + (100 + i)
+    ARRAY(i) = 100 + i
+Next i
+
+Print "------"
+For i=0 To 10
+    Print i + ". -- " + ARRAY(i)
+Next i
+
+ClearArray OFF
+
+Print "------"
+Print "ReDim ARRAY to size 20, ClearArray OFF"
+ReDim ARRAY(20)
+
+Print "------"
+For i=0 To 20
+    Print i + ". -- " + ARRAY(i)
+Next i
+
+Print "------"
+Print "All done. Press any key to quit..."
+
+WaitKey 

@@ -2,6 +2,7 @@
 #define ARRAY_H
 #include <stdint.h>
 #include <cstring>
+#include "debug.h"
 class ISString;
 template <class T>
 class Array {
@@ -55,27 +56,40 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 		size = s;
 		T *newData = new T[size];
 		memset(newData, 0, size * sizeof(T));
-		uint32_t copySize[5] = {1};
+		uint32_t copySize[5] = {1, 1, 1, 1, 1};
 		for (uint32_t i = 0; i != dimCount; i++) {
 			copySize[i] = dims[i] < dimensionSizes[i] ? dims[i] : dimensionSizes[i];
 		}
-		uint32_t tempDims[5];
-		tempDims[4] = 0;
-		for (uint32_t i1 = 0; i1 != copySize[0]; i1) {
-			tempDims[0] = i1;
-			for (uint32_t i2 = 0; i2 != copySize[1]; i2) {
-				tempDims[1] = i2;
-				for (uint32_t i3 = 0; i3 != copySize[2]; i3) {
-					tempDims[2] = i3;
-					for (uint32_t i4 = 0; i4 != copySize[3]; i4) {
-						tempDims[3] = i4;
-						uint32_t indexStart1 = getCellIndex(dims, tempDims, dimCount);
-						uint32_t indexStart2 = getCellIndex(dimensionSizes, tempDims, dimCount);
-						memcpy(newData + indexStart1, data + indexStart2, sizeof(T) * copySize[5]);
-					}
-				}
-			}
+
+		{
+			uint32_t tempDims[5];
+			tempDims[4] = 0;
+			uint32_t i1 = 0;
+			do {
+				tempDims[0] = i1;
+				uint32_t i2 = 0;
+				do {
+					tempDims[1] = i2;
+					uint32_t i3 = 0;
+					do {
+						tempDims[2] = i3;
+						uint32_t i4 = 0;
+						do {
+							debug_breakpoint_place();
+							tempDims[3] = i4;
+							uint32_t indexStart1 = getCellIndex(dims, tempDims, dimCount);
+							uint32_t indexStart2 = getCellIndex(dimensionSizes, tempDims, dimCount);
+							memcpy(newData + indexStart1, data + indexStart2, sizeof(T) * copySize[dimCount - 1]);
+							i4++;
+						} while (i4 != copySize[3]);
+						i3++;
+					} while (i3 != copySize[2]);
+					i2++;
+				} while (i2 != copySize[1]);
+				i1++;
+			} while (i1 != copySize[0]);
 		}
+
 		if (typeid(T) == typeid(ISString)) {
 			for (uint32_t i = 0; i != size; i++) {
 				data[i].~T();
