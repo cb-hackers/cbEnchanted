@@ -372,7 +372,10 @@ void ObjectInterface::commandPixelPick(void) {
 }
 
 void ObjectInterface::commandObjectLife(void) {
-	STUB;
+	int32_t life = cb->popValue().getInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *object = getObject(id);
+	object->setLife(life);
 }
 
 void ObjectInterface::commandPlayObject(void) {
@@ -554,10 +557,10 @@ void ObjectInterface::functionObjectString(void) {
 }
 
 void ObjectInterface::functionObjectLife(void) {
-	int32_t life = cb->popValue().getInt();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->setLife(life);
+
+	cb->pushValue((int32_t)object->getLife());
 }
 
 void ObjectInterface::functionPickedObject(void) {
