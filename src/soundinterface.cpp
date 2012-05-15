@@ -64,23 +64,26 @@ void SoundInterface::commandPlaySound(void) {
 }
 
 void SoundInterface::commandSetSound(void) {
-	int32_t freg = cb->popValue().toInt();
+	int32_t freq = cb->popValue().toInt();
 	float balance = cb->popValue().toFloat();
 	float volume = cb->popValue().toFloat();
 	bool looping = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
+	if (id == 0) return;
 	CBSound* sound = sounds[id];
-	sound->setSound(looping, volume, balance, freg);
+	sound->setSound(looping, volume, balance, freq);
 }
 
 void SoundInterface::commandStopSound(void) {
 	int32_t id = cb->popValue().getInt();
+	if (id == 0) return;
 	CBChannel* sound = channels[id];
 	sound->stopSound();
 }
 
 void SoundInterface::commandDeleteSound(void) {
 	int32_t id = cb->popValue().getInt();
+	if (id == 0) return;
 	CBSound* sound = sounds[id];
 	delete sound;
 	sounds.erase(id);
