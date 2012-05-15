@@ -81,8 +81,7 @@ void StringInterface::functionTrim(void) {
 	string str = cb->popValue().getString().getRef();
 
 	if (!str.empty()) {
-		str = str.substr(str.find_first_not_of(" "));
-		str = str.substr(0, str.find_last_not_of(" ")+1);
+		boost::algorithm::trim(str);
 	}
 
 	cb->pushValue(str);
