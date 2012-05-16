@@ -57,38 +57,53 @@ void *Type::deleteMember(void *m) {
 
 void Type::insert(void *m, void *insertionPoint) {
 	if (insertionPoint == 0) return;
+	if (m == insertionPoint) return;
 
 	void * oldBefore = getBefore(m);
 	void * oldAfter = getAfter(m);
 
-	void * beforeInsertionPoint = getBefore(insertionPoint);
-
-	if (lastMember == m) {
-		// This was the last member
-		cout << "Inserting the last member" << endl;
-		lastMember = oldBefore;
-	}
-	else {
-		cout << "Inserting type member that isn't the last member" << endl;
+	// Forget the place of m
+	if (oldBefore != 0) {
 		setAfter(oldBefore, oldAfter);
 	}
+	if (oldAfter != 0) {
+		setBefore(oldAfter, oldBefore);
+	}
 
-	if (beforeInsertionPoint) {
-		// The point to be inserted isn't the first point, set after the given one
-		cout << " -> Inserted to middle" << endl;
-		void * afterInsertionPoint = getAfter(insertionPoint);
-		setAfter(m, afterInsertionPoint);
+	// Check for validity of firstMember and lastMember after m has been "popped out".
+	if (m == firstMember) {
+		firstMember = oldAfter;
+	}
+	else if (m == lastMember) {
+		lastMember = oldBefore;
+	}
+
+	// Now there should be no more links to m left. It's out of the flow.
+	// We can now freely put it back into the place it should go to.
+
+	if (insertionPoint == firstMember) {
+		// We wanted to insert to the first position
+		setBefore(m, 0);
+		setAfter(m, insertionPoint);
+		setBefore(insertionPoint, m);
+		firstMember = m;
+	}
+	else if (insertionPoint == lastMember) {
+		// We wanted to insert after the last one
 		setBefore(m, insertionPoint);
+		setAfter(m, 0);
+		setAfter(insertionPoint, m);
+		lastMember = m;
+	}
+	else {
+		// We wanted to insert between two members, after the given insertion point.
+		void * afterInsertionPoint = getAfter(insertionPoint);
+
+		setBefore(m, insertionPoint);
+		setAfter(m, afterInsertionPoint);
 		setAfter(insertionPoint, m);
 		setBefore(afterInsertionPoint, m);
 	}
-	else {
-		// This was to be set as the first one.
-		cout << " -> Inserted to be the first member" << endl;
-		firstMember = m;
-		setBefore(m, 0);
-		setAfter(m, insertionPoint);
-		setAfter(oldBefore, oldAfter);
-	}
+
 }
 
