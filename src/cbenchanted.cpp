@@ -373,7 +373,7 @@ void CBEnchanted::commandFunction(void) {
 }
 
 void CBEnchanted::commandSelect() {
-	selectValue = popValue().toInt();
+	selectValue = popValue();
 	++code;
 	code = codeBase + *(int32_t *)(code);
 }
@@ -385,7 +385,19 @@ void CBEnchanted::commandCase() {
 	int32_t nextCase = *(int32_t *)(code);
 	for (int i = 0; i < testCount;++i) {
 		code += 5;
-		if (*(int32_t *)(code) == selectValue) {
+		bool matched = false;
+		if (selectValue.type() == Any::Int) {
+			int32_t comparison = *(int32_t *)(code);
+			matched = (comparison == selectValue.toInt());
+		}
+		else if (selectValue.type() == Any::Float) {
+			matched = false;
+		}
+		else { // Must be a string
+			matched = false;
+		}
+
+		if (matched) {
 			code += 4;
 			return;
 		}

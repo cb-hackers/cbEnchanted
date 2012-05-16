@@ -1,0 +1,32 @@
+Select 15.0
+    Case 15.0
+        Print "Jea Float"
+    Case 10.0
+        Print "hmm"
+    Default
+        Print ":( Float"
+EndSelect
+
+WaitKey
+
+Select 15
+    Case 15
+        Print "Jea Int"
+    Case 10
+        Print "hmm"
+    Default
+        Print ":( Int"
+EndSelect
+
+WaitKey
+
+Select "15"
+    Case "15"
+        Print "Jea String"
+    Case "10"
+        Print "hmm"
+    Default
+        Print ":( String"
+EndSelect
+
+WaitKey

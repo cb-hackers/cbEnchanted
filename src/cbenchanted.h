@@ -78,7 +78,7 @@ class CBEnchanted :
 		float frameLimit;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;
-		int32_t selectValue;
+		Any selectValue;
 
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
