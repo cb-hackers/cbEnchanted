@@ -2,7 +2,9 @@
 #define CAMERAINTERFACE_H
 class CBEnchanted;
 #include "precomp.h"
-#include "cbobject.h"
+
+class CBObject;
+
 class CameraInterface {
 	public:
 		CameraInterface();
