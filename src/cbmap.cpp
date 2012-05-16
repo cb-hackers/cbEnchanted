@@ -33,7 +33,13 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 	tileHeight = tileH;
 	for (int i = 0; i < 4; ++i) {
 		layers[i] = Array2D(width, height);
+		for (uint32_t x = 0; x < width; x++) {
+			memset(layers[i][x], 0, sizeof(uint32_t) * height);
+		}
 	}
+	tileCount = mapWidth * mapHeight;
+	currentFrame = new float [tileCount];
+	memset(currentFrame,0,sizeof(float)*tileCount);
 	return true;
 }
 

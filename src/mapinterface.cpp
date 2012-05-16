@@ -66,6 +66,7 @@ void MapInterface::functionLoadMap(void) {
 
 void MapInterface::functionMakeMap(void) {
 	if (tileMap) delete tileMap;
+	tileMap = new CBMap();
 	uint16_t tileH = cb->popValue().toInt();
 	uint16_t tileW = cb->popValue().toInt();
 	uint32_t mapH = cb->popValue().toInt();
