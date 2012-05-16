@@ -1,7 +1,5 @@
 #include "cbmap.h"
 #include "cbenchanted.h"
-#include "precomp.h"
-#include "errorsystem.h"
 
 /** Constructs a new CBMap and calls the constructor for CBObject */
 CBMap::CBMap() : CBObject() {
@@ -54,13 +52,16 @@ bool CBMap::loadMap(string file) {
 
 		if (checkNum[0] != 40 || checkNum[1] != 192 || checkNum[2] != 13 || checkNum[3] != 139) {
 			//FIXME("Map: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1] ,checkNum[2], checkNum[3]);
-
+			mapStream.close();
+			return false;
 		}
 
 
 		mapStream.read((char*)&version, 4);
 		if (!(version>=1.0 && version <= 2.0)) {
-			FIXME("Version isn't right!");
+			//FIXME("Version isn't right!");
+			mapStream.close();
+			return false;
 		}
 
 
@@ -77,6 +78,7 @@ bool CBMap::loadMap(string file) {
 		mapStream.read((char*)&tileCount, 4);
 
 		if (tileCount < 0) {
+			mapStream.close();
 			return false;
 		}
 
@@ -103,7 +105,9 @@ bool CBMap::loadMap(string file) {
 			checkNum[2] != 12 ||
 			checkNum[3] != 166
 		) {
-			FIXME("Map layer0: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			//FIXME("Map layer0: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			mapStream.close();
+			return false;
 		}
 
 		for(int y = 0; y < mapHeight; y++) {
@@ -119,7 +123,9 @@ bool CBMap::loadMap(string file) {
 			checkNum[2] != 11 ||
 			checkNum[3] != 165
 		) {
-			FIXME("Map layer1: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			//FIXME("Map layer1: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			mapStream.close();
+			return false;
 		}
 
 		//Collision layer
@@ -135,7 +141,9 @@ bool CBMap::loadMap(string file) {
 			checkNum[2] != 10 ||
 			checkNum[3] != 164
 		) {
-			FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			//FIXME("Map layer2: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			mapStream.close();
+			return false;
 		}
 
 
@@ -152,7 +160,9 @@ bool CBMap::loadMap(string file) {
 			checkNum[2] != 9 ||
 			checkNum[3] != 163
 		) {
-			FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			//FIXME("Map layer3: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			mapStream.close();
+			return false;
 		}
 
 		for(int y = 0; y < mapHeight; y++) {
@@ -169,7 +179,9 @@ bool CBMap::loadMap(string file) {
 			checkNum[2] != 8 ||
 			checkNum[3] != 162
 		) {
-			FIXME("Tiles: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			//FIXME("Tiles: Incorrect magic nums (%u, %u,%u, %u)!", checkNum[0], checkNum[1], checkNum[2], checkNum[3]);
+			mapStream.close();
+			return false;
 		}
 
 		for (int32_t i = 1; i < tileCount; ++i) {
@@ -179,8 +191,8 @@ bool CBMap::loadMap(string file) {
 
 	}
 	else { // mapstream.is_open() returned false
-		string err = "Can not open: " + file;
-		INFO(err.c_str());
+		mapStream.close();
+		return false;
 	}
 	mapStream.close();
 	sizeX = tileWidth * mapWidth;
