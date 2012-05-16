@@ -1068,7 +1068,12 @@ void CBEnchanted::commandDelete(void) {
 }
 
 void CBEnchanted::commandInsert(void) {
-	STUB;
+	void *target = popValue().getTypePtr();
+	void *toBeMoved = popValue().getTypePtr();
+
+	Type *toBeMovedType = Type::getMembersType(toBeMoved);
+
+	toBeMovedType->insertAt(target);
 }
 
 void CBEnchanted::commandClearArray(void) {

@@ -47,6 +47,8 @@ class Type {
 
 		void *getFirst(){return firstMember;}
 		void *getLast(){return lastMember;}
+
+		void insertAt(void *insertionPoint);
 	private:
 		inline static void setType(void *m,Type *t) {
 			((Type**)m)[2] = t;
@@ -56,6 +58,7 @@ class Type {
 		int32_t sizeOfMember;
 		void *firstMember;
 		void *lastMember;
+		void *thisMember;
 };
 
 #endif
