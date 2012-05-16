@@ -242,7 +242,7 @@ void StringInterface::functionGetWord(void) {
 
 	int32_t sep_pos = 0;
 
-	for(int i = 1; i != w; ++i)
+	for(int i = 1; i < w; ++i)
 	{
 		sep_pos = str.find(sep);
 		if(sep_pos) {
