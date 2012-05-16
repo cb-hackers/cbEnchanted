@@ -36,11 +36,16 @@ class ImageInterface {
 		bool isDefaultMaskToggled() const { return defaultMaskToggled; }
 	private:
 		CBEnchanted *cb;
-		int32_t idCounter;
-		int32_t nextId();
+
+		/** Holds all loaded images in a map. */
 		map <int32_t, CBImage*> cbImages;
+
+		/** Returns new id for cbImages. Images IDs start from 2. */
+		int32_t nextId() {static int32_t idCounter = 1; return ++idCounter;}
+
 		/** Default mask color */
 		ALLEGRO_COLOR defaultMask;
+
 		/** Is default mask on */
 		bool defaultMaskToggled;
 };

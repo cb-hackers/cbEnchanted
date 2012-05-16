@@ -250,7 +250,3 @@ void ImageInterface::functionImagesCollide(void) {
 	}
 }
 
-int32_t ImageInterface::nextId()
-{
-	return ++idCounter;
-}
