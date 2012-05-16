@@ -417,8 +417,8 @@ void GfxInterface::commandSmooth2D(void) {
 }
 
 void GfxInterface::commandScreenShot(void) {
-	const ISString& str = cb->popValue().toString();
-	al_save_bitmap(str.getStdString().c_str(), windowRenderTarget->getBitmap());
+	const string &str = cb->popValue().toString().getRef();
+	al_save_bitmap(str.c_str(), windowRenderTarget->getBitmap());
 }
 
 void GfxInterface::commandUpdateGame(void) {
