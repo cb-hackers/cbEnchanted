@@ -188,7 +188,7 @@ void GfxInterface::commandLine(void){
 }
 
 void GfxInterface::commandDrawScreen(void) {
-	bool vSync = cb->popValue().toInt();
+	bool vSync = cb->popValue().toBool();
 	bool cls = cb->popValue().toInt();
 
 	if ((mtimer() - lastFrameTime) <= 1000.0 / cb->getFrameLimit()) {
@@ -222,6 +222,10 @@ void GfxInterface::commandDrawScreen(void) {
 
 	if (windowResized) al_acknowledge_resize(window);
 	cb->updateInputs();
+
+	if (vSync) {
+		al_wait_for_vsync();
+	}
 
 	fpsCounter++;
 	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)
