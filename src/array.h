@@ -58,9 +58,12 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 				memcpy(newData,data,sizeof(T) * copySize[0]); break;
 			case 2:
 				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
-					memcpy(newData + dimMult[0] * i1,data + dimensions[0] * i1,sizeof(T) * copySize[1]);
-					break;
+					uint32_t place1 = dimMult[0] * i1;
+					uint32_t place2 = dimensions[0] * i1;
+					debug_breakpoint_place();
+					memcpy(newData + place1, data + place2, sizeof(T) * copySize[1]);
 				}
+				break;
 			case 3:
 
 				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
