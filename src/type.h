@@ -13,22 +13,34 @@ class Type {
 
 		inline static Type *getMembersType(const void *m) { return ((Type**)m)[2]; }
 		inline static int32_t &getIntField(const void *m, int32_t place) {
-			return *(int32_t*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
+			return *(int32_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
 		}
 		inline static float getFloatField(const void *m, int32_t place) {
-			return *(float*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
+			return *(float*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
 		}
 		inline static ISString &getStringField(const void *m, int32_t place) {
-			return *(ISString*)((char*)((void**)m+3) + place*(sizeof(void*)/4));
+			return *(ISString*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
+		}
+		inline static uint8_t getByteField(const void *m, int32_t place) {
+			return *(uint8_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
+		}
+		inline static uint16_t getShortField(const void *m, int32_t place) {
+			return *(uint16_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
 		}
 		inline static void setField(void *m,int32_t place, int32_t value) {
-			*(int32_t*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
+			*(int32_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
 		inline static void setField(void *m,int32_t place, float value) {
-			*(float*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
+			*(float*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
 		inline static void setField(void *m,int32_t place, const ISString &value) {
-			*(ISString*)((char*)((void**)m+3) + place*(sizeof(void*)/4)) = value;
+			*(ISString*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
+		}
+		inline static void setField(void *m,int32_t place, uint8_t value) {
+			*(uint8_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
+		}
+		inline static void setField(void *m,int32_t place, uint16_t value) {
+			*(uint16_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
 		inline static void *getBefore(void *m) {
 			if (m == 0) return 0;

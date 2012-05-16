@@ -1054,6 +1054,8 @@ FORCEINLINE void CBEnchanted::handlePushTypeMemberVariable() {
 		case 1: pushValue(Type::getMembersType(typePtr)->getIntField(typePtr, place)); break;
 		case 2: pushValue(Type::getMembersType(typePtr)->getFloatField(typePtr, place)); break;
 		case 3: pushValue(Type::getMembersType(typePtr)->getStringField(typePtr, place)); break;
+		case 4: pushValue(Type::getMembersType(typePtr)->getByteField(typePtr, place)); break;
+		case 5: pushValue(Type::getMembersType(typePtr)->getShortField(typePtr, place)); break;
 		default: FIXME("handlePushTypeMemberVariable:Unhandled varType %i", varType); break;
 	}
 }
@@ -1376,13 +1378,19 @@ void CBEnchanted::commandSetTypeMemberField(void)
 	switch (varType) {
 		case 1:
 			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toInt());
-		break;
+			break;
 		case 2:
 			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toFloat());
-		break;
+			break;
 		case 3:
 			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toString());
-		break;
+			break;
+		case 4:
+			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toByte());
+			break;
+		case 5:
+			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toShort());
+			break;
 		default:
 			FIXME("setTypeMemberField:Unhandled varType %i", varType);
 	}
