@@ -475,11 +475,11 @@ void GfxInterface::functionGetRGB(void) {
 }
 
 void GfxInterface::functionScreenWidth(void) {
-	cb->pushValue(cb->GfxInterface::screenWidth());
+	cb->pushValue(screenWidth());
 }
 
 void GfxInterface::functionScreenHeight(void) {
-	cb->pushValue(cb->GfxInterface::screenHeight());
+	cb->pushValue(screenHeight());
 }
 
 void GfxInterface::functionScreenDepth(void) {
