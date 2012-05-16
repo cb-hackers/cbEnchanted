@@ -16,7 +16,6 @@ void *Type::newMember() {
 	setBefore(m, lastMember);
 	setAfter(m, 0);
 	setType(m, this);
-	this->thisMember = m;
 
 	lastMember = m;
 	if (firstMember == 0) {
@@ -56,9 +55,8 @@ void *Type::deleteMember(void *m) {
 }
 
 
-void Type::insertAt(void *insertionPoint) {
+void Type::insert(void *m, void *insertionPoint) {
 	if (insertionPoint == 0) return;
-	void *m = this->thisMember;
 
 	void * oldBefore = getBefore(m);
 	void * oldAfter = getAfter(m);

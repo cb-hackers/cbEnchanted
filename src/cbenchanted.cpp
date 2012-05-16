@@ -1073,7 +1073,7 @@ void CBEnchanted::commandInsert(void) {
 
 	Type *toBeMovedType = Type::getMembersType(toBeMoved);
 
-	toBeMovedType->insertAt(target);
+	toBeMovedType->insert(toBeMoved, target);
 }
 
 void CBEnchanted::commandClearArray(void) {
