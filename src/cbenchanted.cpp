@@ -1157,7 +1157,7 @@ void CBEnchanted::functionFirst(void) {
 
 void CBEnchanted::functionLast(void) {
 	int32_t typeId = popValue().getInt();
-	pushValue(getType(typeId)->getFirst());
+	pushValue(getType(typeId)->getLast());
 }
 
 void CBEnchanted::functionBefore(void) {
