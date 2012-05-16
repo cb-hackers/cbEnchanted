@@ -1206,6 +1206,10 @@ void CBEnchanted::functionRead(void) {
 
 void CBEnchanted::functionConvertToInteger(void) {
 	void *typeMember = popValue().getTypePtr();
+	if (typeMember == 0) {
+		this->errors->createError("ConvertToInteger() failed!");
+		pushValue(0);
+	}
 	if (BUILD_32_BIT) {
 		pushValue(reinterpret_cast<int32_t>(typeMember));
 	}
@@ -1217,6 +1221,10 @@ void CBEnchanted::functionConvertToInteger(void) {
 
 void CBEnchanted::functionConvertToType(void) {
 	int32_t typePtr = popValue().getInt();
+	if (typePtr == 0) {
+		this->errors->createError("ConvertToType() failed!");
+		pushValue(0);
+	}
 	if (BUILD_32_BIT) {
 		pushValue(reinterpret_cast<void*>(typePtr));
 	}
