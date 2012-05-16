@@ -320,8 +320,10 @@ void FileInterface::functionReadLine(void) {
 	string line = "";
 	while(1) {
 		int c = fgetc(file);
-		if (c != '\n' && c != EOF) {
-			line = line + char(c);
+		if (c != '\r' && c != EOF) {
+			if (c != '\n') {
+				line = line + char(c);
+			}
 		}
 		else {
 			break;
