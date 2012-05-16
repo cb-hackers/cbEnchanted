@@ -378,7 +378,7 @@ void CBEnchanted::commandSelect() {
 	code = codeBase + *(int32_t *)(code);
 }
 
-void CBEnchanted::commandCase() {
+void CBEnchanted::commandCase(void) {
 	++code;
 	int32_t testCount = *(int32_t *)(code);
 	code += 5;
@@ -386,17 +386,33 @@ void CBEnchanted::commandCase() {
 	for (int i = 0; i < testCount;++i) {
 		code += 5;
 		bool matched = false;
-		if (selectValue.type() == Any::Int) {
-			int32_t comparison = *(int32_t *)(code);
-			matched = (comparison == selectValue.toInt());
+		uint8_t nextOpcode = *(uint8_t *)(code+4);
+		if (nextOpcode == 74) {//Float or string
+			int32_t type = *(int32_t *)(code); //pushSomething's type
+			code += 5;
+			switch (type) {
+				case 2: {//Float
+					if (selectValue == *(float *)(code)) {
+						matched = true;
+					}
+					break;
+				}
+				case 5: {//String
+					uint32_t strId = *(uint32_t *)(code);
+					if (selectValue == getString(strId)) {
+						matched = true;
+					}
+					break;
+				}
+				default:
+					FIXME("Unhandled case");
+			}
 		}
-		else if (selectValue.type() == Any::Float) {
-			matched = false;
+		else { //Int
+			if (selectValue == *(int32_t *)(code)) {
+				matched = true;
+			}
 		}
-		else { // Must be a string
-			matched = false;
-		}
-
 		if (matched) {
 			code += 4;
 			return;
