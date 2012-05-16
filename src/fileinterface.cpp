@@ -173,7 +173,7 @@ void FileInterface::functionOpenToRead(void) {
 	int32_t id = ++idC;
 	string file = cb->popValue().toString().getRef();
 
-	filestrs[id] = fopen(file.c_str(), "r");;
+	filestrs[id] = fopen(file.c_str(), "rb");;
 	if (filestrs[id] == NULL) {
 		cb->errors->createFatalError("OpenToRead failed! File: \"" + file + "\"");
 		cb->pushValue(0);
@@ -187,7 +187,7 @@ void FileInterface::functionOpenToWrite(void) {
 	int32_t id = ++idC;
 	string file = cb->popValue().toString().getRef();
 
-	filestrs[id] = fopen(file.c_str(), "w");
+	filestrs[id] = fopen(file.c_str(), "wb");
 	if (filestrs[id] == NULL) {
 		cb->errors->createFatalError("OpenToWrite failed! File: \"" + file + "\"");
 		cb->pushValue(0);
@@ -203,9 +203,9 @@ void FileInterface::functionOpenToEdit(void) {
 
 	if(fs::exists(file))
 	{
-		filestrs[id] = fopen(file.c_str(), "r+");
+		filestrs[id] = fopen(file.c_str(), "rb+");
 	} else {
-		filestrs[id] = fopen(file.c_str(), "w+");
+		filestrs[id] = fopen(file.c_str(), "wb+");
 	}
 	if (filestrs[id] == NULL) {
 		cb->errors->createFatalError("OpenToEdit failed! File: \"" + file + "\"");
@@ -248,7 +248,7 @@ void FileInterface::functionFindFile(void) {
 }
 
 void FileInterface::functionCurrentDir(void) {
-	cb->pushValue(fs::current_path().string());
+	cb->pushValue(fs::current_path().string() + "\\");
 }
 
 void FileInterface::functionFileExists(void) {
