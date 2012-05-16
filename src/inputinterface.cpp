@@ -227,6 +227,7 @@ void InputInterface::commandSAFEEXIT(void) {
 }
 
 void InputInterface::functionInput(void) {
+	cb->pushValue("");
 	STUB;
 }
 
@@ -246,6 +247,7 @@ void InputInterface::functionKeyUp(void) {
 }
 
 void InputInterface::functionGetKey(void) {
+	cb->pushValue(0);
 	STUB;
 }
 
