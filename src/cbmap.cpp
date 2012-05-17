@@ -598,7 +598,7 @@ int32_t** CBMap::Array2D(uint32_t w, uint32_t h) {
 	int32_t **data = new int32_t*[w];
 	for(uint8_t i = 0; i < w; i++) {
 		data[i] = new int32_t[h];
-		memset(data[i], 0, h);
+		memset(data[i], 0, h*sizeof(int32_t));
 	}
 
 
