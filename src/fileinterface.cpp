@@ -121,10 +121,14 @@ void FileInterface::commandWriteString(void) {
 }
 
 void FileInterface::commandWriteLine(void) {
-	string line = cb->popValue().toString().getRef();
+	string line = cb->popValue().toString().getUtf8Encoded();
 	FILE *file = filestrs[cb->popValue().getInt()];
 
-	line += "\n";
+	#ifdef WIN32
+		line += "\r\n";
+	#else
+		line += "\n";
+	#endif
 
 	fputs(line.c_str(), file);
 }
