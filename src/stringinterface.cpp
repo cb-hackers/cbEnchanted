@@ -31,7 +31,11 @@ void StringInterface::functionRight(void) {
 	int32_t n = cb->popValue().toInt();
 	string s = cb->popValue().getString().getRef();
 
-	cb->pushValue(s.substr(s.length() - n));
+	if (n >= s.length()) {
+		cb->pushValue(s);
+	} else {
+		cb->pushValue(s.substr(s.length() - n));
+	}
 }
 
 void StringInterface::functionMid(void) {
@@ -39,13 +43,22 @@ void StringInterface::functionMid(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	cb->pushValue(str.substr(pos-1, len));
+	if(pos-1 > str.length()) {
+		cb->pushValue(string(""));
+	} else {
+		cb->pushValue(str.substr(pos-1, len));
+	}
 }
 
 void StringInterface::functionReplace(void) {
 	string s3 = cb->popValue().getString().getRef();
 	string s2 = cb->popValue().getString().getRef();
 	string s = cb->popValue().getString().getRef();
+
+	if(s2.empty()) {
+		cb->pushValue(string(s));
+		return;
+	}
 
 	string::size_type p = 0;
 
@@ -180,7 +193,11 @@ void StringInterface::functionStrInsert(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	str.insert(pos, txt);
+	if(pos > str.length()) {
+		str.insert(str.length(), txt);
+	} else {
+		str.insert(pos, txt);
+	}
 
 	cb->pushValue(str);
 
@@ -191,7 +208,13 @@ void StringInterface::functionStrRemove(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	str.erase(pos-1, len);
+	if(pos < str.length()) {
+		if(pos-1 + len < str.length()) {
+			str.erase(pos-1, len);
+		} else {
+			str.erase(pos-1, str.length());
+		}
+	}
 
 	cb->pushValue(str);
 
@@ -203,10 +226,19 @@ void StringInterface::functionStrMove(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
+	if(pos-1+len>str.length()) {
+		cb->pushValue(str);
+		return;
+	}
+
 	string txt = str.substr(pos-1, len);
 	str.erase(pos-1, len);
 
-	str.insert(-1+pos+mov, txt);
+	if(-1+pos+mov>str.length()) {
+		str.insert(str.length(), txt);
+	} else {
+		str.insert(-1+pos+mov, txt);
+	}
 
 	cb->pushValue(str);
 }
@@ -215,7 +247,7 @@ void StringInterface::functionCountWords(void) {
 	string sep = cb->popValue().toString().getRef();
 	string str = cb->popValue().toString().getRef();
 
-	if(str=="") {
+	if(str.empty()) {
 		cb->pushValue(0);
 		return;
 	}
