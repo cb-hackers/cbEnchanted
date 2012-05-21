@@ -132,8 +132,8 @@ void ImageInterface::commandHotSpot(void) {
 		return;
 	}
 	CBImage *img = getImage(id);
-	if (x == -1) x = img->width() / 2.0f;
-	if (y == -1) y = img->height() / 2.0f;
+	if (x < 0) x = img->width() / 2.0f;
+	if (y < 0) y = img->height() / 2.0f;
 	img->setHotspot(x, y);
 }
 

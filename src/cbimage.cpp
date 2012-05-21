@@ -172,8 +172,8 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
 	hotspotX = defaultHotspotX;
 	hotspotY = defaultHotspotY;
-	if (hotspotX == -1) hotspotX = w / 2.0f;
-	if (hotspotY == -1) hotspotY = h / 2.0f;
+	if (hotspotX < 0) hotspotX = w / 2.0f;
+	if (hotspotY < 0) hotspotY = h / 2.0f;
 }
 
 void CBImage::setHotspot(float x, float y) {
