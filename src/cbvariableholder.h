@@ -76,7 +76,7 @@ class CBVariableHolder {
 		void setArray(uint32_t id, const Array<uint8_t> &value) { byteArrays.set(id, value); }
 		void setArray(uint32_t id, const Array<ISString> &value) { stringArrays.set(id, value); }
 
-		void setString(uint32_t id, ISString value) { strings.set(id, value); }
+		void setString(uint32_t id, const ISString &value) { strings.set(id, value); }
 
 		void addType(int32_t dataSize) {types.push_back(new Type(dataSize));}
 

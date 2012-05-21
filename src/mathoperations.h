@@ -3,6 +3,7 @@
 #include "any.h"
 #include "variablestack.h"
 #include <cmath>
+#include "isstring.h"
 
 FORCEINLINE int32_t cbpow(int32_t a, int32_t b) {
 	double ret = pow(double(a), double(b));
@@ -26,7 +27,10 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString().getRef() + boost::lexical_cast<string>(b.dInt);
+			ISString s = a.getString();
+			ISString res(s.getRef() + boost::lexical_cast<string>(b.dInt));
+			res.requireEncoding(s.isEncodingRequired());
+			a = res;
 			return;
 		}
 	}
@@ -41,21 +45,34 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString().getRef() + boost::lexical_cast<string>(b.dFloat);
+			ISString s = a.getString();
+			ISString res(s.getRef() + boost::lexical_cast<string>(b.dFloat));
+			res.requireEncoding(s.isEncodingRequired());
+			a = res;
 			return;
 		}
 	}
 	if (b.typeId == String) {
 		if (a.typeId == Float) {
-			a = boost::lexical_cast<string>(a.dFloat) + b.getString().getRef();
+			ISString s = b.getString();
+			ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
+			res.requireEncoding(s.isEncodingRequired());
+			a = res;
 			return;
 		}
 		if (a.typeId == Int) {
-			a = boost::lexical_cast<string>(a.dInt) + b.getString().getRef();
+			ISString s = b.getString();
+			ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
+			res.requireEncoding(s.isEncodingRequired());
+			a = res;
 			return;
 		}
 		if (a.typeId == String) {
-			a = a.getString().getRef() + b.getString().getRef();
+			ISString as = a.getString();
+			ISString bs = b.getString();
+			ISString res(as + bs);
+			res.requireEncoding(as.isEncodingRequired() || bs.isEncodingRequired());
+			a = res;
 			return;
 		}
 	}

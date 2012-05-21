@@ -122,11 +122,16 @@ bool CBEnchanted::init(const char* file) {
 		uint32_t len;
 		input.read((char *)(&len), 4);
 		string s;
+		bool requireEncoding = false;
 		unsigned char c;
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
-			s += c - key[j % 22];
+			c = c - key[j % 22];
+			if (c > 127) requireEncoding = true;
+			s += c;
 		}
+		ISString iss(s);
+		iss.requireEncoding(requireEncoding);
 		setString(i, s);
 	}
 

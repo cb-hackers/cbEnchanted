@@ -84,12 +84,17 @@ class ISString {
 		/** Get a pointer to ALLEGRO_PATH from the string inside */
 		ALLEGRO_PATH* getPath() const;
 
+		/** Disables or enables string utf-8 encoding in getUtf8Encoded. By default encoding is enabled.*/
+		void requireEncoding(bool t);
+
+		bool isEncodingRequired() const;
+
 	private:
 		/** Implicit-shared data*/
 		class SharedData {
 			public:
-				SharedData():str(), refCounter(1), utfStr(0) {}
-				SharedData(const string &s):str(s), refCounter(1), utfStr(0) {}
+				SharedData():str(), refCounter(1), utfStr(0), noNeedForEncoding(false) {}
+				SharedData(const string &s):str(s), refCounter(1), utfStr(0), noNeedForEncoding(false) {}
 				~SharedData();
 
 				/** String data */
@@ -97,6 +102,9 @@ class ISString {
 
 				/** UTF-8 encoded string data. Pointer is null if string hasn't been encoded yet */
 				string *utfStr;
+
+				/** True if is know that str doesn't contain non-ASCII characters. */
+				bool noNeedForEncoding;
 
 				/** Reference counter */
 				uint32_t refCounter;

@@ -83,7 +83,9 @@ ISString ISString::operator+(const ISString &o) const {
 	if (data == 0) {
 		return o;
 	}
-	return ISString(data->str+o.data->str);
+	ISString s(data->str+o.data->str);
+	s.data->noNeedForEncoding = o.data->noNeedForEncoding && this->data->noNeedForEncoding;
+	return s;
 }
 
 /** Addition operator */
@@ -91,6 +93,7 @@ ISString ISString::operator+(const string &o) const{
 	if (data == 0) {
 		return o;
 	}
+
 	return ISString(data->str+o);
 }
 
@@ -148,6 +151,7 @@ ISString operator +(const string &a,const ISString&b) {
   * This reference will be valid until all references to the underlying string are destroyed. */
 const string &ISString::getUtf8Encoded() const {
 	if (this->data == 0) return nullStdString;
+	if (this->data->noNeedForEncoding) {return this->data->str;}
 	if (this->data->utfStr == 0) {
 		this->data->utfStr = new string;
 		this->data->utfStr->reserve(this->length()+5);
@@ -218,7 +222,7 @@ bool ISString::operator >=(const ISString &o) const {
 	return false;
 }
 
-		/** Returns true if the left operand is considered smaller than or equal to the right operand, otherwise returns false. */
+/** Returns true if the left operand is considered smaller than or equal to the right operand, otherwise returns false. */
 bool ISString::operator <=(const ISString &o) const {
 	if (this->data == 0) {
 		return true;
@@ -236,4 +240,14 @@ bool ISString::operator <=(const ISString &o) const {
 ALLEGRO_PATH* ISString::getPath() const {
 	if (data == 0) return al_create_path(NULL);
 	return al_create_path(data->str.c_str());
+}
+
+/** Disables or enables string utf-8 encoding in getUtf8Encoded. By default encoding is enabled.*/
+void ISString::requireEncoding(bool t) {
+	if (this->data) this->data->noNeedForEncoding = !t;
+}
+
+bool ISString::isEncodingRequired() const {
+	if (this->data && !this->data->noNeedForEncoding) return true;
+	return false;
 }

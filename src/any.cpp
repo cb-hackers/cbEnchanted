@@ -70,10 +70,14 @@ ISString Any::toString() const {
 			return ISString(dString);
 		}
 		if (type() == Any::Float) {
-			return ISString(boost::lexical_cast<string>(getFloat()));
+			ISString i(boost::lexical_cast<string>(getFloat()));
+			i.requireEncoding(false);
+			return i;
 		}
 		if (type() == Any::Int) {
-			return ISString(boost::lexical_cast<string>(getInt()));
+			ISString i(boost::lexical_cast<string>(getInt()));
+			i.requireEncoding(false);
+			return i;
 		}
 	}
 	catch (boost::bad_lexical_cast &) {
