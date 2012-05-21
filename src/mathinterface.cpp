@@ -35,17 +35,13 @@ void MathInterface::functionRoundDown(void) {
 void MathInterface::functionAbs(void)
 {
 	Any v = cb->popValue();
-
 	if (v.type() == Any::Float)
 	{
 		cb->pushValue(abs(v.getFloat()));
 		return;
 	}
-	if (v.type() == Any::Int) //TODO: Check if necessary
-	{
-		cb->pushValue(abs(v.getInt()));
-	}
-	cb->pushValue(v);
+	cb->pushValue(abs(v.getInt()));
+	return;
 }
 
 void MathInterface::functionSqrt(void) {
