@@ -2,6 +2,9 @@
 #include "cbenchanted.h"
 #include "collisioncheck.h"
 
+int CBImage::defaultHotspotX = 0;
+int CBImage::defaultHotspotY = 0;
+
 CBImage::CBImage() :
 	hotspotX(0),
 	hotspotY(0),
@@ -13,7 +16,8 @@ CBImage::CBImage() :
 	isMasked(false),
 	maskedBitmap(NULL),
 	unmaskedBitmap(NULL)
-{}
+{
+}
 
 CBImage::~CBImage() {
 	renderTarget.swapBitmap(NULL);
@@ -29,6 +33,10 @@ bool CBImage::load(const string &path) {
 	}
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	hotspotX = defaultHotspotX;
+	hotspotY = defaultHotspotY;
+	if (hotspotX == -1) hotspotX = renderTarget.width() / 2.0f;
+	if (hotspotY == -1) hotspotY = renderTarget.height() / 2.0f;
 	return true;
 }
 
@@ -162,6 +170,10 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	hotspotX = defaultHotspotX;
+	hotspotY = defaultHotspotY;
+	if (hotspotX == -1) hotspotX = w / 2.0f;
+	if (hotspotY == -1) hotspotY = h / 2.0f;
 }
 
 void CBImage::setHotspot(float x, float y) {

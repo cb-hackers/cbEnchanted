@@ -121,7 +121,20 @@ void ImageInterface::commandHotSpot(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
-	cbImages[id]->setHotspot(x, y);
+	if (id == 0) { //OFF
+		CBImage::defaultHotspotX = 0;
+		CBImage::defaultHotspotY = 0;
+		return;
+	}
+	if (id == 1) { //ON
+		CBImage::defaultHotspotX = x;
+		CBImage::defaultHotspotY = y;
+		return;
+	}
+	CBImage *img = getImage(id);
+	if (x == -1) x = img->width() / 2.0f;
+	if (y == -1) y = img->height() / 2.0f;
+	img->setHotspot(x, y);
 }
 
 void ImageInterface::commandDeleteImage(void) {

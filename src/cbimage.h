@@ -39,7 +39,10 @@ class CBImage
 		/** Checks if an image collides with another image on a pixel precise level. */
 		bool collides(CBImage *img, float x1, float y1, float x2, float y2);
 
+		static int defaultHotspotX;
+		static int defaultHotspotY;
 	private:
+
 		float hotspotX,hotspotY;
 		RenderTarget renderTarget;
 		ALLEGRO_COLOR maskColor;
