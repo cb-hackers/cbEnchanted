@@ -227,7 +227,7 @@ void InputInterface::commandSAFEEXIT(void) {
 }
 
 void InputInterface::functionInput(void) {
-	cb->pushValue("");
+	cb->pushValue(ISString(""));
 	STUB;
 }
 
