@@ -1,6 +1,8 @@
+#include <bitset>
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "stringinterface.h"
+#include "errorsystem.h"
 
 StringInterface::StringInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -31,10 +33,17 @@ void StringInterface::functionRight(void) {
 	int32_t n = cb->popValue().toInt();
 	string s = cb->popValue().getString().getRef();
 
-	if (n >= s.length()) {
+	if (n < 0) {
+		cb->errors->createError("Right() failed!", "Second parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	string::size_type uN = n;
+	if (uN >= s.length()) {
 		cb->pushValue(s);
 	} else {
-		cb->pushValue(s.substr(s.length() - n));
+		cb->pushValue(s.substr(s.length() - uN));
 	}
 }
 
@@ -43,10 +52,24 @@ void StringInterface::functionMid(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	if(pos-1 > str.length()) {
-		cb->pushValue(string(""));
-	} else {
-		cb->pushValue(str.substr(pos-1, len));
+	if (pos <= 0) {
+		cb->errors->createError("Mid() failed!", "Second parameter must be greater than 0");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	if (pos < 0) {
+		// Return remainder of string
+		cb->pushValue(str.substr(pos - 1));
+	}
+	else {
+		string::size_type uPos = pos;
+		if (uPos - 1 > str.length()) {
+			cb->pushValue(ISString(""));
+		}
+		else {
+			cb->pushValue(str.substr(uPos - 1, len));
+		}
 	}
 }
 
@@ -104,6 +127,12 @@ void StringInterface::functionLSet(void) {
 	int32_t len = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
+	if (len < 0) {
+		cb->errors->createError("LSet() failed!", "Second parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
 	str.resize(len, ' ');
 	cb->pushValue(str);
 }
@@ -112,12 +141,20 @@ void StringInterface::functionRSet(void) {
 	int32_t len = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	if(len>str.length()) {
+	if (len < 0) {
+		cb->errors->createError("RSet() failed!", "Second parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	string::size_type uLen = len;
+	if (uLen > str.length()) {
 		string str2;
-		str2.resize(len - str.length(), ' ');
+		str2.resize(uLen - str.length(), ' ');
 		cb->pushValue(str2 + str);
-	} else {
-		cb->pushValue(str.substr(str.length()-len));
+	}
+	else {
+		cb->pushValue(str.substr(str.length() - uLen));
 	}
 }
 
@@ -156,20 +193,17 @@ void StringInterface::functionHex(void) {
 
 void StringInterface::functionBin(void) {
 	int32_t V = cb->popValue().getInt();
-	stringstream ss;
 
-	const boost::dynamic_bitset<> bin(32, V);
-	ss << bin;
+	bitset<32> bs(V);
 
-	cb->pushValue(ss.str());
+	cb->pushValue(bs.to_string());
 }
 
 void StringInterface::functionString(void) {
 	int32_t n = cb->popValue().toInt();
 	string s = cb->popValue().getString().getRef();
 	string r = s;
-	for(int i = 1; i < n; i++)
-	{
+	for(int i = 1; i < n; i++) {
 		r = r + s;
 	}
 	cb->pushValue(r);
@@ -179,13 +213,11 @@ void StringInterface::functionFlip(void) {
 	string str = cb->popValue().getString().getRef();
 	stringstream ss;
 	string::const_reverse_iterator rit;
-	for (rit = str.rbegin();rit < str.rend(); rit++)
-	{
+	for (rit = str.rbegin(); rit < str.rend(); rit++) {
 		ss << *rit;
 	}
 
 	cb->pushValue(ss.str());
-
 }
 
 void StringInterface::functionStrInsert(void) {
@@ -193,10 +225,18 @@ void StringInterface::functionStrInsert(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	if(pos > str.length()) {
+	if (pos < 0) {
+		cb->errors->createError("StrInsert() failed!", "Second parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	string::size_type uPos = pos;
+	if (uPos > str.length()) {
 		str.insert(str.length(), txt);
-	} else {
-		str.insert(pos, txt);
+	}
+	else {
+		str.insert(uPos, txt);
 	}
 
 	cb->pushValue(str);
@@ -208,11 +248,26 @@ void StringInterface::functionStrRemove(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	if(pos < str.length()) {
-		if(pos-1 + len < str.length()) {
-			str.erase(pos-1, len);
-		} else {
-			str.erase(pos-1, str.length());
+	if (pos <= 0) {
+		cb->errors->createError("StrRemove() failed!", "Second parameter must be greater than 0");
+		cb->pushValue(ISString(""));
+		return;
+	}
+	if (len < 0) {
+		cb->errors->createError("StrRemove() failed!", "Third parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	string::size_type uLen = len;
+	string::size_type uPos = pos;
+
+	if (uPos < str.length()) {
+		if(uPos - 1 + uLen < str.length()) {
+			str.erase(uPos - 1, uLen);
+		}
+		else {
+			str.erase(uPos - 1, str.length());
 		}
 	}
 
@@ -226,18 +281,39 @@ void StringInterface::functionStrMove(void) {
 	int32_t pos = cb->popValue().getInt();
 	string str = cb->popValue().getString().getRef();
 
-	if(pos-1+len>str.length()) {
+	if (pos <= 0) {
+		cb->errors->createError("StrMove() failed!", "Second parameter must be greater than 0");
+		cb->pushValue(ISString(""));
+		return;
+	}
+	if (len < 0) {
+		cb->errors->createError("StrMove() failed!", "Third parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+	if (mov < 0) {
+		cb->errors->createError("StrMove() failed!", "Fourth parameter must be positive");
+		cb->pushValue(ISString(""));
+		return;
+	}
+
+	string::size_type uMov = mov;
+	string::size_type uLen = len;
+	string::size_type uPos = pos;
+
+	if(uPos - 1 + uLen > str.length()) {
 		cb->pushValue(str);
 		return;
 	}
 
-	string txt = str.substr(pos-1, len);
-	str.erase(pos-1, len);
+	string txt = str.substr(uPos - 1, uLen);
+	str.erase(uPos - 1, uLen);
 
-	if(-1+pos+mov>str.length()) {
+	if (-1 + uPos + uMov > str.length()) {
 		str.insert(str.length(), txt);
-	} else {
-		str.insert(-1+pos+mov, txt);
+	}
+	else {
+		str.insert(-1 + uPos + uMov, txt);
 	}
 
 	cb->pushValue(str);
@@ -247,17 +323,18 @@ void StringInterface::functionCountWords(void) {
 	string sep = cb->popValue().toString().getRef();
 	string str = cb->popValue().toString().getRef();
 
-	if(str.empty()) {
+	if (str.empty()) {
 		cb->pushValue(0);
 		return;
 	}
-	if(sep=="") {sep = ' ';}
+	if (sep.empty()) {
+		sep = ' ';
+	}
 
 	string::size_type p = 0;
 	int32_t count = 1;
 
-	while ((p = str.find(sep, p))!=string::npos)
-	{
+	while ((p = str.find(sep, p)) != string::npos) {
 		++p;
 		++count;
 	}
@@ -270,14 +347,15 @@ void StringInterface::functionGetWord(void) {
 	int32_t w = cb->popValue().toInt();
 	string str = cb->popValue().toString().getRef();
 
-	if(sep=="") {sep = ' ';}
+	if (sep.empty()) {
+		sep = ' ';
+	}
 
 	int32_t sep_pos = 0;
 
-	for(int i = 1; i < w; ++i)
-	{
+	for (int i = 1; i < w; ++i) {
 		sep_pos = str.find(sep);
-		if(sep_pos) {
+		if (sep_pos) {
 			str = str.substr(sep_pos + 1);
 		}
 	}
