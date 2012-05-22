@@ -2,9 +2,6 @@
 #include "cbenchanted.h"
 #include "collisioncheck.h"
 
-int CBImage::defaultHotspotX = 0;
-int CBImage::defaultHotspotY = 0;
-
 CBImage::CBImage() :
 	hotspotX(0),
 	hotspotY(0),
@@ -33,10 +30,6 @@ bool CBImage::load(const string &path) {
 	}
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
-	hotspotX = defaultHotspotX;
-	hotspotY = defaultHotspotY;
-	if (hotspotX == -1) hotspotX = renderTarget.width() / 2.0f;
-	if (hotspotY == -1) hotspotY = renderTarget.height() / 2.0f;
 	return true;
 }
 
@@ -147,6 +140,8 @@ void CBImage::resize(int32_t w, int32_t h) {
 	renderTarget.resize(w, h);
 	unmaskedBitmap = renderTarget.getBitmap();
 	this->switchMaskBitmaps(false);
+	hotspotX = 0;
+	hotspotY = 0;
 }
 
 CBImage *CBImage::clone() {
@@ -170,15 +165,18 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
-	hotspotX = defaultHotspotX;
-	hotspotY = defaultHotspotY;
-	if (hotspotX < 0) hotspotX = w / 2.0f;
-	if (hotspotY < 0) hotspotY = h / 2.0f;
 }
 
-void CBImage::setHotspot(float x, float y) {
-	hotspotX = x;
-	hotspotY = y;
+/** Sets image hotspot to the given coordinates or to the center, if either one is < 0 */
+void CBImage::setHotspot(int32_t x, int32_t y) {
+	if (x < 0 || y < 0) {
+		hotspotX = this->width() / 2.0f;
+		hotspotY = this->height() / 2.0f;
+	}
+	else {
+		hotspotX = x;
+		hotspotY = y;
+	}
 }
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */

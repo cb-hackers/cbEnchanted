@@ -48,6 +48,12 @@ class ImageInterface {
 
 		/** Is default mask on */
 		bool defaultMaskToggled;
+
+		/** Default hotspot coordinates, if < 0, hotspot is made to be at the center of image. */
+		int32_t defaultHotspotX, defaultHotspotY;
+
+		/** Should future loaded/generated images have a hotspot set automatically. */
+		bool defaultHotspotToggled;
 };
 
 #endif

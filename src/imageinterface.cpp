@@ -8,6 +8,9 @@
 ImageInterface::ImageInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 	defaultMaskToggled = true;
+	defaultHotspotToggled = false;
+	defaultHotspotX = -1;
+	defaultHotspotY = -1;
 }
 
 ImageInterface::~ImageInterface() {
@@ -118,23 +121,21 @@ void ImageInterface::commandPickImageColor2(void) {
 }
 
 void ImageInterface::commandHotSpot(void) {
-	float y = cb->popValue().toFloat();
-	float x = cb->popValue().toFloat();
+	int32_t y = cb->popValue().getInt();
+	int32_t x = cb->popValue().getInt();
 	int32_t id = cb->popValue().getInt();
 	if (id == 0) { //OFF
-		CBImage::defaultHotspotX = 0;
-		CBImage::defaultHotspotY = 0;
-		return;
+		defaultHotspotToggled = false;
 	}
-	if (id == 1) { //ON
-		CBImage::defaultHotspotX = x;
-		CBImage::defaultHotspotY = y;
-		return;
+	else if (id == 1) { //ON
+		defaultHotspotToggled = true;
+		defaultHotspotX = x;
+		defaultHotspotY = y;
 	}
-	CBImage *img = getImage(id);
-	if (x < 0) x = img->width() / 2.0f;
-	if (y < 0) y = img->height() / 2.0f;
-	img->setHotspot(x, y);
+	else { // Image ID
+		CBImage *img = getImage(id);
+		img->setHotspot(x, y);
+	}
 }
 
 void ImageInterface::commandDeleteImage(void) {
@@ -157,6 +158,9 @@ void ImageInterface::functionLoadImage(void) {
 	al_destroy_path(path);
 	if (defaultMaskToggled) {
 		image->maskImage(defaultMask);
+	}
+	if (defaultHotspotToggled) {
+		image->setHotspot(defaultHotspotX, defaultHotspotY);
 	}
 
 	int32_t id = nextId();
@@ -185,6 +189,10 @@ void ImageInterface::functionLoadAnimImage(void) {
 	if (defaultMaskToggled) {
 		image->maskImage(defaultMask);
 	}
+	if (defaultHotspotToggled) {
+		image->setHotspot(defaultHotspotX, defaultHotspotY);
+	}
+
 	int32_t id = nextId();
 	cbImages[id] = image;
 	cb->pushValue(id);
@@ -198,6 +206,9 @@ void ImageInterface::functionMakeImage(void) {
 	image->makeImage(w, h);
 	if (defaultMaskToggled) {
 		image->maskImage(defaultMask);
+	}
+	if (defaultHotspotToggled) {
+		image->setHotspot(defaultHotspotX, defaultHotspotY);
 	}
 
 	int32_t id = nextId();
