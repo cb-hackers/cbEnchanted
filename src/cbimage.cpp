@@ -170,8 +170,16 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 /** Sets image hotspot to the given coordinates or to the center, if either one is < 0 */
 void CBImage::setHotspot(int32_t x, int32_t y) {
 	if (x < 0 || y < 0) {
-		hotspotX = this->width() / 2.0f;
-		hotspotY = this->height() / 2.0f;
+		// Set hotspot to center
+		if (frameWidth && frameHeight) {
+			// Center of a single frame
+			hotspotX = frameWidth / 2.0f;
+			hotspotY = frameHeight / 2.0f;
+		}
+		else {
+			hotspotX = this->width() / 2.0f;
+			hotspotY = this->height() / 2.0f;
+		}
 	}
 	else {
 		hotspotX = x;
