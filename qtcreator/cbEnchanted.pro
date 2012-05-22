@@ -4,29 +4,40 @@ TEMPLATE = app
 
 CONFIG += thread console
 
-# Remove some automatically added compiler headers
-QMAKE_CFLAGS_DEBUG -= -mtd -nologo -Zm200 -Zc:wchar_t- -Zi
-QMAKE_CXXFLAGS_DEBUG -= -mtd -nologo -Zm200 -Zc:wchar_t- -Zi
-QMAKE_CFLAGS_RELEASE -= -mt -nologo -Zm200 -Zc:wchar_t- -O2
-QMAKE_CXXFLAGS_RELEASE -= -mt -nologo -Zm200 -Zc:wchar_t- -O2
+# Remove some automatically generated compiler flags
+QMAKE_CFLAGS = -nologo
+QMAKE_CXXFLAGS = -nologo
+QMAKE_CFLAGS_WARN_ON =
+QMAKE_CXXFLAGS_WARN_ON =
+QMAKE_CFLAGS_RELEASE =
+QMAKE_CXXFLAGS_RELEASE =
+QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO =
+QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO =
+QMAKE_CFLAGS_DEBUG =
+QMAKE_CXXFLAGS_DEBUG =
+QMAKE_CFLAGS_LTCG =
+QMAKE_CXXFLAGS_LTCG =
+QMAKE_CFLAGS_MP =
+QMAKE_CXXFLAGS_MP =
 
 # Compiler flags and their meanings in order of appending
-#  - Suppresses display of sign-on banner
 #  - Make wchar_t a native type
 #  - Use standard scope behavior with for-loops
 #  - Compile multiple source files by using multiple processes
 #  - Set warning level to 3
+#  - Catch C++ exceptions only and tell the compiler to assume that extern C functions never throw a C++ exception.
 #  - Create single threaded executable (with and without debug)
 # Debug only:
 #  - Generate complete debugging information
 # Release only:
+#  - Enable whole program optimization
 #  - Use maximum optimization (/Ob2gity /Gs)
-QMAKE_CXXFLAGS_DEBUG += -nologo -Zc:wchar_t -Zc:forScope -MP -W3 -MTd -Zi
-QMAKE_CXXFLAGS_RELEASE += -nologo -Zc:wchar_t -Zc:forScope -MP -W3 -MT -Ox
+QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
+QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
 
-# Add some removed flags to CFLAGS too
-QMAKE_CFLAGS_DEBUG += -MTd -nologo -Zc:wchar_t
-QMAKE_CFLAGS_RELEASE += -MT -nologo -Zc:wchar_t
+# Add some flags to CFLAGS too
+QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
+QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
 
 contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME LOG_LEVEL_STUB
