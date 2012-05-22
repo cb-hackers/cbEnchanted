@@ -230,6 +230,7 @@ Any Any::operator % (const Any &r) const {
 		}
 	}
 	FIXME("Unsupported operation %s % %s", this->typeInfo().name(), r.typeInfo().name());
+	return 0;
 }
 
 Any Any::operator * (const Any &r) const {

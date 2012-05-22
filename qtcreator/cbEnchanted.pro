@@ -39,6 +39,9 @@ QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
 QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
 QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
 
+# Disable security warnings
+DEFINES += _CRT_SECURE_NO_WARNINGS
+
 contains(CBE_CONFIG,optimized_debug) {
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME LOG_LEVEL_STUB
 	#DEFINES += VC_USE_FORCEINLINE

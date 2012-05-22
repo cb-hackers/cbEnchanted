@@ -464,7 +464,7 @@ void CBObject::addCollision(Collision *collision) {
 }
 
 /** Gets a collision from collisionList */
-Collision* CBObject::getCollision(int32_t id) {
+Collision* CBObject::getCollision(uint32_t id) {
 	if (collisionList.size() >= id) {
 		return collisionList.at(id - 1);
 	}

@@ -39,7 +39,7 @@ void CustomFunctionHandler::import(CustomFunction &a) {
 }
 
 void CustomFunctionHandler::call(CBEnchanted *cb, int32_t handle) {
-	assert(0 <= handle && handle < functions.size());
+	assert(0 <= handle && size_t(handle) < functions.size());
 	functions[handle].call(cb);
 }
 
