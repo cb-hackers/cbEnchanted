@@ -114,7 +114,7 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 		}
 		delete[] data;
 		uint32_t s(1);
-		for (int i = 0; i < dimCount; ++i) {
+		for (uint32_t i = 0; i < dimCount; ++i) {
 			dimensions[i] = s;
 			s *= dims[i];
 			dimensionSizes[i] = dims[i];
