@@ -18,6 +18,42 @@ testFunc(ConvertToInteger(ptr))
 
 DrawScreen
 WaitKey
+
+ptr.TestType = New(TestType)
+ptr\field1 = 42
+ptr\field2 = 133.7
+ptr\field3 = "Second awesome test"
+
+Text 0, 0,  "Type pointer contains these values:"
+Text 0, 13, "  field1 = " + ptr\field1
+Text 0, 26, "  field2 = " + ptr\field2
+Text 0, 39, "  field3 = " + ptr\field3
+
+ptrId = ConvertToInteger(ptr)
+
+testFunc(ptrId)
+
+DrawScreen
+WaitKey
+
+Delete ptr
+Text 0, 0,  "Deleted type member and now trying to"
+Text 0, 13, "convert the type to integer and test"
+DrawScreen OFF
+testFunc(ConvertToInteger(ptr))
+
+DrawScreen
+WaitKey
+
+Text 0, 0,  "Type member is still deleted, now trying"
+Text 0, 13, "to use the deleted ID directly"
+DrawScreen OFF
+testFunc(ptrId)
+
+DrawScreen
+WaitKey
+
+
 End
 
 Function testFunc(typePtr As Integer)

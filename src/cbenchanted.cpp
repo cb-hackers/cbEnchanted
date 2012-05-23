@@ -1100,6 +1100,13 @@ void CBEnchanted::commandDelete(void) {
 	void *typeMember = popValue().getTypePtr();
 
 	setTypePointerVariable(memberId, Type::getMembersType(typeMember)->deleteMember(typeMember));
+
+	auto findIt = rTypeConvertMap.find(typeMember);
+	if (findIt != rTypeConvertMap.end()) {
+		// If one was found, it means that ConvertToInteger() has been used.
+		typeConvertMap.erase(findIt->second);
+		rTypeConvertMap.erase(findIt);
+	}
 }
 
 void CBEnchanted::commandInsert(void) {
@@ -1212,29 +1219,40 @@ void CBEnchanted::functionRead(void) {
 void CBEnchanted::functionConvertToInteger(void) {
 	void *typeMember = popValue().getTypePtr();
 	if (typeMember == 0) {
-		this->errors->createError("ConvertToInteger() failed!");
+		this->errors->createError("ConvertToInteger() failed!", "Can't convert to integer from NULL");
 		pushValue(0);
 	}
-	if (BUILD_32_BIT) {
-		pushValue(reinterpret_cast<int32_t>(typeMember));
+
+	auto findIt = rTypeConvertMap.find(typeMember);
+	if (findIt != rTypeConvertMap.end()) {
+		// This has been already converted.
+		pushValue(findIt->second);
 	}
 	else {
-		FIXME("ConvertToInteger() doesn't work yet on 64-bit builds!");
-		pushValue(0);
+		// Not converted before.
+		int32_t id = nextTypeId();
+		typeConvertMap[id] = typeMember;
+		rTypeConvertMap[typeMember] = id;
+		pushValue(id);
 	}
 }
 
 void CBEnchanted::functionConvertToType(void) {
 	int32_t typePtr = popValue().getInt();
 	if (typePtr == 0) {
-		this->errors->createError("ConvertToType() failed!");
+		this->errors->createError("ConvertToType() failed!", "Can't convert to type from 0");
 		pushValue(0);
+		return;
 	}
-	if (BUILD_32_BIT) {
-		pushValue(reinterpret_cast<void*>(typePtr));
+
+	auto findIt = typeConvertMap.find(typePtr);
+	if (findIt != typeConvertMap.end()) {
+		// This has been already converted.
+		pushValue(findIt->second);
 	}
 	else {
-		FIXME("ConvertToType() doesn't work yet on 64-bit builds!");
+		// Not converted before. Invalid ID
+		this->errors->createError("ConvertToType() failed!", "Could not find a converted type with ID " + boost::lexical_cast<string>(typePtr) + ".");
 		pushValue(0);
 	}
 }

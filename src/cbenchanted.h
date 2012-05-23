@@ -19,6 +19,7 @@
 #include "effectinterface.h"
 #include "debug.h"
 #include <vector>
+#include <map>
 #include "customfunctionhandler.h"
 
 using std::vector;
@@ -125,6 +126,14 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
+
+		/** A map for functionConvertToInteger() and functionConvertToType(). */
+		std::map<int32_t, void*> typeConvertMap;
+		/** A reversed map for functionConvertToInteger() and functionConvertToType(). */
+		std::map<void*, int32_t> rTypeConvertMap;
+
+		/** Returns new ID for typeConvertMap */
+		int32_t nextTypeId() {static int32_t idCounter = 0; return ++idCounter;}
 };
 
 #endif
