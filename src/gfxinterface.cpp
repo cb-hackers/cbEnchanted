@@ -469,12 +469,14 @@ void GfxInterface::functionGetPixel2(void) {
 }
 
 void GfxInterface::functionGetRGB(void) {
-	switch (cb->popValue().toInt()) {
-		case 0: cb->pushValue((int32_t)(drawColor.r*255.0)); break;
-		case 1: cb->pushValue((int32_t)(drawColor.g*255.0)); break;
-		case 2: cb->pushValue((int32_t)(drawColor.b*255.0)); break;
-		case 3: cb->pushValue((int32_t)(drawColor.a*255.0)); break;
-		default: cb->pushValue(0); break;
+	uint8_t r,g,b,a;
+	al_unmap_rgba(drawColor, &r, &g, &b, &a);
+	switch (cb->popValue().getInt()) {
+		case 1: cb->pushValue((int32_t)r); break;
+		case 2: cb->pushValue((int32_t)g); break;
+		case 3: cb->pushValue((int32_t)b); break;
+		case 4: cb->pushValue((int32_t)a); break;
+		default: cb->pushValue(0);
 	}
 }
 
