@@ -402,8 +402,8 @@ void GfxInterface::commandSmooth2D(void) {
 	cb->setSmooth2D(toggled);
 	if (toggled) {
 		// Set new display flags for antialiasing
-		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_SUGGEST);
+		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_REQUIRE);
+		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_REQUIRE);
 		// Set linear filtering for image operations
 		al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 	}
