@@ -31,47 +31,82 @@ void FileInterface::commandSeekFile(void) {
 }
 
 void FileInterface::commandStartSearch(void) {
-	fs::directory_iterator new_dir_iter(fs::current_path());
-	fs::directory_iterator new_dir_end;
+	string dir_str = string(al_get_current_directory()) + ".";
+	cur_dir = al_create_fs_entry(dir_str.c_str());
+	if(!al_open_directory(cur_dir))
+		cb->errors->createError("StartSearch failed!");
 
 	rcount = 0;
-
-	dir_iter = new_dir_iter;
-	dir_end = new_dir_end;
 }
 
 void FileInterface::commandEndSearch(void) {
-	fs::directory_iterator new_dir_end;
-
-	rcount = 0;
-
-	dir_iter = new_dir_end;
-	dir_end = new_dir_end;
+	al_close_directory(cur_dir);
+	al_destroy_fs_entry(cur_dir);
 }
 
 void FileInterface::commandChDir(void) {
-	string file = cb->popValue().toString().getRef();
-	if(fs::exists(file) && fs::is_directory(file))
-		fs::current_path(fs::path(file));
+	string path_s = cb->popValue().toString().getRef();
+	if(!al_change_directory(path_s.c_str()))
+		cb->errors->createError("ChDir failed!");
 }
 
 void FileInterface::commandMakeDir(void) {
-	string file = cb->popValue().toString().getRef();
-	if(!fs::exists(file))
-		fs::create_directory(fs::path(file));
+	string dir_s = cb->popValue().toString().getRef();
+	if(!al_make_directory(dir_s.c_str()))
+		cb->errors->createError("MakeDir failed!");
 }
 
 void FileInterface::commandCopyFile(void) {
 	string file_s2 = cb->popValue().toString().getRef();
 	string file_s1 = cb->popValue().toString().getRef();
-#ifdef _WIN32 // Doesn't work on linux for some reason
-	if(fs::exists(file_s1) && !fs::exists(file_s2))
-		fs::copy_file(fs::path(file_s1), fs::path(file_s2));
-#endif
+
+	if(al_filename_exists(file_s2.c_str())) {
+		cb->errors->createFatalError("CopyFile failed!");
+		return;
+	}
+
+	uint32_t size = 0;
+	char * buffer;
+
+	FILE * file1 = fopen(file_s1.c_str(), "rb");
+	if(file1 == NULL) {
+		cb->errors->createFatalError("CopyFile failed!");
+		return;
+	}
+
+	fseek(file1, 0, SEEK_END);
+	size = ftell(file1) * sizeof(char);
+	rewind(file1);
+
+	buffer = new char[size];
+	if(buffer == NULL) {
+		cb->errors->createFatalError("CopyFile failed!");
+		return;
+	}
+
+	if(fread(buffer, 1, size, file1) != size)
+	{
+		cb->errors->createFatalError("CopyFile failed!");
+		return;
+	}
+
+	fclose(file1);
+
+	FILE * file2 = fopen(file_s2.c_str(), "wb");
+	if(file2 == NULL) {
+		cb->errors->createFatalError("CopyFile failed!");
+		return;
+	}
+	fwrite(buffer, 1, size, file2);
+	fclose(file2);
+
+	delete[] buffer;
 }
 
 void FileInterface::commandDeleteFile(void) {
-	fs::remove(fs::path(cb->popValue().toString().getRef()));
+	string file_s = cb->popValue().toString().getRef();
+	if(!al_remove_filename(file_s.c_str()))
+		cb->errors->createError("DeleteFile failed!");
 }
 
 void FileInterface::commandExecute(void) {
@@ -177,7 +212,7 @@ void FileInterface::functionOpenToRead(void) {
 	int32_t id = ++idC;
 	string file = cb->popValue().toString().getRef();
 
-	filestrs[id] = fopen(file.c_str(), "rb");;
+	filestrs[id] = fopen(file.c_str(), "rb");
 	if (filestrs[id] == NULL) {
 		cb->errors->createFatalError("OpenToRead failed! File: \"" + file + "\"");
 		cb->pushValue(0);
@@ -205,7 +240,7 @@ void FileInterface::functionOpenToEdit(void) {
 	string file = cb->popValue().toString().getRef();
 	int32_t id = ++idC;
 
-	if(fs::exists(file))
+	if(al_filename_exists(file.c_str()))
 	{
 		filestrs[id] = fopen(file.c_str(), "rb+");
 	} else {
@@ -224,47 +259,81 @@ void FileInterface::functionFileOffset(void) {
 }
 
 void FileInterface::functionFindFile(void) {
+
 	++rcount;
 	if (rcount == 1) {
-		if(fs::path(fs::current_path()).has_relative_path()) {
+		ALLEGRO_PATH * path;
+		path = al_create_path(al_get_fs_entry_name(cur_dir));
+		if(al_get_path_num_components(path) > 2) {
 			cb->pushValue(string("."));
+			al_destroy_path(path);
+			return;
 		}
 		else {
-			++rcount;
+			al_destroy_path(path);
 			functionFindFile();
 		}
 	}
 	else if (rcount == 2) {
-		if(fs::path(fs::current_path()).has_parent_path()) {
+		ALLEGRO_PATH * path;
+		path = al_create_path(al_get_fs_entry_name(cur_dir));
+		if(al_get_path_num_components(path) > 2) {
 			cb->pushValue(string(".."));
+			al_destroy_path(path);
+			return;
 		}
 		else {
+			al_destroy_path(path);
 			functionFindFile();
 		}
 	}
-	else if (dir_iter != dir_end) {
-		cb->pushValue(fs::path(dir_iter->path()).filename().string());
-		++dir_iter;
+
+	ALLEGRO_FS_ENTRY * file = al_read_directory(cur_dir);
+
+	if(file == NULL) {
+		cb->pushValue(string(""));
+		return;
+	}
+
+	string file_s;
+	ALLEGRO_PATH * path = al_create_path(al_get_fs_entry_name(file));
+
+	if(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR) {
+		file_s = string(al_get_path_tail(path));
 	}
 	else {
-		cb->pushValue(string(""));
+		file_s = string(al_get_path_filename(path));
 	}
+	cb->pushValue(file_s);
+
+	al_destroy_path(path);
+	al_destroy_fs_entry(file);
+
 }
 
 void FileInterface::functionCurrentDir(void) {
-	cb->pushValue(fs::current_path().string() + "\\");
+	char * dir = al_get_current_directory();
+
+	string dir_s = string(dir) + "\\";
+	al_free(dir);
+
+	cb->pushValue(dir_s);
 }
 
 void FileInterface::functionFileExists(void) {
-	cb->pushValue(fs::exists(cb->popValue().toString().getRef()));
+	cb->pushValue(al_filename_exists(cb->popValue().toString().getRef().c_str()));
 }
 
 void FileInterface::functionIsDirectory(void) {
-	cb->pushValue(fs::is_directory(cb->popValue().toString().getRef()));
+	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getRef().c_str());
+	cb->pushValue(bool(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR));
+	al_destroy_fs_entry(file);
 }
 
 void FileInterface::functionFileSize(void) {
-	cb->pushValue(int32_t(fs::file_size(cb->popValue().toString().getRef())));
+	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getRef().c_str());
+	cb->pushValue(int32_t(al_get_fs_entry_size(file)));
+	al_destroy_fs_entry(file);
 }
 
 void FileInterface::functionEOF(void) {

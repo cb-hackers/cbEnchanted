@@ -53,8 +53,7 @@ class FileInterface {
 		int32_t idC;
 		map <int32_t, FILE*> filestrs;
 
-		fs::directory_iterator dir_iter;
-		fs::directory_iterator dir_end;
+		ALLEGRO_FS_ENTRY * cur_dir;
 };
 
 #endif

@@ -16,7 +16,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <allegro5/allegro.h>
@@ -31,8 +30,6 @@
 #define UNUSED(v) (v);
 
 using namespace std;
-
-namespace fs = boost::filesystem;
 
 using boost::function;
 using boost::lexical_cast;
