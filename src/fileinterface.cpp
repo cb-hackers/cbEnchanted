@@ -34,7 +34,7 @@ void FileInterface::commandStartSearch(void) {
 	string dir_str = string(al_get_current_directory()) + ".";
 	cur_dir = al_create_fs_entry(dir_str.c_str());
 	if(!al_open_directory(cur_dir))
-		cb->errors->createError("StartSearch failed!");
+		cb->errors->createError("StartSearch failed! Path: \"" + dir_str + "\"");
 
 	rcount = 0;
 }
@@ -47,13 +47,13 @@ void FileInterface::commandEndSearch(void) {
 void FileInterface::commandChDir(void) {
 	string path_s = cb->popValue().toString().getRef();
 	if(!al_change_directory(path_s.c_str()))
-		cb->errors->createError("ChDir failed!");
+		cb->errors->createError("ChDir failed! Path: \"" + path_s + "\"");
 }
 
 void FileInterface::commandMakeDir(void) {
 	string dir_s = cb->popValue().toString().getRef();
 	if(!al_make_directory(dir_s.c_str()))
-		cb->errors->createError("MakeDir failed!");
+		cb->errors->createError("MakeDir failed! Directory: \"" + dir_s + "\"");
 }
 
 void FileInterface::commandCopyFile(void) {
@@ -61,7 +61,7 @@ void FileInterface::commandCopyFile(void) {
 	string file_s1 = cb->popValue().toString().getRef();
 
 	if(al_filename_exists(file_s2.c_str())) {
-		cb->errors->createFatalError("CopyFile failed!");
+		cb->errors->createFatalError("CopyFile failed! File \"" + file_s2 + "\" already exists!");
 		return;
 	}
 
@@ -70,7 +70,7 @@ void FileInterface::commandCopyFile(void) {
 
 	FILE * file1 = fopen(file_s1.c_str(), "rb");
 	if(file1 == NULL) {
-		cb->errors->createFatalError("CopyFile failed!");
+		cb->errors->createFatalError("CopyFile failed! Can't open file \"" + file_s1 + "\"");
 		return;
 	}
 
@@ -80,7 +80,7 @@ void FileInterface::commandCopyFile(void) {
 
 	buffer = new char[size];
 	if(buffer == NULL) {
-		cb->errors->createFatalError("CopyFile failed!");
+		cb->errors->createFatalError("CopyFile failed! Memory error!");
 		return;
 	}
 
@@ -94,7 +94,7 @@ void FileInterface::commandCopyFile(void) {
 
 	FILE * file2 = fopen(file_s2.c_str(), "wb");
 	if(file2 == NULL) {
-		cb->errors->createFatalError("CopyFile failed!");
+		cb->errors->createFatalError("CopyFile failed! Can't open file \"" + file_s2 + "\"");
 		return;
 	}
 	fwrite(buffer, 1, size, file2);
@@ -106,7 +106,7 @@ void FileInterface::commandCopyFile(void) {
 void FileInterface::commandDeleteFile(void) {
 	string file_s = cb->popValue().toString().getRef();
 	if(!al_remove_filename(file_s.c_str()))
-		cb->errors->createError("DeleteFile failed!");
+		cb->errors->createError("DeleteFile failed! File: \"" + file_s + "\"");
 }
 
 void FileInterface::commandExecute(void) {
