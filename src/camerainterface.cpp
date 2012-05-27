@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "camerainterface.h"
+#include "mathinterface.h"
 #include "cbenchanted.h"
 #include "cbobject.h"
 
@@ -51,20 +52,26 @@ void CameraInterface::commandPointCamera(void) {
 }
 
 void CameraInterface::commandTurnCamera(void) {
-	cameraAngle += cb->popValue().toFloat();
+	cb->popValue();
+	cb->popValue();
+	cameraAngle = MathInterface::wrapAngle(cameraAngle + cb->popValue().toFloat());
 }
 
 void CameraInterface::commandRotateCamera(void) {
-	cameraAngle = cb->popValue().toFloat();
+	cb->popValue();
+	cb->popValue();
+	cameraAngle = MathInterface::wrapAngle(cb->popValue().toFloat());
 }
 
 void CameraInterface::commandMoveCamera(void) {
 	cameraZ += cb->popValue().toFloat();
+	float side = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
-	float right = cb->popValue().toFloat();
 
-	cameraX += cosf(cameraAngle * M_PI / 180.0) * fwrd;
-	cameraY += sinf(cameraAngle * M_PI / 180.0) * fwrd;
+	cameraX += cosf(cameraAngle * M_PI / 180.0f) * fwrd;
+	cameraY += sinf(cameraAngle * M_PI / 180.0f) * fwrd;
+	cameraX += cosf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
+	cameraY += sinf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
 }
 
 void CameraInterface::commandTranslateCamera(void) {

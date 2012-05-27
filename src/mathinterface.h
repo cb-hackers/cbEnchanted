@@ -1,6 +1,8 @@
 #ifndef MATHINTERFACE_H
 #define MATHINTERFACE_H
 
+#include "precomp.h"
+
 class CBEnchanted;
 
 class MathInterface {
@@ -33,8 +35,35 @@ class MathInterface {
 		void functionWrapAngle(void);
 		void functionDistance(void);
 		void functionBoxOverlap(void);
+
+		static float wrapAngle(float v);
+		static float wrapAngle(int32_t v);
 	private:
 		CBEnchanted *cb;
 };
+
+inline
+float MathInterface::wrapAngle(float v) {
+	while(v > 360.0f) {
+		v -= 360.0f;
+	}
+	while (v < 0.0f)
+	{
+		v += 360.0f;
+	}
+	return v;
+}
+
+inline
+float MathInterface::wrapAngle(int32_t v) {
+	while(v > 360.0f) {
+		v -= 360.0f;
+	}
+	while (v < 0.0f)
+	{
+		v += 360.0f;
+	}
+	return v;
+}
 
 #endif

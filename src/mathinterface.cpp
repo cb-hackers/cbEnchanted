@@ -133,17 +133,6 @@ void MathInterface::functionCurveValue(void) {
 	cb->pushValue(oldV + (newV - oldV) / smoothness);
 }
 
-inline float wrapAngle(float v) {
-	while(v > 360.0f) {
-		v -= 360.0f;
-	}
-	while (v < 0.0f)
-	{
-		v += 360.0f;
-	}
-	return v;
-}
-
 void MathInterface::functionCurveAngle(void) {
 	float smoothness = cb->popValue().toFloat();
 	float oldA = cb->popValue().toFloat();
@@ -164,31 +153,12 @@ void MathInterface::functionCurveAngle(void) {
 
 void MathInterface::functionWrapAngle(void) {
 	Any a = cb->popValue();
-	if (a.type() == Any::Float)
-	{
-		float angle = a.getFloat();
-		while (angle > 360.0) {
-			angle -= 360.0;
-		}
-		while (angle < 0.0) {
-			angle += 360.0;
-		}
-		cb->pushValue(angle);
-		return;
+	if (a.type() == Any::Float) {
+		cb->pushValue(wrapAngle(a.getFloat()));
 	}
-	if (a.type() == Any::Int)
-	{
-		int32_t angle = a.getInt();
-		while (angle > 360) {
-			angle -= 360;
-		}
-		while (angle < 0) {
-			angle += 360;
-		}
-		cb->pushValue(angle);
-		return;
+	else { // Has to be int
+		cb->pushValue(wrapAngle(a.getInt()));
 	}
-	cb->pushValue(a);
 }
 
 

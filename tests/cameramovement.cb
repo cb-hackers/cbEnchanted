@@ -1,0 +1,23 @@
+FrameLimit 60
+
+map= LoadMap("Media\cdm2.til","Media\tileset.bmp")
+PlayObject map,0,0,0.5
+
+
+Repeat
+
+    TurnCamera (KeyDown(cbKeyA) - KeyDown(cbKeyD)) * 1
+
+    MoveCamera UpKey() - DownKey(), LeftKey() - RightKey()
+    
+    DrawGame
+    
+    Text 0, 0, "Angle: " + CameraAngle()
+    Text 0,13, "    x: " + CameraX()
+    Text 0,26, "    y: " + CameraY()
+    
+    Line 200, 150, 200 + Cos(CameraAngle())*50, 150 - Sin(CameraAngle())*50
+
+    DrawScreen
+
+Until EscapeKey()
