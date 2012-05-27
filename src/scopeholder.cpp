@@ -35,9 +35,10 @@ void ScopeHolder::pushScope(int32_t byteCount, int32_t shortCount, int32_t strin
 	if (nextScopeIndex == scopeStackSize) {
 		uint32_t newSize = scopeStackSize * 2;
 		Scope *newStack = new Scope[newSize];
-		memcpy(newStack,scopes,scopeStackSize*sizeof(Scope));
+		memcpy(newStack, scopes, scopeStackSize * sizeof(Scope));
 		delete[] scopes;
 		scopes = newStack;
+		scopeStackSize = newSize;
 	}
 	scopes[nextScopeIndex] = scope;
 	currentScope = &scopes[nextScopeIndex];

@@ -1,6 +1,6 @@
 #ifndef VARIABLESTACK_H
 #define VARIABLESTACK_H
-#include "precomp.h"
+#include "any.h"
 
 class VariableStack {
 		/** @brief
@@ -18,7 +18,7 @@ class VariableStack {
 		}
 
 		FORCEINLINE void push(const Any &a) {
-			if (stackSize < stackLevel) {
+			if (stackSize <= stackLevel) {
 				resize(stackSize * 2);
 			}
 			stackArray[stackLevel] = a;
@@ -33,15 +33,7 @@ class VariableStack {
 			return stackLevel == 0;
 		}
 
-		void resize(uint32_t newStackSize) {
-			Any *newStack = new Any[newStackSize];
-			memcpy(newStack,stackArray,sizeof(Any)*stackSize);
-			memset(newStack+stackSize,0,(newStackSize-stackSize)*sizeof(Any));
-			delete [] stackArray;
-			stackArray = newStack;
-			stackSize = newStackSize;
-			INFO("Stack resized to %i",stackSize);
-		}
+		void resize(uint32_t newStackSize);
 
 	private:
 		Any *stackArray;
