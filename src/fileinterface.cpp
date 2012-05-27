@@ -156,7 +156,7 @@ void FileInterface::commandWriteString(void) {
 }
 
 void FileInterface::commandWriteLine(void) {
-	string line = cb->popValue().toString().getUtf8Encoded();
+	string line = cb->popValue().toString().getRef();
 	FILE *file = filestrs[cb->popValue().getInt()];
 
 	#ifdef WIN32
