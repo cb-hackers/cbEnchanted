@@ -78,7 +78,7 @@ void FileInterface::commandCopyFile(void) {
 	size = ftell(file1) * sizeof(char);
 	rewind(file1);
 
-	buffer = new char[size];
+	buffer = new (std::nothrow)char[size];
 	if(buffer == NULL) {
 		cb->errors->createFatalError("CopyFile failed! Memory error!");
 		return;
