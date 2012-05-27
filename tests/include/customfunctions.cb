@@ -33,18 +33,11 @@ Const CBE_BLEND_ZERO = 1
 Const CBE_BLEND_ONE = 2
 Const CBE_BLEND_ALPHA = 3
 Const CBE_BLEND_INVERSE_ALPHA = 4
-Function cbeSetBlendModeAdvanced(op, src, dst)
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 5
-EndFunction
-
 
 Function cbeSetBlendModeAdvanced(op, src, dst)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 5
 EndFunction
-
-
  
 Function cbeDrawTintedScaledRotatedImageBox(img, startX As Float, startY As Float, width As Float, height As Float, toX As Float, toY As Float, scaleX As Float, scaleY As Float, angle As Float)
     group = CBE_CUSTOM_FUNCTION_GROUP

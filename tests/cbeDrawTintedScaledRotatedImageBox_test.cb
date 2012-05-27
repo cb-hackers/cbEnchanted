@@ -1,0 +1,13 @@
+
+
+Include "include/customfunctions.cb"
+
+img = LoadImage("Media\Map.BMP")
+
+Repeat 
+
+
+    cbeDrawTintedScaledRotatedImageBox(img, 10, 10, 200, 100, 200, 150, 1.0, 1.0, 45)
+
+DrawScreen
+Forever 
