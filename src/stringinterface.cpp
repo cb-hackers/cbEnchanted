@@ -169,7 +169,6 @@ void StringInterface::functionChr(void) {
 
 void StringInterface::functionAsc(void) {
 	uint8_t AV = uint8_t(*cb->popValue().getString().getRef().c_str());
-	if (AV >= 127) AV--;
 	if (AV == 0) AV = 255;
 	cb->pushValue(int(AV));
 }
