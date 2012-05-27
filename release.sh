@@ -22,7 +22,7 @@
 set -e
 
 # Find out the name of the file and directory
-NAME="cbEnchanted_x"
+NAME="cbenchanted_x"
 NAME+=`getconf LONG_BIT`
 NAME+="-"
 NAME+=`git rev-parse --short=5 HEAD`
@@ -92,5 +92,8 @@ echo "##        Packing files        ##"
 echo "---------------------------------"
 cd "$DIR/build/release/"
 tar -cavf "$NAME.tar.gz" $NAME/
+
+# Remove the unnecessary directory
+rm -r -f "$DIR/build/release/$NAME/"
 
 echo "All done."
