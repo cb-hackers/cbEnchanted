@@ -161,8 +161,8 @@ void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
 		return;
 	}
 
-	INFO("Call'd")
-	cb->getCurrentRenderTarget()->drawBitmapTintedScaledRegion(cb->getImage(handle)->getMaskedBitmap(), sx, sy, sw, sh, cb->getClearColor(), dx, dy, scalex, scaley, angle);
+	cb->getCurrentRenderTarget()->drawBitmapTintedScaledRegion(cb->getImage(handle)->getMaskedBitmap(), sx, sy, sw, sh, cb->getDrawColor(), dx, dy, scalex, scaley, angle);
+	cb->pushValue(0);
 }
 
 /** @} */
