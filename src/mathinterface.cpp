@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "cbenchanted.h"
 #include "mathinterface.h"
+#include "collisioncheck.h"
 #include <math.h>
 #include "util.h"
 
@@ -205,14 +206,15 @@ void MathInterface::functionDistance(void) {
 }
 
 void MathInterface::functionBoxOverlap(void) {
-	float height2h = cb->popValue().toFloat() * 0.5f;
-	float width2h = cb->popValue().toFloat() * 0.5f;
+	float h2 = cb->popValue().toFloat();
+	float w2 = cb->popValue().toFloat();
 	float y2 = cb->popValue().toFloat();
 	float x2 = cb->popValue().toFloat();
-	float height1h = cb->popValue().toFloat() * 0.5f;
-	float width1h = cb->popValue().toFloat() * 0.5f;
+	float h1 = cb->popValue().toFloat();
+	float w1 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
 
-	cb->pushValue((abs(y1 - y2) < (height1h + height2h)) && ((abs(x1 - x2) < (width1h + width2h))) ? 1 : 0);
+	// Flip y-coordinates because RectRectTest uses world coordinates
+	cb->pushValue(CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2) ? 1 : 0);
 }
