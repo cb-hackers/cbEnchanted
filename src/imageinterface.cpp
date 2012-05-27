@@ -41,6 +41,7 @@ void ImageInterface::commandDrawImage(void) {
 
 void ImageInterface::commandDrawGhostImage(void) {
 	// TODO: Draw with frames
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 	float alpha = cb->popValue().toFloat() / 100.0f;
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
@@ -55,7 +56,7 @@ void ImageInterface::commandDrawGhostImage(void) {
 	}
 
 	CBImage *img = cbImages[id];
-	img->drawAlphaBlended(*cb->getCurrentRenderTarget(), x, y, alpha);
+	img->drawAlphaBlended(*cb->getCurrentRenderTarget(), x, y, frame, alpha);
 }
 
 void ImageInterface::commandDrawImageBox(void) {

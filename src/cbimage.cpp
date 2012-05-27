@@ -117,6 +117,33 @@ void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, float alpha) {
 	r.drawBitmap(unmaskedBitmap, x, y, al_map_rgba_f(1.0f, 1.0f, 1.0f, alpha));
 }
 
+void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, int frame, float alpha) {
+	if (animLength == 0) {
+		drawAlphaBlended(r, x, y, alpha);
+		return;
+	}
+	int32_t framesX = renderTarget.width() / frameWidth;
+	int32_t framesY = renderTarget.height() / frameHeight;
+	int32_t copyX = frame % framesX;
+	int32_t copyY = (frame - copyX) / framesY;
+
+	float frameAreaLeft = (copyX * frameWidth);
+	float frameAreaTop = (copyY * frameWidth);
+	float frameAreaHeight = frameHeight;
+	float frameAreaWidth = frameWidth;
+	r.drawBitmapRegion(
+		unmaskedBitmap,
+		frameAreaLeft,
+		frameAreaTop,
+		frameAreaWidth,
+		frameAreaHeight,
+		al_map_rgba_f(1,1,1,alpha),
+		x - hotspotX,
+		y - hotspotY,
+		0
+	);
+}
+
 /** Turns the current image bitmap to an alpha masked version and saves the unmasked version. */
 void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 	isMasked = true;
