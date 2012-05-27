@@ -281,6 +281,14 @@ void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float
 	);
 }
 
+void RenderTarget::drawBitmapTintedScaledRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float angle) {
+	setAsCurrent();
+	convertCoords(dx,dy);
+	al_draw_tinted_scaled_rotated_bitmap_region(
+				r, sx, sy, sw, sh, tint, sh*0.5, sw*0.5, dx, dy, xscale, yscale, angle, 0
+	);
+}
+
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
 	setAsCurrent();
 	convertCoords(x,y);

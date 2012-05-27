@@ -1,7 +1,7 @@
 #include "customfunctions.h"
 #include "cbenchanted.h"
 #include "errorsystem.h"
-
+#include "precomp.h"
 /** @addtogroup customfunctions
  * @{
  */
@@ -140,6 +140,29 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 	// Ok, every parameter is validated now and set properly. Set the blend mode.
 	al_set_blender(op, src, dst);
 	cb->pushValue(0);
+}
+
+void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
+
+
+	float angle = cb->popValue().toFloat();
+	float scaley = cb->popValue().toFloat();
+	float scalex = cb->popValue().toFloat();
+	float dy = cb->popValue().toFloat();
+	float dx = cb->popValue().toFloat();
+	float sh = cb->popValue().toFloat();
+	float sw = cb->popValue().toFloat();
+	float sy = cb->popValue().toFloat();
+	float sx = cb->popValue().toFloat();
+	int32_t handle = cb->popValue().toInt();
+	if (cb->getImage(handle) == NULL) {
+		string err = "Image doesn't exist with id:" + boost::lexical_cast<string>(handle);
+		cb->errors->createError("Image not found!", err, "Image not found!");
+		return;
+	}
+
+	INFO("Call'd")
+	cb->getCurrentRenderTarget()->drawBitmapTintedScaledRegion(cb->getImage(handle)->getMaskedBitmap(), sx, sy, sw, sh, cb->getClearColor(), dx, dy, scalex, scaley, angle);
 }
 
 /** @} */

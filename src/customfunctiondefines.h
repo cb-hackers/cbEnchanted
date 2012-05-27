@@ -23,6 +23,7 @@
 /** ID for custom function cbeSetAdvancedBlendMode() */
 #define CBE_CUSTOM_SET_BLEND_MODE_ADVANCED 5
 
+#define CBE_DRAW_TINTED_SCALED_ROTATED_IMAGE_REGION 6
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

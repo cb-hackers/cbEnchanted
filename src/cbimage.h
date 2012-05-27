@@ -39,7 +39,8 @@ class CBImage
 		bool overlaps(CBImage *img, float x1, float y1, float x2, float y2);
 		/** Checks if an image collides with another image on a pixel precise level. */
 		bool collides(CBImage *img, float x1, float y1, float x2, float y2);
-
+		inline int32_t getHotSpotX() {return hotspotX;}
+		inline int32_t getHotSpotY() {return hotspotY;}
 	private:
 
 		int32_t hotspotX,hotspotY;
