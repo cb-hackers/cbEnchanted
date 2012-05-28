@@ -1,5 +1,6 @@
 #include "any.h"
 #include "variablestack.h"
+#include <cmath>
 Any::Any() : typeId(Empty) {}
 
 Any::Any(float a) : typeId(Float), dFloat(a) { }
@@ -192,10 +193,10 @@ int32_t Any::operator ! () const {
 
 Any Any::operator + () const {
 	if (this->type() == Any::Float) {
-		return +this->getFloat();
+		return abs(this->getFloat());
 	}
 	if (this->type() == Any::Int) {
-		return +this->getInt();
+		return abs(this->getInt());
 	}
 	FIXME("Unsupported operation +%s", this->typeInfo().name());
 	return 0;

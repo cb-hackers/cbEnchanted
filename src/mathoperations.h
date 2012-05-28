@@ -609,11 +609,11 @@ FORCEINLINE void Any::unaryMinus(VariableStack *s) {
 FORCEINLINE void Any::unaryPlus(VariableStack *s) {
 	Any &a = s->stackArray[s->stackLevel-1];
 	if (a.typeId == Int) {
-		a.dInt = +a.dInt;
+		a.dInt = abs(a.dInt);
 		return;
 	}
 	if (a.typeId == Float) {
-		a.dFloat = +a.dFloat;
+		a.dFloat = abs(a.dFloat);
 		return;
 	}
 	FIXME("Unsupported operation -%s", a.typeInfo().name());
