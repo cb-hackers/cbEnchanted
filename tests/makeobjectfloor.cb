@@ -1,0 +1,37 @@
+FrameLimit 60
+'first make the background 
+lawn=MakeObjectFloor()
+PaintObject lawn,LoadImage("Media\grass.bmp")
+
+obj=LoadObject("Media\cow.bmp",72) 'load the 'cursor'
+
+PositionCamera Rand( -500,500),Rand( -500,500) 'throw us somewhere random
+
+AddText "Move around with the arrows"
+AddText "Positioning an object as screen coordinates..."
+
+
+Repeat
+
+    'Move the camera via arrows
+    If LeftKey() Then TranslateCamera -1,0
+    If RightKey() Then TranslateCamera 1,0
+    If UpKey() Then TranslateCamera 0,1
+    If DownKey() Then TranslateCamera 0, -1
+    
+    TranslateObject lawn, KeyDown(cbKeyD)-KeyDown(cbKeyA), KeyDown(cbKeyW)-KeyDown(cbKeyS)
+
+    TurnObject obj,5
+
+    'Position the object at mouse
+    ScreenPositionObject obj,MouseX(),MouseY()
+    
+    DrawGame
+    Text 20, 40, "Lawn X" + ObjectX(lawn)
+    Text 20, 53, "Lawn Y" + ObjectY(lawn)
+    Text 20, 66, " Cam X" + CameraX()
+    Text 20, 79, " Cam Y" + CameraY()
+
+    DrawScreen
+
+Until EscapeKey()
