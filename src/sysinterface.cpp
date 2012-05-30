@@ -7,7 +7,8 @@
 #include <iostream>
 #include <boost/crc.hpp>
 #ifdef WIN32
-	#include <Windows.h>
+	#include <allegro5/allegro_windows.h>
+	#include "utf8.h"
 #else
 	#include <unistd.h>
 	#include <sys/time.h>
@@ -76,12 +77,35 @@ void SysInterface::commandErrors(void) {
 void SysInterface::commandSetWindow(void) {
 	string quit = cb->popValue().toString().getRef();
 	uint32_t mode = cb->popValue().toInt();
-	string caption = cb->popValue().toString().getRef();
+	string caption = cb->popValue().toString().getUtf8Encoded();
 
 	if (quit != "") {
 		FIXME("FIXME: setWindow quitmsg");
 	}
-	al_set_window_title(cb->getWindow(),caption.c_str());
+#ifdef _WIN32
+	// Windows is fucked up and doesn't use UTF-8
+	HWND win = al_get_win_window_handle(cb->getWindow());
+
+	// Convert caption to utf-16 with the amazing UTF8-CPP library
+	string::iterator end_it = utf8::find_invalid(caption.begin(), caption.end());
+	vector<uint16_t> utf16;
+	utf8::utf8to16(caption.begin(), end_it, back_inserter(utf16));
+
+	wstring widestr;
+	widestr.resize(utf16.size());
+	size_t i = 0;
+	for (; i < utf16.size(); i++) {
+		widestr[i] = utf16[i];
+	}
+
+	if (!SetWindowText(win, widestr.c_str())) {
+		cb->errors->createError("Failed to set window title!");
+	}
+
+#else
+	// Oh dear Linux, why do you so kindly accept UTF-8 <3
+	al_set_window_title(cb->getWindow(), caption.c_str());
+#endif
 }
 
 void SysInterface::commandEnd(void) {
