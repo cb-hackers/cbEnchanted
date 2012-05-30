@@ -52,7 +52,7 @@ class CBEnchanted :
 		~CBEnchanted();
 
 		static CBEnchanted *instance();
-		bool init(const char* file);
+		bool init(const char* file, int argc, char **argv);
 		void run();
 		void stop();
 		void cleanup();
@@ -66,6 +66,10 @@ class CBEnchanted :
 
 		/** Error system for public access */
 		ErrorSystem *errors;
+		/** Returns commandline arguments count */
+		int getArgc() const { return argc; }
+		/** Returns commandline arguments */
+		char** getArgv() const { return argv; }
 	private:
 
 		char *code;
@@ -134,6 +138,10 @@ class CBEnchanted :
 
 		/** Returns new ID for typeConvertMap */
 		int32_t nextTypeId() {static int32_t idCounter = 0; return ++idCounter;}
+
+		/** Commandline stuff */
+		int argc;
+		char **argv;
 };
 
 #endif

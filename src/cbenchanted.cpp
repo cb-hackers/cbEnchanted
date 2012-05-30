@@ -68,8 +68,22 @@ void CBEnchanted::run() {
 /*
  * CBEnchanted::init - Initialize the interpreter
  */
-bool CBEnchanted::init(const char* file) {
+bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	INFO("Initializing");
+
+	// Store commandline parameters and their count. If testable exe, skip first one.
+	if (file != NULL) {
+		this->argc = argc - 1;
+		this->argv = new char*[this->argc];
+		this->argv[0] = argv[0];
+		for (int i = 2; i < argc; i++) {
+			this->argv[i-1] = argv[i];
+		}
+	}
+	else {
+		this->argc = argc;
+		this->argv = argv;
+	}
 
 	// Initialize error system first, because we can.
 	errors = new ErrorSystem();
@@ -350,6 +364,7 @@ void CBEnchanted::stop() {
 
 void CBEnchanted::cleanup() {
 	cleanupSoundInterface();
+	delete [] this->argv;
 }
 
 FORCEINLINE void CBEnchanted::handlePushFuncptr(void) {

@@ -141,11 +141,11 @@ void SysInterface::functionTimer(void) {
 }
 
 void SysInterface::functionCommandLine(void) {
-#ifdef WIN32
-	cb->pushValue(string(GetCommandLineA()));
-#else
-	assert("Linux CommandLine uncomplete" != 0);
-#endif
+	ostringstream ss;
+	for (int i = 1; i < cb->getArgc(); i++) {
+		ss << cb->getArgv()[i] << ' ';
+	}
+	cb->pushValue(ss.str());
 }
 
 void SysInterface::functionGetEXEName(void) {

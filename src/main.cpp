@@ -4,8 +4,8 @@
 int main(int argc, char** argv) {
 	CBEnchanted cb;
 	#ifdef TEST
-	if (argc == 2) {
-		if (cb.init(argv[1])) {
+	if (argc >= 2) {
+		if (cb.init(argv[1], argc, argv)) {
 			cb.run();
 			cb.cleanup();
 		}
@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	#else
-		if (cb.init(NULL)) {
+		if (cb.init(NULL, argc, argv)) {
 			cb.run();
 			cb.cleanup();
 		}
