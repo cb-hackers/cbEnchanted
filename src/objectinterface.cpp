@@ -46,12 +46,15 @@ void ObjectInterface::commandDeleteObject(void) {
 }
 
 void ObjectInterface::commandClearObjects(void) {
-	for (std::map<int32_t,CBObject*>::iterator i = objectMap.begin();i != objectMap.end();i++)
-	{
-		delete i->second;
+	for (std::map<int32_t,CBObject*>::iterator i = objectMap.begin();i != objectMap.end();i++) {
+		if (!i->second->isMap()) {
+			delete i->second;
+		}
 	}
+	cb->deleteTileMap();
 	objectMap.clear();
-	objectDrawOrder.clear();
+	lastObject = firstObject = 0;
+	firstFloorObject = lastFloorObject = 0;
 }
 
 void ObjectInterface::commandMoveObject(void) {
