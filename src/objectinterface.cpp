@@ -622,15 +622,17 @@ void ObjectInterface::functionObjectAngle(void) {
 void ObjectInterface::functionObjectSizeX(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	float size = object->getObjectSizeX()*cos(object->getAngle() / 180.0 * M_PI)+sin(object->getAngle() / 180.0 * M_PI)*object->getObjectSizeY();
-	cb->pushValue(size);
+	float size = fabs(object->getObjectSizeX() * cos(object->getAngle() / 180.0 * M_PI)) +
+			fabs(sin(object->getAngle() / 180.0 * M_PI) * object->getObjectSizeY());
+	cb->pushValue(int32_t(size + 0.5f));
 }
 
 void ObjectInterface::functionObjectSizeY(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	float size = object->getObjectSizeY()*cos(object->getAngle() / 180.0 * M_PI)-sin(object->getAngle() / 180.0 * M_PI)*object->getObjectSizeX();
-	cb->pushValue(size);
+	float size = fabs(object->getObjectSizeY() * cos(object->getAngle() / 180.0 * M_PI)) +
+			fabs(sin((object->getAngle()) / 180.0 * M_PI) * object->getObjectSizeX());
+	cb->pushValue(int32_t(size + 0.5f));
 }
 
 void ObjectInterface::functionObjectPlaying(void) {
