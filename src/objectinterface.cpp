@@ -437,8 +437,6 @@ void ObjectInterface::commandSetupCollision(void) {
 	int32_t obj2id = cb->popValue().toInt();
 	int32_t obj1id = cb->popValue().toInt();
 
-	DEBUG("Called SetupCollision %i, %i, %i, %i, %i", obj1id, obj2id, obj1colType, obj2colType, handling);
-
 	// Fetch CBObject's based on object IDs
 	CBObject *obj1 = getObject(obj1id);
 	CBObject *obj2 = getObject(obj2id);
