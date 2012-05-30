@@ -807,23 +807,41 @@ CBObject* ObjectInterface::getObject(int32_t key) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-	if (cb->getTileMap() == 0 && firstFloorObject == 0 && firstObject == 0) return;
+	if (cb->getTileMap() == 0 && firstFloorObject == 0 && firstObject == 0) {
+		// No objects to be drawn
+		return;
+	}
 	target.setAsCurrent();
 	//al_hold_bitmap_drawing(true); //Little speed up
+
+	// Draw floor objects with world coordinates
 	target.useWorldCoords(true);
 	CBObject *currentObject = firstFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->afterObj;
 	}
-	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
+
+	if (cb->getTileMap()) {
+		// Draw back-layer of the map to screen coordinates
+		target.useWorldCoords(false);
+		cb->getTileMap()->drawLayer(0, target);
+	}
+
+	// Draw normal objects to world coordinates
+	target.useWorldCoords(true);
 	currentObject = firstObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->afterObj;
 	}
+
+	// Reset drawing to screen coordinates and draw over-layer of the map
 	target.useWorldCoords(false);
-	if (cb->getTileMap()) cb->getTileMap()->drawLayer(1, target);
+	if (cb->getTileMap()) {
+		cb->getTileMap()->drawLayer(1, target);
+	}
+
 	//al_hold_bitmap_drawing(false);
 }
 
