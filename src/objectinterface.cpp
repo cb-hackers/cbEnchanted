@@ -246,8 +246,8 @@ void ObjectInterface::commandPaintObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
 
-	if (object->isMap()) {
-		// Maps can only be painted with an image
+	if (object->isMap() || object->isFloorObject()) {
+		// Maps and floor objects can only be painted with an image
 		CBImage *img = cb->getImage(p);
 		object->paintObject(*img->getRenderTarget());
 	}
