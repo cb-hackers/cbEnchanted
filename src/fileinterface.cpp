@@ -264,7 +264,7 @@ void FileInterface::functionFindFile(void) {
 	if (rcount == 1) {
 		ALLEGRO_PATH * path;
 		path = al_create_path(al_get_fs_entry_name(cur_dir));
-		if(al_get_path_num_components(path) > 2) {
+		if(al_get_path_num_components(path) >= 2) {
 			cb->pushValue(string("."));
 			al_destroy_path(path);
 			return;
@@ -277,7 +277,7 @@ void FileInterface::functionFindFile(void) {
 	else if (rcount == 2) {
 		ALLEGRO_PATH * path;
 		path = al_create_path(al_get_fs_entry_name(cur_dir));
-		if(al_get_path_num_components(path) > 2) {
+		if(al_get_path_num_components(path) >= 2) {
 			cb->pushValue(string(".."));
 			al_destroy_path(path);
 			return;
