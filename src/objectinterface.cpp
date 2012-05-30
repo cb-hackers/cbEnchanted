@@ -139,7 +139,7 @@ void ObjectInterface::commandObjectOrder(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
 	if (object->isFloorObject()) {
-		if (select == 1) {//Move to top
+		if (select == -1) {//Move to bottom
 			if (object == firstFloorObject) return;
 			if (object == lastFloorObject) {
 				object->beforeObj->afterObj = 0;
@@ -148,7 +148,6 @@ void ObjectInterface::commandObjectOrder(void) {
 				object->afterObj = firstFloorObject;
 				object->beforeObj = 0;
 				firstFloorObject = object;
-
 				return;
 			}
 
@@ -157,10 +156,11 @@ void ObjectInterface::commandObjectOrder(void) {
 			firstFloorObject->beforeObj = object;
 			object->afterObj = firstFloorObject;
 			object->beforeObj = 0;
+			firstFloorObject = object;
 		}
-		else if (select == -1) { //Move to last
-			if (object == lastObject) return;
-			if (object == firstObject) {
+		else if (select == 1) { //Move to top
+			if (object == lastFloorObject) return;
+			if (object == firstFloorObject) {
 				object->afterObj->beforeObj = 0;
 				firstFloorObject = object->afterObj;
 
@@ -179,10 +179,11 @@ void ObjectInterface::commandObjectOrder(void) {
 		}
 	}
 	else {
-		if (select == 1) {//Move to top
+		if (select == -1) {//Move to last
 			if (object == firstObject) return;
 			if (object == lastObject) {
 				object->beforeObj->afterObj = 0;
+				lastObject = object->beforeObj;
 				firstObject->beforeObj = object;
 				object->afterObj = firstObject;
 				object->beforeObj = 0;
@@ -196,12 +197,12 @@ void ObjectInterface::commandObjectOrder(void) {
 			firstObject->beforeObj = object;
 			object->afterObj = firstObject;
 			object->beforeObj = 0;
+			lastObject = object;
 		}
-		else if (select == -1) { //Move to last
+		else if (select == 1) { //Move to top
 			if (object == lastObject) return;
 			if (object == firstObject) {
 				object->afterObj->beforeObj = 0;
-				lastObject = object->beforeObj;
 				firstObject = object->afterObj;
 
 				lastObject->afterObj = object;
@@ -515,7 +516,7 @@ void ObjectInterface::functionMakeObject(void) {
 
 void ObjectInterface::functionMakeObjectFloor(void) {
 	CBObject *obj = new CBObject(true);
-	addToDrawOrder(obj);
+	addToFloorDrawOrder(obj);
 	int32_t id = nextObjectId();
 	objectMap[id] = obj;
 	obj->setID(id);
@@ -807,10 +808,10 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	target.setAsCurrent();
 	//al_hold_bitmap_drawing(true); //Little speed up
 	target.useWorldCoords(true);
-	CBObject *currentObject = lastFloorObject;
+	CBObject *currentObject = firstFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
-		currentObject = currentObject->beforeObj;
+		currentObject = currentObject->afterObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
 	currentObject = firstObject;
@@ -836,15 +837,15 @@ void ObjectInterface::addToDrawOrder(CBObject *o) {
 }
 
 void ObjectInterface::addToFloorDrawOrder(CBObject *o) {
-	if (lastFloorObject == 0) {
-		lastFloorObject = firstFloorObject = o;
-		o->beforeObj = o->afterObj = 0;
+	if (firstFloorObject == 0) {
+		firstFloorObject = lastFloorObject = o;
+		o->afterObj = o->beforeObj = 0;
 		return;
 	}
-	lastObject->afterObj = o;
-	o->afterObj = 0;
-	o->beforeObj = lastFloorObject;
-	lastFloorObject = o;
+	firstFloorObject->beforeObj = o;
+	o->beforeObj = 0;
+	o->afterObj = firstFloorObject;
+	firstFloorObject = o;
 }
 
 void ObjectInterface::removeFromDrawOrder(CBObject *o) {
