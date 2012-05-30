@@ -806,14 +806,13 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	if (cb->getTileMap() == 0 && firstFloorObject == 0 && firstObject == 0) return;
 	target.setAsCurrent();
 	//al_hold_bitmap_drawing(true); //Little speed up
-	target.useWorldCoords(false);
+	target.useWorldCoords(true);
 	CBObject *currentObject = lastFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->beforeObj;
 	}
 	if (cb->getTileMap()) cb->getTileMap()->drawLayer(0, target);
-	target.useWorldCoords(true);
 	currentObject = firstObject;
 	while (currentObject != 0) {
 		currentObject->render(target);

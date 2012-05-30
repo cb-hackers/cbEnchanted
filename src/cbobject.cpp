@@ -335,26 +335,54 @@ void CBObject::turnObject(float speed) {
  * @param target Target to render to
  */
 void CBObject::render(RenderTarget &target) {
-	float camX = CBEnchanted::instance()->getCameraX();
-	float camY = CBEnchanted::instance()->getCameraY();
 	if (visible && painted) {
-		if (isFloor) {
-			//Drawing floor objects
+		if (isFloor) { //Drawing floor objects
+			CBEnchanted *cb = CBEnchanted::instance();
+			float camX = cb->getCameraX();
+			float camY = cb->getCameraY();
 
-			float snappedx = floorf(camX / renderTarget->width());
-			float snappedy = floorf(camY / renderTarget->height());
+			float scrW = cb->screenWidth();
+			float scrH = cb->screenHeight();
 
-			float ekax = camX + snappedx * renderTarget->width();
-			float ekay = -camY - snappedy * renderTarget->height();
+			// Calculate the coordinates of visible area
+			float areaTop = camY + 0.5f * scrH;
+			float areaBottom = camY - 0.5f * scrH;
+			float areaLeft = camX - 0.5f * scrW;
+			float areaRight = camX + 0.5f * scrW;
 
-			float xx = ekax;
-			while (xx < target.width()) {
-				float yy = ekay;
-				while (yy < target.height()) {
-					target.drawBitmap(texture, xx, yy);
-					yy = yy + renderTarget->height();
+			// Coordinates to draw to. Need to flip Y-coordinate cuz CB is weeeird...
+			float x = posX;
+			float y = -posY;
+
+			// Move drawing coordinates so that they're just outside the visible areas
+			// top left corner.
+			if (x > areaLeft) {
+				while (x > areaLeft) {
+					x -= sizeX;
 				}
-				xx = xx + renderTarget->width();
+			}
+			else {
+				while (x + sizeX < areaLeft) {
+					x += sizeX;
+				}
+			}
+
+			if (y > areaBottom) {
+				while (y > areaBottom) {
+					y -= sizeY;
+				}
+			}
+			else {
+				while (y + sizeY < areaBottom) {
+					y += sizeY;
+				}
+			}
+
+			// Now do the loop-de-la-loop to fill the visible area with copies of this object.
+			for (; x - sizeX < areaRight; x += sizeX) {
+				for (float iterY = y; iterY - sizeY < areaTop; iterY += sizeY) {
+					target.drawBitmap(texture, x, iterY);
+				}
 			}
 		}
 		else { // Non-floor objects
