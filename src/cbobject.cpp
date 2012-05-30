@@ -169,6 +169,8 @@ void CBObject::paintObject(const RenderTarget &tex) {
 	texture = al_clone_bitmap(renderTarget->getBitmap());
 	al_convert_mask_to_alpha(texture, maskColor);
 	painted = true;
+	sizeX = tex.width();
+	sizeY = tex.height();
 }
 
 /** Paints the object with another object.
@@ -190,6 +192,8 @@ void CBObject::paintObject(const CBObject &obj) {
 	renderTarget->copy(obj.renderTarget);
 	texture = al_clone_bitmap(obj.texture);
 	painted = true;
+	sizeX = obj.sizeX;
+	sizeY = obj.sizeY;
 }
 
 /** Sets the animation frame.
