@@ -78,5 +78,21 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeDrawTintedScaledRotatedImageRegion);
 	func.setFuncId(CBE_DRAW_TINTED_SCALED_ROTATED_IMAGE_REGION);
 	this->add(func);
+
+	func.setFuncPtr(&cbeBNot);
+	func.setFuncId(CBE_BINARY_NOT);
+	this->add(func);
+
+	func.setFuncPtr(&cbeBAnd);
+	func.setFuncId(CBE_BINARY_AND);
+	this->add(func);
+
+	func.setFuncPtr(&cbeBOr);
+	func.setFuncId(CBE_BINARY_OR);
+	this->add(func);
+
+	func.setFuncPtr(&cbeBXor);
+	func.setFuncId(CBE_BINARY_XOR);
+	this->add(func);
 }
 

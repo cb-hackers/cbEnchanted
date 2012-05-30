@@ -1,0 +1,15 @@
+Include "include/customfunctions.cb"
+
+a = Rand(10000)
+b = Rand(10000)
+c = Rand(10000)
+d = Rand(10000)
+
+Print "A:            "+Bin(a)
+Print "B:            "+Bin(b)
+Print "Binary AND:   "+Bin(cbeBAnd(a,b))
+Print "Binary OR:    "+Bin(cbeBOr(a,b))
+Print "Binary XOR:   "+Bin(cbeBXor(a,b))
+Print "A: Binary NOT:"+Bin(cbeBNot(a))
+Print "B: Binary NOT:"+Bin(cbeBNot(b))
+WaitKey

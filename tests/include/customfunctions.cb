@@ -5,12 +5,12 @@ Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As F
     funcId = 1
 EndFunction
 
-Function cbeColor(r,g,b,a)
+Function cbeColor(r, g, b, a)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 2
 EndFunction
 
-Function cbeClsColor(r,g,b,a)
+Function cbeClsColor(r, g, b, a)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 3
 EndFunction
@@ -42,4 +42,26 @@ EndFunction
 Function cbeDrawTintedScaledRotatedImageBox(img, startX As Float, startY As Float, width As Float, height As Float, toX As Float, toY As Float, scaleX As Float, scaleY As Float, angle As Float)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 6
-End Function 
+End Function
+
+
+//Binary operations
+Function cbeBNot(i)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 7
+EndFunction
+
+Function cbeBAnd(a, b)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 8
+EndFunction
+
+Function cbeBOr(a, b)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 9
+EndFunction
+
+Function cbeBXor(a, b)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 10
+EndFunction

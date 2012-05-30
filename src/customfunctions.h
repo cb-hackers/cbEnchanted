@@ -18,6 +18,14 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb);
 
 void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb);
 
+void cbeBAnd(CBEnchanted *cb);
+
+void cbeBOr(CBEnchanted *cb);
+
+void cbeBXor(CBEnchanted *cb);
+
+void cbeBNot(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

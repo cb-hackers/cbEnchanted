@@ -142,9 +142,8 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
+/** Draws image region with scaling, rotating and tinting. */
 void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
-
-
 	float angle = cb->popValue().toFloat();
 	float scaley = cb->popValue().toFloat();
 	float scalex = cb->popValue().toFloat();
@@ -163,6 +162,30 @@ void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
 
 	cb->getCurrentRenderTarget()->drawBitmapTintedScaledRegion(cb->getImage(handle)->getMaskedBitmap(), sx, sy, sw, sh, cb->getDrawColor(), dx, dy, scalex, scaley, angle);
 	cb->pushValue(0);
+}
+
+
+void cbeBAnd(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	int32_t b = cb->popValue().toInt();
+	cb->pushValue(a & b);
+}
+
+void cbeBOr(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	int32_t b = cb->popValue().toInt();
+	cb->pushValue(a | b);
+}
+
+void cbeBXor(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	int32_t b = cb->popValue().toInt();
+	cb->pushValue(a ^ b);
+}
+
+void cbeBNot(CBEnchanted *cb) {
+	int32_t a = cb->popValue().toInt();
+	cb->pushValue(~a);
 }
 
 /** @} */

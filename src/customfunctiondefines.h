@@ -23,7 +23,14 @@
 /** ID for custom function cbeSetAdvancedBlendMode() */
 #define CBE_CUSTOM_SET_BLEND_MODE_ADVANCED 5
 
+/** ID for custom function cbeDrawTintedScaledRotatedImageRegion */
 #define CBE_DRAW_TINTED_SCALED_ROTATED_IMAGE_REGION 6
+
+/** IDs for binary operations */
+#define CBE_BINARY_NOT 7
+#define CBE_BINARY_AND 8
+#define CBE_BINARY_OR 9
+#define CBE_BINARY_XOR 10
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H
