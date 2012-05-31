@@ -1,9 +1,10 @@
 #ifndef INPUTINTERFACE_H
 #define INPUTINTERFACE_H
 #include "precomp.h"
+#include "rendertarget.h"
 
 class CBEnchanted;
-
+class CBInput;
 
 class InputInterface {
 	public:
@@ -45,8 +46,18 @@ class InputInterface {
 		bool initializeInputs(void);
 
 		void updateInputs();
+
+		/** Handles KEY_CHAR events that most likely happen during DrawScreen */
+		void handleKeyChar(ALLEGRO_EVENT *e);
+
+		/** Returns the current CBInput */
+		CBInput* getInput() const { return input; }
+		/** Renders the current input */
+		void renderInput(RenderTarget &r) const;
 	private:
 		CBEnchanted *cb;
+
+		/** Holds the mappings from CB SCAN-codes to Allegro equivelants. */
 		int32_t cbKeyMap[222];
 		ALLEGRO_KEYBOARD_STATE *currentKeyboardState;
 		ALLEGRO_KEYBOARD_STATE *lastKeyboardState;
@@ -55,6 +66,9 @@ class InputInterface {
 		ALLEGRO_MOUSE_CURSOR* cursor;
 		//For MouseMove*
 		int32_t lastMouseX,lastMouseY,lastMouseZ;
+
+		/** Holds the current running Input */
+		CBInput *input;
 };
 
 #endif

@@ -41,6 +41,9 @@ class ISString {
 		/** Returns the number of characters in the string */
 		size_t length() const;
 
+		/** Returns true if string is empty, false otherwise. */
+		bool empty() const;
+
 		/** Equality operator */
 		bool operator == (const ISString &o) const;
 

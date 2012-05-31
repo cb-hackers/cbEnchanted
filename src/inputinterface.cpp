@@ -2,9 +2,16 @@
 #include "cbenchanted.h"
 #include "inputinterface.h"
 #include "cbimage.h"
+#include "cbinput.h"
 #include "errorsystem.h"
 
-InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0), cursor(NULL){
+InputInterface::InputInterface() :
+	lastMouseX(0),
+	lastMouseY(0),
+	lastMouseZ(0),
+	cursor(NULL),
+	input(0)
+{
 	cb = static_cast <CBEnchanted *> (this);
 	currentKeyboardState = new ALLEGRO_KEYBOARD_STATE;
 	lastKeyboardState = new ALLEGRO_KEYBOARD_STATE;
@@ -124,7 +131,10 @@ InputInterface::InputInterface():lastMouseX(0),lastMouseY(0),lastMouseZ(0), curs
 }
 
 void InputInterface::commandCloseInput(void) {
-	STUB;
+	if (input) {
+		delete input;
+		input = 0;
+	}
 }
 
 /*
@@ -132,13 +142,14 @@ void InputInterface::commandCloseInput(void) {
  */
 void InputInterface::commandWaitKey(void) {
 	ALLEGRO_EVENT e;
-	while(true)
-	{
+	while (true) {
 		al_wait_for_event(cb->getEventQueue(),&e);
-		switch (e.type)
-		{
+		switch (e.type) {
 			case ALLEGRO_EVENT_KEY_DOWN:
 			return;
+			case ALLEGRO_EVENT_KEY_CHAR:
+				cb->handleKeyChar(&e);
+			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 			return;
@@ -160,12 +171,20 @@ void InputInterface::commandPositionMouse(void) {
 
 void InputInterface::commandWaitMouse(void) {
 	ALLEGRO_EVENT e;
-	while(true)
-	{
+	while (true) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 			return;
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+					cb->stop();
+					return;
+				}
+			break;
+			case ALLEGRO_EVENT_KEY_CHAR:
+				cb->handleKeyChar(&e);
+			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 			return;
@@ -227,8 +246,20 @@ void InputInterface::commandSAFEEXIT(void) {
 }
 
 void InputInterface::functionInput(void) {
-	cb->pushValue(ISString(""));
-	STUB;
+	if (input == 0) {
+		// Make a new input
+		string pwString = cb->popValue().getString().getRef();
+		string prompt = cb->popValue().getString().getRef();
+		input = new CBInput(prompt, pwString);
+		input->setLocation(cb->getLocationX(), cb->getLocationY());
+	}
+	else {
+		// Just pop out the unnecessary parameters.
+		cb->popValue();
+		cb->popValue();
+	}
+	input->setColor(cb->getDrawColor());
+	cb->pushValue(input->getContent());
 }
 
 void InputInterface::functionKeyDown(void) {
@@ -256,11 +287,15 @@ void InputInterface::functionGetKey(void) {
  */
 void InputInterface::functionWaitKey(void) {
 	ALLEGRO_EVENT e;
-	while(true)
-	{
+	while(true) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_KEY_DOWN: {
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+					cb->stop();
+					cb->pushValue(0);
+					return;
+				}
 				int32_t key = e.keyboard.keycode;
 				for (int32_t i = 0; i < 222; ++i) {
 					if (cbKeyMap[i] == key) {
@@ -271,6 +306,9 @@ void InputInterface::functionWaitKey(void) {
 				cb->pushValue(0);
 				return;
 			}
+			case ALLEGRO_EVENT_KEY_CHAR:
+				cb->handleKeyChar(&e);
+			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 				cb->pushValue(0);
@@ -300,13 +338,22 @@ void InputInterface::functionGetMouse(void) {
 
 void InputInterface::functionWaitMouse(void) {
 	ALLEGRO_EVENT e;
-	while(true)
-	{
+	while (true) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 				cb->pushValue((int32_t)e.mouse.button);
 			return;
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+					cb->stop();
+					cb->pushValue(0);
+					return;
+				}
+			break;
+			case ALLEGRO_EVENT_KEY_CHAR:
+				cb->handleKeyChar(&e);
+			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				cb->stop();
 				cb->pushValue(0);
@@ -394,3 +441,26 @@ void InputInterface::updateInputs(){
 	al_get_mouse_state(currentMouseState);
 }
 
+/** Handles KEY_CHAR events that most likely happen during DrawScreen */
+void InputInterface::handleKeyChar(ALLEGRO_EVENT *e) {
+	if (input) {
+		input->keyChar(e);
+	}
+}
+
+/** Renders the current input */
+void InputInterface::renderInput(RenderTarget &r) const {
+	if (input == 0) {
+		return;
+	}
+	string text = input->getDisplayString();
+	if (text.empty()) {
+		return;
+	}
+
+	ISString str = ISString(text);
+
+	r.setAsCurrent();
+	r.useWorldCoords(false);
+	r.drawText(cb->getCurrentFont(), str, input->getLocationX(), input->getLocationY(), input->getColor());
+}

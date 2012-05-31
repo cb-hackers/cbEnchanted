@@ -55,6 +55,12 @@ size_t ISString::length() const {
 	return data->str.length();
 }
 
+/** Returns true if string is empty, false otherwise. */
+bool ISString::empty() const {
+	if (data == 0) return true;
+	return data->str.empty();
+}
+
 /** Equality operator */
 bool ISString::operator==(const ISString &o) const {
 	if (this->data == 0) {

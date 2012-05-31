@@ -36,6 +36,8 @@ class TextInterface {
 		void renderAddTexts(RenderTarget &r);
 		bool initializeFonts();
 		ALLEGRO_FONT *getCurrentFont() { return currentFont; }
+		int32_t getLocationX() { return locationX; }
+		int32_t getLocationY() { return locationY; }
 	private:
 		CBEnchanted *cb;
 		map<int32_t, ALLEGRO_FONT*> fontMap;

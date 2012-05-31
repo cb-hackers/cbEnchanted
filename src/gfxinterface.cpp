@@ -214,6 +214,9 @@ void GfxInterface::commandDrawScreen(void) {
 					cb->stop();
 				}
 				break;
+			case ALLEGRO_EVENT_KEY_CHAR:
+				cb->handleKeyChar(&e);
+			break;
 			case ALLEGRO_EVENT_DISPLAY_RESIZE:
 				windowResized = true;
 				break;
@@ -235,6 +238,7 @@ void GfxInterface::commandDrawScreen(void) {
 		lastSecTimer = clock();
 	}
 	cb->renderAddTexts(*windowRenderTarget);
+	cb->renderInput(*windowRenderTarget);
 	cb->updateAudio();
 	if (resizableWindow) {
 		al_set_target_backbuffer(window);
