@@ -49,7 +49,6 @@ class GfxInterface {
 		void functionGFXModeExists(void);
 
 		int32_t getFPS()const{return currentFPS;}
-		void sleep(int64_t time);
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }
 
