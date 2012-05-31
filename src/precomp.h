@@ -2,7 +2,7 @@
 #define PRECOMP_H
 
 #ifdef WIN32
-#include <Windows.h>
+	#include <Windows.h>
 #endif
 #include <map>
 #include <stdint.h>
@@ -17,7 +17,6 @@
 #include <cmath>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/dynamic_bitset.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
@@ -33,7 +32,6 @@ using namespace std;
 
 using boost::function;
 using boost::lexical_cast;
-using boost::dynamic_bitset;
 
 #ifdef FORCEINLINE
 	#undef FORCEINLINE
@@ -44,15 +42,6 @@ using boost::dynamic_bitset;
 	#define FORCEINLINE inline
 #endif
 
-#ifdef BUILD_64_BIT
-	#undef BUILD_64_BIT
-#endif
-#ifdef BUILD_32_BIT
-	#undef BUILD_32_BIT
-#endif
-#define BUILD_32_BIT sizeof(void*) == 4
-#define BUILD_64_BIT sizeof(void*) == 8
 
 
-
-#endif
+#endif // PRECOMP_H
