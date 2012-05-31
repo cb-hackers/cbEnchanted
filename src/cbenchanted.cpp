@@ -521,6 +521,7 @@ FORCEINLINE void CBEnchanted::handleCommand(void) {
 		case 237: commandShowMouse(); break;
 		case 238: commandClearMouse(); break;
 		case 239: commandSAFEEXIT(); break;
+		case 247: commandCloseInput(); break;
 		case 301: commandDeleteMEMBlock(); break;
 		case 303: commandResizeMEMBlock(); break;
 		case 304: commandMemCopy(); break;
