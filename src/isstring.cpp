@@ -1,5 +1,5 @@
 #include "isstring.h"
-#include <allegro5/allegro.h>
+#include "util.h"
 
 const string ISString::nullStdString;
 
@@ -160,28 +160,7 @@ const string &ISString::getUtf8Encoded() const {
 	if (this->data->noNeedForEncoding) {return this->data->str;}
 	if (this->data->utfStr == 0) {
 		this->data->utfStr = new string;
-		this->data->utfStr->reserve(this->length()+5);
-		for (string::const_iterator i = this->data->str.begin(); i != this->data->str.end(); i++) {
-			unsigned char c = *i;
-			if (c > 128) {
-				c--;
-				char utfc[2];
-				al_utf8_encode(utfc, c);
-				*this->data->utfStr += utfc[0];
-				*this->data->utfStr += utfc[1];
-			}
-			else {
-				if (c == 0) {
-					char utfc[2];
-					al_utf8_encode(utfc, 255);
-					*this->data->utfStr += utfc[0];
-					*this->data->utfStr += utfc[1];
-				}
-				else {
-					*this->data->utfStr += c;
-				}
-			}
-		}
+		this->data->utfStr->assign(CP1252toUtf8(this->data->str));
 	}
 	return *this->data->utfStr;
 }

@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <math.h>
 #include <unordered_map>
+#include <Windows.h>
 
 using namespace std;
 
@@ -238,5 +239,34 @@ string findfont(const char* font, bool isBold, bool isItalic) {
 	cerr << "Failed to load " << font << endl;
 	return "";
 }
+
+
+/** Converts UTF-8 to Windows-1252, returns the converted string. */
+std::string utf8toCP1252(std::string str) {
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring tmpWstr( size_needed, 0 );
+	MultiByteToWideChar                  (CP_UTF8, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
+
+	size_needed = WideCharToMultiByte(1252, WC_COMPOSITECHECK | WC_DISCARDNS, &tmpWstr[0], (int)tmpWstr.size(), NULL, 0, NULL, NULL);
+	std::string retStr( size_needed, 0 );
+	WideCharToMultiByte              (1252, WC_COMPOSITECHECK | WC_DISCARDNS, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
+
+	return retStr;
+}
+
+/** Converts Windows-1252 to UTF-8, returns the converted string. */
+std::string CP1252toUtf8(std::string str) {
+	int size_needed = MultiByteToWideChar(1252, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring tmpWstr( size_needed, 0 );
+	MultiByteToWideChar                  (1252, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
+
+	size_needed = WideCharToMultiByte(CP_UTF8, 0, &tmpWstr[0], (int)tmpWstr.size(), NULL, 0, NULL, NULL);
+	std::string retStr( size_needed, 0 );
+	WideCharToMultiByte              (CP_UTF8, 0, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
+
+	return retStr;
+}
+
+
 
 #endif // _WIN32

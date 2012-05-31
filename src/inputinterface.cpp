@@ -443,7 +443,7 @@ void InputInterface::updateInputs(){
 
 /** Handles KEY_CHAR events that most likely happen during DrawScreen */
 void InputInterface::handleKeyChar(ALLEGRO_EVENT *e) {
-	if (input) {
+	if (input && e->keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
 		input->keyChar(e);
 	}
 }

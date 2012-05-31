@@ -1,4 +1,4 @@
-#ifdef __linux
+#if defined(__linux) || defined(__APPLE__)
 
 #include "util.h"
 #ifdef FONTCONFIG_FOUND
@@ -76,4 +76,14 @@ string findfont(const char* font, bool isBold, bool isItalic) {
 #endif // FONTCONFIG_FOUND
 }
 
-#endif // __linux
+/** Converts UTF-8 to Windows-1252, returns the converted string. */
+std::string utf8toCP1252(std::string str) {
+	// TODO: Use iconv
+}
+
+/** Converts Windows-1252 to UTF-8, returns the converted string. */
+std::string CP1252toUtf8(std::string str) {
+	// TODO: Use iconv
+}
+
+#endif // defined(__linux) || defined(__APPLE__)

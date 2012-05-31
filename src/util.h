@@ -19,6 +19,11 @@ int32_t rand(int32_t max);
 /** Returns font file location. */
 std::string findfont(const char* font, bool isBold = false, bool isItalic = false);
 
+/** Converts UTF-8 to Windows-1252, returns the converted string. */
+std::string utf8toCP1252(std::string str);
+
+/** Converts Windows-1252 to UTF-8, returns the converted string. */
+std::string CP1252toUtf8(std::string str);
 
 
 #endif // UTIL_H
