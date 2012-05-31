@@ -1117,7 +1117,7 @@ void CBEnchanted::commandDelete(void) {
 
 	setTypePointerVariable(memberId, Type::getMembersType(typeMember)->deleteMember(typeMember));
 
-	auto findIt = rTypeConvertMap.find(typeMember);
+	map<void*, int32_t>::iterator findIt = rTypeConvertMap.find(typeMember);
 	if (findIt != rTypeConvertMap.end()) {
 		// If one was found, it means that ConvertToInteger() has been used.
 		typeConvertMap.erase(findIt->second);
@@ -1239,7 +1239,7 @@ void CBEnchanted::functionConvertToInteger(void) {
 		pushValue(0);
 	}
 
-	auto findIt = rTypeConvertMap.find(typeMember);
+	map<void*, int32_t>::iterator findIt = rTypeConvertMap.find(typeMember);
 	if (findIt != rTypeConvertMap.end()) {
 		// This has been already converted.
 		pushValue(findIt->second);
@@ -1261,7 +1261,7 @@ void CBEnchanted::functionConvertToType(void) {
 		return;
 	}
 
-	auto findIt = typeConvertMap.find(typePtr);
+	map<int32_t, void*>::iterator findIt = typeConvertMap.find(typePtr);
 	if (findIt != typeConvertMap.end()) {
 		// This has been already converted.
 		pushValue(findIt->second);
