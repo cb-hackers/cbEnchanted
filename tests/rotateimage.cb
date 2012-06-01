@@ -1,0 +1,51 @@
+Dim images(360)
+
+
+FrameLimit 40
+
+start:
+Text 0,0,"Pre-calculating.. Please wait"
+DrawScreen
+
+'Smooth2D ON
+
+'First Pre-calculate all images 
+masterimage= LoadImage("Media\cow.bmp")
+
+'Generate 360 rotated versions from the master Image 
+For i=0 To 360
+    images(i)=CloneImage(masterimage)
+    
+    RotateImage images(i), -i
+Next i
+
+Color cbblack
+ClsColor cbwhite
+
+'The actual game-loop 
+Repeat
+
+    'Draw at the center
+    DrawImage images(angle),200,150
+    
+    angle = angle + (UpKey() - DownKey())
+    
+    angle = angle + (KeyHit(cbKeyRight) - KeyHit(cbKeyLeft))
+
+    'change the angle
+    angle=WrapAngle(angle)
+
+    Text 0,0,"Angle: "+angle
+
+    DrawScreen
+
+Until KeyHit(cbKeyEnter)
+
+'Delete all generated images
+For i=0 To 360
+    DeleteImage images(i)
+Next i
+DeleteImage masterimage
+'Do it again
+Cls
+Goto start
