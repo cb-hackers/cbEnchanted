@@ -9,8 +9,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <boost/locale.hpp>
 
 using namespace std;
+using namespace boost::locale::conv;
 
 int64_t mtimer() {
 	struct timeval tv;
@@ -77,13 +79,15 @@ string findfont(const char* font, bool isBold, bool isItalic) {
 }
 
 /** Converts UTF-8 to Windows-1252, returns the converted string. */
-std::string utf8toCP1252(std::string str) {
-	// TODO: Use iconv
+string utf8toCP1252(string str) {
+	string newStr = from_utf(str, "windows-1252");
+	return newStr;
 }
 
 /** Converts Windows-1252 to UTF-8, returns the converted string. */
-std::string CP1252toUtf8(std::string str) {
-	// TODO: Use iconv
+string CP1252toUtf8(string str) {
+	string newStr = to_utf<char>(str, "windows-1252");
+	return newStr;
 }
 
 #endif // defined(__linux) || defined(__APPLE__)
