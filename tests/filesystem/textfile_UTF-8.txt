@@ -1,4 +1,4 @@
-﻿This file is in UTF-8
+This file is in UTF-8
 
 Characters that can be mapped to CP1252,
 separated by space (ASCII 20):
