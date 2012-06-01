@@ -94,5 +94,9 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeBXor);
 	func.setFuncId(CBE_BINARY_XOR);
 	this->add(func);
+
+	func.setFuncPtr(&cbeReadLineUTF8);
+	func.setFuncId(CBE_READ_LINE_UTF8);
+	this->add(func);
 }
 

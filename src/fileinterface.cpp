@@ -404,3 +404,13 @@ void FileInterface::functionReadLine(void) {
 	}
 	cb->pushValue(line);
 }
+
+/** Gets a FILE pointer from the given ID. */
+FILE* FileInterface::getFile(int32_t id) {
+	if (filestrs.count(id) == 0) {
+		cb->errors->createFatalError("Could not find open file with ID " + boost::lexical_cast<string>(id) + "!");
+		return 0;
+	}
+
+	return filestrs[id];
+}

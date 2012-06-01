@@ -1,0 +1,31 @@
+Include "include/customfunctions.cb"
+
+SetFont LoadFont("Courier New", 16)
+
+Print "Reading file ../filesystem/textfile_windows-1252.txt"
+f1 = OpenToRead("../filesystem/textfile_windows-1252.txt")
+    While Not EOF(f1)
+        AddText ReadLine(f1)
+    Wend
+CloseFile f1
+Print "Reading complete!"
+
+Repeat
+    DrawScreen
+    key = WaitKey()
+Until key = cbKeySpace Or key = cbKeyReturn
+
+ClearText
+
+Print "Reading file ../filesystem/textfile_UTF-8.txt"
+f2 = OpenToRead("../filesystem/textfile_UTF-8.txt")
+    While Not EOF(f2)
+        AddText cbeReadLineUTF8(f2)
+    Wend
+CloseFile f2
+Print "Reading complete!"
+
+Repeat
+    DrawScreen
+    key = WaitKey()
+Until key = cbKeySpace Or key = cbKeyReturn

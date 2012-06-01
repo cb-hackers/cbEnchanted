@@ -65,3 +65,9 @@ Function cbeBXor(a, b)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 10
 EndFunction
+
+// Reads an UTF-8 encoded line and converts all possible characters to Windows-1252.
+Function cbeReadLineUTF8$(fileHandle)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 11
+EndFunction

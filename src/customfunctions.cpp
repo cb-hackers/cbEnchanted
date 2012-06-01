@@ -2,6 +2,8 @@
 #include "cbenchanted.h"
 #include "errorsystem.h"
 #include "precomp.h"
+#include "util.h"
+
 /** @addtogroup customfunctions
  * @{
  */
@@ -187,5 +189,32 @@ void cbeBNot(CBEnchanted *cb) {
 	int32_t a = cb->popValue().toInt();
 	cb->pushValue(~a);
 }
+
+/** Reads an UTF-8 encoded line and converts all possible characters to Windows-1252. */
+void cbeReadLineUTF8(CBEnchanted *cb) {
+	int32_t fileId = cb->popValue().getInt();
+	FILE* file = cb->getFile(fileId);
+	if (file == 0) {
+		FIXME("Invalid file pointer given to cbeReadLineUTF8()")
+		cb->pushValue(ISString(""));
+		return;
+	}
+	string line = "";
+	while(1) {
+		int c = fgetc(file);
+		if (c != '\r' && c != EOF) {
+			if (c != '\n') {
+				line = line + char(c);
+			}
+		}
+		else {
+			break;
+		}
+	}
+
+	line = utf8toCP1252(line);
+	cb->pushValue(line);
+}
+
 
 /** @} */

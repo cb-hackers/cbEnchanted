@@ -46,6 +46,9 @@ class FileInterface {
 		void functionReadFloat(void);
 		void functionReadString(void);
 		void functionReadLine(void);
+
+		/** Gets a FILE pointer from the given ID. */
+		FILE* getFile(int32_t id);
 	private:
 		CBEnchanted *cb;
 

@@ -26,6 +26,8 @@ void cbeBXor(CBEnchanted *cb);
 
 void cbeBNot(CBEnchanted *cb);
 
+void cbeReadLineUTF8(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H
