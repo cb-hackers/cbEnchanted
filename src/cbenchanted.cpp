@@ -304,8 +304,19 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					if (code[i2++] != 73) { //PushInt
 						goto not_custom_function;
 					}
-					if (*(int32_t*)(code + i2) != 0) { //Return == 0
-						goto not_custom_function;
+					int pushValue = *(int32_t*)(code + i2);
+					if (pushValue != 0) { //Return == 0
+						if (pushValue != 2 && pushValue != 5) { //handlePushSomething() IDs of float(2) and string(5)
+							goto not_custom_function;
+						}
+						i2 += 4;
+						if (code[i2++] != 74) { //PushSomething
+							goto not_custom_function;
+						}
+						pushValue = *(int32_t*)(code + i2);
+						if (pushValue != 0) { //Return 0.0 or ""
+							goto not_custom_function;
+						}
 					}
 					i2 += 4;
 
