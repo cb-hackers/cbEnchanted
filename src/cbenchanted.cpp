@@ -141,13 +141,13 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		for (uint32_t j = 0; j < len; j++) {
 			input >> c;
 			c = c - key[j % 22];
-			if (c > 127) {
+			if (c > 127 || c == 0) {
 				requireEncoding = true;
 				if (c > 161) {
 					c--;
-					if (c == 0) {
-						c = 255;
-					}
+				}
+				if (c == 0) {
+					c = 255;
 				}
 			}
 			s += c;
