@@ -138,13 +138,14 @@ void GfxInterface::commandScreen(void) {
 		else { //cbSizable
 			int32_t w = al_get_display_width(window);
 			int32_t h = al_get_display_height(window);
-			al_destroy_display(window);
-			window = al_create_display(w,h);
-			if (window == 0) {
-				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
-				return;
+			al_resize_display(window, w, h);
+			if (cb->isSmooth2D()) {
+				al_destroy_bitmap(drawscreenTempBitmap);
+				drawscreenTempBitmap = al_create_bitmap(width, height);
 			}
-			resizeTempBitmap(width, height);
+			else {
+				resizeTempBitmap(width, height);
+			}
 			windowRenderTarget->swapBitmap(drawscreenTempBitmap);
 			resizableWindow = true;
 		}
@@ -159,8 +160,8 @@ void GfxInterface::commandScreen(void) {
 			cerr << "ERROR: Can't center the window - could not get monitor info." << endl;
 		}
 		else {
-			int topleftX = ((displayInfo.x2 - displayInfo.x1) - width) / 2;
-			int topleftY = ((displayInfo.y2 - displayInfo.y1) - height) / 2;
+			int topleftX = ((displayInfo.x2 - displayInfo.x1) - al_get_display_width(window)) / 2;
+			int topleftY = ((displayInfo.y2 - displayInfo.y1) - al_get_display_height(window)) / 2;
 			al_set_window_position(window, topleftX, topleftY);
 		}
 	}
