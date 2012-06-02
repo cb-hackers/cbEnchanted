@@ -211,6 +211,7 @@ void cbeReadLineUTF8(CBEnchanted *cb) {
 			break;
 		}
 	}
+	line += '\0';
 
 	line = utf8toCP1252(line);
 	cb->pushValue(line);
