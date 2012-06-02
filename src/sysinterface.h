@@ -1,5 +1,8 @@
 #ifndef SYSINTERFACE_H
 #define SYSINTERFACE_H
+#include <string>
+
+using namespace std;
 
 class CBEnchanted;
 
@@ -30,8 +33,17 @@ class SysInterface {
 		void functionGetEXEName(void);
 		void functionFPS(void);
 		void functionCrc32(void);
+
+		/** Asks for user confirmation before closing the program, returns true if program should be terminated. */
+		bool askForExit();
 	private:
 		CBEnchanted *cb;
+
+		/** Window title */
+		string windowTitle;
+
+		/** Confirmation string that is shown when user is trying to close the program manually. */
+		string confirmationStr;
 };
 
 #endif

@@ -151,8 +151,11 @@ void InputInterface::commandWaitKey(void) {
 				cb->handleKeyChar(&e);
 			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
-			return;
+				if (cb->askForExit()) {
+					cb->stop();
+					return;
+				}
+			break;
 		}
 	}
 }
@@ -186,8 +189,11 @@ void InputInterface::commandWaitMouse(void) {
 				cb->handleKeyChar(&e);
 			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
-			return;
+				if (cb->askForExit()) {
+					cb->stop();
+					return;
+				}
+			break;
 		}
 	}
 }
@@ -310,9 +316,12 @@ void InputInterface::functionWaitKey(void) {
 				cb->handleKeyChar(&e);
 			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
-				cb->pushValue(0);
-			return;
+				if (cb->askForExit()) {
+					cb->stop();
+					cb->pushValue(0);
+					return;
+				}
+			break;
 		}
 	}
 }
@@ -355,9 +364,12 @@ void InputInterface::functionWaitMouse(void) {
 				cb->handleKeyChar(&e);
 			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
-				cb->pushValue(0);
-			return;
+				if (cb->askForExit()) {
+					cb->stop();
+					cb->pushValue(0);
+					return;
+				}
+			break;
 		}
 	}
 }

@@ -222,7 +222,9 @@ void GfxInterface::commandDrawScreen(void) {
 	while (al_get_next_event(cb->getEventQueue(), &e)) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				cb->stop();
+				if (cb->askForExit()) {
+					cb->stop();
+				}
 				break;
 			case ALLEGRO_EVENT_KEY_DOWN:
 				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {

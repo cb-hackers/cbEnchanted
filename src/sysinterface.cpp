@@ -13,9 +13,10 @@
 	#include <unistd.h>
 	#include <sys/time.h>
 #endif
+#include <allegro5/allegro_native_dialog.h>
 #include "util.h"
 
-SysInterface::SysInterface() {
+SysInterface::SysInterface() : windowTitle(""), confirmationStr("") {
 	cb = static_cast <CBEnchanted *> (this);
 }
 
@@ -77,19 +78,19 @@ void SysInterface::commandErrors(void) {
 void SysInterface::commandSetWindow(void) {
 	string quit = cb->popValue().toString().getRef();
 	uint32_t mode = cb->popValue().toInt();
-	string caption = cb->popValue().toString().getUtf8Encoded();
+	windowTitle = cb->popValue().toString().getUtf8Encoded();
 
 	if (quit != "") {
-		FIXME("FIXME: setWindow quitmsg");
+		confirmationStr = quit;
 	}
 #ifdef _WIN32
 	// Windows is fucked up and doesn't use UTF-8
 	HWND win = al_get_win_window_handle(cb->getWindow());
 
 	// Convert caption to utf-16 with the amazing UTF8-CPP library
-	string::iterator end_it = utf8::find_invalid(caption.begin(), caption.end());
+	string::iterator end_it = utf8::find_invalid(windowTitle.begin(), windowTitle.end());
 	vector<uint16_t> utf16;
-	utf8::utf8to16(caption.begin(), end_it, back_inserter(utf16));
+	utf8::utf8to16(windowTitle.begin(), end_it, back_inserter(utf16));
 
 	wstring widestr;
 	widestr.resize(utf16.size());
@@ -104,7 +105,7 @@ void SysInterface::commandSetWindow(void) {
 
 #else
 	// Oh dear Linux, why do you so kindly accept UTF-8 <3
-	al_set_window_title(cb->getWindow(), caption.c_str());
+	al_set_window_title(cb->getWindow(), windowTitle.c_str());
 #endif
 }
 
@@ -163,4 +164,19 @@ void SysInterface::functionCrc32(void) {
 	boost::crc_32_type result;
 	result.process_bytes(str.getRef().c_str(), str.getRef().length());
 	cb->pushValue((int32_t)result.checksum());
+}
+
+/** Asks for user confirmation before closing the program, returns true if program should be terminated. */
+bool SysInterface::askForExit() {
+	if (confirmationStr.empty()) {
+		return true;
+	}
+
+	int pressed = al_show_native_message_box(cb->getWindow(), windowTitle.c_str(), confirmationStr.c_str(), "", NULL, ALLEGRO_MESSAGEBOX_OK_CANCEL);
+	if (pressed == 2) {
+		// Pressed "Cancel"
+		return false;
+	}
+
+	return true;
 }
