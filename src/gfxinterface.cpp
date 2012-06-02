@@ -150,7 +150,22 @@ void GfxInterface::commandScreen(void) {
 		}
 		registerWindow();
 	}
-	windowRenderTarget->clear(al_map_rgba_f(0,0,0,1.0f));
+
+	if (state != 0) {
+		// Center the window to the first display, if not fullscreen
+		ALLEGRO_MONITOR_INFO displayInfo;
+		if (!al_get_monitor_info(0, &displayInfo)) {
+			// Couln't get display info, just output error to cerr and continue as usual.
+			cerr << "ERROR: Can't center the window - could not get monitor info." << endl;
+		}
+		else {
+			int topleftX = ((displayInfo.x2 - displayInfo.x1) - width) / 2;
+			int topleftY = ((displayInfo.y2 - displayInfo.y1) - height) / 2;
+			al_set_window_position(window, topleftX, topleftY);
+		}
+	}
+	windowRenderTarget->clear(al_map_rgb(0, 0, 0));
+	al_flip_display();
 }
 
 void GfxInterface::commandClsColor(void) {
