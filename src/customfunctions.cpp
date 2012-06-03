@@ -3,6 +3,9 @@
 #include "errorsystem.h"
 #include "precomp.h"
 #include "util.h"
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
 
 /** @addtogroup customfunctions
  * @{
@@ -215,6 +218,15 @@ void cbeReadLineUTF8(CBEnchanted *cb) {
 
 	line = utf8toCP1252(line);
 	cb->pushValue(line);
+}
+
+/** Shows or hides the console window. Works only on Windows. */
+void cbeShowConsole(CBEnchanted *cb) {
+	#ifdef _WIN32
+		bool visible = cb->popValue().toBool();
+		ShowWindow(GetConsoleWindow(), visible ? SW_RESTORE : SW_HIDE);
+		cb->pushValue(0);
+	#endif
 }
 
 

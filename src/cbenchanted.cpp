@@ -69,6 +69,14 @@ void CBEnchanted::run() {
  * CBEnchanted::init - Initialize the interpreter
  */
 bool CBEnchanted::init(const char* file, int argc, char** argv) {
+
+#ifdef _WIN32
+	#ifndef NDEBUG
+		// Not on debug mode and on Windows, hide the console immediately.
+		ShowWindow(GetConsoleWindow(), SW_HIDE);
+	#endif
+#endif
+
 	INFO("Initializing");
 
 	// Store commandline parameters and their count. If testable exe, skip first one.

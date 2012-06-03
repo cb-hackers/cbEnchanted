@@ -71,3 +71,9 @@ Function cbeReadLineUTF8$(fileHandle)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 11
 EndFunction
+
+// Toggles console visibility. Only applies to Windows.
+Function cbeShowConsole(visibleOrNot)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 12
+EndFunction

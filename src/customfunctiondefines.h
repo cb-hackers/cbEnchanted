@@ -35,6 +35,9 @@
 /** ID for custom function cbeReadLineUTF8() */
 #define CBE_READ_LINE_UTF8 11
 
+/** ID for custom function cbeShowConsole() */
+#define CBE_SHOW_CONSOLE 12
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

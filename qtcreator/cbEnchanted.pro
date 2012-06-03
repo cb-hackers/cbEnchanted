@@ -80,6 +80,8 @@ DEFINES += ALLEGRO_STATICLINK
 }
 
 win32{
+	# Support only Win2K and above
+	DEFINES += _WIN32_WINNT=0x0500
 	CONFIG(release, debug|release){
 		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-monolith-static-mt -llibvorbisfile-1.3.2-static-mt -lzlib-1.2.5-static-mt -llibogg-1.2.1-static-mt -llibFLAC-1.2.1-static-mt -lfreetype-2.4.8-static-mt -ldumb-0.9.3-static-mt -llibvorbis-1.3.2-static-mt
 		DEFINES += NDEBUG

@@ -28,6 +28,8 @@ void cbeBNot(CBEnchanted *cb);
 
 void cbeReadLineUTF8(CBEnchanted *cb);
 
+void cbeShowConsole(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H
