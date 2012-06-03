@@ -1,9 +1,13 @@
 #!/bin/bash
 # Create two linux versions of cbEnchanted
 # to the "build/release" directory and pack
-# them as .tar.gz files, with a shortened
-# version of gits SHA1 hash. If such a file
-# already exists, it will be deleted.
+# them as .tar.gz files, with the contents
+# of VERSION file added to the file name.
+# README.txt and customfunctions.cb will
+# be added to the package, too.
+#
+# If a file with the same name already
+# exists, it will be deleted.
 #
 # This file should reside at the root of
 # cbEnchanteds git repository.
@@ -13,10 +17,12 @@
 # of what the arguments are is made.
 #
 # The final file will look like this:
-# cbEnchanted_x64-82bcd.tar.gz
-#  - cbEnchanted_x64-82bcd/ 
+# cbEnchanted_x64-0.1.0.tar.gz
+#  - cbEnchanted_x64-0.1.0/ 
 #    -- CBEnchanted
 #    -- CBEnchanted_debug
+#    -- README.txt
+#    -- customfunctions.cb
 
 # Stop on error
 set -e
@@ -25,7 +31,7 @@ set -e
 NAME="cbenchanted_x"
 NAME+=`getconf LONG_BIT`
 NAME+="-"
-NAME+=`git rev-parse --short=5 HEAD`
+NAME+=`cat VERSION | head -n1`
 echo "Release to be created:" $NAME
 
 # A kick-ass way to get the directory of this file
@@ -86,6 +92,11 @@ make $@
 
 # Move the built CBEnchanted file to right place
 mv CBEnchanted "$DIR/build/release/$NAME/CBEnchanted_debug"
+
+# Copy README.txt and tests/include/customfunctions.cb
+# to the directory
+cp "$DIR/README.txt" "$DIR/build/release/$NAME/README.txt"
+cp "$DIR/tests/include/customfunctions.cb" "$DIR/build/release/$NAME/customfunctions.cb"
 
 echo "---------------------------------"
 echo "##        Packing files        ##"
