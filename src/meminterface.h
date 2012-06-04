@@ -22,6 +22,8 @@ class MemInterface {
 		void functionPeekShort(void);
 		void functionPeekInt(void);
 		void functionPeekFloat(void);
+		static int32_t getMEMBlockSize(uint8_t *mem) { return *(int32_t*)mem; }
+		static uint8_t *getMEMBlockData(uint8_t *mem) { return mem + 4; }
 		uint8_t* getMemblock(int32_t id) { return memblockMap[id];}
 	private:
 		CBEnchanted *cb;

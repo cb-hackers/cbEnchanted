@@ -21,12 +21,11 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/transformations.h>
+#include <unordered_map>
 
 #ifndef M_PI
 	#define M_PI 3.1415926535897932384626433832795028841971693993751
 #endif
-
-#define UNUSED(v) (v);
 
 using namespace std;
 

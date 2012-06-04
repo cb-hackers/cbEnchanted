@@ -67,7 +67,33 @@ void SysInterface::commandDecrypt(void) {
 }
 
 void SysInterface::commandCallDLL(void) {
-	STUB;
+	int32_t memblockOutId = cb->popValue().getInt();
+	int32_t memblockInId = cb->popValue().getInt();
+	const ISString& funcName = cb->popValue().getString();
+	const ISString& dllName = cb->popValue().getString();
+	CBDLL *dll = dlls[dllName.getRef()];
+	if (dll == 0) {
+		dll = new CBDLL;
+		if (!dll->load(dllName)) {
+			cb->errors->createError("Can't open dll file.", "Can't open "+dllName.getRef());
+		}
+		dlls[dllName.getRef()] = dll;
+	}
+	void *memIn = 0;
+	void *memOut = 0;
+	int32_t memInSize = 0;
+	int32_t memOutSize = 0;
+	if (memblockOutId) {
+		uint8_t *memblockOut = cb->getMemblock(memblockOutId);
+		memOut = MemInterface::getMEMBlockData(memblockOut);
+		memOutSize = MemInterface::getMEMBlockSize(memblockOut);
+	}
+	if (memblockInId) {
+		uint8_t *memblockIn = cb->getMemblock(memblockInId);
+		memIn = MemInterface::getMEMBlockData(memblockIn);
+		memInSize = MemInterface::getMEMBlockSize(memblockIn);
+	}
+	dll->call(funcName.getRef(), memIn, memInSize, memOut, memOutSize);
 }
 
 void SysInterface::commandErrors(void) {

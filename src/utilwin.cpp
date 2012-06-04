@@ -9,6 +9,7 @@
 #include <math.h>
 #include <unordered_map>
 #include <Windows.h>
+#include "utf8.h"
 
 using namespace std;
 
@@ -267,6 +268,24 @@ std::string CP1252toUtf8(std::string str) {
 	return retStr;
 }
 
+/** Loads dynamic link library and returns handle to it */
+void *loadDLL(const ISString &f) {
+	const string &utf8str = f.getUtf8Encoded();
+	string::const_iterator end_it = utf8::find_invalid(utf8str.begin(), utf8str.end());
+	vector<uint16_t> utf16;
+	utf8::utf8to16(utf8str.begin(), end_it, back_inserter(utf16));
 
+	wstring widestr;
+	widestr.resize(utf16.size());
+	size_t i = 0;
+	for (; i < utf16.size(); i++) {
+		widestr[i] = utf16[i];
+	}
+	return LoadLibraryW(widestr.c_str());
+}
+
+void *getDLLFunction(void *dll, const string &s) {
+	return GetProcAddress((HMODULE)dll, s.c_str());
+}
 
 #endif // _WIN32

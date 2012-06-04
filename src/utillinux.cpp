@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <boost/locale.hpp>
+#include <dlfcn.h>
 
 using namespace std;
 using namespace boost::locale::conv;
@@ -88,6 +89,14 @@ string utf8toCP1252(string str) {
 string CP1252toUtf8(string str) {
 	string newStr = to_utf<char>(str, "windows-1252");
 	return newStr;
+}
+
+void *loadDLL(const ISString &f) {
+	return dlopen (f.getUtf8Encoded().c_str(), RTLD_LAZY);
+}
+
+void *getDLLFunction(void *dll, const string &s) {
+	return dlsym(dll, s.c_str());
 }
 
 #endif // defined(__linux) || defined(__APPLE__)

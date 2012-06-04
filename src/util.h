@@ -2,6 +2,7 @@
 #define UTIL_H
 #include "stdint.h"
 #include <string>
+#include "isstring.h"
 
 /**
   * Returns system timer in milliseconds
@@ -24,6 +25,12 @@ std::string utf8toCP1252(std::string str);
 
 /** Converts Windows-1252 to UTF-8, returns the converted string. */
 std::string CP1252toUtf8(std::string str);
+
+/** Loads dynamic link library and returns handle to it */
+void *loadDLL(const ISString &f);
+
+/** Returns function pointer from dll with given name */
+void *getDLLFunction(void *dll, const string &s);
 
 
 #endif // UTIL_H

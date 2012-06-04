@@ -1,6 +1,8 @@
 #ifndef SYSINTERFACE_H
 #define SYSINTERFACE_H
 #include <string>
+#include "precomp.h"
+#include "cbdll.h"
 
 using namespace std;
 
@@ -44,6 +46,9 @@ class SysInterface {
 
 		/** Confirmation string that is shown when user is trying to close the program manually. */
 		string confirmationStr;
+
+		/** Unordered map for dlls*/
+		tr1::unordered_map<string, CBDLL*> dlls;
 };
 
 #endif
