@@ -268,6 +268,24 @@ std::string CP1252toUtf8(std::string str) {
 	return retStr;
 }
 
+/** Returns the given string as a UTF-16 encoded wstring */
+std::wstring utf8ToUtf16(std::string str) {
+	// Convert str to utf-16 with the amazing UTF8-CPP library
+	string::iterator end_it = utf8::find_invalid(str.begin(), str.end());
+	vector<uint16_t> utf16;
+	utf8::utf8to16(str.begin(), end_it, back_inserter(utf16));
+
+	wstring widestr;
+	widestr.resize(utf16.size());
+	size_t i = 0;
+	for (; i < utf16.size(); i++) {
+		widestr[i] = utf16[i];
+	}
+
+	return widestr;
+}
+
+
 /** Loads dynamic link library and returns handle to it */
 void *loadDLL(const ISString &f) {
 	const string &utf8str = f.getUtf8Encoded();

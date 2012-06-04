@@ -26,6 +26,11 @@ std::string utf8toCP1252(std::string str);
 /** Converts Windows-1252 to UTF-8, returns the converted string. */
 std::string CP1252toUtf8(std::string str);
 
+#ifdef _WIN32
+	/** Returns the given string as a UTF-16 encoded wstring */
+	std::wstring utf8ToUtf16(std::string str);
+#endif
+
 /** Loads dynamic link library and returns handle to it */
 void *loadDLL(const ISString &f);
 

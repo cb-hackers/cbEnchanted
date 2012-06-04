@@ -38,7 +38,7 @@ void SysInterface::commandWait(void) {
 }
 
 void SysInterface::commandMakeError(void) {
-	cb->errors->createFatalError(cb->popValue().toString().getStdString(), "", "Error!");
+	cb->errors->createFatalError(cb->popValue().toString().getUtf8Encoded(), "", "Error!");
 }
 
 void SysInterface::commandSaveProgram(void) {
@@ -112,20 +112,9 @@ void SysInterface::commandSetWindow(void) {
 #ifdef _WIN32
 	// Windows is fucked up and doesn't use UTF-8
 	HWND win = al_get_win_window_handle(cb->getWindow());
+	wstring widestr = utf8ToUtf16(windowTitle);
 
-	// Convert caption to utf-16 with the amazing UTF8-CPP library
-	string::iterator end_it = utf8::find_invalid(windowTitle.begin(), windowTitle.end());
-	vector<uint16_t> utf16;
-	utf8::utf8to16(windowTitle.begin(), end_it, back_inserter(utf16));
-
-	wstring widestr;
-	widestr.resize(utf16.size());
-	size_t i = 0;
-	for (; i < utf16.size(); i++) {
-		widestr[i] = utf16[i];
-	}
-
-	if (!SetWindowText(win, widestr.c_str())) {
+	if (!SetWindowTextW(win, &widestr[0])) {
 		cb->errors->createError("Failed to set window title!");
 	}
 
@@ -199,8 +188,8 @@ bool SysInterface::askForExit() {
 	}
 
 	int pressed = al_show_native_message_box(cb->getWindow(), windowTitle.c_str(), confirmationStr.c_str(), "", NULL, ALLEGRO_MESSAGEBOX_OK_CANCEL);
-	if (pressed == 2) {
-		// Pressed "Cancel"
+	if (pressed == 2 || pressed == 0) {
+		// Pressed "Cancel" or closed the messagebox
 		return false;
 	}
 

@@ -11,6 +11,10 @@
 #include <fontconfig.h>
 #endif // FONTCONFIG_FOUND
 
+#ifdef _WIN32
+	#include "util.h" // For converting UTF-8 to CP1252, console output
+#endif
+
 TextInterface::TextInterface() : locationX(0), locationY(0) {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -122,11 +126,19 @@ void TextInterface::commandVerticalText(void) {
 }
 
 void TextInterface::commandPrint(void) {
-	std::cout << cb->popValue().toString().getRef() << std::endl;
+	#ifdef _WIN32
+		std::cout << utf8toCP1252(cb->popValue().toString().getUtf8Encoded()) << std::endl;
+	#else
+		std::cout << cb->popValue().toString().getUtf8Encoded() << std::endl;
+	#endif
 }
 
 void TextInterface::commandWrite(void) {
-	std::cout << cb->popValue().toString().getRef();
+	#ifdef _WIN32
+		std::cout << utf8toCP1252(cb->popValue().toString().getUtf8Encoded()) << std::endl;
+	#else
+		std::cout << cb->popValue().toString().getUtf8Encoded();
+	#endif
 }
 
 void TextInterface::commandLocate(void) {

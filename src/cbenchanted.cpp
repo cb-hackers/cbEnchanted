@@ -72,6 +72,8 @@ void CBEnchanted::run() {
 bool CBEnchanted::init(const char* file, int argc, char** argv) {
 
 #ifdef _WIN32
+	// Set console output codepage to Windows-1252
+	SetConsoleOutputCP(1252);
 	#if !defined(TEST) && defined(NDEBUG)
 		// Not on test or debug mode and on Windows, hide the console immediately.
 		ShowWindow(GetConsoleWindow(), SW_HIDE);

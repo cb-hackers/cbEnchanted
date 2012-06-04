@@ -5,22 +5,23 @@
 #include <iostream>
 #ifdef _WIN32
 
+#include "util.h"
 #include <allegro5/allegro_windows.h>
 // *******************************************
 // Code related to custom message boxes
 // *******************************************
 
 // Declare functions
-INT CBTMessageBox(HWND,LPSTR,LPSTR,UINT);
+INT CBTMessageBox(HWND,LPWSTR,LPWSTR,UINT);
 LRESULT CALLBACK CBTProc(INT, WPARAM, LPARAM);
 
 // Global hook for message boxes
 HHOOK hhk;
 
 // Create the custom message box
-INT CBTMessageBox(HWND hwnd, LPSTR lpText, LPSTR lpCaption, UINT uType) {
+INT CBTMessageBox(HWND hwnd, LPWSTR lpText, LPWSTR lpCaption, UINT uType) {
 	hhk = SetWindowsHookEx(WH_CBT, &CBTProc, 0, GetCurrentThreadId());
-	return MessageBoxA(hwnd, lpText, lpCaption, uType);
+	return MessageBoxW(hwnd, lpText, lpCaption, uType);
 }
 
 // Callback that handles the modification of the message box
@@ -151,7 +152,12 @@ bool ErrorSystem::execLastError() {
 		return true;
 	}
 
-	std::cerr << concatError.c_str() << std::endl;
+#ifdef _WIN32
+	// Windows wants it's console output in codepage 1252
+	std::cerr << utf8toCP1252(concatError) << std::endl;
+#else
+	std::cerr << concatError << std::endl;
+#endif
 
 	if (lastError.fatal) {
 		al_show_native_message_box(
@@ -197,7 +203,12 @@ bool ErrorSystem::execLastError() {
 	else {
 		message = lastError.heading + "\n\n" + lastError.message;
 	}
-	int ret = CBTMessageBox(al_get_win_window_handle(cb->getWindow()), (LPSTR)message.c_str(), (LPSTR)lastError.title.c_str(), MB_ABORTRETRYIGNORE | MB_ICONERROR);
+
+	// Convert message and title to utf-16 with the amazing UTF8-CPP library
+	wstring wideMsg = utf8ToUtf16(message);
+	wstring wideTitle = utf8ToUtf16(lastError.title);
+
+	int ret = CBTMessageBox(al_get_win_window_handle(cb->getWindow()), &wideMsg[0], &wideTitle[0], MB_ABORTRETRYIGNORE | MB_ICONERROR);
 	switch (ret) {
 		case 0: // No buttons clicked
 		case IDRETRY: // User clicked continue
