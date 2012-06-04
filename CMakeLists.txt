@@ -2,7 +2,7 @@ project(CBEnchanted CXX C)
 cmake_minimum_required(VERSION 2.8)
 
 set(EXE_NAME "CBEnchanted")
-set(CMAKE_CXX_FLAGS "")
+set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
