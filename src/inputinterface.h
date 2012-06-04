@@ -67,6 +67,15 @@ class InputInterface {
 		//For MouseMove*
 		int32_t lastMouseX,lastMouseY,lastMouseZ;
 
+		/** Array of Allegro keys mapped to their uint8_t equivelant ASCII value */
+		uint8_t cbAsciiMap[ALLEGRO_KEY_MAX];
+
+		/** Array of Allegro keys mapped to their uint8_t equivelants ASCII value when Shift was pressed down. */
+		uint8_t cbAsciiMapShift[ALLEGRO_KEY_MAX];
+
+		/** Array of Allegro keys mapped to their uint8_t equivelants ASCII value when Alt+Ctrl or AltGr was pressed down. */
+		uint8_t cbAsciiMapAltGr[ALLEGRO_KEY_MAX];
+
 		/** Holds the current running Input */
 		CBInput *input;
 };

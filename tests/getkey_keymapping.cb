@@ -1,0 +1,22 @@
+SAFEEXIT OFF
+
+AddText "Press keyboard"
+
+Repeat
+
+    For i = 0 To 221
+        c = KeyDown(i)
+        If c Then d = i : Exit
+    Next i
+
+    a = GetKey()
+    
+    If a Then b=a
+    
+    Text 20,20,"Pressed ASCII: "+b
+    Text 20,35,"Pressed character: "+Chr(b)
+    Text 20,50,"SCAN code: " + d
+    
+    DrawScreen
+
+Forever 
