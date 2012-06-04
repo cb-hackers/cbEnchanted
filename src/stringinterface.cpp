@@ -160,16 +160,12 @@ void StringInterface::functionRSet(void) {
 
 void StringInterface::functionChr(void) {
 	unsigned char AV = cb->popValue().getInt();
-	if (AV == 255) AV = 0;
-	if (AV > 127) AV++;
-	string s;
-	s += AV;
+	string s(1, AV);
 	cb->pushValue(s);
 }
 
 void StringInterface::functionAsc(void) {
 	uint8_t AV = uint8_t(*cb->popValue().getString().getRef().c_str());
-	if (AV == 0) AV = 255;
 	cb->pushValue(int(AV));
 }
 
