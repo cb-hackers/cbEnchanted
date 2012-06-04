@@ -1,0 +1,26 @@
+Restore datalist1
+
+For i = 1 To 10
+    Print Read()
+Next i
+
+
+datalist1:
+Data 255, "asd", 2.0, 65535 As Short, 128 As Byte
+Data 25, "Hello, world!", 8.0, 32768 As Short, 64 As Byte
+
+
+Restore datalist2
+For i = 1 To 10
+    Print Read()
+Next i
+
+WaitKey
+Print "Try to read past DATA"
+Print Read()
+
+
+datalist2:
+Data 2147483647, "Hohohoo", 16.85, -5 As Short, 196 As Byte
+Data -2147483647, "Hei, maailma!", -15251.1245, -512 As Short, 32 As Byte
+

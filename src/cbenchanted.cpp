@@ -46,6 +46,7 @@ void CBEnchanted::run() {
 			case 65: handleSetInt(); break;
 			case 66: handleSetFloat(); break;
 			case 67: handleCommand(); break;
+			case 68: handleData(); break;
 			case 73: handlePushInt(); break;
 			case 74: handlePushSomething(); break;
 			case 78: handleJump(); break;
@@ -203,6 +204,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			case 85:
 			case 86:
 			case 90: i += 4; break;
+			case 68:
 			case 79: i ++; break;
 			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
 		}
@@ -224,9 +226,11 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			case 84:
 			case 86:
 			case 90: i += 4; break;
+			case 68:
 			case 79: i ++; break;
 			case 67: {
-				if ((*(int32_t *)(code + i)) == 12 || (*(int32_t *)(code + i)) == 21 || (*(int32_t *)(code + i)) == 6) { //commandGoto, commandGosub and commandSelect
+				int32_t cmdOpCode = (*(int32_t *)(code + i));
+				if (cmdOpCode == 12 || cmdOpCode == 21 || cmdOpCode == 6 || cmdOpCode == 62) { //commandGoto, commandGosub, commandSelect, commandRestore
 					int32_t id = *(int32_t *)(code + i + 5);
 					*(int32_t *)(code + i + 5) = offsets[id];
 				}
@@ -419,7 +423,7 @@ void CBEnchanted::commandFunction(void) {
 	}
 }
 
-void CBEnchanted::commandSelect() {
+void CBEnchanted::commandSelect(void) {
 	selectValue = popValue();
 	++code;
 	code = codeBase + *(int32_t *)(code);
@@ -518,6 +522,7 @@ FORCEINLINE void CBEnchanted::handleCommand(void) {
 		case 44: commandClearArray(); break;
 		case 56: commandInsert(); break;
 		case 57: commandDelete(); break;
+		case 62: commandRestore(); break;
 		case 65: commandInitObjectList(); break;
 		case 69: commandEnd(); break;
 		case 70: popValue(); break;
@@ -1109,7 +1114,7 @@ FORCEINLINE void CBEnchanted::handleIncGlobalVar(void) {
 	code += 4;
 }
 
-FORCEINLINE void CBEnchanted::handlePushTypeMemberVariable() {
+FORCEINLINE void CBEnchanted::handlePushTypeMemberVariable(void) {
 	void * typePtr = getTypePointerVariable(*((int32_t*)(code)));
 	code += 4;
 	int32_t varType = popValue().getInt();
@@ -1253,10 +1258,6 @@ void CBEnchanted::functionBefore(void) {
 void CBEnchanted::functionAfter(void) {
 	void *typeMember = popValue().getTypePtr();
 	pushValue(Type::getAfter(typeMember));
-}
-
-void CBEnchanted::functionRead(void) {
-
 }
 
 void CBEnchanted::functionConvertToInteger(void) {
@@ -1423,7 +1424,7 @@ void CBEnchanted::commandSetVariable(void) {
 	HCDEBUG("Push value, type: %i", type);
 }
 
-void CBEnchanted::commandSetGlobalVariable() {
+void CBEnchanted::commandSetGlobalVariable(void) {
 	int32_t type = popValue().getInt();
 	int32_t var = popValue().getInt();
 	switch  (type) {
@@ -1435,7 +1436,7 @@ void CBEnchanted::commandSetGlobalVariable() {
 	}
 }
 
-void CBEnchanted::commandSetArrayNumbers() {
+void CBEnchanted::commandSetArrayNumbers(void) {
 	int32_t shortCount = popValue().getInt();
 	int32_t byteCount = popValue().getInt();
 	int32_t stringCount = popValue().getInt();
@@ -1444,7 +1445,7 @@ void CBEnchanted::commandSetArrayNumbers() {
 	initArrays(byteCount, shortCount, stringCount, floatCount, integerCount);
 }
 
-void CBEnchanted::commandSetGlobalVariableNumbers() {
+void CBEnchanted::commandSetGlobalVariableNumbers(void) {
 	int32_t shortCount = popValue().getInt();
 	int32_t byteCount = popValue().getInt();
 	int32_t stringCount = popValue().getInt();
@@ -1486,7 +1487,7 @@ void CBEnchanted::commandSetTypeMemberField(void)
 	}
 }
 
-void CBEnchanted::commandSetVariableNumbers() {
+void CBEnchanted::commandSetVariableNumbers(void) {
 	//TODO: Check if right order
 	int32_t typePtrCount = popValue().getInt();
 	int32_t shortCount = popValue().getInt();
@@ -1495,4 +1496,49 @@ void CBEnchanted::commandSetVariableNumbers() {
 	int32_t floatCount = popValue().getInt();
 	int32_t integerCount = popValue().getInt();
 	pushScope(byteCount, shortCount, stringCount, floatCount, integerCount, typePtrCount);
+}
+
+void CBEnchanted::commandRestore(void) {
+	code++;
+	handlePushInt();
+	dataPos = popValue().getInt();
+	DEBUG("Pushed Restore position %i", dataPos)
+}
+
+void CBEnchanted::handleData(void) {
+	// Move the code-variable forward for the amount needed
+	uint8_t type = *(uint8_t *)(code);
+	switch (type) {
+		case 1: // Int, Short, Byte
+			code += 6;
+		break;
+		case 2: // Float
+		case 4: // String
+			code += 11;
+		break;
+	}
+}
+
+void CBEnchanted::functionRead(void) {
+	char * tempCode = code;
+	code = codeBase + dataPos;
+	if (*(uint8_t *)(code++) != 68) {
+		errors->createError("Read() failed!", "Tried to read past DATA");
+		code = tempCode;
+		pushValue(0);
+		return;
+	}
+	uint8_t type = *(uint8_t *)(code);
+	code += 2;
+
+	handlePushInt();
+	if (type == 2 || type == 4) { // Float or String
+		code++;
+		dataPos += 5;
+		handlePushSomething();
+	}
+
+	dataPos += 7;
+
+	code = tempCode;
 }

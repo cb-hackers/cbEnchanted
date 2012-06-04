@@ -99,6 +99,7 @@ class CBEnchanted :
 		void handleIncGlobalVar(void);
 		void handlePushTypeMemberVariable(void);
 		void handleCustomFunctionCall(void);
+		void handleData(void);
 
 		void commandSelect(void);
 		void commandCase(void);
@@ -119,6 +120,7 @@ class CBEnchanted :
 		void commandDelete(void);
 		void commandSetVariable(void);
 		void commandArrayAssign(void);
+		void commandRestore(void);
 		void functionNew(void);
 		void functionFirst(void);
 		void functionLast(void);
@@ -142,6 +144,9 @@ class CBEnchanted :
 		/** Commandline stuff */
 		int argc;
 		char **argv;
+
+		/** Current datalist readpoint */
+		uint32_t dataPos;
 };
 
 #endif
