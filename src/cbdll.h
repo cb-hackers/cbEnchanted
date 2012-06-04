@@ -8,11 +8,7 @@
 class CBDLL
 {
 	public:
-#ifdef _WIN32
 		typedef void (*CBDLLFunction)(const void *, int32_t, void *, int32_t);
-#else
-		typedef void (*CBDLLFunction)(const void *, int32_t, void *, int32_t);
-#endif
 		typedef unordered_map<string, CBDLLFunction> FunctionMap;
 		CBDLL();
 		bool load(const ISString &f);
