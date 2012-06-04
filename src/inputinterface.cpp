@@ -284,8 +284,20 @@ void InputInterface::functionKeyUp(void) {
 }
 
 void InputInterface::functionGetKey(void) {
+	ALLEGRO_KEYBOARD_STATE keyState;
+	al_get_keyboard_state(&keyState);
+	for (int i = 1; i < 222; i++) {
+		if (al_key_down(&keyState, cbKeyMap[i])) {
+			if (i == 1 && cb->isSafeExit()) { // ESC and SAFEEXIT ON
+				cb->stop();
+				cb->pushValue(0);
+				return;
+			}
+			cb->pushValue(i);
+			return;
+		}
+	}
 	cb->pushValue(0);
-	STUB;
 }
 
 /*
@@ -342,7 +354,16 @@ void InputInterface::functionMouseUp(void) {
 }
 
 void InputInterface::functionGetMouse(void) {
-	STUB;
+	ALLEGRO_MOUSE_STATE mouseState;
+	al_get_mouse_state(&mouseState);
+	int btnCount = al_get_mouse_num_buttons();
+	for (int i = 1; i <= btnCount; i++) {
+		if (al_mouse_button_down(&mouseState, i)) {
+			cb->pushValue(i);
+			return;
+		}
+	}
+	cb->pushValue(0);
 }
 
 void InputInterface::functionWaitMouse(void) {
