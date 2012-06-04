@@ -48,7 +48,7 @@ class SysInterface {
 		string confirmationStr;
 
 		/** Unordered map for dlls*/
-		tr1::unordered_map<string, CBDLL*> dlls;
+		unordered_map<string, CBDLL*> dlls;
 };
 
 #endif
