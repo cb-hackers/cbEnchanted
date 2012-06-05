@@ -224,7 +224,6 @@ void GfxInterface::commandDrawScreen(void) {
 	bool windowResized = false;
 	while (al_get_next_event(cb->getEventQueue(), &e)) {
 		if (cb->handleKeyboardEvent(&e)) {
-			cb->stop();
 			return;
 		}
 		cb->handleMouseEvent(&e);

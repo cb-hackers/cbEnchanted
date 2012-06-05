@@ -53,8 +53,10 @@ class InputInterface {
 		/** Updates keystates and mouse buttons. Must been called after event loop. */
 		void postEventLoopUpdate();
 
+		/** Handles keyboard events. Returns true if CBEnchanted::stop() is called.*/
 		bool handleKeyboardEvent(ALLEGRO_EVENT *e);
 
+		/** Handles mouse events*/
 		void handleMouseEvent(ALLEGRO_EVENT *e);
 
 		/** Updates keyStates */
@@ -78,10 +80,10 @@ class InputInterface {
 
 		/** Key states */
 		enum KeyState {
-			Up = 0,
-			Down = 1,
-			Released = 2,
-			Pressed = 3
+			Up = 0,			//00
+			Down = 1,		//01
+			Released = 2,	//10
+			Pressed = 3		//11
 		};
 
 		/** Key states */

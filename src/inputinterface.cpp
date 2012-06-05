@@ -313,7 +313,6 @@ void InputInterface::commandWaitKey(void) {
 			default:
 				handleMouseEvent(&e);
 				if (handleKeyboardEvent(&e)) {
-					cb->stop();
 					return;
 				}
 		}
@@ -539,7 +538,6 @@ void InputInterface::functionWaitMouse(void) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		handleMouseEvent(&e);
 		if (handleKeyboardEvent(&e)) {
-			cb->stop();
 			return;
 		}
 		switch (e.type) {
@@ -646,6 +644,7 @@ bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e) {
 	}
 	if (e->type == ALLEGRO_EVENT_KEY_DOWN) {
 		if (e->keyboard.keycode == ALLEGRO_KEY_ESCAPE && cb->isSafeExit()) {
+			cb->stop();
 			return true;
 		}
 		updateKeyState(&e->keyboard);
