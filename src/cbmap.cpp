@@ -2,7 +2,11 @@
 #include "cbenchanted.h"
 
 /** Constructs a new CBMap and calls the constructor for CBObject */
-CBMap::CBMap() : CBObject() {
+CBMap::CBMap() :
+	CBObject(),
+	animLength(0),
+	animSlowness(0)
+{
 	layerShowing[0] = 1;
 	layerShowing[1] = 1;
 }
@@ -37,9 +41,15 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 			memset(layers[i][x], 0, sizeof(uint32_t) * height);
 		}
 	}
-	tileCount = mapWidth * mapHeight;
+	tileCount = 64; //Default size. Arrays will be resized if more tiles are used.
 	currentFrame = new float [tileCount];
-	memset(currentFrame,0,sizeof(float)*tileCount);
+	animSlowness = new int32_t [tileCount];
+	animLength = new int32_t [tileCount];
+	memset(currentFrame, 0, sizeof(float) * tileCount);
+	memset(animLength, 0, tileCount * sizeof(int32_t));
+	for (uint32_t i = 0; i < tileCount; i++) {
+		animSlowness[i] = 1;
+	}
 	return true;
 }
 
@@ -91,7 +101,7 @@ bool CBMap::loadMap(string file) {
 		animLength = new int32_t [tileCount];
 		animSlowness = new int32_t [tileCount];
 		currentFrame = new float [tileCount];
-		memset(currentFrame,0,sizeof(float)*tileCount);
+		memset(currentFrame,0,sizeof(float) * tileCount);
 
 		mapStream.read((char*)&tileWidth, 4);
 		mapStream.read((char*)&tileHeight, 4);
@@ -319,6 +329,32 @@ bool CBMap::updateObject(float timestep) {
  * @param slowness How slowly will the tile animate
  */
 void CBMap::setTile(uint32_t tile, uint32_t length, uint32_t slowness) {
+	if (tile >= tileCount) {//Arrays are too small
+		int32_t newTileCount = tile + 1;
+		//New arrays
+		float *newCurrentFrame = new float [newTileCount];
+		int32_t *newSlowness = new int32_t[newTileCount];
+		int32_t *newLength = new int32_t [newTileCount];
+		//Copy old data
+		memcpy(newCurrentFrame, currentFrame, sizeof(float) * tileCount);
+		memcpy(newSlowness, animSlowness, sizeof(int32_t) * tileCount);
+		memcpy(newLength, animLength, sizeof(int32_t) * tileCount);
+		//Initialize new part
+		memset(newCurrentFrame + tileCount, 0, (newTileCount - tileCount) * sizeof(float));
+		memset(newLength + tileCount, 0, (newTileCount - tileCount) * sizeof(int32_t));
+		for (uint32_t i = tileCount; i < newTileCount; i++) {
+			animSlowness[i] = 1;
+		}
+		//Delete old arrays
+		delete[] currentFrame;
+		delete[] animLength;
+		delete[] animSlowness;
+
+		tileCount = newTileCount;
+		currentFrame = newCurrentFrame;
+		animLength = newLength;
+		animSlowness = newSlowness;
+	}
 	animLength[tile] = length;
 	animSlowness[tile] = slowness;
 }

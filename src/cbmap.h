@@ -68,7 +68,7 @@ class CBMap : public CBObject {
 	private:
 		int32_t **layers[4];
 
-		int32_t tileCount;
+		uint32_t tileCount;
 		int32_t mapWidth;
 		int32_t mapHeight;
 		int32_t tileWidth;
