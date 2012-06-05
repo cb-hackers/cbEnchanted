@@ -223,6 +223,11 @@ void GfxInterface::commandDrawScreen(void) {
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
 	while (al_get_next_event(cb->getEventQueue(), &e)) {
+		if (cb->handleKeyboardEvent(&e)) {
+			cb->stop();
+			return;
+		}
+		cb->handleMouseEvent(&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
@@ -232,12 +237,6 @@ void GfxInterface::commandDrawScreen(void) {
 			case ALLEGRO_EVENT_DISPLAY_RESIZE:
 				windowResized = true;
 				break;
-			default:
-				if (cb->handleKeyboardEvent(&e)) {
-					cb->stop();
-					return;
-				}
-				cb->handleMouseEvent(&e);
 		}
 	}
 	if (windowResized) al_acknowledge_resize(window);
