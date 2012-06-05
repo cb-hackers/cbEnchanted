@@ -321,13 +321,17 @@ void FileInterface::functionCurrentDir(void) {
 }
 
 void FileInterface::functionFileExists(void) {
-	cb->pushValue(al_filename_exists(cb->popValue().toString().getRef().c_str()));
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	cb->pushValue(al_filename_exists(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP)));
+	al_destroy_path(filePath);
 }
 
 void FileInterface::functionIsDirectory(void) {
-	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP));
 	cb->pushValue(bool(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR));
 	al_destroy_fs_entry(file);
+	al_destroy_path(filePath);
 }
 
 void FileInterface::functionFileSize(void) {
