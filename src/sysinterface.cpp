@@ -175,9 +175,23 @@ void SysInterface::functionFPS(void) {
 }
 
 void SysInterface::functionCrc32(void) {
-	const ISString &str = cb->popValue().getString();
+	const Any &any = cb->popValue();
 	boost::crc_32_type result;
-	result.process_bytes(str.getRef().c_str(), str.getRef().length());
+	if (any.type() == Any::String) {
+		const size_t bufferSize = 1024;
+		char buffer[bufferSize];
+		ALLEGRO_FILE *file = al_fopen(any.getString().getRef().c_str(),"rb");
+		size_t readSize;
+		do {
+			readSize = al_fread(file, buffer, bufferSize);
+			result.process_bytes(buffer, readSize);
+		} while (readSize == bufferSize);
+		al_fclose(file);
+	}
+	else if (any.type() == Any::Int) {
+		uint8_t *memblock = cb->getMemblock(any.getInt());
+		result.process_bytes(MemInterface::getMEMBlockData(memblock), MemInterface::getMEMBlockSize(memblock));
+	}
 	cb->pushValue((int32_t)result.checksum());
 }
 
