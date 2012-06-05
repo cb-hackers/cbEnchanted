@@ -29,12 +29,7 @@ void SysInterface::initializeSysInterface() {
 }
 
 void SysInterface::commandWait(void) {
-#ifdef WIN32
-	Sleep(cb->popValue().toInt());
-#else
-	uint32_t sleepTime = cb->popValue().toInt();
-	usleep(sleepTime * 1000);
-#endif
+	al_rest(double(cb->popValue().getInt()) / 1000.0);
 }
 
 void SysInterface::commandMakeError(void) {
