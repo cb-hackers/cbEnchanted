@@ -10,13 +10,13 @@ InputInterface::InputInterface() :
 	lastMouseY(0),
 	lastMouseZ(0),
 	cursor(NULL),
-	input(0)
+	input(0),
+	clearKeyboard(false),
+	clearMouse(false)
 {
 	cb = static_cast <CBEnchanted *> (this);
-	currentKeyboardState = new ALLEGRO_KEYBOARD_STATE;
-	lastKeyboardState = new ALLEGRO_KEYBOARD_STATE;
-	currentMouseState = new ALLEGRO_MOUSE_STATE;
-	lastMouseState = new ALLEGRO_MOUSE_STATE;
+
+	memset(keyStates, 0, ALLEGRO_KEY_MAX);
 
 	// Init cbKeyMap values to 0
 	for (int i = 0; i < 222; ++i) {
@@ -302,30 +302,35 @@ void InputInterface::commandWaitKey(void) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_KEY_DOWN:
-			return;
-			case ALLEGRO_EVENT_KEY_CHAR:
-				cb->handleKeyChar(&e);
-			break;
+				updateKeyState(&e.keyboard);
+				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
 					cb->stop();
 					return;
 				}
-			break;
+				break;
+			default:
+				handleMouseEvent(&e);
+				if (handleKeyboardEvent(&e)) {
+					cb->stop();
+					return;
+				}
 		}
 	}
 }
 
 void InputInterface::commandClearKeys(void) {
-	memset(currentKeyboardState->__key_down__internal__,0,((ALLEGRO_KEY_MAX + 31) / 32)*4);
-	memset(lastKeyboardState->__key_down__internal__,0,((ALLEGRO_KEY_MAX + 31) / 32)*4);
+	clearKeyboard = true;
 }
 
 void InputInterface::commandPositionMouse(void) {
-	int32_t mouseY = cb->popValue().toInt();
-	int32_t mouseX = cb->popValue().toInt();
+	int32_t mY = cb->popValue().toInt();
+	int32_t mX = cb->popValue().toInt();
 
-	al_set_mouse_xy(cb->getWindow(),mouseX,mouseY);
+	al_set_mouse_xy(cb->getWindow(),mX,mY);
+	mouseX = mX;
+	mouseY = mY;
 }
 
 void InputInterface::commandWaitMouse(void) {
@@ -334,22 +339,20 @@ void InputInterface::commandWaitMouse(void) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-			return;
-			case ALLEGRO_EVENT_KEY_DOWN:
-				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-					cb->stop();
-					return;
-				}
-			break;
-			case ALLEGRO_EVENT_KEY_CHAR:
-				cb->handleKeyChar(&e);
-			break;
+				return;
+				break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
 					cb->stop();
 					return;
 				}
-			break;
+				break;
+			default:
+				handleMouseEvent(&e);
+				if (handleKeyboardEvent(&e)) {
+					cb->stop();
+					return;
+				}
 		}
 	}
 }
@@ -398,8 +401,7 @@ void InputInterface::commandShowMouse(void) {
 }
 
 void InputInterface::commandClearMouse(void) {
-	currentMouseState->buttons = 0;
-	lastMouseState->buttons = 0;
+	clearMouse = true;
 }
 
 void InputInterface::commandSAFEEXIT(void) {
@@ -426,17 +428,17 @@ void InputInterface::functionInput(void) {
 
 void InputInterface::functionKeyDown(void) {
 	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
-	cb->pushValue(al_key_down(currentKeyboardState,keyC));
+	cb->pushValue(keyStates[keyC] & 1);
 }
 
 void InputInterface::functionKeyHit(void) {
 	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
-	cb->pushValue(al_key_down(currentKeyboardState,keyC) && !al_key_down(lastKeyboardState,keyC));
+	cb->pushValue(keyStates[keyC] == Pressed);
 }
 
 void InputInterface::functionKeyUp(void) {
 	int32_t keyC = cbKeyMap[cb->popValue().toInt()];
-	cb->pushValue(!al_key_down(currentKeyboardState,keyC) && al_key_down(lastKeyboardState,keyC));
+	cb->pushValue(keyStates[keyC] == Released);
 }
 
 void InputInterface::functionGetKey(void) {
@@ -488,16 +490,15 @@ void InputInterface::functionWaitKey(void) {
 				int32_t key = e.keyboard.keycode;
 				for (int32_t i = 0; i < 222; ++i) {
 					if (cbKeyMap[i] == key) {
+						updateKeyState(&e.keyboard);
 						cb->pushValue(i);
 						return;
 					}
 				}
+				updateKeyState(&e.keyboard);
 				cb->pushValue(0);
 				return;
 			}
-			case ALLEGRO_EVENT_KEY_CHAR:
-				cb->handleKeyChar(&e);
-			break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
 					cb->stop();
@@ -505,23 +506,26 @@ void InputInterface::functionWaitKey(void) {
 					return;
 				}
 			break;
+		default:
+			handleKeyboardEvent(&e);
+			handleMouseEvent(&e);
 		}
 	}
 }
 
 void InputInterface::functionMouseDown(void) {
 	int32_t button = cb->popValue().toInt();
-	cb->pushValue(al_mouse_button_down(currentMouseState,button));
+	cb->pushValue(mouseButtonStates[button - 1] == Down);
 }
 
 void InputInterface::functionMouseHit(void) {
 	int32_t button = cb->popValue().toInt();
-	cb->pushValue(al_mouse_button_down(currentMouseState,button) && !al_mouse_button_down(lastMouseState,button));
+	cb->pushValue(mouseButtonStates[button - 1] == Pressed);
 }
 
 void InputInterface::functionMouseUp(void) {
 	int32_t button = cb->popValue().toInt();
-	cb->pushValue(!al_mouse_button_down(currentMouseState,button) && al_mouse_button_down(lastMouseState,button));
+	cb->pushValue(mouseButtonStates[button - 1] == Released);
 }
 
 void InputInterface::functionGetMouse(void) {
@@ -544,84 +548,76 @@ void InputInterface::functionWaitMouse(void) {
 		switch (e.type) {
 			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 				cb->pushValue((int32_t)e.mouse.button);
-			return;
-			case ALLEGRO_EVENT_KEY_DOWN:
-				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-					cb->stop();
-					cb->pushValue(0);
-					return;
-				}
-			break;
-			case ALLEGRO_EVENT_KEY_CHAR:
-				cb->handleKeyChar(&e);
-			break;
+				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
 					cb->stop();
-					cb->pushValue(0);
 					return;
 				}
 			break;
+		default:
+			handleMouseEvent(&e);
+			if (handleKeyboardEvent(&e)) {
+				cb->stop();
+				return;
+			}
 		}
 	}
 }
 
 void InputInterface::functionMouseX(void) {
-	cb->pushValue(al_get_mouse_state_axis(currentMouseState,0));
+	cb->pushValue(mouseX);
 }
 
 void InputInterface::functionMouseY(void) {
-	cb->pushValue(al_get_mouse_state_axis(currentMouseState,1));
+	cb->pushValue(mouseY);
 }
 
 void InputInterface::functionMouseWX(void) {
-	cb->pushValue(cb->screenCoordToWorldX(al_get_mouse_state_axis(currentMouseState,0)));
+	cb->pushValue(cb->screenCoordToWorldX(mouseX));
 }
 
 void InputInterface::functionMouseWY(void) {
-	cb->pushValue(cb->screenCoordToWorldY(al_get_mouse_state_axis(currentMouseState,1)));
+	cb->pushValue(cb->screenCoordToWorldY(mouseY));
 }
 
 void InputInterface::functionMouseZ(void) {
-	cb->pushValue(al_get_mouse_state_axis(currentMouseState,2));
+	cb->pushValue(mouseZ);
 }
 
 void InputInterface::functionMouseMoveX(void) {
-	int32_t a = al_get_mouse_state_axis(currentMouseState,0);
-	cb->pushValue(a-lastMouseX);
-	lastMouseX = a;
+	cb->pushValue(mouseX - lastMouseX);
+	lastMouseX = mouseX;
 }
 
 void InputInterface::functionMouseMoveY(void) {
-	int32_t a = al_get_mouse_state_axis(currentMouseState,1);
-	cb->pushValue(a-lastMouseY);
-	lastMouseY = a;
+	cb->pushValue(mouseY - lastMouseY);
+	lastMouseY = mouseY;
 }
 
 void InputInterface::functionMouseMoveZ(void) {
-	int32_t a = al_get_mouse_state_axis(currentMouseState,2);
-	cb->pushValue(a-lastMouseZ);
-	lastMouseZ = a;
+	cb->pushValue(mouseZ - lastMouseZ);
+	lastMouseZ = mouseZ;
 }
 
 void InputInterface::functionLeftKey(void) {
-	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_LEFT));
+	cb->pushValue(keyStates[ALLEGRO_KEY_LEFT] & 1);
 }
 
 void InputInterface::functionRightKey(void) {
-	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_RIGHT));
+	cb->pushValue(keyStates[ALLEGRO_KEY_RIGHT] & 1);
 }
 
 void InputInterface::functionUpKey(void) {
-	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_UP));
+	cb->pushValue(keyStates[ALLEGRO_KEY_UP] & 1);
 }
 
 void InputInterface::functionDownKey(void) {
-	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_DOWN));
+	cb->pushValue(keyStates[ALLEGRO_KEY_DOWN] & 1);
 }
 
 void InputInterface::functionEscapeKey(void) {
-	cb->pushValue(al_key_down(currentKeyboardState,ALLEGRO_KEY_ESCAPE));
+	cb->pushValue(keyStates[ALLEGRO_KEY_ESCAPE] & 1);
 }
 
 bool InputInterface::initializeInputs() {
@@ -629,26 +625,69 @@ bool InputInterface::initializeInputs() {
 	if (!al_install_mouse()) return false;
 	al_register_event_source(cb->getEventQueue(),al_get_keyboard_event_source());
 	al_register_event_source(cb->getEventQueue(),al_get_mouse_event_source());
-	updateInputs();
 	return true;
 }
 
 
-void InputInterface::updateInputs(){
-	ALLEGRO_KEYBOARD_STATE *temp1 = lastKeyboardState;
-	lastKeyboardState = currentKeyboardState;
-	currentKeyboardState = temp1;
-	al_get_keyboard_state(currentKeyboardState);
-	ALLEGRO_MOUSE_STATE *temp2 = lastMouseState;
-	lastMouseState = currentMouseState;
-	currentMouseState = temp2;
-	al_get_mouse_state(currentMouseState);
+void InputInterface::preEventLoopUpdate() {
+	for (uint32_t i = 0; i < ALLEGRO_KEY_MAX; i++) {
+		//Clear second bit
+		//Pressed -> Down
+		//Released -> Up
+		keyStates[i] &= 0x01;
+	}
+
+	for (uint32_t i = 0; i < MAX_MOUSE_BUTTONS; i++) {
+		//Clear second bit
+		//Pressed -> Down
+		//Released -> Up
+		mouseButtonStates[i] &= 0x01;
+	}
 }
 
-/** Handles KEY_CHAR events that most likely happen during DrawScreen */
-void InputInterface::handleKeyChar(ALLEGRO_EVENT *e) {
-	if (input && e->keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
+bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e) {
+	if (clearKeyboard) {
+		return false;
+	}
+	if (e->type == ALLEGRO_EVENT_KEY_CHAR && input && e->keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
 		input->keyChar(e);
+		return false;
+	}
+	if (e->type == ALLEGRO_EVENT_KEY_DOWN) {
+		if (e->keyboard.keycode == ALLEGRO_KEY_ESCAPE && cb->isSafeExit()) {
+			return true;
+		}
+		updateKeyState(&e->keyboard);
+	}
+	if (e->type == ALLEGRO_EVENT_KEY_UP) {
+		updateKeyState(&e->keyboard);
+	}
+	return false;
+}
+
+void InputInterface::handleMouseEvent(ALLEGRO_EVENT *e) {
+	if (clearMouse) return;
+	switch (e->type) {
+		case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			mouseButtonStates[e->mouse.button - 1] = Pressed;
+			return;
+		case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+			mouseButtonStates[e->mouse.button - 1] = Released;
+			return;
+		case ALLEGRO_EVENT_MOUSE_AXES:
+			mouseX = e->mouse.x;
+			mouseY = e->mouse.y;
+			mouseZ = e->mouse.z;
+			return;
+	}
+}
+
+void InputInterface::updateKeyState(ALLEGRO_KEYBOARD_EVENT *e) {
+	if (e->type == ALLEGRO_EVENT_KEY_DOWN) {
+		keyStates[e->keycode] = Pressed;
+	}
+	if (e->type == ALLEGRO_EVENT_KEY_UP) {
+		keyStates[e->keycode] = Released;
 	}
 }
 
@@ -667,4 +706,9 @@ void InputInterface::renderInput(RenderTarget &r) const {
 	r.setAsCurrent();
 	r.useWorldCoords(false);
 	r.drawText(cb->getCurrentFont(), str, input->getLocationX(), input->getLocationY(), input->getColor());
+}
+
+void InputInterface::postEventLoopUpdate() {
+	clearMouse = false;
+	clearKeyboard = false;
 }

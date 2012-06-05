@@ -218,6 +218,8 @@ void GfxInterface::commandDrawScreen(void) {
 
 	gameUpdated = false;
 	gameDrawn = false;
+
+	cb->preEventLoopUpdate();
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
 	while (al_get_next_event(cb->getEventQueue(), &e)) {
@@ -227,22 +229,19 @@ void GfxInterface::commandDrawScreen(void) {
 					cb->stop();
 				}
 				break;
-			case ALLEGRO_EVENT_KEY_DOWN:
-				if (cb->isSafeExit() && e.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-					cb->stop();
-				}
-				break;
-			case ALLEGRO_EVENT_KEY_CHAR:
-				cb->handleKeyChar(&e);
-			break;
 			case ALLEGRO_EVENT_DISPLAY_RESIZE:
 				windowResized = true;
 				break;
+			default:
+				if (cb->handleKeyboardEvent(&e)) {
+					cb->stop();
+					return;
+				}
+				cb->handleMouseEvent(&e);
 		}
 	}
-
 	if (windowResized) al_acknowledge_resize(window);
-	cb->updateInputs();
+	cb->postEventLoopUpdate();
 
 	if (vSync) {
 		al_wait_for_vsync();
