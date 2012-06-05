@@ -363,17 +363,17 @@ void GfxInterface::commandDot(void) {
 
 void GfxInterface::commandBox(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
-	bool fill = cb->popValue().toInt();
-	float h = cb->popValue().toFloat();
-	float w = cb->popValue().toFloat();
-	float y = cb->popValue().toFloat();
-	float x = cb->popValue().toFloat();
+	bool fill = cb->popValue().toBool();
+	float h = cb->popValue().toFloat() - 1.0f * (!fill);
+	float w = cb->popValue().toFloat() - 1.0f * (!fill);
+	float y = cb->popValue().toFloat() + 0.5f * (!fill);
+	float x = cb->popValue().toFloat() + 0.5f * (!fill);
 	currentRenderTarget->drawBox(x,y,w,h,fill,drawColor);
 }
 
 void GfxInterface::commandEllipse(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
-	bool fill = cb->popValue().toInt();
+	bool fill = cb->popValue().toBool();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat()+0.5f;
