@@ -184,6 +184,7 @@ InputInterface::InputInterface() :
 	cbAsciiMap[ALLEGRO_KEY_OPENBRACE] = 180; // ´
 	cbAsciiMap[ALLEGRO_KEY_EQUALS] = '+';
 	cbAsciiMap[ALLEGRO_KEY_SEMICOLON] = 168; // ¨
+	cbAsciiMap[ALLEGRO_KEY_SLASH] = '\'';
 	cbAsciiMap[ALLEGRO_KEY_CLOSEBRACE] = 229; // å
 	cbAsciiMap[ALLEGRO_KEY_QUOTE] = 228; // ä
 	cbAsciiMap[ALLEGRO_KEY_TILDE] = 246; // ö
