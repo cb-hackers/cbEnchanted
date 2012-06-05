@@ -320,6 +320,7 @@ void InputInterface::commandWaitKey(void) {
 }
 
 void InputInterface::commandClearKeys(void) {
+	memset(keyStates, 0, ALLEGRO_KEY_MAX);
 	clearKeyboard = true;
 }
 
@@ -398,6 +399,7 @@ void InputInterface::commandShowMouse(void) {
 }
 
 void InputInterface::commandClearMouse(void) {
+	memset(mouseButtonStates, 0, MAX_MOUSE_BUTTONS);
 	clearMouse = true;
 }
 
