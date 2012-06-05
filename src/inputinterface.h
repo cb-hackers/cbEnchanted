@@ -78,7 +78,7 @@ class InputInterface {
 		bool clearKeyboard;
 		bool clearMouse;
 
-		/** Key states */
+		/** Key states, used as bitmask values */
 		enum KeyState {
 			Up = 0,			//00
 			Down = 1,		//01
@@ -86,15 +86,21 @@ class InputInterface {
 			Pressed = 3		//11
 		};
 
-		/** Key states */
+		/** Key states bitmasks */
 		uint8_t keyStates[ALLEGRO_KEY_MAX];
+
+		/** Mouse button states bitmasks */
 		uint8_t mouseButtonStates[MAX_MOUSE_BUTTONS];
+
+		/** X-coordinate of a mouse */
 		int32_t mouseX;
+		/** Y-coordinate of a mouse */
 		int32_t mouseY;
+		/** Z-coordinate of a mouse - mouse wheel */
 		int32_t mouseZ;
 
-		//For MouseMove*
-		int32_t lastMouseX,lastMouseY,lastMouseZ;
+		/** Last mouse positions for MouseMove* */
+		int32_t lastMouseX, lastMouseY, lastMouseZ;
 
 		/** Array of Allegro keys mapped to their uint8_t equivelant ASCII value */
 		uint8_t cbAsciiMap[ALLEGRO_KEY_MAX];
