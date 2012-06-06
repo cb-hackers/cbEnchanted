@@ -282,6 +282,12 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 	}
 }
 
+void CBMap::render(RenderTarget &target) {
+	target.useWorldCoords(false);
+	drawLayer(0, target);
+	target.useWorldCoords(true);
+}
+
 /** Draws a single tile.
  * @param target To where should we draw to, @see RenderTarget
  * @param tile Which tile should we draw from the tileset, a number from 1 to tile count

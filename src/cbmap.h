@@ -21,7 +21,7 @@ class CBMap : public CBObject {
 		bool loadTileset(string path);
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
-
+		void render(RenderTarget &target);
 		bool isMap() const { return true; }
 
 		void drawTile(RenderTarget &target, int32_t tile,float x,float y);

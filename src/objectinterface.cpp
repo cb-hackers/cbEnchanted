@@ -40,6 +40,7 @@ void ObjectInterface::commandDeleteObject(void) {
 		delete object;
 	}
 	else if (object->type() == CBObject::Map) {
+		removeFromDrawOrder(object);
 		cb->deleteTileMap();
 	}
 	objectMap.erase(id);
@@ -820,12 +821,6 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->afterObj;
-	}
-
-	if (cb->getTileMap()) {
-		// Draw back-layer of the map to screen coordinates
-		target.useWorldCoords(false);
-		cb->getTileMap()->drawLayer(0, target);
 	}
 
 	// Draw normal objects to world coordinates

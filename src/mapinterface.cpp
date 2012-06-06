@@ -42,7 +42,10 @@ void MapInterface::functionLoadMap(void) {
 	ALLEGRO_PATH *mappath = cb->popValue().getString().getPath();
 	const char *cmappath = al_path_cstr(mappath, ALLEGRO_NATIVE_PATH_SEP);
 
-	if (tileMap) delete tileMap;
+	if (tileMap) {
+		cb->removeFromDrawOrder(tileMap);
+		delete tileMap;
+	}
 	tileMap = new CBMap();
 	if(!tileMap->loadMap(cmappath)) {
 		cb->errors->createError("LoadMap() failed!", "Failed to load map file \"" + string(cmappath) + "\"");
@@ -51,7 +54,7 @@ void MapInterface::functionLoadMap(void) {
 		return;
 	}
 	al_destroy_path(mappath);
-
+	cb->addToDrawOrder(tileMap);
 	if(!tileMap->loadTileset(ctilesetpath)) {
 		cb->errors->createError("LoadMap() failed!", "Failed to load tileset \"" + string(ctilesetpath) + "\"");
 		cb->pushValue(0);
@@ -65,8 +68,12 @@ void MapInterface::functionLoadMap(void) {
 }
 
 void MapInterface::functionMakeMap(void) {
-	if (tileMap) delete tileMap;
+	if (tileMap) {
+		cb->removeFromDrawOrder(tileMap);
+		delete tileMap;
+	}
 	tileMap = new CBMap();
+	cb->addToDrawOrder(tileMap);
 	uint16_t tileH = cb->popValue().toInt();
 	uint16_t tileW = cb->popValue().toInt();
 	uint32_t mapH = cb->popValue().toInt();
