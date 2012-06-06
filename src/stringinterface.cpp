@@ -103,14 +103,15 @@ void StringInterface::functionInStr(void) {
 }
 
 void StringInterface::functionUpper(void) {
-	string str = cb->popValue().getString().getRef();
-	cb->pushValue(boost::algorithm::to_upper_copy(str));
+	cb->pushValue(
+				boost::algorithm::to_upper_copy(
+					cb->popValue().getString().getRef()));
 }
 
 void StringInterface::functionLower(void) {
-	string str = cb->popValue().getString().getRef();
-
-	cb->pushValue(boost::algorithm::to_lower_copy(str));
+	cb->pushValue(
+				boost::algorithm::to_lower_copy(
+					cb->popValue().getString().getRef()));
 }
 
 void StringInterface::functionTrim(void) {

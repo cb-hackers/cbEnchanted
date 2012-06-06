@@ -54,10 +54,10 @@ class InputInterface {
 		void postEventLoopUpdate();
 
 		/** Handles keyboard events. Returns true if CBEnchanted::stop() is called.*/
-		bool handleKeyboardEvent(ALLEGRO_EVENT *e);
+		bool handleKeyboardEvent(ALLEGRO_EVENT *e, bool addToQueue = true);
 
 		/** Handles mouse events*/
-		void handleMouseEvent(ALLEGRO_EVENT *e);
+		void handleMouseEvent(ALLEGRO_EVENT *e, bool addToQueue = true);
 
 		/** Updates keyStates */
 		void updateKeyState(ALLEGRO_KEYBOARD_EVENT *e);
@@ -113,6 +113,11 @@ class InputInterface {
 
 		/** Holds the current running Input */
 		CBInput *input;
+
+		/** Event queue */
+		list<ALLEGRO_EVENT> eventQueue;
+		list<ALLEGRO_EVENT> charEventQueue;
+		list<ALLEGRO_EVENT> mouseEventQueue;
 };
 
 #endif

@@ -4,6 +4,8 @@
 #include "cbimage.h"
 #include "cbinput.h"
 #include "errorsystem.h"
+#include "utf8.h"
+#include "util.h"
 
 InputInterface::InputInterface() :
 	lastMouseX(0),
@@ -441,32 +443,51 @@ void InputInterface::functionKeyUp(void) {
 }
 
 void InputInterface::functionGetKey(void) {
-	ALLEGRO_KEYBOARD_STATE keyState;
-	al_get_keyboard_state(&keyState);
-	for (int i = 1; i < 222; i++) {
-		if (al_key_down(&keyState, cbKeyMap[i])) {
-			if (i == 1 && cb->isSafeExit()) { // ESC and SAFEEXIT ON
-				cb->stop();
-				cb->pushValue(0);
+	for (list<ALLEGRO_EVENT>::iterator i = charEventQueue.begin(); i != charEventQueue.begin(); i++) {
+		if (!i->keyboard.repeat) {
+			string utf8str;
+			vector<unsigned int> utf32char(1);
+			utf32char[0] = i->keyboard.unichar;
+			try {
+				utf8::utf32to8(utf32char.begin(), utf32char.end(), back_inserter(utf8str));
+				cb->pushValue((int32_t)*(uint8_t*)utf8toCP1252(utf8str).c_str());
+				charEventQueue.erase(i);
 				return;
 			}
-			// Check for modifier keys
-			if (al_key_down(&keyState, ALLEGRO_KEY_ALTGR) ||
-				(al_key_down(&keyState, ALLEGRO_KEY_ALT) && (al_key_down(&keyState, ALLEGRO_KEY_RCTRL)) ||
-					al_key_down(&keyState, ALLEGRO_KEY_LCTRL))
-			) {
-				// Pressing AltGr or Alt+Ctrl
-				cb->pushValue(cbAsciiMapAltGr[cbKeyMap[i]]);
+			catch(utf8::invalid_code_point &) {
+				// The char point contained malformed UTF-8
 			}
-			else if (al_key_down(&keyState, ALLEGRO_KEY_LSHIFT) || al_key_down(&keyState, ALLEGRO_KEY_RSHIFT)) {
-				// Pressing shift
-				cb->pushValue(cbAsciiMapShift[cbKeyMap[i]]);
+		}
+	}
+	ALLEGRO_EVENT e;
+	while (al_get_next_event(cb->getEventQueue(), &e)) {
+		eventQueue.push_back(e);
+		switch (e.type) {
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+				mouseEventQueue.push_back(e);
+				break;
+			case ALLEGRO_EVENT_KEY_CHAR: {
+				if (!e.keyboard.repeat) {
+					string utf8str;
+					vector<unsigned int> utf32char(1);
+					utf32char[0] = e.keyboard.unichar;
+					try {
+						utf8::utf32to8(utf32char.begin(), utf32char.end(), back_inserter(utf8str));
+						cb->pushValue((int32_t)*(uint8_t*)utf8toCP1252(utf8str).c_str());
+						return;
+					}
+					catch(utf8::invalid_code_point &) {
+						// The char point contained malformed UTF-8
+					}
+				}
+				break;
 			}
-			else {
-				// Not pressing modifier keys
-				cb->pushValue(cbAsciiMap[cbKeyMap[i]]);
-			}
-			return;
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				if (cb->askForExit()) {
+					cb->stop();
+					return;
+				}
+			break;
 		}
 	}
 	cb->pushValue(0);
@@ -522,13 +543,27 @@ void InputInterface::functionMouseUp(void) {
 }
 
 void InputInterface::functionGetMouse(void) {
-	ALLEGRO_MOUSE_STATE mouseState;
-	al_get_mouse_state(&mouseState);
-	int btnCount = al_get_mouse_num_buttons();
-	for (int i = 1; i <= btnCount; i++) {
-		if (al_mouse_button_down(&mouseState, i)) {
-			cb->pushValue(i);
-			return;
+	for (list<ALLEGRO_EVENT>::iterator i = mouseEventQueue.begin(); i != mouseEventQueue.end(); i++) {
+		cb->pushValue((int32_t)i->mouse.button);
+		mouseEventQueue.erase(i);
+		return;
+	}
+	ALLEGRO_EVENT e;
+	while (al_get_next_event(cb->getEventQueue(), &e)) {
+		eventQueue.push_back(e);
+		switch (e.type) {
+			case ALLEGRO_EVENT_KEY_CHAR:
+				charEventQueue.push_back(e);
+				break;
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+				cb->pushValue((int32_t)e.mouse.button);
+				return;
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				if (cb->askForExit()) {
+					cb->stop();
+					return;
+				}
+			break;
 		}
 	}
 	cb->pushValue(0);
@@ -634,15 +669,43 @@ void InputInterface::preEventLoopUpdate() {
 		//Released -> Up
 		mouseButtonStates[i] &= 0x01;
 	}
+	bool windowResized = false;
+	for (list<ALLEGRO_EVENT>::iterator i = eventQueue.begin(); i != eventQueue.end(); i++) {
+		switch (i->type) {
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				if (cb->askForExit()) {
+					cb->stop();
+					return;
+				}
+				break;
+			case ALLEGRO_EVENT_DISPLAY_RESIZE:
+				windowResized = true;
+				break;
+			default:
+				if (handleKeyboardEvent(&*i)) {
+					return;
+				}
+				handleMouseEvent(&*i);
+		}
+	}
+	eventQueue.clear();
+	mouseEventQueue.clear();
+	charEventQueue.clear();
+	if (windowResized) al_acknowledge_resize(cb->getWindow());
 }
 
-bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e) {
+bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e, bool addToQueue) {
 	if (clearKeyboard) {
 		return false;
 	}
-	if (e->type == ALLEGRO_EVENT_KEY_CHAR && input && e->keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
-		input->keyChar(e);
-		return false;
+	if (e->type == ALLEGRO_EVENT_KEY_CHAR) {
+		if (addToQueue) {
+			charEventQueue.push_back(*e);
+		}
+		if (input && e->keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
+			input->keyChar(e);
+			return false;
+		}
 	}
 	if (e->type == ALLEGRO_EVENT_KEY_DOWN) {
 		if (e->keyboard.keycode == ALLEGRO_KEY_ESCAPE && cb->isSafeExit()) {
@@ -657,10 +720,13 @@ bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e) {
 	return false;
 }
 
-void InputInterface::handleMouseEvent(ALLEGRO_EVENT *e) {
+void InputInterface::handleMouseEvent(ALLEGRO_EVENT *e, bool addToQueue) {
 	if (clearMouse) return;
 	switch (e->type) {
 		case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			if (addToQueue) {
+				mouseEventQueue.push_back(*e);
+			}
 			mouseButtonStates[e->mouse.button - 1] = Pressed;
 			return;
 		case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
@@ -703,4 +769,22 @@ void InputInterface::renderInput(RenderTarget &r) const {
 void InputInterface::postEventLoopUpdate() {
 	clearMouse = false;
 	clearKeyboard = false;
+	const double deleteTimeout = 5.0;
+	double currentTime = al_get_time();
+	for (list<ALLEGRO_EVENT>::iterator i = charEventQueue.begin(); i != charEventQueue.end();) {
+		if ((currentTime - i->any.timestamp) > deleteTimeout) {
+			i = charEventQueue.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
+	for (list<ALLEGRO_EVENT>::iterator i = mouseEventQueue.begin(); i != mouseEventQueue.end();) {
+		if ((currentTime - i->any.timestamp) > deleteTimeout) {
+			i = mouseEventQueue.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
 }
