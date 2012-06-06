@@ -200,7 +200,7 @@ bool CBMap::loadMap(string file) {
 			return false;
 		}
 
-		for (int32_t i = 1; i < tileCount; ++i) {
+		for (uint32_t i = 1; i < tileCount; ++i) {
 			mapStream.read((char*)&animLength[i], 4);
 			mapStream.read((char*)&animSlowness[i], 4);
 		}
@@ -330,7 +330,7 @@ bool CBMap::updateObject(float timestep) {
  */
 void CBMap::setTile(uint32_t tile, uint32_t length, uint32_t slowness) {
 	if (tile >= tileCount) {//Arrays are too small
-		int32_t newTileCount = tile + 1;
+		uint32_t newTileCount = tile + 1;
 		//New arrays
 		float *newCurrentFrame = new float [newTileCount];
 		int32_t *newSlowness = new int32_t[newTileCount];
