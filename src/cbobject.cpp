@@ -189,9 +189,16 @@ void CBObject::paintObject(const CBObject &obj) {
 		renderTarget = new RenderTarget;
 		this->copied = false;
 	}
-	renderTarget->copy(obj.renderTarget);
-	texture = al_clone_bitmap(obj.texture);
-	painted = true;
+	if (obj.renderTarget) {
+		renderTarget->copy(obj.renderTarget);
+		texture = al_clone_bitmap(obj.texture);
+		painted = true;
+	}
+	else {
+		renderTarget = 0;
+		texture = 0;
+		painted = false;
+	}
 	sizeX = obj.sizeX;
 	sizeY = obj.sizeY;
 }
