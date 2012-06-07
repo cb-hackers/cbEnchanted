@@ -156,7 +156,7 @@ FORCEINLINE void Any::division(VariableStack *s) {
 		}
 		if (a.typeId == Int) {
 			if (b.dInt == 0) {
-				CBEnchanted::instance()->errors->createError("Interger divided by zero",
+				CBEnchanted::instance()->errors->createError("Integer divided by zero",
 															 "",
 															 "Integer pwned by Zero");
 				a.dInt = 0;
@@ -190,7 +190,7 @@ FORCEINLINE void Any::modulo(VariableStack *s) {
 		}
 		if (a.typeId == Int) {
 			if (b.dInt == 0) {
-				CBEnchanted::instance()->errors->createError("Interger divided by zero",
+				CBEnchanted::instance()->errors->createError("Integer divided by zero",
 															 "This happened when using the Mod operator",
 															 "Integer pwned by Zero");
 				a.dInt = 0;
