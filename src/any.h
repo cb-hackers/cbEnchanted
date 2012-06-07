@@ -122,6 +122,11 @@ class Any {
 		  */
 		uint8_t toByte() const;
 
+		/** Returns typeptr or NULL if value type is int and value is 0.
+		  * @return Converted typeptr or null
+		  */
+		void *toTypePtr() const;
+
 		/** Optimized
 		  */
 		bool toBool() const;

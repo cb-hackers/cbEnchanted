@@ -1,6 +1,8 @@
 #include "any.h"
 #include "variablestack.h"
+#include "cbenchanted.h"
 #include <cmath>
+#include "errorsystem.h"
 Any::Any() : typeId(Empty) {}
 
 Any::Any(float a) : typeId(Float), dFloat(a) { }
@@ -169,6 +171,27 @@ uint8_t Any::toByte() const {
 		}
 	}
 	FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(uint8_t).name());
+	return 0;
+}
+
+/** Returns typeptr or NULL if value type is int and value is 0.
+  * @return Converted typeptr or null
+  */
+void *Any::toTypePtr() const{
+	if (typeId == TypePtr) {
+		return dPtr;
+	}
+	if (typeId == Int) {
+		if (dInt == 0) {
+			return 0;
+		}
+		else {
+			CBEnchanted::instance()->errors->createError(
+						"Can't convert integer '"+boost::lexical_cast<string>(dInt)+"' to typepointer",
+						"Only integer 0 can be converted to typepointer (NULL)");
+		}
+	}
+	FIXME("Unsupported cast %s => type pointer", typeInfo().name());
 	return 0;
 }
 

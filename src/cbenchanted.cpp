@@ -1415,7 +1415,7 @@ void CBEnchanted::commandSetVariable(void) {
 		}
 		case 4: { // Typepointer tjsp
 			int32_t id = popValue().getInt();
-			void * ptr = popValue().getTypePtr();
+			void * ptr = popValue().toTypePtr();
 
 			setTypePointerVariable(id,ptr);
 			break;
