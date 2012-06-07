@@ -244,6 +244,7 @@ string findfont(const char* font, bool isBold, bool isItalic) {
 
 /** Converts UTF-8 to Windows-1252, returns the converted string. */
 std::string utf8toCP1252(std::string str) {
+	if (str.empty()) return str;
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
 	std::wstring tmpWstr( size_needed, 0 );
 	MultiByteToWideChar                  (CP_UTF8, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
