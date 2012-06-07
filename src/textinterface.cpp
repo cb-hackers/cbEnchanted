@@ -135,7 +135,7 @@ void TextInterface::commandPrint(void) {
 
 void TextInterface::commandWrite(void) {
 	#ifdef _WIN32
-		std::cout << utf8toCP1252(cb->popValue().toString().getUtf8Encoded()) << std::endl;
+		std::cout << utf8toCP1252(cb->popValue().toString().getUtf8Encoded());
 	#else
 		std::cout << cb->popValue().toString().getUtf8Encoded();
 	#endif
