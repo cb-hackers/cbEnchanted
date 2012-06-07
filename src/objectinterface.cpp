@@ -143,84 +143,79 @@ void ObjectInterface::commandObjectOrder(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
 	if (object->isFloorObject()) {
-		if (select == -1) {//Move to bottom
-			if (object == firstFloorObject) return;
-			if (object == lastFloorObject) {
-				object->beforeObj->afterObj = 0;
-				lastFloorObject = object->beforeObj;
-				firstFloorObject->beforeObj = object;
-				object->afterObj = firstFloorObject;
-				object->beforeObj = 0;
-				firstFloorObject = object;
-				return;
-			}
-
-			object->afterObj->beforeObj = object->beforeObj;
-			object->beforeObj->afterObj = object->afterObj;
-			firstFloorObject->beforeObj = object;
-			object->afterObj = firstFloorObject;
-			object->beforeObj = 0;
-			firstFloorObject = object;
+		// Don't do nothing if there is only one floor object
+		if (firstFloorObject == lastFloorObject) {
+			return;
 		}
-		else if (select == 1) { //Move to top
-			if (object == lastFloorObject) return;
-			if (object == firstFloorObject) {
-				object->afterObj->beforeObj = 0;
-				firstFloorObject = object->afterObj;
+		// Remove the object from drawing order completely
+		//  - "CBObject *a" is the object that is drawn before "object"
+		//  - "CBObject *b" is the object that is drawn after "object"
+		CBObject *a = object->beforeObj;
+		CBObject *b = object->afterObj;
+		if (object == firstFloorObject) {
+			firstFloorObject = b;
+			b->beforeObj = 0;
+		}
+		else if (object == lastFloorObject) {
+			lastFloorObject = a;
+			a->afterObj = 0;
+		}
+		else {
+			// Remove from middle
+			a->afterObj = b;
+			b->beforeObj = a;
+		}
+		// Forget the old links for "object"
+		object->afterObj = 0;
+		object->beforeObj = 0;
 
-				lastFloorObject->afterObj = object;
-				object->afterObj = 0;
-				object->beforeObj = lastFloorObject;
-				lastFloorObject = object;
-				return;
-			}
-			object->afterObj->beforeObj = object->beforeObj;
-			object->beforeObj->afterObj = object->afterObj;
+		if (select == -1) { //Move to last
 			lastFloorObject->afterObj = object;
 			object->beforeObj = lastFloorObject;
-			object->afterObj = 0;
 			lastFloorObject = object;
+		}
+		else if (select == 1) { //Move to top
+			firstFloorObject->beforeObj = object;
+			object->afterObj = firstFloorObject;
+			firstFloorObject = object;
 		}
 	}
 	else {
-		if (select == -1) {//Move to last
-			if (object == firstObject) return;
-			if (object == lastObject) {
-				object->beforeObj->afterObj = 0;
-				lastObject = object->beforeObj;
-				firstObject->beforeObj = object;
-				object->afterObj = firstObject;
-				object->beforeObj = 0;
-				firstObject = object;
+		// Don't do nothing if there is only one object
+		if (firstObject == lastObject) {
+			return;
+		}
+		// Remove the object from drawing order completely
+		//  - "CBObject *a" is the object that is drawn before "object"
+		//  - "CBObject *b" is the object that is drawn after "object"
+		CBObject *a = object->beforeObj;
+		CBObject *b = object->afterObj;
+		if (object == firstObject) {
+			firstObject = b;
+			b->beforeObj = 0;
+		}
+		else if (object == lastObject) {
+			lastObject = a;
+			a->afterObj = 0;
+		}
+		else {
+			// Remove from middle
+			a->afterObj = b;
+			b->beforeObj = a;
+		}
+		// Forget the old links for "object"
+		object->afterObj = 0;
+		object->beforeObj = 0;
 
-				return;
-			}
-
-			object->afterObj->beforeObj = object->beforeObj;
-			object->beforeObj->afterObj = object->afterObj;
-			firstObject->beforeObj = object;
-			object->afterObj = firstObject;
-			object->beforeObj = 0;
+		if (select == -1) { //Move to last
+			lastObject->afterObj = object;
+			object->beforeObj = lastObject;
 			lastObject = object;
 		}
 		else if (select == 1) { //Move to top
-			if (object == lastObject) return;
-			if (object == firstObject) {
-				object->afterObj->beforeObj = 0;
-				firstObject = object->afterObj;
-
-				lastObject->afterObj = object;
-				object->afterObj = 0;
-				object->beforeObj = lastObject;
-				lastObject = object;
-				return;
-			}
-			object->afterObj->beforeObj = object->beforeObj;
-			object->beforeObj->afterObj = object->afterObj;
-			lastObject->afterObj = object;
-			object->beforeObj = lastObject;
-			object->afterObj = 0;
-			lastObject = object;
+			firstObject->beforeObj = object;
+			object->afterObj = firstObject;
+			firstObject = object;
 		}
 	}
 }
