@@ -4,6 +4,8 @@
 #include "variablestack.h"
 #include <cmath>
 #include "isstring.h"
+#include "cbenchanted.h"
+#include "errorsystem.h"
 
 FORCEINLINE int32_t cbpow(int32_t a, int32_t b) {
 	double ret = pow(double(a), double(b));
@@ -153,6 +155,13 @@ FORCEINLINE void Any::division(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == Int) {
+			if (b.dInt == 0) {
+				CBEnchanted::instance()->errors->createError("Interger divided by zero",
+															 "",
+															 "Integer pwned by Zero");
+				a.dInt = 0;
+				return;
+			}
 			a.dInt = a.dInt / b.dInt;
 			return;
 		}
@@ -180,6 +189,13 @@ FORCEINLINE void Any::modulo(VariableStack *s) {
 			return;
 		}
 		if (a.typeId == Int) {
+			if (b.dInt == 0) {
+				CBEnchanted::instance()->errors->createError("Interger divided by zero",
+															 "This happened when using the Mod operator",
+															 "Integer pwned by Zero");
+				a.dInt = 0;
+				return;
+			}
 			a.dInt = a.dInt % b.dInt;
 			return;
 		}
