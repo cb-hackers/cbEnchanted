@@ -89,6 +89,8 @@ class CBObject{
 		void setCollisionChecking(bool checkOrNot) { checkCollisions = checkOrNot; }
 		/** Should collision checking be made for this object or not. */
 		bool isCollisionsOn() const { return checkCollisions; }
+		/** Erases all collisions from internal memory. */
+		void eraseCollisions() { collisionList.clear(); }
 
 		/** Sets object ID which should be the same as the key stored in ObjectInterface::objectMap */
 		void setID(int32_t pId) { id = pId; }

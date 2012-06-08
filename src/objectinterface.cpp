@@ -422,6 +422,7 @@ void ObjectInterface::commandResetObjectCollision(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
 	object->setCollisionChecking(false);
+	object->eraseCollisions();
 }
 
 void ObjectInterface::commandSetupCollision(void) {

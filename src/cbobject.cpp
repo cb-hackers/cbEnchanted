@@ -273,7 +273,7 @@ bool CBObject::updateObject(float timestep) {
 	}
 
 	// Clear collisions
-	collisionList.clear();
+	eraseCollisions();
 
 	return false;
 }
