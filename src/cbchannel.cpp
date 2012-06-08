@@ -7,17 +7,21 @@
 #include "cbenchanted.h"
 #include "errorsystem.h"
 
-CBChannel::CBChannel(): bufferCount(3), sampleCount(4000), flow(NULL), instance(NULL)
+CBChannel::CBChannel(): bufferCount(3), sampleCount(8192), stream(NULL)
 {
 
 }
 
 CBChannel::~CBChannel() {
-	if (playtype == soundType) {
-		al_destroy_sample_instance(instance);
+	if (playType == Sound) {
+		if (instance) {
+			al_destroy_sample_instance(instance);
+		}
 	}
 	else {
-		al_destroy_audio_stream(flow);
+		if (stream) {
+			al_destroy_audio_stream(stream);
+		}
 	}
 }
 
@@ -28,49 +32,25 @@ bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq)
 		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not attach sample instance to mixer.\nSource file: " + sound.getSourceFile());
 		return false;
 	}
-	playtype = soundType;
+	playType = Sound;
 
-	if (volume > 99.9999f) {
-		if (!al_set_sample_instance_gain(instance, sound.getGain())) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance gain.\nSource file: " + sound.getSourceFile());
-			return false;
-		}
-	}
-	else {
-		float newGain = float(volume) / 100.0f;
-		if (!al_set_sample_instance_gain(instance, newGain)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain) + ".\nSource file: " + sound.getSourceFile());
-			return false;
-		}
+	float newGain = volume / 100.0f;
+	if (!al_set_sample_instance_gain(instance, newGain)) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain) + ".\nSource file: " + sound.getSourceFile());
+		return false;
 	}
 
-	if (pan > -1e-5f && pan < 1e-5f) {
-		if (!al_set_sample_instance_pan(instance, sound.getBalance())) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(pan) + ".\nSource file: " + sound.getSourceFile());
-			return false;
-		}
-	}
-	else {
-		float newPan = float(pan) / 100.0f;
-		if (!al_set_sample_instance_pan(instance, newPan)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan) + ".\nSource file: " + sound.getSourceFile());
-			return false;
-		}
+	float newPan = pan / 100.0f;
+	if (!al_set_sample_instance_pan(instance, newPan)) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan) + ".\nSource file: " + sound.getSourceFile());
+		return false;
 	}
 
 
-	if (freq > 0.0f) {
-		float newFreq = freq / float(sound.getFreq());
+	if (freq > 0) {
+		float newFreq = freq / float(sound.getFrequency());
 		if (!al_set_sample_instance_speed(instance, newFreq)) {
 			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq) + ".\nSource file: " + sound.getSourceFile());
-			return false;
-		}
-	}
-
-
-	if (sound.isLooping()) {
-		if(!al_set_sample_instance_playmode(instance, ALLEGRO_PLAYMODE_LOOP)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance frequency.\nSource file: " + sound.getSourceFile());
 			return false;
 		}
 	}
@@ -83,54 +63,105 @@ bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq)
 	return true;
 }
 
-bool CBChannel::playSound(string file, float volume, float pan, int32_t freq) {
-	flow = al_load_audio_stream(file.c_str(), bufferCount, sampleCount);
-	if (!flow) {
-		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not load audio stream.\nSource file: " + file);
-		return false;
-	}
-	if (!al_attach_audio_stream_to_mixer(flow, mixer)) {
-		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not attach audio stream to mixer.\nSource file: " + file);
-		return false;
-	}
-	playtype = streamType;
+void CBChannel::setSound(bool loop, float vol, float pan, int32_t freq) {
+	if (playType == Sound) {
+		if (freq > 0) {
+			float speed = double(freq) / double(al_get_sample_instance_frequency(instance));
+			if (!al_set_sample_instance_speed(instance, speed)) {
+				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq));
+				return;
+			}
+		}
+		float newGain = vol / 100.0f;
+		if (!al_set_sample_instance_gain(instance, newGain)) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain));
+			return;
+		}
 
-	float streamGain = al_get_audio_stream_gain(flow);
-	uint32_t frequency = al_get_audio_stream_frequency(flow);
-
-	if (volume > 99.999f) {
-		if(!al_set_audio_stream_gain(flow, streamGain)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream gain.\nSource file: " + file);
-			return false;
+		float newPan = pan / 100.0f;
+		if (!al_set_sample_instance_pan(instance, newPan)) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan));
+			return;
+		}
+		bool success = false;
+		if (loop) {
+			success = al_set_sample_instance_playmode(instance, ALLEGRO_PLAYMODE_LOOP);
+		}
+		else {
+			success = al_set_sample_instance_playmode(instance, ALLEGRO_PLAYMODE_ONCE);
+		}
+		if (!success) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", string("Could not set sample looping to '") + (loop ? "'true'" : "'false'"));
+			return;
 		}
 	}
 	else {
-		if(!al_set_audio_stream_gain(flow, volume / 100.0 * streamGain)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream gain.\nSource file: " + file);
-			return false;
+		if (freq > 0) {
+			float speed = double(freq) / double(al_get_sample_instance_frequency(instance));
+			if (!al_set_audio_stream_speed(stream, speed)) {
+				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq));
+				return;
+			}
+		}
+		float newGain = vol / 100.0f;
+		if (!al_set_audio_stream_gain(stream, newGain)) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain));
+			return;
+		}
+
+		float newPan = pan / 100.0f;
+		if (!al_set_audio_stream_pan(stream, newPan)) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan));
+			return;
+		}
+		bool success = false;
+		if (loop) {
+			success = al_set_audio_stream_playmode(stream, ALLEGRO_PLAYMODE_LOOP);
+		}
+		else {
+			success = al_set_audio_stream_playmode(stream, ALLEGRO_PLAYMODE_ONCE);
+		}
+		if (!success) {
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", string("Could not set sample looping to '") + (loop ? "'true'" : "'false'"));
+			return;
 		}
 	}
+}
 
-	if (!al_set_audio_stream_pan(flow, pan / 100.0f)) {
-		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream pan.\nSource file: " + file);
+bool CBChannel::playSound(string file, float volume, float pan, int32_t freq) {
+	stream = al_load_audio_stream(file.c_str(), bufferCount, sampleCount);
+	if (!stream) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not load audio stream.\nSource file: " + file);
+		return false;
+	}
+	if (!al_attach_audio_stream_to_mixer(stream, mixer)) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not attach audio stream to mixer.\nSource file: " + file);
+		return false;
+	}
+	playType = Stream;
+
+	float streamGain = al_get_audio_stream_gain(stream);
+	uint32_t oldFreq = al_get_audio_stream_frequency(stream);
+
+	if(!al_set_audio_stream_gain(stream, volume / 100.0 * streamGain)) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream gain.\nSource file: " + file);
 		return false;
 	}
 
-	if (freq != frequency && freq > 0) {
-		float speed = float(freq) / float(frequency);
-		if (!al_set_audio_stream_speed(flow, speed)) {
+
+	if (!al_set_audio_stream_pan(stream, pan / 100.0f)) {
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream pan.\nSource file: " + file);
+		return false;
+	}
+	if (freq > 0) {
+		float speed = double(freq) / double(oldFreq);
+		if (!al_set_audio_stream_speed(stream, speed)) {
 			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream frequency to " + boost::lexical_cast<string>(freq) + ".\nSource file: " + file);
 			return false;
 		}
 	}
-	else {
-		if(!al_set_audio_stream_speed(flow, 1.0)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream frequency.\nSource file: " + file);
-			return false;
-		}
-	}
 
-	if(!al_set_audio_stream_playing(flow, true)) {
+	if(!al_set_audio_stream_playing(stream, true)) {
 		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not start playing audio stream.\nSource file: " + file);
 		return false;
 	}
@@ -139,35 +170,25 @@ bool CBChannel::playSound(string file, float volume, float pan, int32_t freq) {
 }
 
 bool CBChannel::isPlaying() {
-	switch (playtype) {
-		case soundType:
+	switch (playType) {
+		case Sound:
 			return al_get_sample_instance_playing(instance);
 		break;
-		case streamType:
-			return al_get_audio_stream_playing(flow);
+		case Stream:
+			return al_get_audio_stream_playing(stream);
 		break;
 	}
 	return 0;
 }
 
-void CBChannel::freeChannel() {
-	if (instance != NULL) {
-		//al_detach_sample_instance(instance);
-		al_destroy_sample_instance(instance);
-	}
-	if (flow != NULL) {
-		//al_detach_audio_stream(flow);
-		al_destroy_audio_stream(flow);
-	}
-}
 
-void CBChannel::stopSound() {
-	switch (playtype) {
-		case soundType:
+void CBChannel::stop() {
+	switch (playType) {
+		case Sound:
 			al_set_sample_instance_playing(instance, false);
 		break;
-		case streamType:
-			al_set_audio_stream_playing(flow, false);
+		case Stream:
+			al_set_audio_stream_playing(stream, false);
 		break;
 	}
 }

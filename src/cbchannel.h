@@ -9,24 +9,26 @@ class CBChannel
 		CBChannel();
 		~CBChannel();
 		inline void setMixer(ALLEGRO_MIXER* mix) {mixer = mix;}
-		bool playSound(string file, float volume=100, float pan=0, int32_t freq=-1);
-		bool playSound(CBSound& sound, float volume=100, float pan=0, int32_t freq=-1);
+		bool playSound(string file, float volume = 100, float pan = 0, int32_t freq = -1);
+		bool playSound(CBSound& sound, float volume = 100, float pan = 0, int32_t freq = -1);
+		void setSound(bool loop, float vol, float pan, int32_t freq = -1);
 		void freeChannel();
 		bool isPlaying();
-		void stopSound();
+		void stop();
 
 	private:
-		enum playTypes{
-			soundType = 1,
-			streamType = 2
+		enum ChannelType{
+			Sound = 1,
+			Stream = 2
 		};
-
-		ALLEGRO_AUDIO_STREAM* flow;
-		ALLEGRO_SAMPLE_INSTANCE* instance;
+		union {
+			ALLEGRO_AUDIO_STREAM* stream;
+			ALLEGRO_SAMPLE_INSTANCE* instance;
+		};
 		ALLEGRO_MIXER* mixer;
 		uint32_t bufferCount;
 		uint32_t sampleCount;
-		playTypes playtype;
+		ChannelType playType;
 
 };
 

@@ -17,7 +17,7 @@ void SoundInterface::functionPlaySound(void) {
 	int32_t freg = cb->popValue().toInt();
 	float balance = cb->popValue().toFloat();
 	float volume = cb->popValue().toFloat();
-	Any any = cb->popValue();
+	const Any &any = cb->popValue();
 	if (any.type() == Any::Int) {//Loaded sound
 		CBChannel* channel = new CBChannel;
 		int32_t id = any.toInt();
@@ -69,22 +69,24 @@ void SoundInterface::commandSetSound(void) {
 	float volume = cb->popValue().toFloat();
 	bool looping = cb->popValue().toInt();
 	int32_t id = cb->popValue().toInt();
-	if (id == 0) return;
-	CBSound* sound = sounds[id];
-	sound->setSound(looping, volume, balance, freq);
+	CBChannel* channel = getChannel(id);
+	if (channel) {
+		channel->setSound(looping, volume, balance, freq);
+	}
 }
 
 void SoundInterface::commandStopSound(void) {
 	int32_t id = cb->popValue().getInt();
-	if (id == 0) return;
-	CBChannel* sound = channels[id];
-	sound->stopSound();
+	CBChannel* channel = getChannel(id);
+	if (channel) {
+		channel->stop();
+	}
 }
 
 void SoundInterface::commandDeleteSound(void) {
 	int32_t id = cb->popValue().getInt();
-	if (id == 0) return;
-	CBSound* sound = sounds[id];
+	CBSound* sound = getSound(id);
+	if (sound == 0) return;
 	delete sound;
 	sounds.erase(id);
 }
@@ -110,12 +112,12 @@ void SoundInterface::functionLoadSound(void) {
 
 void SoundInterface::functionSoundPlaying(void) {
 	int32_t id = cb->popValue().getInt();
-	CBChannel *channel = channels[id];
+	CBChannel *channel = getChannel(id);
 	if (channel == NULL){
 		cb->pushValue(0);
 		return;
 	}
-	uint8_t playing = channel->isPlaying();
+	int32_t playing = channel->isPlaying();
 	cb->pushValue(playing);
 }
 
@@ -152,5 +154,23 @@ void SoundInterface::cleanupSoundInterface() {
 	for (map<int32_t, CBSound*>::iterator sound = sounds.begin(); sound != sounds.end(); sound++) {
 		delete sound->second;
 	}
+}
+
+CBSound *SoundInterface::getSound(int32_t id) {
+	map<int32_t, CBSound*>::const_iterator i = sounds.find(id);
+	if (i == sounds.end()) {
+		cb->errors->createError("Sound access violation", "Could not find sound with ID "+boost::lexical_cast<string>(id));
+		return 0;
+	}
+	return i->second;
+}
+
+CBChannel *SoundInterface::getChannel(int32_t id) {
+	map<int32_t, CBChannel*>::const_iterator i = channels.find(id);
+	if (i == channels.end()) {
+		//No error message because channels will be deleted when sound stops playing.
+		return 0;
+	}
+	return i->second;
 }
 

@@ -27,6 +27,8 @@ class SoundInterface {
 		void updateAudio(void);
 		void cleanupSoundInterface(void);
 		inline ALLEGRO_MIXER* getMixer() {return cbMixer;}
+		CBSound* getSound(int32_t id);
+		CBChannel* getChannel(int32_t id);
 	private:
 		inline int32_t nextSampleId(void){static int32_t idsamples = 0; return ++idsamples;}
 		inline int32_t nextChannelId(void){static int32_t idchannels = 0; return ++idchannels;}

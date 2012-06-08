@@ -10,23 +10,14 @@ class CBSound
 		CBSound();
 		~CBSound();
 		bool loadSound(string file);
-		void setSound(bool loop, uint8_t vol, int8_t pan, int32_t freq=-1);
-		float getGain();
-		float getBalance();
-		uint32_t getFreq();
-		bool isLooping();
-		float getFreqScale();
 		ALLEGRO_SAMPLE* getSample();
 		void freeSound();
 		string getSourceFile() const { return sourceFile; }
+		int32_t getFrequency() const{ return frequency;}
 	private:
-
+		int32_t frequency;
 		string sourceFile;
 		ALLEGRO_SAMPLE* sample;
-		float gain;
-		float balance;
-		uint32_t frequency;
-		bool looping;
 
 };
 
