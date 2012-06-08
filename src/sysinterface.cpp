@@ -101,8 +101,11 @@ void SysInterface::commandSetWindow(void) {
 	uint32_t mode = cb->popValue().toInt();
 	windowTitle = cb->popValue().toString().getUtf8Encoded();
 
-	if (quit != "") {
-		confirmationStr = quit;
+	confirmationStr = quit;
+
+	if (windowTitle.empty()) {
+		al_set_window_title(cb->getWindow(), "");
+		return;
 	}
 #ifdef _WIN32
 	// Windows is fucked up and doesn't use UTF-8
