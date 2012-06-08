@@ -128,7 +128,7 @@ void CollisionCheck::testCollision() {
 	}
 
 	// If object is set to be skipped from collision checks then skip it.
-	if (!mObject1->isCollisionsOn()) {
+	if (!mObject1->isCollisionsOn() || !mObject1->isVisible() || !mObject2->isVisible()) {
 		return;
 	}
 

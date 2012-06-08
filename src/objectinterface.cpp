@@ -422,8 +422,6 @@ void ObjectInterface::commandResetObjectCollision(void) {
 }
 
 void ObjectInterface::commandSetupCollision(void) {
-	// Pop values from stack
-	// ---------------------
 	// The way collisions are handled
 	uint16_t handling = cb->popValue().toInt();
 	// Type of collision

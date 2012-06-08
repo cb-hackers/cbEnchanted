@@ -44,6 +44,7 @@ class CBObject{
 		float getX();
 		float getY();
 		void showObject(bool t) {visible = t;}
+		bool isVisible() const { return visible; }
 		float getAngle(); //Funktion nimi on nyt vähän harhaanjohtava, mutta se nyt saa luvan kelvata koska se on luokan sisällä.
 		static void setDefaultVisible(bool t);
 		int32_t getObjectInteger()const{return objectIntData;}
