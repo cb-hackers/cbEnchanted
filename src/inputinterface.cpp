@@ -359,7 +359,6 @@ void InputInterface::commandWaitMouse(void) {
 
 void InputInterface::commandShowMouse(void) {
 	int32_t mouse = cb->popValue().toInt();
-	INFO("Doing some stuff with mouse, given parameter is %i", mouse)
 	switch (mouse) {
 		case 0:
 			al_hide_mouse_cursor(cb->getWindow());
