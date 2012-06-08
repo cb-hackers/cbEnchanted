@@ -362,7 +362,7 @@ void CBObject::render(RenderTarget &target) {
 			float y = -posY;
 
 			// Move drawing coordinates so that they're just outside the visible areas
-			// top left corner.
+			// bottom left corner.
 			if (x > areaLeft) {
 				while (x > areaLeft) {
 					x -= sizeX;
