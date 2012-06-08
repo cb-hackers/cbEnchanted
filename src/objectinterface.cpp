@@ -35,6 +35,9 @@ void ObjectInterface::commandDeleteObject(void) {
 		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
 		return;
 	}
+	// Remove possible collision checks
+	removeFromCollisionCheck(object);
+
 	if (object->type() == CBObject::Object) {
 		removeFromDrawOrder(object);
 		delete object;
@@ -935,5 +938,20 @@ void ObjectInterface::updateObjects(){
 		// Reset object collision check to true
 		(*i).second->setCollisionChecking(true);
 		++i;
+	}
+}
+
+/** Removes an object from collisionChecks. */
+void ObjectInterface::removeFromCollisionCheck(CBObject *obj) {
+	std::vector<CollisionCheck*>::iterator iter = collisionChecks.begin();
+
+	while (iter != collisionChecks.end()) {
+		if ((*iter)->getObject1() == obj || (*iter)->getObject2() == obj) {
+			delete (*iter);
+			iter = collisionChecks.erase(iter);
+		}
+		else {
+			++iter;
+		}
 	}
 }

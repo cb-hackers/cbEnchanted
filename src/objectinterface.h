@@ -86,6 +86,9 @@ class ObjectInterface {
 		void addToDrawOrder(CBObject *o);
 		void addToFloorDrawOrder(CBObject *o);
 		void removeFromDrawOrder(CBObject *o);
+
+		/** Removes an object from collisionChecks. */
+		void removeFromCollisionCheck(CBObject *obj);
 	private:
 		CBObject *lastObject;
 		CBObject *firstObject;

@@ -25,6 +25,11 @@ class CollisionCheck
 		/** Sets the objects during construction */
 		CollisionCheck(CBObject *object1, CBObject *object2);
 
+		/** Returns the object that is colliding */
+		CBObject* getObject1() const { return mObject1; }
+		/** Returns the object that is collided to */
+		CBObject* getObject2() const { return mObject2; }
+
 		/** Check if either of the collision objects are null */
 		bool isNull() const { return mObject1 == 0 || mObject2 == 0; }
 		/** Sets the objects that take part in this collision and resets safe coordinates. */
