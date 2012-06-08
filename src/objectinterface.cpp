@@ -210,15 +210,15 @@ void ObjectInterface::commandObjectOrder(void) {
 		object->afterObj = 0;
 		object->beforeObj = 0;
 
-		if (select == -1) { //Move to last
-			lastObject->afterObj = object;
-			object->beforeObj = lastObject;
-			lastObject = object;
-		}
-		else if (select == 1) { //Move to top
+		if (select == -1) { // Move to bottom
 			firstObject->beforeObj = object;
 			object->afterObj = firstObject;
 			firstObject = object;
+		}
+		else if (select == 1) { //Move to top
+			lastObject->afterObj = object;
+			object->beforeObj = lastObject;
+			lastObject = object;
 		}
 	}
 }
