@@ -11,10 +11,11 @@ InputInterface::InputInterface() :
 	lastMouseX(0),
 	lastMouseY(0),
 	lastMouseZ(0),
-	cursor(NULL),
+	cursor(0),
 	input(0),
 	clearKeyboard(false),
-	clearMouse(false)
+	clearMouse(false),
+	cursorVisible(true)
 {
 	cb = static_cast <CBEnchanted *> (this);
 
@@ -358,45 +359,42 @@ void InputInterface::commandWaitMouse(void) {
 }
 
 void InputInterface::commandShowMouse(void) {
-	int32_t mouse = cb->popValue().toInt();
-	switch (mouse) {
-		case 0:
-			al_hide_mouse_cursor(cb->getWindow());
-		break;
-		case 1:
-			al_show_mouse_cursor(cb->getWindow());
-		break;
-		default: {
-			if (mouse > 0) {
-				if (cursor != NULL) {
-					al_destroy_mouse_cursor(cursor);
-					cursor = NULL;
-				}
-				CBImage* img = cb->getImage(mouse);
-				if (img == NULL) {
-					cb->errors->createError("ShowMouse failed!", "Could not find an image with ID " + boost::lexical_cast<string>(mouse));
-					al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
-					return;
-				}
-
-				cursor = al_create_mouse_cursor(img->getMaskedBitmap(), img->width() / 2, img->height()/2);
-
-				if (cursor == NULL) {
-					cb->errors->createError("ShowMouse failed!", "Could not make a cursor out of an image with ID " + boost::lexical_cast<string>(mouse));
-					al_show_mouse_cursor(cb->getWindow());
-					al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
-					return;
-				}
-
-				al_set_mouse_cursor(cb->getWindow(), cursor);
-			}
-			else if(mouse < 0) {
-				al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
-			}
-		}
-		break;
+	int32_t id = cb->popValue().getInt();
+	if (id < 0) {
+		cb->errors->createError("ShowMouse failed!", "Parameter must be positive.");
+		return;
 	}
 
+	if (id == 0) { // OFF
+		if (cursorVisible) {
+			al_hide_mouse_cursor(cb->getWindow());
+			cursorVisible = false;
+		}
+		cursor = 0;
+	}
+	else if (id == 1) { // ON
+		if (cursor != 0) {
+			cursor = 0;
+			al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
+		}
+		if (!cursorVisible) {
+			al_show_mouse_cursor(cb->getWindow());
+			cursorVisible = true;
+		}
+	}
+	else { // Image
+		if (cursorVisible) {
+			al_hide_mouse_cursor(cb->getWindow());
+			cursorVisible = false;
+		}
+
+		CBImage* img = cb->getImage(id);
+		if (img == 0) {
+			cb->errors->createError("ShowMouse failed!", "Could not find an image with ID " + boost::lexical_cast<string>(id));
+			return;
+		}
+		cursor = img;
+	}
 }
 
 void InputInterface::commandClearMouse(void) {
@@ -785,5 +783,17 @@ void InputInterface::postEventLoopUpdate() {
 		else {
 			i++;
 		}
+	}
+}
+
+/** Renders cursor */
+void InputInterface::renderCursor(RenderTarget &r) const {
+	if (cursor != 0) {
+		r.useWorldCoords(false);
+		r.drawBitmap(
+			cursor->getRenderTarget()->getBitmap(),
+			mouseX - cursor->width() * 0.5f,
+			mouseY - cursor->height() * 0.5f
+		);
 	}
 }

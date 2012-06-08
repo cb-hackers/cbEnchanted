@@ -7,6 +7,7 @@
 
 class CBEnchanted;
 class CBInput;
+class CBImage;
 
 class InputInterface {
 	public:
@@ -68,12 +69,19 @@ class InputInterface {
 		/** Renders the current input */
 		void renderInput(RenderTarget &r) const;
 
+		/** Renders cursor */
+		void renderCursor(RenderTarget &r) const;
+
 	private:
 		CBEnchanted *cb;
 
 		/** Holds the mappings from CB SCAN-codes to Allegro equivelants. */
 		int32_t cbKeyMap[222];
-		ALLEGRO_MOUSE_CURSOR* cursor;
+
+		/** Current custom cursor */
+		CBImage* cursor;
+		/** Is the cursor visible */
+		bool cursorVisible;
 
 		bool clearKeyboard;
 		bool clearMouse;

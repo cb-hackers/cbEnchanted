@@ -254,6 +254,7 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 	cb->renderAddTexts(*windowRenderTarget);
 	cb->renderInput(*windowRenderTarget);
+	cb->renderCursor(*windowRenderTarget);
 	cb->updateAudio();
 	if (resizableWindow) {
 		al_set_target_backbuffer(window);
