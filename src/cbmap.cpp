@@ -393,26 +393,31 @@ int32_t CBMap::getHit(int32_t x, int32_t y) {
 }
 
 /** Returns data from the given map layer.
- * @param maplayer Which layer are we reading from
+ * @param mapLayer Which layer are we reading from
  * @param tileX,tileY Tile coordinates
  * @returns What data is there in the given layer
  */
-int32_t CBMap::getMap(uint8_t maplayer, int32_t tileX, int32_t tileY) {
+int32_t CBMap::getMap(uint8_t mapLayer, int32_t tileX, int32_t tileY) {
 	if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight) {
 		// There's no data outside the map region
 		return 0;
 	}
-	return layers[maplayer][tileX][tileY];
+	return layers[mapLayer][tileX][tileY];
 }
 
-int32_t CBMap::getMapWorldCoordinates(uint8_t maplayer, float x, float y) {
-	x = (x - posX + mapWidth * tileWidth * 0.5f) / tileWidth;
-	y = -(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight;
-	if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) {
+/** Returns data from the given map layer.
+ * @param mapLayer Which layer are we reading from
+ * @param x,y World coordinates
+ * @returns What data is there in the given layer
+ */
+int32_t CBMap::getMapWorldCoordinates(uint8_t mapLayer, float x, float y) {
+	int tileX = int((x - posX + mapWidth * tileWidth * 0.5f) / tileWidth + 0.5f);
+	int tileY = int(-(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight + 0.5f);
+	if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight) {
 		// There's no data outside the map region
 		return 0;
 	}
-	return layers[maplayer][int(x)][int(y)];
+	return layers[mapLayer][tileX][tileY];
 }
 
 /** Does a raycast from given object to this map.
