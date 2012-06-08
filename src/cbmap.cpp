@@ -238,47 +238,49 @@ void CBMap::setLayers(uint8_t back, uint8_t over) {
  * @param target To where should we draw, @see RenderTarget
  */
 void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
-	if (level > 1) {
-		return;
-	}
-	if (layerShowing[level] < 1) {
-		return;
-	}
-
-	float camX = CBEnchanted::instance()->getCameraX() - posX;
-	float camY = CBEnchanted::instance()->getCameraY() - posY;
-
-
-	int32_t draw_x = camX + getSizeX() / 2 - target.width() / 2;
-	int32_t draw_y = -camY + getSizeY() / 2 - target.height() / 2;
-	int32_t tile_y = draw_y / tileHeight;
-	int32_t order_y = -(draw_y % tileHeight);
-
-	while (order_y < target.height()) {
-		tile_y %= getSizeY();
-		if (tile_y >= mapHeight) {
-			break;
+	if (visible && painted) {
+		if (level > 1) {
+			return;
+		}
+		if (layerShowing[level] < 1) {
+			return;
 		}
 
-		int32_t tile_x = draw_x / tileWidth;
-		int32_t order_x = -(draw_x % tileHeight);
+		float camX = CBEnchanted::instance()->getCameraX() - posX;
+		float camY = CBEnchanted::instance()->getCameraY() - posY;
 
-		while (order_x < target.width()) {
-			int32_t getX = tile_x % getSizeX();
-			if (getX >= mapWidth) {
+
+		int32_t draw_x = camX + getSizeX() / 2 - target.width() / 2;
+		int32_t draw_y = -camY + getSizeY() / 2 - target.height() / 2;
+		int32_t tile_y = draw_y / tileHeight;
+		int32_t order_y = -(draw_y % tileHeight);
+
+		while (order_y < target.height()) {
+			tile_y %= getSizeY();
+			if (tile_y >= mapHeight) {
 				break;
 			}
 
-			int32_t tileNum = getMap(level, getX, tile_y);
-			if (tileNum > 0) {
-				drawTile(target, tileNum+(int)currentFrame[tileNum], order_x, order_y);
-			}
+			int32_t tile_x = draw_x / tileWidth;
+			int32_t order_x = -(draw_x % tileHeight);
 
-			tile_x++;
-			order_x += tileWidth;
+			while (order_x < target.width()) {
+				int32_t getX = tile_x % getSizeX();
+				if (getX >= mapWidth) {
+					break;
+				}
+
+				int32_t tileNum = getMap(level, getX, tile_y);
+				if (tileNum > 0) {
+					drawTile(target, tileNum+(int)currentFrame[tileNum], order_x, order_y);
+				}
+
+				tile_x++;
+				order_x += tileWidth;
+			}
+			tile_y++;
+			order_y += tileHeight;
 		}
-		tile_y++;
-		order_y += tileHeight;
 	}
 }
 
