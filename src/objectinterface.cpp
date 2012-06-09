@@ -525,6 +525,10 @@ void ObjectInterface::functionMakeObjectFloor(void) {
 void ObjectInterface::functionCloneObject(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
+	if (object->isMap()) {
+		cb->errors->createError("CloneObject() failed!", "You can't clone a map object");
+		return;
+	}
 	CBObject *obj = object->copyObject();
 	if (obj->isFloorObject()) {
 		addToFloorDrawOrder(obj);
