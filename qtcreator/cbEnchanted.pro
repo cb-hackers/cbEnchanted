@@ -83,11 +83,13 @@ win32{
 	# Support only Win2K and above
 	DEFINES += _WIN32_WINNT=0x0500
 	CONFIG(release, debug|release){
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-monolith-static-mt -llibvorbisfile-1.3.2-static-mt -lzlib-1.2.5-static-mt -llibogg-1.2.1-static-mt -llibFLAC-1.2.1-static-mt -lfreetype-2.4.8-static-mt -ldumb-0.9.3-static-mt -llibvorbis-1.3.2-static-mt
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-mt -lallegro_ttf-5.0.6-static-mt -lallegro_primitives-5.0.6-static-mt -lallegro_image-5.0.6-static-mt -lallegro_font-5.0.6-static-mt -lallegro_dialog-5.0.6-static-mt -lallegro_audio-5.0.6-static-mt -lallegro_acodec-5.0.6-static-mt
+		LIBS += -llibvorbisfile-1.3.2-static-mt -lzlib-1.2.5-static-mt -llibogg-1.2.1-static-mt -llibFLAC-1.2.1-static-mt -lfreetype-2.4.8-static-mt -ldumb-0.9.3-static-mt -llibvorbis-1.3.2-static-mt
 		DEFINES += NDEBUG
 	}
 	else {
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-monolith-static-mt-debug -llibvorbisfile-1.3.2-static-mt-debug -lzlib-1.2.5-static-mt-debug -llibogg-1.2.1-static-mt-debug -llibFLAC-1.2.1-static-mt-debug -lfreetype-2.4.8-static-mt-debug -ldumb-0.9.3-static-mt-debug -llibvorbis-1.3.2-static-mt-debug
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-mt-debug -lallegro_ttf-5.0.6-static-mt-debug -lallegro_primitives-5.0.6-static-mt-debug -lallegro_image-5.0.6-static-mt-debug -lallegro_font-5.0.6-static-mt-debug -lallegro_dialog-5.0.6-static-mt-debug -lallegro_audio-5.0.6-static-mt-debug -lallegro_acodec-5.0.6-static-mt-debug
+		LIBS += -llibvorbisfile-1.3.2-static-mt-debug -lzlib-1.2.5-static-mt-debug -llibogg-1.2.1-static-mt-debug -llibFLAC-1.2.1-static-mt-debug -lfreetype-2.4.8-static-mt-debug -ldumb-0.9.3-static-mt-debug -llibvorbis-1.3.2-static-mt-debug
 	}
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
 	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"
