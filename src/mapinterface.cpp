@@ -16,8 +16,8 @@ MapInterface::~MapInterface() {
 
 void MapInterface::commandEditMap(void) {
 	uint16_t tile = cb->popValue().toInt();
-	uint32_t y = cb->popValue().toInt();
-	uint32_t x = cb->popValue().toInt();
+	uint32_t y = cb->popValue().toInt() - 1;
+	uint32_t x = cb->popValue().toInt() - 1;
 	uint8_t layer = cb->popValue().toInt();
 	uint32_t map = cb->popValue().toInt();
 	tileMap->edit(layer, x, y, tile);
@@ -91,8 +91,8 @@ void MapInterface::functionGetMap(void) {
 }
 
 void MapInterface::functionGetMap2(void) {
-	int32_t posY = cb->popValue().toInt();
-	int32_t posX = cb->popValue().toInt();
+	int32_t posY = cb->popValue().toInt() - 1;
+	int32_t posX = cb->popValue().toInt() - 1;
 	uint8_t layer = cb->popValue().toInt();
 	cb->pushValue(tileMap->getMap(layer, posX, posY));
 }
