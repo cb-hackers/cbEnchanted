@@ -102,5 +102,9 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeShowConsole);
 	func.setFuncId(CBE_SHOW_CONSOLE);
 	this->add(func);
+
+	func.setFuncPtr(&cbeSetSystemCursor);
+	func.setFuncId(CBE_SET_SYSTEM_CURSOR);
+	this->add(func);
 }
 

@@ -72,6 +72,9 @@ class InputInterface {
 		/** Renders cursor */
 		void renderCursor(RenderTarget &r) const;
 
+		void setCustomCursor(CBImage *c) {cursor = c; }
+
+		void setCursorVisible(bool t);
 	private:
 		CBEnchanted *cb;
 

@@ -797,3 +797,13 @@ void InputInterface::renderCursor(RenderTarget &r) const {
 		);
 	}
 }
+
+void InputInterface::setCursorVisible(bool t) {
+	cursorVisible = t;
+	if (t) {
+		al_show_mouse_cursor(cb->getWindow());
+	}
+	else {
+		al_hide_mouse_cursor(cb->getWindow());
+	}
+}

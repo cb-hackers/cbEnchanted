@@ -38,6 +38,9 @@
 /** ID for custom function cbeShowConsole() */
 #define CBE_SHOW_CONSOLE 12
 
+/** ID for custom function cbeSetSystemCursor() */
+#define CBE_SET_SYSTEM_CURSOR 13
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

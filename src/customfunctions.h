@@ -30,6 +30,8 @@ void cbeReadLineUTF8(CBEnchanted *cb);
 
 void cbeShowConsole(CBEnchanted *cb);
 
+void cbeSetSystemCursor(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

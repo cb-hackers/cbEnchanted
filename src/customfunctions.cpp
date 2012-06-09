@@ -229,5 +229,34 @@ void cbeShowConsole(CBEnchanted *cb) {
 	#endif
 }
 
+/** Sets cursor to systems mouse cursor */
+void cbeSetSystemCursor(CBEnchanted *cb) {
+	int32_t t = cb->popValue().toInt();
+	bool success = false;
+	cb->setCustomCursor(0);
+	cb->setCursorVisible(true);
+	switch (t) {
+		case 2: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ARROW); break;
+		case 3: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_BUSY); break;
+		case 4: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_QUESTION); break;
+		case 5: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_EDIT); break;
+		case 6: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_MOVE); break;
+		case 7: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_N); break;
+		case 8: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_W); break;
+		case 9: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_S); break;
+		case 10: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_E); break;
+		case 11: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NW); break;
+		case 12: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SW); break;
+		case 13: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SE); break;
+		case 14: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NE); break;
+		case 15: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PROGRESS); break;
+		case 16: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PRECISION); break;
+		case 17: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_LINK); break;
+		case 18: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ALT_SELECT); break;
+		case 19: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_UNAVAILABLE); break;
+		default: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT); break;
+	}
+	cb->pushValue((int32_t)success);
+}
 
 /** @} */

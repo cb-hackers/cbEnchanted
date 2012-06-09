@@ -1,0 +1,23 @@
+Include "include/customfunctions.cb"
+
+AddText "F1 = hide cursor"
+AddText "F2 = show cursor"
+AddText "F3 = custom pointer"
+AddText "F4 = custom target"
+
+pointer=LoadImage("Media\cursor.bmp")
+crosshair=LoadImage("Media\crosshair.bmp")
+
+Repeat
+
+    If KeyHit(cbkeyf1) Then ShowMouse OFF
+    If KeyHit(cbkeyf2) Then ShowMouse ON
+    
+    If KeyHit(cbkeyf3) Then ShowMouse pointer
+    If KeyHit(cbkeyf4) Then ShowMouse crosshair
+    
+    If KeyHit(cbKeyF5) Then cbeSetSystemCursor(CBE_SYSTEM_CURSOR_BUSY)
+    
+    DrawScreen
+
+Until EscapeKey()
