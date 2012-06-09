@@ -408,8 +408,8 @@ int32_t CBMap::getMap(uint8_t mapLayer, int32_t tileX, int32_t tileY) {
  * @returns What data is there in the given layer
  */
 int32_t CBMap::getMapWorldCoordinates(uint8_t mapLayer, float x, float y) {
-	int tileX = int((x - posX + mapWidth * tileWidth * 0.5f) / tileWidth + 0.5f);
-	int tileY = int(-(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight + 0.5f);
+	int tileX = int((x - posX + mapWidth * tileWidth * 0.5f) / tileWidth);
+	int tileY = int(-(y - posY - mapHeight * tileHeight * 0.5f) / tileHeight);
 	if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight) {
 		// There's no data outside the map region
 		return 0;
