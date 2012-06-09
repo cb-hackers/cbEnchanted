@@ -1,0 +1,70 @@
+FrameLimit 60
+
+SCREEN 12*32, 12*32
+
+map = MakeMap(10, 10, 32, 32)
+tileset = LoadImage("Media\tileset.bmp")
+PaintObject map, tileset
+
+For x = 1 To 10
+    EditMap map, 0, x, 1, 22
+    EditMap map, 2, x, 1, 1
+    EditMap map, 0, x, 10, 22
+    EditMap map, 2, x, 10, 1
+Next x
+
+For y = 2 To 9
+    EditMap map, 0, 1, y, 22
+    EditMap map, 2, 1, y, 1
+    EditMap map, 0, 10, y, 22
+    EditMap map, 2, 10, y, 1
+Next y
+
+For x = 2 To 9
+    For y = 2 To 9
+        EditMap map, 0, x, y, 153
+    Next y
+Next x
+
+SetWindow "Map size (in px): " + ObjectSizeX(map) + "x" + ObjectSizeY(map)
+
+DrawToWorld ON
+Repeat
+    TranslateCamera RightKey() - LeftKey(), UpKey() - DownKey()
+    mx = MouseWX()
+    my = MouseWY()
+    
+    tileX = GetTileXFromWorldX(mx, map)
+    tileY = GetTileYFromWorldY(my, map)
+    
+    DrawGame 
+    Box TileToWorldX(tileX, map), tileToWorldY(tileY, map), 32, 32, OFF
+    Text 0, 0, "tileX: " + tileX
+    Text 0, 13, "tileY: " + tileY
+    
+    Text 80, 0, "mx: " + mx
+    Text 80, 13, "my: " + my
+    
+    Text 150, 0, "GetMap() => " + GetMap(0, mx, my)
+    Text 150, 13, "GetMap2() => " + GetMap2(0, tileX, tileY)
+    
+    DrawScreen
+Forever 
+
+
+
+Function GetTileXFromWorldX(_x, _map, _tileWidth = 32)
+    Return ((_x + ObjectSizeX(_map)/2) / _tileWidth + 1)
+EndFunction
+
+Function GetTileYFromWorldY(_y, _map, _tileHeight = 32)
+    Return ((-_y + ObjectSizeY(_map)/2) / _tileHeight + 1)
+EndFunction
+
+Function TileToWorldX(tx,map)
+    Return tx * 32 -ObjectSizeX(map) / 2 - 32
+EndFunction
+
+Function TileToWorldY(ty, map)
+    Return -(ty * 32 - ObjectSizeY(map) / 2) + 32
+EndFunction 
