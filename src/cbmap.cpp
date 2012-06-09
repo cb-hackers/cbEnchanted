@@ -1,6 +1,7 @@
 #include "cbmap.h"
 #include "cbenchanted.h"
 
+
 /** Constructs a new CBMap and calls the constructor for CBObject */
 CBMap::CBMap() :
 	CBObject(),
@@ -14,9 +15,6 @@ CBMap::CBMap() :
 /** Destroys all layers and frees resources */
 CBMap::~CBMap() {
 	for (int i = 0; i < 4; ++i) {
-		for (int x = 0; x < mapWidth; x++) {
-			delete [] layers[i][x];
-		}
 		delete [] layers[i];
 	}
 	delete [] animLength;
@@ -36,10 +34,8 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 	tileWidth = tileW;
 	tileHeight = tileH;
 	for (int i = 0; i < 4; ++i) {
-		layers[i] = Array2D(width, height);
-		for (uint32_t x = 0; x < width; x++) {
-			memset(layers[i][x], 0, sizeof(uint32_t) * height);
-		}
+		layers[i] = new int32_t(width, height);
+		memset(layers[i], 0, width * height * sizeof(int32_t));
 	}
 	tileCount = 64; //Default size. Arrays will be resized if more tiles are used.
 	currentFrame = new float [tileCount];
@@ -110,7 +106,7 @@ bool CBMap::loadMap(string file) {
 		mapStream.read((char*)&mapHeight, 4);
 
 		for (int i = 0; i < 4; ++i) {
-			layers[i] = Array2D(mapWidth, mapHeight);
+			layers[i] = new int32_t [mapWidth * mapHeight];
 		}
 
 		mapStream.read((char*)checkNum, 4);
@@ -126,11 +122,7 @@ bool CBMap::loadMap(string file) {
 			return false;
 		}
 
-		for(int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
-				mapStream.read((char*)&layers[0][x][y], 4);
-			}
-		}
+		mapStream.read((char*)layers[0], mapWidth * mapHeight * sizeof(int32_t));
 
 		mapStream.read((char*)checkNum, 4);
 
@@ -145,11 +137,7 @@ bool CBMap::loadMap(string file) {
 		}
 
 		//Collision layer
-		for(int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
-				mapStream.read((char*)&layers[2][x][y], 4);
-			}
-		}
+		mapStream.read((char*)layers[2], mapWidth * mapHeight * sizeof(int32_t));
 		mapStream.read((char*)checkNum, 4);
 
 		if (checkNum[0] != 252 ||
@@ -163,11 +151,7 @@ bool CBMap::loadMap(string file) {
 		}
 
 
-		for(int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
-				mapStream.read((char*)&layers[1][x][y], 4);
-			}
-		}
+		mapStream.read((char*)layers[1], mapWidth * mapHeight * sizeof(int32_t));
 
 		mapStream.read((char*)checkNum, 4);
 
@@ -181,12 +165,7 @@ bool CBMap::loadMap(string file) {
 			return false;
 		}
 
-		for(int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
-				mapStream.read((char*)&layers[3][x][y], 4);
-			}
-		}
-		//mapStream.read((char*)(*layers[3]), 4 * mapHeight * mapWidth);
+		mapStream.read((char*)layers[3], mapWidth * mapHeight * sizeof(int32_t));
 
 		mapStream.read((char*)checkNum, 4);
 
@@ -215,6 +194,7 @@ bool CBMap::loadMap(string file) {
 	sizeY = tileHeight * mapHeight;
 	return true;
 }
+
 
 /** Loads a tileset from an image file.
  * @param path Path to an image file containing the tilemap
@@ -376,7 +356,7 @@ void CBMap::edit(uint8_t maplayer, int32_t tileX, int32_t tileY, int32_t tileInd
 	if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight) {
 		return;
 	}
-	layers[maplayer][tileX][tileY] = tileIndex;
+	layers[maplayer][tileY * mapWidth + tileX] = tileIndex;
 }
 
 /** Returns the hit data in the given tile coordinates.
@@ -389,7 +369,7 @@ int32_t CBMap::getHit(int32_t x, int32_t y) {
 		return 0;
 	}
 	// Calculate index position and return the data in hit layer (layer2)
-	return layers[2][x][y];
+	return layers[2][y * mapWidth + x];
 }
 
 /** Returns data from the given map layer.
@@ -402,7 +382,7 @@ int32_t CBMap::getMap(uint8_t mapLayer, int32_t tileX, int32_t tileY) {
 		// There's no data outside the map region
 		return 0;
 	}
-	return layers[mapLayer][tileX][tileY];
+	return layers[mapLayer][tileY * mapWidth + tileX];
 }
 
 /** Returns data from the given map layer.
@@ -417,7 +397,7 @@ int32_t CBMap::getMapWorldCoordinates(uint8_t mapLayer, float x, float y) {
 		// There's no data outside the map region
 		return 0;
 	}
-	return layers[mapLayer][tileX][tileY];
+	return layers[mapLayer][tileY * mapWidth + tileX];
 }
 
 /** Does a raycast from given object to this map.
@@ -616,6 +596,7 @@ void CBMap::worldCoordinatesToMapCoordinates(float &x, float &y) {
 	y = -y + this->mapHeight * this->tileHeight / 2;
 }
 
+
 /** Converts world coordinates to tilemap based coordinates */
 void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
 	x = x - this->mapWidth * this->tileWidth / 2;
@@ -642,15 +623,3 @@ void CBMap::drawRayCastDebugBox(float tileX, float tileY) {
 bool CBMap::outOfBounds(int tileX, int tileY) {
 	return (tileX < 1 || tileX > mapWidth || tileY < 1 || tileY > mapHeight);
 }
-
-int32_t** CBMap::Array2D(uint32_t w, uint32_t h) {
-	int32_t **data = new int32_t*[w];
-	for(uint8_t i = 0; i < w; i++) {
-		data[i] = new int32_t[h];
-		memset(data[i], 0, h*sizeof(int32_t));
-	}
-
-
-	return data;
-}
-

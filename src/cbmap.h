@@ -14,9 +14,6 @@ class CBMap : public CBObject {
 
 		Type type()const{return Map;}
 
-		/** Returns 2D array **/
-		int32_t **Array2D(uint32_t w, uint32_t h);
-
 		bool loadMap(string path);
 		bool loadTileset(string path);
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
@@ -62,11 +59,9 @@ class CBMap : public CBObject {
 		void mapCoordinatesToWorldCoordinates(float &x, float &y);
 		/** Converts world coordinates to tilemap based coordinates */
 		void worldCoordinatesToMapCoordinates(float &x, float &y);
-
-
-
 	private:
-		int32_t **layers[4];
+
+		int32_t *layers[4];
 
 		uint32_t tileCount;
 		int32_t mapWidth;
