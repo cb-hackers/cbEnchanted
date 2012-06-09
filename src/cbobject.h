@@ -28,7 +28,7 @@ class CBObject{
 		bool load(const string &file);
 		bool load(const string &file,const ALLEGRO_COLOR &mask);
 		bool loadAnimObject(const string &file, uint16_t fw, uint16_t fh, uint16_t startf, uint16_t framecount);
-		void paintObject(const RenderTarget &tex);
+		virtual void paintObject(const RenderTarget &tex);
 		void paintObject(const CBObject &obj);
 		void moveObject(float fwrd, float sdwrd);
 		void positionObject(float x, float y);

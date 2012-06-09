@@ -33,6 +33,8 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 	mapHeight = height;
 	tileWidth = tileW;
 	tileHeight = tileH;
+	sizeX = width * tileW;
+	sizeY = height * tileH;
 	for (int i = 0; i < 4; ++i) {
 		layers[i] = new int32_t[width * height];
 		memset(layers[i], 0, width * height * sizeof(int32_t));
@@ -202,6 +204,21 @@ bool CBMap::loadMap(string file) {
 bool CBMap::loadTileset(string path) {
 	bool success = load(path, al_map_rgb(maskR, maskG, maskB));
 	return success;
+}
+
+
+/** Changes the map tileset */
+void CBMap::paintObject(const RenderTarget &tex) {
+	if (!renderTarget) {
+		renderTarget = new RenderTarget;
+	}
+	if (texture) {
+		al_destroy_bitmap(texture);
+	}
+	renderTarget->copy(&tex);
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture, maskColor);
+	painted = true;
 }
 
 /** Sets layer visibility.

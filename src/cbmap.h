@@ -16,6 +16,8 @@ class CBMap : public CBObject {
 
 		bool loadMap(string path);
 		bool loadTileset(string path);
+		/** Changes the map tileset */
+		void paintObject(const RenderTarget &tex);
 		bool create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t tileH);
 		void drawLayer(uint8_t level, RenderTarget &target);
 		void render(RenderTarget &target);
