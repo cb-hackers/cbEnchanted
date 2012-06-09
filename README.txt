@@ -1,4 +1,4 @@
-cbEnchanted README
+﻿cbEnchanted README
 ------------------
 
 cbEnchanted is a remake of CoolBasic beta runtime.
@@ -15,7 +15,7 @@ Jasse Lahdenperä
 Lassi Hämäläinen
 Vesa Laakso
 Marko Ranta
-PTapioK
+Petri Karppinen
 
 You may use these executables to create CoolBasic programs
 free of charge. Consult the licenses of Allegro 5 and
