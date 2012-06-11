@@ -150,6 +150,10 @@ void InputInterface::commandWaitKey(void) {
 	ALLEGRO_EVENT e;
 	while (true) {
 		al_wait_for_event(cb->getEventQueue(),&e);
+		if (handleKeyboardEvent(&e)) {
+			return;
+		}
+		handleMouseEvent(&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_KEY_DOWN:
 				updateKeyState(&e.keyboard);
@@ -189,7 +193,6 @@ void InputInterface::commandWaitMouse(void) {
 		al_wait_for_event(cb->getEventQueue(),&e);
 		handleMouseEvent(&e);
 		if (handleKeyboardEvent(&e)) {
-			cb->stop();
 			return;
 		}
 		switch (e.type) {
