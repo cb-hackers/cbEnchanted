@@ -136,19 +136,17 @@ void MathInterface::functionCurveValue(void) {
 void MathInterface::functionCurveAngle(void) {
 	float smoothness = cb->popValue().toFloat();
 	float oldA = cb->popValue().toFloat();
-	float newA = cb->popValue().toFloat();
-	oldA = wrapAngle(oldA);
-	newA = wrapAngle(newA);
+	float newA = wrapAngle(cb->popValue().toFloat() + 180.0f);
 
-	if (abs(newA - oldA) < (360.0 - newA) + oldA)
-	{
-		cb->pushValue((oldA + (newA - oldA) / smoothness));
+	float diff = oldA - newA + 180.0f;
+	while (diff > 180.0f) {
+		diff -= 360.0f;
 	}
-	else
-	{
-		cb->pushValue((oldA - ((360.0f - newA) + oldA) / smoothness) + 360.0f);
+	while (diff < -180.0f) {
+		diff += 360.0f;
 	}
 
+	cb->pushValue(oldA - diff / smoothness);
 }
 
 void MathInterface::functionWrapAngle(void) {
