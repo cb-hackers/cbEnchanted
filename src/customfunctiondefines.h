@@ -41,6 +41,21 @@
 /** ID for custom function cbeSetSystemCursor() */
 #define CBE_SET_SYSTEM_CURSOR 13
 
+/** ID for custom function cbeTransformBuild() */
+#define CBE_TRANSFORM_BUILD 14
+
+/** ID for custom function cbeTransformRotate() */
+#define CBE_TRANSFORM_ROTATE 15
+
+/** ID for custom function cbeTransformScale() */
+#define CBE_TRANSFORM_SCALE 16
+
+/** ID for custom function cbeTransformTranslate() */
+#define CBE_TRANSFORM_TRANSLATE 17
+
+/** ID for custom function cbeTransformReset() */
+#define CBE_TRANSFORM_RESET 18
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

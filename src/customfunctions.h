@@ -32,6 +32,16 @@ void cbeShowConsole(CBEnchanted *cb);
 
 void cbeSetSystemCursor(CBEnchanted *cb);
 
+void cbeTransformBuild(CBEnchanted *cb);
+
+void cbeTransformRotate(CBEnchanted *cb);
+
+void cbeTransformScale(CBEnchanted *cb);
+
+void cbeTransformTranslate(CBEnchanted *cb);
+
+void cbeTransformReset(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

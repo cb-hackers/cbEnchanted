@@ -105,3 +105,34 @@ Function cbeSetSystemCursor(t)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 13
 EndFunction
+
+
+// Applies a scale, rotate and translate transformation to all future drawing operations.
+Function cbeTransformBuild(transX#, transY#, scaleX#, scaleY#, angle#)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 14
+EndFunction
+
+// Applies a rotation transformation to the given transformation.
+Function cbeTransformRotate(angle#)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 15
+EndFunction
+
+// Applies a scale transformation to the current transformation.
+Function cbeTransformScale(scaleX#, scaleY#)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 16
+EndFunction
+
+// Applies a translate transformation to the current transformation.
+Function cbeTransformTranslate(transX#, transY#)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 17
+EndFunction
+
+// Resets the identity transformation which is the default one.
+Function cbeTransformReset()
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 18
+EndFunction

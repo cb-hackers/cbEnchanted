@@ -259,4 +259,58 @@ void cbeSetSystemCursor(CBEnchanted *cb) {
 	cb->pushValue((int32_t)success);
 }
 
+/** Applies a scale, rotate and translate transformation to all future drawing operations. */
+void cbeTransformBuild(CBEnchanted *cb) {
+	float angle = (cb->popValue().toFloat() / 180.0f) * M_PI;
+	float scaleY = cb->popValue().toFloat();
+	float scaleX = cb->popValue().toFloat();
+	float transY = cb->popValue().toFloat();
+	float transX = cb->popValue().toFloat();
+
+	ALLEGRO_TRANSFORM t;
+	al_build_transform(&t, transX, transY, scaleX, scaleY, angle);
+	al_use_transform(&t);
+	cb->pushValue(0);
+}
+
+/** Applies a rotation transformation to the current transformation. */
+void cbeTransformRotate(CBEnchanted *cb) {
+	float angle = (cb->popValue().toFloat() / 180.0f) * M_PI;
+
+	ALLEGRO_TRANSFORM t;
+	al_rotate_transform(&t, angle);
+	al_use_transform(&t);
+	cb->pushValue(0);
+}
+
+/** Applies a scale transformation to the current transformation. */
+void cbeTransformScale(CBEnchanted *cb) {
+	float scaleY = cb->popValue().toFloat();
+	float scaleX = cb->popValue().toFloat();
+
+	ALLEGRO_TRANSFORM t;
+	al_scale_transform(&t, scaleX, scaleY);
+	al_use_transform(&t);
+	cb->pushValue(0);
+}
+
+/** Applies a translate transformation to the current transformation. */
+void cbeTransformTranslate(CBEnchanted *cb) {
+	float transY = cb->popValue().toFloat();
+	float transX = cb->popValue().toFloat();
+
+	ALLEGRO_TRANSFORM t;
+	al_translate_transform(&t, transX, transY);
+	al_use_transform(&t);
+	cb->pushValue(0);
+}
+
+/** Resets the identity transformation. */
+void cbeTransformReset(CBEnchanted *cb) {
+	ALLEGRO_TRANSFORM t;
+	al_identity_transform(&t);
+	al_use_transform(&t);
+	cb->pushValue(0);
+}
+
 /** @} */

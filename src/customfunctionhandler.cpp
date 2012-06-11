@@ -106,5 +106,25 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeSetSystemCursor);
 	func.setFuncId(CBE_SET_SYSTEM_CURSOR);
 	this->add(func);
+
+	func.setFuncPtr(&cbeTransformBuild);
+	func.setFuncId(CBE_TRANSFORM_BUILD);
+	this->add(func);
+
+	func.setFuncPtr(&cbeTransformRotate);
+	func.setFuncId(CBE_TRANSFORM_ROTATE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeTransformScale);
+	func.setFuncId(CBE_TRANSFORM_SCALE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeTransformTranslate);
+	func.setFuncId(CBE_TRANSFORM_TRANSLATE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeTransformReset);
+	func.setFuncId(CBE_TRANSFORM_RESET);
+	this->add(func);
 }
 
