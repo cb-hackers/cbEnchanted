@@ -107,6 +107,22 @@ void RenderTarget::setAsCurrent(bool force) {
 	bindRenderTarget = this;
 }
 
+void RenderTarget::useWorldCoords(bool t) {
+	if (t != worldCoordsEnabled) {
+		setAsCurrent();
+		if (t) {
+			al_use_transform(CBEnchanted::instance()->getWorldTransform());
+		}
+		else {
+			ALLEGRO_TRANSFORM t;
+			al_identity_transform(&t);
+			al_use_transform(&t);
+		}
+		worldCoordsEnabled = t;
+	}
+
+}
+
 void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
 	setAsCurrent();
 	convertCoords(x, y);
@@ -227,23 +243,7 @@ void RenderTarget::clear(const ALLEGRO_COLOR &c) {
 
 void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
-		CBEnchanted* cb = CBEnchanted::instance();
-		if (cb->isSmooth2D()) {
-			x = x + cb->screenWidth() / 2.0f - cb->getCameraX();
-			y = -y + cb->screenHeight() / 2.0f + cb->getCameraY();
-		}
-		else {
-			float camX = cb->getCameraX();
-			float camY = cb->getCameraY();
-			if (camX < -1e-5f) {
-				camX -= 1.0f;
-			}
-			if (camY < 1e-5f) {
-				camY -= 1.0f;
-			}
-			x = x + cb->screenWidth() / 2.0f - int(camX);
-			y = -y + cb->screenHeight() / 2.0f + int(camY);
-		}
+		y = -y;
 	}
 }
 

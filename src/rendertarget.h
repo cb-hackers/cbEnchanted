@@ -25,7 +25,7 @@ class RenderTarget
 		RenderTarget *clone();
 		void copy(const RenderTarget * r);
 		void setAsCurrent(bool force = 0);
-		void useWorldCoords(bool t) { worldCoordsEnabled = t;}
+		void useWorldCoords(bool t);
 		void drawBox(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawEllipse(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawCircle(float cx,float cy,float r,bool fill,const ALLEGRO_COLOR &color);

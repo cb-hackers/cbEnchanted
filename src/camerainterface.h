@@ -35,17 +35,22 @@ class CameraInterface {
 		void updateCamFollow();
 		inline bool isCamFollowing() {return isFollowing;}
 
+		ALLEGRO_TRANSFORM *getWorldTransform();
 	private:
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
 		float cameraZ;
 		float cameraAngle;
+		float cameraTrueAngle;
+		float cameraZoom;
 
 		bool isFollowing;
 		CBObject* followTarget;
 		uint8_t followStyle;
 		float followSetting;
+		ALLEGRO_TRANSFORM worldTransform;
+		bool worldTransformDirty;
 };
 
 #endif

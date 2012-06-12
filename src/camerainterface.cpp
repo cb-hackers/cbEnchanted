@@ -11,7 +11,10 @@ CameraInterface::CameraInterface():
 	isFollowing(false),
 	followTarget(NULL),
 	followStyle(0),
-	followSetting(0.0f)
+	followSetting(0.0f),
+	worldTransformDirty(true),
+	cameraTrueAngle(0),
+	cameraZoom(1.0f)
 {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -26,6 +29,7 @@ void CameraInterface::commandCloneCameraPosition(void) {
 	CBObject *obj = cb->getObject(id);
 	cameraX = obj->getX();
 	cameraY = obj->getY();
+	worldTransformDirty = true;
 }
 
 void CameraInterface::commandCloneCameraOrientation(void) {
@@ -72,18 +76,21 @@ void CameraInterface::commandMoveCamera(void) {
 	cameraY += sinf(cameraAngle * M_PI / 180.0f) * fwrd;
 	cameraX += cosf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
 	cameraY += sinf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
+	worldTransformDirty = true;
 }
 
 void CameraInterface::commandTranslateCamera(void) {
 	cameraZ += cb->popValue().toFloat();
 	cameraY += cb->popValue().toFloat();
 	cameraX += cb->popValue().toFloat();
+	worldTransformDirty = true;
 }
 
 void CameraInterface::commandPositionCamera(void) {
 	cameraZ = cb->popValue().toFloat();
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
+	worldTransformDirty = true;
 }
 
 void CameraInterface::functionCameraX(void) {
@@ -144,4 +151,15 @@ void CameraInterface::updateCamFollow() {
 		}
 		break;
 	}
+	worldTransformDirty = true;
+}
+
+ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
+	if (worldTransformDirty) {
+		al_build_transform(&worldTransform, -cameraX + al_get_display_width(cb->getWindow()) / 2, cameraY + al_get_display_height(cb->getWindow())/2,
+						   cameraZoom, cameraZoom,
+						   cameraTrueAngle * 180.0 / M_PI);
+		worldTransformDirty = false;
+	}
+	return &worldTransform;
 }
