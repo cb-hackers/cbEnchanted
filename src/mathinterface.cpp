@@ -160,11 +160,6 @@ void MathInterface::functionWrapAngle(void) {
 }
 
 
-//Helper
-inline double square(float num) {
-	return (double)num * (double)num;
-}
-
 void MathInterface::functionDistance(void) {
 	float y2 = cb->popValue().toFloat();
 	float x2 = cb->popValue().toFloat();

@@ -37,7 +37,8 @@ class MathInterface {
 		void functionBoxOverlap(void);
 
 		static float wrapAngle(float v);
-		static float wrapAngle(int32_t v);
+		static int32_t wrapAngle(int32_t v);
+		static double square(float v);
 	private:
 		CBEnchanted *cb;
 };
@@ -47,23 +48,26 @@ float MathInterface::wrapAngle(float v) {
 	while(v > 360.0f) {
 		v -= 360.0f;
 	}
-	while (v < 0.0f)
-	{
+	while (v < 0.0f) {
 		v += 360.0f;
 	}
 	return v;
 }
 
 inline
-float MathInterface::wrapAngle(int32_t v) {
-	while(v > 360.0f) {
-		v -= 360.0f;
+int32_t MathInterface::wrapAngle(int32_t v) {
+	while(v > 360.0) {
+		v -= 360.0;
 	}
-	while (v < 0.0f)
-	{
-		v += 360.0f;
+	while (v < 0.0) {
+		v += 360.0;
 	}
 	return v;
+}
+
+inline
+double MathInterface::square(float v) {
+	return (double)v * (double)v;
 }
 
 #endif
