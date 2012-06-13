@@ -211,6 +211,7 @@ ALLEGRO_TRANSFORM *CameraInterface::getInverseWorldTransform() {
 		al_scale_transform(&inverseWorldTransform, 1.0f / cameraZoom, 1.0f / cameraZoom);
 		al_rotate_transform(&inverseWorldTransform, -cameraRadAngle);
 		al_translate_transform(&inverseWorldTransform, cameraX, -cameraY);
+		inverseWorldTransformDirty = false;
 	}
 	return &inverseWorldTransform;
 }
