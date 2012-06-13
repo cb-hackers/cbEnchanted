@@ -3,6 +3,7 @@
 #include "mathinterface.h"
 #include "cbenchanted.h"
 #include "cbobject.h"
+#define MIN_CAMERA_ZOOM 0.00001f
 
 CameraInterface::CameraInterface():
 	cameraX(0),
@@ -13,7 +14,7 @@ CameraInterface::CameraInterface():
 	followStyle(0),
 	followSetting(0.0f),
 	worldTransformDirty(true),
-	cameraTrueAngle(0),
+	cameraRealAngle(0),
 	cameraZoom(1.0f)
 {
 	cb = static_cast <CBEnchanted *> (this);
@@ -57,18 +58,21 @@ void CameraInterface::commandPointCamera(void) {
 
 void CameraInterface::commandTurnCamera(void) {
 	cb->popValue();
-	cb->popValue();
+	cameraRealAngle = MathInterface::wrapAngle(cameraRealAngle + cb->popValue().toFloat());
 	cameraAngle = MathInterface::wrapAngle(cameraAngle + cb->popValue().toFloat());
+	worldTransformDirty = true;
 }
 
 void CameraInterface::commandRotateCamera(void) {
 	cb->popValue();
-	cb->popValue();
+	cameraRealAngle = MathInterface::wrapAngle(cb->popValue().toFloat());
 	cameraAngle = MathInterface::wrapAngle(cb->popValue().toFloat());
+	worldTransformDirty = true;
 }
 
 void CameraInterface::commandMoveCamera(void) {
-	cameraZ += cb->popValue().toFloat();
+	cameraZoom += cb->popValue().toFloat();
+	if (cameraZoom < 0.000001f) cameraZoom = 0.00001f;
 	float side = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
 
@@ -80,14 +84,16 @@ void CameraInterface::commandMoveCamera(void) {
 }
 
 void CameraInterface::commandTranslateCamera(void) {
-	cameraZ += cb->popValue().toFloat();
+	cameraZoom += cb->popValue().toFloat();
+	if (cameraZoom < MIN_CAMERA_ZOOM) cameraZoom = MIN_CAMERA_ZOOM;
 	cameraY += cb->popValue().toFloat();
 	cameraX += cb->popValue().toFloat();
 	worldTransformDirty = true;
 }
 
 void CameraInterface::commandPositionCamera(void) {
-	cameraZ = cb->popValue().toFloat();
+	cameraZoom = cb->popValue().toFloat();
+	if (cameraZoom < MIN_CAMERA_ZOOM) cameraZoom = MIN_CAMERA_ZOOM;
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
 	worldTransformDirty = true;
@@ -156,9 +162,11 @@ void CameraInterface::updateCamFollow() {
 
 ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 	if (worldTransformDirty) {
-		al_build_transform(&worldTransform, -cameraX + al_get_display_width(cb->getWindow()) / 2, cameraY + al_get_display_height(cb->getWindow())/2,
-						   cameraZoom, cameraZoom,
-						   cameraTrueAngle * 180.0 / M_PI);
+		al_identity_transform(&worldTransform);
+		al_translate_transform(&worldTransform, -cameraX, cameraY);
+		al_rotate_transform(&worldTransform, cameraRealAngle / 180.0 * M_PI);
+		al_scale_transform(&worldTransform, cameraZoom, cameraZoom);
+		al_translate_transform(&worldTransform, al_get_display_width(cb->getWindow()) / 2, al_get_display_height(cb->getWindow()) / 2);
 		worldTransformDirty = false;
 	}
 	return &worldTransform;

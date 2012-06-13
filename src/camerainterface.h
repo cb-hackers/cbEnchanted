@@ -40,9 +40,8 @@ class CameraInterface {
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
-		float cameraZ;
 		float cameraAngle;
-		float cameraTrueAngle;
+		float cameraRealAngle;
 		float cameraZoom;
 
 		bool isFollowing;
