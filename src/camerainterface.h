@@ -36,12 +36,14 @@ class CameraInterface {
 		inline bool isCamFollowing() {return isFollowing;}
 
 		ALLEGRO_TRANSFORM *getWorldTransform();
+		ALLEGRO_TRANSFORM *getInverseWorldTransform();
 
 		/** Returns the width of the drawing area after all transformations are applied */
 		float getDrawAreaWidth();
 		/** Returns the height of the drawing area after all transformations are applied */
 		float getDrawAreaHeight();
 	private:
+		void cameraMoved();
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
@@ -54,7 +56,9 @@ class CameraInterface {
 		uint8_t followStyle;
 		float followSetting;
 		ALLEGRO_TRANSFORM worldTransform;
+		ALLEGRO_TRANSFORM inverseWorldTransform;
 		bool worldTransformDirty;
+		bool inverseWorldTransformDirty;
 };
 
 #endif
