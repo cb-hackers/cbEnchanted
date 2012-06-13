@@ -1,0 +1,39 @@
+floor=MakeObjectFloor()
+grid=LoadImage("Media\whitegrid.bmp")
+PaintObject floor,grid
+
+
+grass=MakeObjectFloor()
+lawn=LoadImage("Media\grass.bmp")
+PaintObject grass,lawn
+PositionObject grass,0,0, -2 'apply z-depth
+
+'Load the map 
+map=LoadMap("Media\testmap.til","Media\tileset.bmp")
+
+AddText "Use Arrows to move..."
+
+SetMap map,OFF,ON 'make back layer transparent
+
+//PositionCamera 0, -90
+//RotateCamera 0,90 'make the camera face upwards
+guy= LoadObject("Media\guy.bmp", 72)
+PositionObject guy, 0, -100
+cow = LoadObject("Media\cow.bmp", 72)
+PositionObject cow, 100, 0
+Repeat
+
+    'Controls
+    If LeftKey() Then MoveCamera -1,0
+    If RightKey() Then MoveCamera 1,0
+    If UpKey() Then MoveCamera 0,1
+    If DownKey() Then MoveCamera 0, -1
+    If KeyDown(cbKeyZ) Then TurnCamera 0,0.01
+    If KeyDown(cbKeyX) Then TurnCamera 0,-0.01
+    If KeyDown(cbKeyA) Then MoveCamera 0,0, 0.01
+    If KeyDown(cbKeyS) Then MoveCamera 0,0, -0.01
+
+
+    DrawScreen
+
+Until EscapeKey()
