@@ -180,7 +180,7 @@ void CameraInterface::updateCamFollow() {
 float CameraInterface::getDrawAreaWidth() {
 	return (
 		fabs(cos(cameraRadAngle) * cb->screenWidth()) +
-		fabs(sin(cameraRadAngle + M_PI * 0.5f) * cb->screenHeight())
+		fabs(sin(cameraRadAngle) * cb->screenHeight())
 	) * (1 / cameraZoom);
 }
 
@@ -188,7 +188,7 @@ float CameraInterface::getDrawAreaWidth() {
 float CameraInterface::getDrawAreaHeight() {
 	return (
 		fabs(cos(cameraRadAngle) * cb->screenHeight()) +
-		fabs(sin(cameraRadAngle + M_PI * 0.5f) * cb->screenWidth())
+		fabs(sin(cameraRadAngle) * cb->screenWidth())
 	) * (1 / cameraZoom);
 }
 

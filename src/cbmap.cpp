@@ -265,8 +265,8 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 		float camX = cb->getCameraX();
 		float camY = cb->getCameraY();
 
-		float scrW = cb->screenWidth();
-		float scrH = cb->screenHeight();
+		float scrW = cb->getDrawAreaWidth();
+		float scrH = cb->getDrawAreaHeight();
 
 		// Calculate the coordinates of visible area
 		float areaTop = camY + 0.5f * scrH;
@@ -303,11 +303,17 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 		}
 
 		// Now do the loop-de-la-loop to fill the visible area with proper tiles.
-		for (; x - sizeX < areaRight; x += tileWidth) {
+		for (; x - tileWidth < areaRight; x += tileWidth) {
 			for (float iterY = y; iterY - tileHeight < areaTop; iterY += tileHeight) {
-				int32_t tileNum = getMapWorldCoordinates(level, x, iterY);
-				if (tileNum > 0) {
-					drawTile(target, tileNum+(int)currentFrame[tileNum], x, iterY);
+				float testX = x;
+				float testY = iterY;
+				worldCoordinatesToMapCoordinates(testX, testY);
+
+				if (testX >= 0 && testY >= 0) {
+					int32_t tileNum = getMapWorldCoordinates(level, x, iterY);
+					if (tileNum > 0) {
+						drawTile(target, tileNum+(int)currentFrame[tileNum], x, iterY);
+					}
 				}
 			}
 		}
