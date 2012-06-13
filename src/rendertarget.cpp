@@ -364,6 +364,9 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 
 void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
+	convertCoords(x1, y1);
+	convertCoords(x2, y2);
+	convertCoords(x3, y3);
 	if (fill) {
 		al_draw_filled_triangle(x1, y1, x2, y2, x3, y3, color);
 	}
