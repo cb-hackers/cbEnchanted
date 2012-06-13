@@ -14,7 +14,7 @@ CameraInterface::CameraInterface():
 	followStyle(0),
 	followSetting(0.0f),
 	worldTransformDirty(true),
-	cameraRealAngle(0),
+	cameraRadAngle(0),
 	cameraZoom(1.0f)
 {
 	cb = static_cast <CBEnchanted *> (this);
@@ -58,14 +58,20 @@ void CameraInterface::commandPointCamera(void) {
 
 void CameraInterface::commandTurnCamera(void) {
 	cb->popValue();
-	cameraRealAngle = MathInterface::wrapAngle(cameraRealAngle + cb->popValue().toFloat());
+	cameraRadAngle += (cb->popValue().toFloat() / 180.0f) * M_PI;
+	while (cameraRadAngle < 0) {
+		cameraRadAngle += 2 * M_PI;
+	}
+	while (cameraRadAngle > 2 * M_PI) {
+		cameraRadAngle -= 2* M_PI;
+	}
 	cameraAngle = MathInterface::wrapAngle(cameraAngle + cb->popValue().toFloat());
 	worldTransformDirty = true;
 }
 
 void CameraInterface::commandRotateCamera(void) {
 	cb->popValue();
-	cameraRealAngle = MathInterface::wrapAngle(cb->popValue().toFloat());
+	cameraRadAngle = (MathInterface::wrapAngle(cb->popValue().toFloat()) / 180.0f) * M_PI;
 	cameraAngle = MathInterface::wrapAngle(cb->popValue().toFloat());
 	worldTransformDirty = true;
 }
@@ -75,11 +81,11 @@ void CameraInterface::commandMoveCamera(void) {
 	if (cameraZoom < 0.000001f) cameraZoom = 0.00001f;
 	float side = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
-	float moveAngle = cameraAngle + cameraRealAngle;
-	cameraX += cosf(moveAngle * M_PI / 180.0f) * fwrd;
-	cameraY += sinf(moveAngle * M_PI / 180.0f) * fwrd;
-	cameraX += cosf((moveAngle + 90.0f) * M_PI / 180.0f) * side;
-	cameraY += sinf((moveAngle + 90.0f) * M_PI / 180.0f) * side;
+	float moveAngle = (cameraAngle / 180.0f) * M_PI + cameraRadAngle;
+	cameraX += cosf(moveAngle) * fwrd;
+	cameraY += sinf(moveAngle) * fwrd;
+	cameraX += cosf(moveAngle + M_PI * 0.5f) * side;
+	cameraY += sinf(moveAngle + M_PI * 0.5f) * side;
 	worldTransformDirty = true;
 }
 
@@ -164,10 +170,27 @@ ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 	if (worldTransformDirty) {
 		al_identity_transform(&worldTransform);
 		al_translate_transform(&worldTransform, -cameraX, cameraY);
-		al_rotate_transform(&worldTransform, cameraRealAngle / 180.0 * M_PI);
+		al_rotate_transform(&worldTransform, cameraRadAngle);
 		al_scale_transform(&worldTransform, cameraZoom, cameraZoom);
 		al_translate_transform(&worldTransform, al_get_display_width(cb->getWindow()) / 2, al_get_display_height(cb->getWindow()) / 2);
 		worldTransformDirty = false;
 	}
 	return &worldTransform;
 }
+
+/** Returns the width of the drawing area after all transformations are applied */
+float CameraInterface::getDrawAreaWidth() {
+	return (
+		fabs(cos(cameraRadAngle) * cb->screenWidth()) +
+		fabs(sin(cameraRadAngle + M_PI * 0.5f) * cb->screenHeight())
+	) * (1 / cameraZoom);
+}
+
+/** Returns the height of the drawing area after all transformations are applied */
+float CameraInterface::getDrawAreaHeight() {
+	return (
+		fabs(cos(cameraRadAngle) * cb->screenHeight()) +
+		fabs(sin(cameraRadAngle + M_PI * 0.5f) * cb->screenWidth())
+	) * (1 / cameraZoom);
+}
+

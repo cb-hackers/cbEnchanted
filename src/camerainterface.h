@@ -36,12 +36,17 @@ class CameraInterface {
 		inline bool isCamFollowing() {return isFollowing;}
 
 		ALLEGRO_TRANSFORM *getWorldTransform();
+
+		/** Returns the width of the drawing area after all transformations are applied */
+		float getDrawAreaWidth();
+		/** Returns the height of the drawing area after all transformations are applied */
+		float getDrawAreaHeight();
 	private:
 		CBEnchanted *cb;
 		float cameraX;
 		float cameraY;
 		float cameraAngle;
-		float cameraRealAngle;
+		float cameraRadAngle;
 		float cameraZoom;
 
 		bool isFollowing;

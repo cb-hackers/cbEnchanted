@@ -348,8 +348,8 @@ void CBObject::render(RenderTarget &target) {
 			float camX = cb->getCameraX();
 			float camY = cb->getCameraY();
 
-			float scrW = cb->screenWidth();
-			float scrH = cb->screenHeight();
+			float scrW = cb->getDrawAreaWidth();
+			float scrH = cb->getDrawAreaHeight();
 
 			// Calculate the coordinates of visible area
 			float areaTop = camY + 0.5f * scrH;
