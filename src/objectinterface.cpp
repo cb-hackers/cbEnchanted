@@ -816,29 +816,32 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	target.setAsCurrent();
 	//al_hold_bitmap_drawing(true); //Little speed up
 
-	// Draw floor objects with world coordinates
+	// All objects are drawn at world coordinates.
 	target.useWorldCoords(true);
+
+	// Draw floor objects, including map back layer
 	CBObject *currentObject = firstFloorObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->afterObj;
 	}
 
-	// Draw normal objects to world coordinates
-	target.useWorldCoords(true);
+	// Draw normal objects
 	currentObject = firstObject;
 	while (currentObject != 0) {
 		currentObject->render(target);
 		currentObject = currentObject->afterObj;
 	}
 
-	// Reset drawing to screen coordinates and draw over-layer of the map
-	target.useWorldCoords(false);
+	// Draw map over layer
 	if (cb->getTileMap()) {
 		cb->getTileMap()->drawLayer(1, target);
 	}
 
 	//al_hold_bitmap_drawing(false);
+
+	// Reset drawing to screen
+	target.useWorldCoords(false);
 }
 
 void ObjectInterface::addToDrawOrder(CBObject *o) {

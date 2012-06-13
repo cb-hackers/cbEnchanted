@@ -243,48 +243,61 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 			return;
 		}
 
-		float camX = CBEnchanted::instance()->getCameraX() - posX;
-		float camY = CBEnchanted::instance()->getCameraY() - posY;
+		CBEnchanted *cb = CBEnchanted::instance();
+		float camX = cb->getCameraX();
+		float camY = cb->getCameraY();
 
+		float scrW = cb->screenWidth();
+		float scrH = cb->screenHeight();
 
-		int32_t draw_x = camX + getSizeX() / 2 - target.width() / 2;
-		int32_t draw_y = -camY + getSizeY() / 2 - target.height() / 2;
-		int32_t tile_y = draw_y / tileHeight;
-		int32_t order_y = -(draw_y % tileHeight);
+		// Calculate the coordinates of visible area
+		float areaTop = camY + 0.5f * scrH;
+		float areaBottom = camY - 0.5f * scrH;
+		float areaLeft = camX - 0.5f * scrW;
+		float areaRight = camX + 0.5f * scrW;
 
-		while (order_y < target.height()) {
-			tile_y %= getSizeY();
-			if (tile_y >= mapHeight) {
-				break;
+		// Coordinates to draw to. Need to flip Y-coordinate cuz CB is weeeird...
+		float x = posX + tileWidth * 0.5f;
+		float y = -posY - tileHeight * 0.75f;
+
+		// Move drawing coordinates so that they're just outside the visible areas
+		// bottom left corner.
+		if (x > areaLeft) {
+			while (x > areaLeft) {
+				x -= tileWidth;
 			}
+		}
+		else {
+			while (x + tileWidth < areaLeft) {
+				x += tileWidth;
+			}
+		}
 
-			int32_t tile_x = draw_x / tileWidth;
-			int32_t order_x = -(draw_x % tileHeight);
+		if (y > areaBottom) {
+			while (y > areaBottom) {
+				y -= tileHeight;
+			}
+		}
+		else {
+			while (y + tileHeight < areaBottom) {
+				y += tileHeight;
+			}
+		}
 
-			while (order_x < target.width()) {
-				int32_t getX = tile_x % getSizeX();
-				if (getX >= mapWidth) {
-					break;
-				}
-
-				int32_t tileNum = getMap(level, getX, tile_y);
+		// Now do the loop-de-la-loop to fill the visible area with proper tiles.
+		for (; x - sizeX < areaRight; x += tileWidth) {
+			for (float iterY = y; iterY - tileHeight < areaTop; iterY += tileHeight) {
+				int32_t tileNum = getMapWorldCoordinates(level, x, iterY);
 				if (tileNum > 0) {
-					drawTile(target, tileNum+(int)currentFrame[tileNum], order_x, order_y);
+					drawTile(target, tileNum+(int)currentFrame[tileNum], x, iterY);
 				}
-
-				tile_x++;
-				order_x += tileWidth;
 			}
-			tile_y++;
-			order_y += tileHeight;
 		}
 	}
 }
 
 void CBMap::render(RenderTarget &target) {
-	target.useWorldCoords(false);
 	drawLayer(0, target);
-	target.useWorldCoords(true);
 }
 
 /** Draws a single tile.
