@@ -209,7 +209,7 @@ ALLEGRO_TRANSFORM *CameraInterface::getInverseWorldTransform() {
 		al_identity_transform(&inverseWorldTransform);
 		al_translate_transform(&inverseWorldTransform, -al_get_display_width(cb->getWindow()) / 2, -al_get_display_height(cb->getWindow()) / 2);
 		al_scale_transform(&inverseWorldTransform, 1.0f / cameraZoom, 1.0f / cameraZoom);
-		al_rotate_transform(&inverseWorldTransform, -cameraRadAngle / 180.0 * M_PI);
+		al_rotate_transform(&inverseWorldTransform, -cameraRadAngle);
 		al_translate_transform(&inverseWorldTransform, cameraX, -cameraY);
 	}
 	return &inverseWorldTransform;
