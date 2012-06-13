@@ -13,7 +13,7 @@
 
 /** VesQ's awesome triangle drawing function */
 void cbeTriangle(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
 	bool fill = cb->popValue().toInt();
 	float thickness = cb->popValue().toFloat();
 	float y3 = cb->popValue().toFloat();
@@ -149,6 +149,7 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 
 /** Draws image region with scaling, rotating and tinting. */
 void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
 	float angle = cb->popValue().toFloat();
 	float scaley = cb->popValue().toFloat();
 	float scalex = cb->popValue().toFloat();
