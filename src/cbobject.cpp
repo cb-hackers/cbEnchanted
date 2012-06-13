@@ -397,11 +397,9 @@ void CBObject::render(RenderTarget &target) {
 				// Draw animated objects
 				int32_t frame = (int)currentFrame;
 				//INFO("%i", frame)
-				float framesX = renderTarget->width() / frameWidth;
-				float framesY = renderTarget->height() / frameHeight;
-				float copyX = fmod((float)frame, framesX) + 0.0001f;
-				float copyY = (frame - copyX) / framesY + 0.0001f;
-				//INFO("X, Y: %i,%i", copyX, copyY)
+				int32_t framesX = renderTarget->width() / frameWidth;
+				int32_t copyX = frame % framesX;
+				int32_t copyY = frame / framesX;
 				target.drawBitmapRegion(
 					texture,
 					copyX * frameWidth,

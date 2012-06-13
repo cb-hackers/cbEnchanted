@@ -338,9 +338,8 @@ void CBMap::drawTile(RenderTarget &target, int32_t tile, float x, float y) {
 	int32_t fX = 0;
 	int32_t fY = 0;
 	int32_t framesX = renderTarget->width() / tileWidth;
-	int32_t framesY = renderTarget->height() / tileHeight;
 	fX = tile % framesX;
-	fY = tile / framesY;
+	fY = tile / framesX;
 
 	target.drawBitmapRegion(texture, fX * tileWidth, fY * tileHeight, tileWidth, tileHeight, x, y);
 }

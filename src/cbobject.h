@@ -136,9 +136,9 @@ class CBObject{
 		float alphaBlend;
 
 		/** Width of a single frame, px */
-		uint16_t frameWidth;
+		int32_t frameWidth;
 		/** Height of a single frame, px */
-		uint16_t frameHeight;
+		int32_t frameHeight;
 		/** Index of the starting frame, zero-based */
 		uint16_t startFrame;
 		/** Maximum amount of frames */
