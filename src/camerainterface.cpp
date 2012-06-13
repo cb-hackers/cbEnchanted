@@ -14,6 +14,7 @@ CameraInterface::CameraInterface():
 	followStyle(0),
 	followSetting(0.0f),
 	worldTransformDirty(true),
+	inverseWorldTransformDirty(true),
 	cameraRadAngle(0),
 	cameraZoom(1.0f)
 {
@@ -116,28 +117,10 @@ void CameraInterface::functionCameraY(void) {
 void CameraInterface::functionCameraAngle(void) {
 	cb->pushValue(cameraAngle);
 }
-float CameraInterface::screenCoordToWorldX(float a) {
-	float b(0.0f);
-	al_transform_coordinates(getInverseWorldTransform(), &a, &b);
-	return a;
-}
 
-float CameraInterface::screenCoordToWorldY(float a) {
-	float b(0.0f);
-	al_transform_coordinates(getInverseWorldTransform(), &b, &a);
-	return -a;
-}
-
-float CameraInterface::worldCoordToScreenX(float a) {
-	float b(0.0f);
-	al_transform_coordinates(getWorldTransform(), &a, &b);
-	return a;
-}
-
-float CameraInterface::worldCoordToScreenY(float a) {
-	float b(0.0f);
-	al_transform_coordinates(getWorldTransform(), &b, &a);
-	return -a;
+void CameraInterface::screenCoordToWorld(float &x, float &y) {
+	al_transform_coordinates(getInverseWorldTransform(), &x, &y);
+	y = -y;
 }
 
 void CameraInterface::updateCamFollow() {
@@ -206,11 +189,8 @@ ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 
 ALLEGRO_TRANSFORM *CameraInterface::getInverseWorldTransform() {
 	if (inverseWorldTransformDirty) {
-		al_identity_transform(&inverseWorldTransform);
-		al_translate_transform(&inverseWorldTransform, -al_get_display_width(cb->getWindow()) / 2, -al_get_display_height(cb->getWindow()) / 2);
-		al_scale_transform(&inverseWorldTransform, 1.0f / cameraZoom, 1.0f / cameraZoom);
-		al_rotate_transform(&inverseWorldTransform, -cameraRadAngle);
-		al_translate_transform(&inverseWorldTransform, cameraX, -cameraY);
+		al_copy_transform(&inverseWorldTransform, &worldTransform);
+		al_invert_transform(&inverseWorldTransform);
 		inverseWorldTransformDirty = false;
 	}
 	return &inverseWorldTransform;

@@ -447,11 +447,17 @@ void InputInterface::functionMouseY(void) {
 }
 
 void InputInterface::functionMouseWX(void) {
-	cb->pushValue(cb->screenCoordToWorldX(mouseX));
+	float x = mouseX;
+	float y = mouseY;
+	cb->screenCoordToWorld(x, y);
+	cb->pushValue(x);
 }
 
 void InputInterface::functionMouseWY(void) {
-	cb->pushValue(cb->screenCoordToWorldY(mouseY));
+	float x = mouseX;
+	float y = mouseY;
+	cb->screenCoordToWorld(x, y);
+	cb->pushValue(y);
 }
 
 void InputInterface::functionMouseZ(void) {

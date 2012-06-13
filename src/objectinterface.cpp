@@ -93,7 +93,8 @@ void ObjectInterface::commandScreenPositionObject(void) {
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->positionObject(cb->screenCoordToWorldX(x),cb->screenCoordToWorldY(y));
+	cb->screenCoordToWorld(x, y);
+	object->positionObject(x, y);
 }
 
 void ObjectInterface::commandTurnObject(void) {

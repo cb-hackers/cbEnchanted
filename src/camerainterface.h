@@ -27,10 +27,7 @@ class CameraInterface {
 
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }
-		float screenCoordToWorldX(float a);
-		float screenCoordToWorldY(float a);
-		float worldCoordToScreenX(float a);
-		float worldCoordToScreenY(float a);
+		void screenCoordToWorld(float &x, float &y);
 
 		void updateCamFollow();
 		inline bool isCamFollowing() {return isFollowing;}
