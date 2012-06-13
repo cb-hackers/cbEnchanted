@@ -21,6 +21,8 @@ guy= LoadObject("Media\guy.bmp", 72)
 PositionObject guy, 0, -100
 cow = LoadObject("Media\cow.bmp", 72)
 PositionObject cow, 100, 0
+DrawToWorld ON
+Color cbRed
 Repeat
 
     'Controls
@@ -32,8 +34,8 @@ Repeat
     If KeyDown(cbKeyX) Then TurnCamera 0,-0.01
     If KeyDown(cbKeyA) Then MoveCamera 0,0, 0.01
     If KeyDown(cbKeyS) Then MoveCamera 0,0, -0.01
-
-
+    DrawGame
+    Circle MouseWX() - 4, MouseWY() + 4, 8, 8
     DrawScreen
 
 Until EscapeKey()
