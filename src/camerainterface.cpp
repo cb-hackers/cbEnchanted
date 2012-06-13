@@ -75,11 +75,11 @@ void CameraInterface::commandMoveCamera(void) {
 	if (cameraZoom < 0.000001f) cameraZoom = 0.00001f;
 	float side = cb->popValue().toFloat();
 	float fwrd = cb->popValue().toFloat();
-
-	cameraX += cosf(cameraAngle * M_PI / 180.0f) * fwrd;
-	cameraY += sinf(cameraAngle * M_PI / 180.0f) * fwrd;
-	cameraX += cosf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
-	cameraY += sinf((cameraAngle + 90.0f) * M_PI / 180.0f) * side;
+	float moveAngle = cameraAngle + cameraRealAngle;
+	cameraX += cosf(moveAngle * M_PI / 180.0f) * fwrd;
+	cameraY += sinf(moveAngle * M_PI / 180.0f) * fwrd;
+	cameraX += cosf((moveAngle + 90.0f) * M_PI / 180.0f) * side;
+	cameraY += sinf((moveAngle + 90.0f) * M_PI / 180.0f) * side;
 	worldTransformDirty = true;
 }
 
