@@ -106,6 +106,9 @@ class CBObject{
 		/** Mirrors this object vertically and/or horizontally. */
 		void mirrorObject(int32_t dir);
 
+		/** Is the given world coordinate inside this object. */
+		bool canPick(float x, float y);
+
 
 		uint32_t getLife();
 		bool isLife();

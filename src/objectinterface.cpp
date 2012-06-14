@@ -979,3 +979,18 @@ void ObjectInterface::removeFromCollisionCheck(CBObject *obj) {
 		}
 	}
 }
+
+/** Tries to pick an object from given world coordinates. */
+void ObjectInterface::pickObject(float x, float y) {
+	std::vector<CBObject*>::iterator iter;
+
+	// Init last picked object
+	lastPickedObj = 0;
+
+	for (iter = pickableObjects.begin(); iter != pickableObjects.end(); iter++) {
+		if ((*iter)->type() == CBObject::Object && (*iter)->canPick(x, y)) {
+			lastPickedObj = (*iter)->getID();
+			break;
+		}
+	}
+}

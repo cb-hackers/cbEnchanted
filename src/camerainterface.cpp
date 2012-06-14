@@ -49,7 +49,10 @@ void CameraInterface::commandCameraFollow(void) {
 }
 
 void CameraInterface::commandCameraPick(void) {
-	STUB;
+	float y = cb->popValue().toFloat();
+	float x = cb->popValue().toFloat();
+	screenCoordToWorld(x, y);
+	cb->pickObject(x, y);
 }
 
 void CameraInterface::commandPointCamera(void) {
@@ -190,6 +193,10 @@ ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 }
 
 ALLEGRO_TRANSFORM *CameraInterface::getInverseWorldTransform() {
+	if (worldTransformDirty) {
+		inverseWorldTransformDirty = true;
+		getWorldTransform();
+	}
 	if (inverseWorldTransformDirty) {
 		al_copy_transform(&inverseWorldTransform, &worldTransform);
 		al_invert_transform(&inverseWorldTransform);

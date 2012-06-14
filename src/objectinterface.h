@@ -89,6 +89,9 @@ class ObjectInterface {
 
 		/** Removes an object from collisionChecks. */
 		void removeFromCollisionCheck(CBObject *obj);
+
+		/** Tries to pick an object from given world coordinates. */
+		void pickObject(float x, float y);
 	private:
 		CBObject *lastObject;
 		CBObject *firstObject;

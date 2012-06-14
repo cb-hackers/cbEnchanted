@@ -3,6 +3,7 @@
 #include "cbobject.h"
 #include <math.h>
 #include "cbenchanted.h"
+#include "collisioncheck.h"
 
 static bool defaultVisible = true;
 
@@ -760,5 +761,30 @@ bool CBObject::boxRayCast(CBObject *fromObject, float &returnX, float &returnY) 
 	}
 
 	// If we ended up here, ray doesn't cross the rectangle.
+	return false;
+}
+
+/** Is the given world coordinate inside this object.
+ *
+ * @param x,y World coordinates to check against.
+ */
+bool CBObject::canPick(float x, float y) {
+	if (pickStyle == BoxPick) {
+		float w = getRange1();
+		float h = getRange2();
+		if ((fabs(posX - x) < w / 2) && (fabs(posY - y) < h / 2)) {
+			return true;
+		}
+	}
+	else if (pickStyle == CirclePick) {
+		float r = getRange1() * 0.5f;
+		float dx = posX - x;
+		float dy = posY - y;
+
+		float distSq = dx * dx + dy * dy;
+		if (distSq < r*r) {
+			return true;
+		}
+	}
 	return false;
 }
