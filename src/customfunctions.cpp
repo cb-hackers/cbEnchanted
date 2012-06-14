@@ -394,9 +394,11 @@ void cbeFileDialog(CBEnchanted * cb) {
 	int mode = cb->popValue().getInt();
 	string patterns = cb->popValue().toString().getRef();
 	string title = cb->popValue().toString().getRef();
-	string path = cb->popValue().toString().getRef();
+	ALLEGRO_PATH * path = cb->popValue().toString().getPath();
 
-	ALLEGRO_FILECHOOSER * fC = al_create_native_file_dialog(path.c_str(), title.c_str(), patterns.c_str(), mode);
+	ALLEGRO_FILECHOOSER * fC = al_create_native_file_dialog(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), title.c_str(), patterns.c_str(), mode);
+	al_destroy_path(path);
+
 	if(fC == NULL) {
 		cb->errors->createError("Can't create FileDialog!");
 		cb->pushValue(0);
