@@ -40,6 +40,7 @@ class RenderTarget
 		void drawBitmapTintedScaledRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float angle);
 		void drawBitmap(ALLEGRO_BITMAP *r,float x, float y, float rot,const ALLEGRO_COLOR &tint);
 		void drawBitmap(ALLEGRO_BITMAP *r,float x, float y, const ALLEGRO_COLOR &tint);
+		void drawBitmapMirrored(ALLEGRO_BITMAP *r,int flags);
 		void drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime, int32_t animLength);
 		void drawText(const ALLEGRO_FONT *font, const ISString &text, float x, float y, const ALLEGRO_COLOR &color, int flags = Left|Top);
 		void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill, const ALLEGRO_COLOR &color);

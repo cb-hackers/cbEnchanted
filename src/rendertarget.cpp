@@ -317,6 +317,11 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, const ALLEGRO
 	al_draw_tinted_bitmap(r, tint, x, y, 0);
 }
 
+void RenderTarget::drawBitmapMirrored(ALLEGRO_BITMAP *r,int flags) {
+	setAsCurrent();
+	al_draw_bitmap(r, 0, 0, flags);
+}
+
 RenderTarget *RenderTarget::clone() {
 	RenderTarget *ret = new RenderTarget;
 	ret->bitmap = al_clone_bitmap(this->bitmap);

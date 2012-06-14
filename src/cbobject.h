@@ -103,6 +103,9 @@ class CBObject{
 		/** Sets the way this object is picked. */
 		bool setPickStyle(int32_t style);
 
+		/** Mirrors this object vertically and/or horizontally. */
+		void mirrorObject(int32_t dir);
+
 
 		uint32_t getLife();
 		bool isLife();

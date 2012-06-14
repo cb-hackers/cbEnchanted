@@ -1,4 +1,3 @@
-
 #include "precomp.h"
 #include "debug.h"
 #include "cbobject.h"
@@ -295,9 +294,10 @@ void CBObject::maskObject(uint8_t r, uint8_t g, uint8_t b) {
 		FIXME("Masking object without texture");
 		return;
 	}
+	maskColor = al_map_rgb(r, g, b);
 	al_destroy_bitmap(texture);
 	texture = al_clone_bitmap(renderTarget->getBitmap());
-	al_convert_mask_to_alpha(texture, al_map_rgb(r, g, b));
+	al_convert_mask_to_alpha(texture, maskColor);
 }
 
 /** Moves the object.
@@ -463,6 +463,7 @@ void CBObject::setDefaultVisible(bool t) {
 CBObject *CBObject::copyObject() const {
 	CBObject *obj = new CBObject(isFloor);
 	obj->texture = texture;
+	obj->maskColor = this->maskColor;
 	obj->renderTarget = renderTarget;
 	obj->copied = true;
 	obj->frameHeight = frameHeight;
@@ -552,6 +553,44 @@ bool CBObject::setPickStyle(int32_t style) {
 			FIXME("Unsupported pick type %i", style);
 			return false;
 	}
+}
+
+/** Mirrors this object vertically and/or horizontally. */
+void CBObject::mirrorObject(int32_t dir) {
+	if (dir < 0 || dir > 2) {
+		return;
+	}
+
+	RenderTarget *newRT = new RenderTarget;
+	newRT->create(renderTarget->width(), renderTarget->height());
+
+	switch (dir) {
+		case 0: // Horizontal
+			newRT->drawBitmapMirrored(renderTarget->getBitmap(), ALLEGRO_FLIP_HORIZONTAL);
+		break;
+		case 1: // Vertical
+			newRT->drawBitmapMirrored(renderTarget->getBitmap(), ALLEGRO_FLIP_VERTICAL);
+		break;
+		case 2: // Both
+			newRT->drawBitmapMirrored(renderTarget->getBitmap(), ALLEGRO_FLIP_HORIZONTAL | ALLEGRO_FLIP_VERTICAL);
+		break;
+	}
+
+	if (!this->copied) {
+		if (renderTarget) {
+			delete renderTarget;
+		}
+		if (texture) {
+			al_destroy_bitmap(texture);
+		}
+	}
+	else {
+		this->copied = false;
+	}
+	renderTarget = newRT;
+	texture = al_clone_bitmap(renderTarget->getBitmap());
+	al_convert_mask_to_alpha(texture, maskColor);
+	painted = true;
 }
 
 /** Does a raycast from given object to this circle-shaped object.

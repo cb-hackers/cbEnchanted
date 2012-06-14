@@ -284,7 +284,22 @@ void ObjectInterface::commandGhostObject(void) {
 }
 
 void ObjectInterface::commandMirrorObject(void) {
-	STUB;
+	int32_t dir = cb->popValue().getInt();
+	int32_t id = cb->popValue().getInt();
+	CBObject *obj = getObject(id);
+	if (!obj) {
+		return;
+	}
+
+	if (dir < 0 || dir > 2) {
+		cb->errors->createError("MirrorObject failed!", "Valid values for MirrorObject are 0, 1 and 2.\nYour value was " + boost::lexical_cast<string>(dir) + ".");
+	}
+	else if (obj->type() != CBObject::Object) {
+		cb->errors->createError("MirrorObject failed!", "Only regular objects can be mirrored.");
+	}
+	else {
+		obj->mirrorObject(dir);
+	}
 }
 
 void ObjectInterface::commandObjectRange(void) {
