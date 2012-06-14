@@ -4,6 +4,8 @@ AddText "F1 = hide cursor"
 AddText "F2 = show cursor"
 AddText "F3 = custom pointer"
 AddText "F4 = custom target"
+AddText "F5 = system busy cursor"
+AddText "F6 = normal system cursor"
 
 pointer=LoadImage("Media\cursor.bmp")
 crosshair=LoadImage("Media\crosshair.bmp")
@@ -17,6 +19,7 @@ Repeat
     If KeyHit(cbkeyf4) Then ShowMouse crosshair
     
     If KeyHit(cbKeyF5) Then cbeSetSystemCursor(CBE_SYSTEM_CURSOR_BUSY)
+    If KeyHit(cbKeyF6) Then cbeSetSystemCursor(CBE_SYSTEM_CURSOR_DEFAULT)
     
     DrawScreen
 

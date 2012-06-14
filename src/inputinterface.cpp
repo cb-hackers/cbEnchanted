@@ -225,7 +225,6 @@ void InputInterface::commandShowMouse(void) {
 	else if (id == 1) { // ON
 		if (cursor != 0) {
 			cursor = 0;
-			al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
 		}
 		if (!cursorVisible) {
 			al_show_mouse_cursor(cb->getWindow());
