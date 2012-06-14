@@ -139,3 +139,13 @@ Function cbeTransformReset()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 18
 EndFunction
+
+Function cbeCameraAngle()
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 19
+EndFunction
+
+Function cbeCameraZoom()
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 20
+EndFunction

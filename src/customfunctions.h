@@ -42,6 +42,10 @@ void cbeTransformTranslate(CBEnchanted *cb);
 
 void cbeTransformReset(CBEnchanted *cb);
 
+void cbeCameraZoom(CBEnchanted *cb);
+
+void cbeCameraAngle(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

@@ -56,6 +56,12 @@
 /** ID for custom function cbeTransformReset() */
 #define CBE_TRANSFORM_RESET 18
 
+/** ID for custom function cbeCameraAngle */
+#define CBE_CAMERA_ANGLE 19
+
+/** ID for custom function cbeCameraZoom */
+#define CBE_CAMERA_ZOOM 20
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

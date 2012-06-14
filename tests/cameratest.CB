@@ -1,3 +1,5 @@
+Include "include/customfunctions.cb"
+
 floor=MakeObjectFloor()
 grid=LoadImage("Media\whitegrid.bmp")
 PaintObject floor,grid
@@ -24,7 +26,6 @@ PositionObject cow, 100, 0
 DrawToWorld ON
 Color cbRed
 Repeat
-
     'Controls
     If LeftKey() Then MoveCamera -1,0
     If RightKey() Then MoveCamera 1,0
@@ -35,6 +36,8 @@ Repeat
     If KeyDown(cbKeyA) Then MoveCamera 0,0, 0.01
     If KeyDown(cbKeyS) Then MoveCamera 0,0, -0.01
     DrawGame
+    Text 10,10, "Camera zoom: " + cbeCameraZoom()
+    Text 10,20, "Camera angle: " + cbeCameraAngle()
     Circle MouseWX() - 4, MouseWY() + 4, 8, 8
     DrawScreen
 

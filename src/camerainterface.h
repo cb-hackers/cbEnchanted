@@ -27,6 +27,8 @@ class CameraInterface {
 
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }
+		float getCameraZoom(void) { return cameraZoom; }
+		float getCameraRealAngle(void) { return cameraRadAngle * 180.0f / M_PI; }
 		void screenCoordToWorld(float &x, float &y);
 
 		void updateCamFollow();

@@ -126,5 +126,13 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeTransformReset);
 	func.setFuncId(CBE_TRANSFORM_RESET);
 	this->add(func);
+
+	func.setFuncPtr(&cbeCameraAngle);
+	func.setFuncId(CBE_CAMERA_ANGLE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeCameraZoom);
+	func.setFuncId(CBE_CAMERA_ZOOM);
+	this->add(func);
 }
 

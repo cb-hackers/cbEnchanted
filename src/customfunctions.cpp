@@ -375,4 +375,12 @@ void cbeTransformReset(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
+void cbeCameraZoom(CBEnchanted *cb) {
+	cb->pushValue(cb->getCameraZoom());
+}
+
+void cbeCameraAngle(CBEnchanted *cb) {
+	cb->pushValue(cb->getCameraRealAngle());
+}
+
 /** @} */
