@@ -138,7 +138,7 @@ void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const A
 		al_draw_filled_rectangle(x, y, x+w, y+h, color);
 	}
 	else {
-		al_draw_rectangle(x, y, x+w, y+h, color, 1.0f);
+		al_draw_rectangle(x, y, x+w, y+h, color, CBEnchanted::instance()->getLineWidth());
 	}
 }
 
@@ -152,7 +152,7 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLE
 		al_draw_filled_circle(cx, cy, r, color);
 	}
 	else {
-		al_draw_circle(cx, cy, r, color, 1.0f);
+		al_draw_circle(cx, cy, r, color, CBEnchanted::instance()->getLineWidth());
 	}
 }
 
@@ -166,7 +166,7 @@ void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,con
 		al_draw_filled_ellipse(x, y, w*0.5f, h*0.5f, color);
 	}
 	else {
-		al_draw_ellipse(x, y, w*0.5f, h*0.5f, color, 1.0f);
+		al_draw_ellipse(x, y, w*0.5f, h*0.5f, color, CBEnchanted::instance()->getLineWidth());
 	}
 }
 
@@ -180,7 +180,7 @@ void RenderTarget::drawLine(float x1, float y1, float x2, float y2, const ALLEGR
 	setAsCurrent();
 	convertCoords(x1, y1);
 	convertCoords(x2, y2);
-	al_draw_line(x1, y1, x2, y2, color, 1.0f);
+	al_draw_line(x1, y1, x2, y2, color, CBEnchanted::instance()->getLineWidth());
 }
 
 void RenderTarget::putPixel(int32_t x, int32_t y, const ALLEGRO_COLOR &color) {
@@ -366,7 +366,7 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 	al_draw_text(font, color, x, y, 0, text.getUtf8Encoded().c_str());
 }
 
-void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float thickness, bool fill, const ALLEGRO_COLOR &color) {
+void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, bool fill, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
 	convertCoords(x1, y1);
 	convertCoords(x2, y2);
@@ -375,7 +375,7 @@ void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3
 		al_draw_filled_triangle(x1, y1, x2, y2, x3, y3, color);
 	}
 	else {
-		al_draw_triangle(x1, y1, x2, y2, x3, y3, color, thickness);
+		al_draw_triangle(x1, y1, x2, y2, x3, y3, color, CBEnchanted::instance()->getLineWidth());
 	}
 }
 

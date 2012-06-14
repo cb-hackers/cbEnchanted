@@ -15,7 +15,6 @@
 void cbeTriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
 	bool fill = cb->popValue().toInt();
-	float thickness = cb->popValue().toFloat();
 	float y3 = cb->popValue().toFloat();
 	float x3 = cb->popValue().toFloat();
 	float y2 = cb->popValue().toFloat();
@@ -29,7 +28,6 @@ void cbeTriangle(CBEnchanted *cb) {
 		y2,
 		x3,
 		y3,
-		thickness,
 		fill,
 		cb->getDrawColor()
 	);
@@ -375,12 +373,20 @@ void cbeTransformReset(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
+/** Returns camera's zoom value */
 void cbeCameraZoom(CBEnchanted *cb) {
 	cb->pushValue(cb->getCameraZoom());
 }
 
+/** Returns camera's real angle */
 void cbeCameraAngle(CBEnchanted *cb) {
 	cb->pushValue(cb->getCameraRealAngle());
+}
+
+/** Sets line width for the commandLine and the outlines of the shapes.*/
+void cbeSetLineWidth(CBEnchanted *cb) {
+	cb->setLineWidth(cb->popValue().toFloat());
+	cb->pushValue(0);
 }
 
 /** @} */

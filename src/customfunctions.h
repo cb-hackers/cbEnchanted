@@ -46,6 +46,8 @@ void cbeCameraZoom(CBEnchanted *cb);
 
 void cbeCameraAngle(CBEnchanted *cb);
 
+void cbeSetLineWidth(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

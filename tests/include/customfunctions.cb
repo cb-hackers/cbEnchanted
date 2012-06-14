@@ -1,6 +1,6 @@
 Const CBE_CUSTOM_FUNCTION_GROUP = 1
 
-Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, thickness As Float = 0.0, fill = 1)
+Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, fill = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 1
 EndFunction
@@ -140,12 +140,19 @@ Function cbeTransformReset()
     funcId = 18
 EndFunction
 
+//Returns the camera's real angle
 Function cbeCameraAngle()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 19
 EndFunction
 
+//Returns the zoom factor of the camera
 Function cbeCameraZoom()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 20
+EndFunction
+
+Function cbeSetLineWidth(width As Float = 1.0)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 21
 EndFunction

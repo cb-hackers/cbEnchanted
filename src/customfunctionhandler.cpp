@@ -134,5 +134,9 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeCameraZoom);
 	func.setFuncId(CBE_CAMERA_ZOOM);
 	this->add(func);
+
+	func.setFuncPtr(&cbeSetLineWidth);
+	func.setFuncId(CBE_SET_LINE_WIDTH);
+	this->add(func);
 }
 

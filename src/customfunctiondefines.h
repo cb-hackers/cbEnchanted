@@ -62,6 +62,9 @@
 /** ID for custom function cbeCameraZoom */
 #define CBE_CAMERA_ZOOM 20
 
+/** ID for custom function cbeLineWidth */
+#define CBE_SET_LINE_WIDTH 21
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

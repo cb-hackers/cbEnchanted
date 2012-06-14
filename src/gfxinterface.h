@@ -69,7 +69,8 @@ class GfxInterface {
 		bool drawingOnImage() const { return imageToDrawTo != 0; }
 		bool initializeGfx();
 		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
-
+		float getLineWidth() const { return lineWidth; }
+		void setLineWidth(float w) { lineWidth = w; }
 
 	private:
 		void registerWindow();
@@ -99,6 +100,7 @@ class GfxInterface {
 		bool drawTextToWorld;
 		bool gameDrawn; //Game has already been drawn in DrawGame
 		bool gameUpdated; //Game has already been updated in UpdateGame
+		float lineWidth;
 
 		/** Buffer's returned by SCREEN() and Image() */
 		std::map<int32_t,RenderTarget*> bufferMap;

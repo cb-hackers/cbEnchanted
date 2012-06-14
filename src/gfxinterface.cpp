@@ -37,6 +37,7 @@ GfxInterface::GfxInterface() :
 	drawTextToWorld(false),
 	gameDrawn(false),
 	gameUpdated(false),
+	lineWidth(1.0f),
 	imageToDrawTo(NULL)
 {
 	cb = static_cast <CBEnchanted *> (this);
