@@ -304,8 +304,8 @@ void CollisionCheck::RectMapTest() {
 	float objHeight = mObject1->getRange2();
 
 	// Calculate the amount of tiles to both X- and Y-directions we need to check
-	uint16_t checkTilesX = 1;
-	uint16_t checkTilesY = 1;
+	uint16_t checkTilesX = ceil(objWidth / tileWidth);
+	uint16_t checkTilesY = ceil(objHeight / tileHeight);
 
 	// Calculate tile coordinates that are one up and one left from the object
 	int32_t startTileX = (int32_t) (objX - cbmap->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
@@ -412,8 +412,8 @@ void CollisionCheck::CircleMapTest() {
 	float objR = mObject1->getRange1() / 2;
 
 	// Calculate the amount of tiles to both X- and Y-directions we need to check
-	uint16_t checkTilesX = 1;
-	uint16_t checkTilesY = 1;
+	uint16_t checkTilesX = ceil(objR / tileWidth);
+	uint16_t checkTilesY = ceil(objR / tileHeight);
 
 	// Calculate tile coordinates that are one up and one left from the object
 	int32_t startTileX = (int32_t) (objX - cbmap->getX() + cbmap->getSizeX() / 2) / tileWidth - checkTilesX;
