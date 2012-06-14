@@ -158,7 +158,7 @@ Function cbeSetLineWidth(width As Float = 1.0)
 EndFunction
 
 //These constants are possible cbeFileDialog's mode parameter's values
-//See http://www.allegro.cc/manual/5/al_create_native_file_dialog for more info
+//See http://liballeg.org/a5docs/5.0.6/native_dialog.html#al_create_native_file_dialog for more info
 Const CBE_FILECHOOSER_FILE_MUST_EXIST = 1
 Const CBE_FILECHOOSER_SAVE = 2
 Const CBE_FILECHOOSER_FOLDER = 4
