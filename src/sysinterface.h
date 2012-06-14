@@ -41,10 +41,10 @@ class SysInterface {
 	private:
 		CBEnchanted *cb;
 
-		/** Window title */
+		/** Window title, in UTF-8 */
 		string windowTitle;
 
-		/** Confirmation string that is shown when user is trying to close the program manually. */
+		/** Confirmation string that is shown when user is trying to close the program manually, UTF-8. */
 		string confirmationStr;
 
 		/** Unordered map for dlls*/

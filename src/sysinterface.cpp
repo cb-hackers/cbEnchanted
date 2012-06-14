@@ -97,11 +97,9 @@ void SysInterface::commandErrors(void) {
 }
 
 void SysInterface::commandSetWindow(void) {
-	string quit = cb->popValue().toString().getRef();
+	confirmationStr = cb->popValue().toString().getUtf8Encoded();
 	uint32_t mode = cb->popValue().toInt();
 	windowTitle = cb->popValue().toString().getUtf8Encoded();
-
-	confirmationStr = quit;
 
 	if (windowTitle.empty()) {
 		al_set_window_title(cb->getWindow(), "");
@@ -199,11 +197,27 @@ bool SysInterface::askForExit() {
 		return true;
 	}
 
+#ifdef _WIN32
+	// Windows is fucked up and doesn't use UTF-8
+
+	// Convert message and title to utf-16 with the amazing UTF8-CPP library
+	wstring wideMsg = utf8ToUtf16(confirmationStr);
+	wstring wideTitle = utf8ToUtf16(windowTitle);
+
+	int ret = MessageBoxW(al_get_win_window_handle(cb->getWindow()), &wideMsg[0], &wideTitle[0], MB_OKCANCEL | MB_ICONWARNING);
+
+	if (ret == IDCANCEL) {
+		return false;
+	}
+
+#else
+
 	int pressed = al_show_native_message_box(cb->getWindow(), windowTitle.c_str(), confirmationStr.c_str(), "", NULL, ALLEGRO_MESSAGEBOX_OK_CANCEL);
 	if (pressed == 2 || pressed == 0) {
 		// Pressed "Cancel" or closed the messagebox
 		return false;
 	}
+#endif
 
 	return true;
 }
