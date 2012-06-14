@@ -26,6 +26,7 @@ class RenderTarget
 		void copy(const RenderTarget * r);
 		void setAsCurrent(bool force = 0);
 		void useWorldCoords(bool t);
+		void usePixelPreciseWorldCoords();
 		void drawBox(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawEllipse(float x,float y,float w,float h,bool fill,const ALLEGRO_COLOR &color);
 		void drawCircle(float cx,float cy,float r,bool fill,const ALLEGRO_COLOR &color);
@@ -64,6 +65,7 @@ class RenderTarget
 		void convertCoords(float &x,float &y);
 
 		bool worldCoordsEnabled;
+		bool pixelPreciseWorldCoordsEnabled;
 		ALLEGRO_BITMAP *bitmap;
 		int32_t id;
 };

@@ -36,6 +36,7 @@ class CameraInterface {
 
 		ALLEGRO_TRANSFORM *getWorldTransform();
 		ALLEGRO_TRANSFORM *getInverseWorldTransform();
+		ALLEGRO_TRANSFORM *getPixelPreciseWorldTransform();
 
 		/** Returns the width of the drawing area after all transformations are applied */
 		float getDrawAreaWidth();
@@ -56,8 +57,10 @@ class CameraInterface {
 		float followSetting;
 		ALLEGRO_TRANSFORM worldTransform;
 		ALLEGRO_TRANSFORM inverseWorldTransform;
+		ALLEGRO_TRANSFORM pixelPreciseWorldTransform;
 		bool worldTransformDirty;
 		bool inverseWorldTransformDirty;
+		bool pixelPreciseWorldTransformDirty;
 };
 
 #endif

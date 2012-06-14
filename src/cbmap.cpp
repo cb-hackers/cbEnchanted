@@ -254,6 +254,7 @@ void CBMap::setLayers(uint8_t back, uint8_t over) {
  */
 void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 	if (visible && painted) {
+		target.usePixelPreciseWorldCoords();
 		if (level > 1) {
 			return;
 		}
@@ -317,6 +318,7 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 				}
 			}
 		}
+		target.useWorldCoords(true);
 	}
 }
 

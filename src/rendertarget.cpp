@@ -108,7 +108,7 @@ void RenderTarget::setAsCurrent(bool force) {
 }
 
 void RenderTarget::useWorldCoords(bool t) {
-	if (t != worldCoordsEnabled) {
+	if (t != worldCoordsEnabled || pixelPreciseWorldCoordsEnabled) {
 		setAsCurrent();
 		if (t) {
 			al_use_transform(CBEnchanted::instance()->getWorldTransform());
@@ -119,8 +119,16 @@ void RenderTarget::useWorldCoords(bool t) {
 			al_use_transform(&t);
 		}
 		worldCoordsEnabled = t;
+		pixelPreciseWorldCoordsEnabled = false;
 	}
+}
 
+void RenderTarget::usePixelPreciseWorldCoords() {
+	if (!pixelPreciseWorldCoordsEnabled) {
+		setAsCurrent();
+		al_use_transform(CBEnchanted::instance()->getPixelPreciseWorldTransform());
+		pixelPreciseWorldCoordsEnabled = true;
+	}
 }
 
 void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
