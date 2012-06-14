@@ -21,6 +21,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/transformations.h>
+#include <allegro5/allegro_native_dialog.h>
 #include <unordered_map>
 #include <queue>
 
