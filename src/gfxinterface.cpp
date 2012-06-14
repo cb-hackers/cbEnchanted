@@ -73,9 +73,9 @@ bool GfxInterface::initializeGfx() {
 	resizableWindow = false;
 
 	al_set_new_bitmap_flags(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
-	// If you change the blender below, make sure to change it from the default case
+	// If you change the blenders below, make sure to change them from the default case
 	// in cbeSetBlendMode() in customfunctions.cpp, too.
-	al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+	al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
 
 	windowRenderTarget = new RenderTarget;
 	windowRenderTarget->create(al_get_backbuffer(window));

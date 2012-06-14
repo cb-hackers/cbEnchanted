@@ -16,16 +16,19 @@ Function cbeClsColor(r, g, b, a)
 EndFunction
 
 // Use these constants when using cbeSetBlendMode()
+// If you don't want to modify alpha blending, set the second parameter 0.
 Const CBE_BLEND_RESET = 0
 Const CBE_BLEND_ADDITIVE = 1
 Const CBE_BLEND_OVERWRITE = 2
-Function cbeSetBlendMode(blendType)
+Function cbeSetBlendMode(blendType, setAlphaToo = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 4
 EndFunction
 
-// Use these constants when using cbeSetBlendModeAdvanced()
-// See http://liballeg.org/a5docs/5.0.6/graphics.html#al_set_blender for more info
+// Use these constants when using cbeSetBlendModeAdvanced(). You can supply only
+// the first three parameters and cbEnchanted will apply that blending to alpha
+// channel, too.
+// See http://liballeg.org/a5docs/5.0.6/graphics.html#al_set_separate_blender for more info
 Const CBE_BLEND_ADD = 1
 Const CBE_BLEND_DEST_MINUS_SRC = 2
 Const CBE_BLEND_SRC_MINUS_DEST = 3
@@ -34,7 +37,7 @@ Const CBE_BLEND_ONE = 2
 Const CBE_BLEND_ALPHA = 3
 Const CBE_BLEND_INVERSE_ALPHA = 4
 
-Function cbeSetBlendModeAdvanced(op, src, dst)
+Function cbeSetBlendModeAdvanced(op, src, dst, alphaOp = 0, alphaSrc = 0, alphaDst = 0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 5
 EndFunction

@@ -80,18 +80,34 @@ void cbeClsColor(CBEnchanted *cb) {
 
 /** Sets a custom blending mode. */
 void cbeSetBlendMode(CBEnchanted *cb) {
+	bool alphaToo = cb->popValue().toBool();
 	int32_t type = cb->popValue().toInt();
 
-	switch (type) {
-		case 1: // Additive
-			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
-			break;
-		case 2: // Erase / overwrite
-			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-			break;
-		default:
-			// Reset normal, make sure that this is the same is GfxInterface::initializeGfx()
-			al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+	if (alphaToo) {
+		switch (type) {
+			case 1: // Additive
+				al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
+				break;
+			case 2: // Erase / overwrite
+				al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+				break;
+			default:
+				// Reset normal, make sure that this is the same is GfxInterface::initializeGfx()
+				al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
+		}
+	}
+	else {
+		switch (type) {
+			case 1: // Additive
+				al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
+				break;
+			case 2: // Erase / overwrite
+				al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+				break;
+			default:
+				// Reset normal, make sure that this is the same is GfxInterface::initializeGfx()
+				al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+		}
 	}
 
 	cb->pushValue(0);
@@ -100,12 +116,15 @@ void cbeSetBlendMode(CBEnchanted *cb) {
 /** Sets a custom blending mode in an advanced way.
  * Makes an error if given unsoppurted parameters. */
 void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
+	int32_t cbADst = cb->popValue().toInt();
+	int32_t cbASrc = cb->popValue().toInt();
+	int32_t cbAOp = cb->popValue().toInt();
 	int32_t cbDst = cb->popValue().toInt();
 	int32_t cbSrc = cb->popValue().toInt();
 	int32_t cbOp = cb->popValue().toInt();
 
 	// Allegro versions
-	int op, src, dst;
+	int op, src, dst, aOp, aSrc, aDst;
 
 	switch (cbOp) {
 		case 1: op = ALLEGRO_ADD; break;
@@ -142,8 +161,50 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 		return;
 	}
 
+	if (cbAOp == 0 && cbASrc == 0 && cbADst == 0) { // Alpha blending = regular blending
+		aOp = op;
+		aSrc = src;
+		aDst = dst;
+	}
+	else { // Validate alpha parameters, too.
+		switch (cbAOp) {
+			case 1: aOp = ALLEGRO_ADD; break;
+			case 2: aOp = ALLEGRO_DEST_MINUS_SRC; break;
+			case 3: aOp = ALLEGRO_SRC_MINUS_DEST; break;
+			default:
+				cb->errors->createError("cbeSetAdvancedBlendMode() failed!",
+					"4th parameter was incorrect.");
+				cb->pushValue(0);
+			return;
+		}
+
+		switch (cbASrc) {
+			case 1: aSrc = ALLEGRO_ZERO; break;
+			case 2: aSrc = ALLEGRO_ONE; break;
+			case 3: aSrc = ALLEGRO_ALPHA; break;
+			case 4: aSrc = ALLEGRO_INVERSE_ALPHA; break;
+			default:
+				cb->errors->createError("cbeSetAdvancedBlendMode() failed!",
+					"5th parameter was incorrect.");
+				cb->pushValue(0);
+			return;
+		}
+
+		switch (cbADst) {
+			case 1: aDst = ALLEGRO_ZERO; break;
+			case 2: aDst = ALLEGRO_ONE; break;
+			case 3: aDst = ALLEGRO_ALPHA; break;
+			case 4: aDst = ALLEGRO_INVERSE_ALPHA; break;
+			default:
+				cb->errors->createError("cbeSetAdvancedBlendMode() failed!",
+					"6th parameter was incorrect.");
+				cb->pushValue(0);
+			return;
+		}
+	}
+
 	// Ok, every parameter is validated now and set properly. Set the blend mode.
-	al_set_blender(op, src, dst);
+	al_set_separate_blender(op, src, dst, aOp, aSrc, aDst);
 	cb->pushValue(0);
 }
 
