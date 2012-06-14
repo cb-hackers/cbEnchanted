@@ -250,16 +250,7 @@ void RenderTarget::convertCoords(float &x, float &y) {
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
 	setAsCurrent();
 	convertCoords(x,y);
-	if (CBEnchanted::instance()->drawingOnImage()) {
-		int32_t a, b, c;
-		al_get_blender(&a, &b, &c);
-		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
-		al_draw_bitmap(r, x, y, 0);
-		al_set_blender(a, b, c);
-	}
-	else {
-		al_draw_bitmap(r, x, y, 0);
-	}
+	al_draw_bitmap(r, x, y, 0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float w, float h) {
