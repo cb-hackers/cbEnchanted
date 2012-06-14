@@ -411,7 +411,7 @@ void cbeFileDialog(CBEnchanted * cb) {
 		}
 		cb->pushValue(filePaths.substr(0, filePaths.length()-1));
 	} else {
-		cb->pushValue("");
+		cb->pushValue(string(""));
 	}
 
 	al_destroy_native_file_dialog(fC);
