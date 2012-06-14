@@ -156,3 +156,17 @@ Function cbeSetLineWidth(width As Float = 1.0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 21
 EndFunction
+
+//These constants are possible cbeFileDialog's mode parameter's values
+//See http://www.allegro.cc/manual/5/al_create_native_file_dialog for more info
+Const CBE_FILECHOOSER_FILE_MUST_EXIST = 1
+Const CBE_FILECHOOSER_SAVE = 2
+Const CBE_FILECHOOSER_FOLDER = 4
+Const CBE_FILECHOOSER_PICTURES = 8
+Const CBE_FILECHOOSER_SHOW_HIDDEN = 16
+Const CBE_FILECHOOSER_MULTIPLE = 32
+
+Function cbeFileDialog(path As String, title As String, patterns As String, mode As Integer)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 22
+EndFunction

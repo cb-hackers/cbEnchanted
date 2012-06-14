@@ -65,6 +65,9 @@
 /** ID for custom function cbeLineWidth */
 #define CBE_SET_LINE_WIDTH 21
 
+/** ID for custom function cbeFileDialog */
+#define CBE_FILEDIALOG 22
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

@@ -138,5 +138,9 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeSetLineWidth);
 	func.setFuncId(CBE_SET_LINE_WIDTH);
 	this->add(func);
+
+	func.setFuncPtr(&cbeFileDialog);
+	func.setFuncId(CBE_FILEDIALOG);
+	this->add(func);
 }
 

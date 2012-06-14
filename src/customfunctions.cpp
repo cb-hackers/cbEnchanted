@@ -389,4 +389,33 @@ void cbeSetLineWidth(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
+/** Creates filedialog and returns filepath(s) on succes, empty string on failure.*/
+void cbeFileDialog(CBEnchanted * cb) {
+	int mode = cb->popValue().getInt();
+	string patterns = cb->popValue().toString().getRef();
+	string title = cb->popValue().toString().getRef();
+	string path = cb->popValue().toString().getRef();
+
+	ALLEGRO_FILECHOOSER * fC = al_create_native_file_dialog(path.c_str(), title.c_str(), patterns.c_str(), mode);
+	if(fC == NULL) {
+		cb->errors->createError("Can't create FileDialog!");
+		cb->pushValue(0);
+		return;
+	}
+	bool retVal = al_show_native_file_dialog(cb->getWindow(), fC);
+
+	if(retVal) {
+		string filePaths = "";
+		for(int count = 0; count < al_get_native_file_dialog_count(fC); count++) {
+			filePaths += string(al_get_native_file_dialog_path(fC, count)) + string("|");
+		}
+		cb->pushValue(filePaths.substr(0, filePaths.length()-1));
+	} else {
+		cb->pushValue("");
+	}
+
+	al_destroy_native_file_dialog(fC);
+
+}
+
 /** @} */

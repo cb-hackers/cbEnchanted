@@ -48,6 +48,8 @@ void cbeCameraAngle(CBEnchanted *cb);
 
 void cbeSetLineWidth(CBEnchanted *cb);
 
+void cbeFileDialog(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H
