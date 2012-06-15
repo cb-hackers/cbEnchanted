@@ -328,6 +328,7 @@ void cbeTransformBuild(CBEnchanted *cb) {
 	float transX = cb->popValue().toFloat();
 
 	ALLEGRO_TRANSFORM t;
+	al_identity_transform(&t);
 	al_build_transform(&t, transX, transY, scaleX, scaleY, angle);
 	al_use_transform(&t);
 	cb->pushValue(0);
@@ -338,6 +339,7 @@ void cbeTransformRotate(CBEnchanted *cb) {
 	float angle = (cb->popValue().toFloat() / 180.0f) * M_PI;
 
 	ALLEGRO_TRANSFORM t;
+	al_identity_transform(&t);
 	al_rotate_transform(&t, angle);
 	al_use_transform(&t);
 	cb->pushValue(0);
@@ -349,6 +351,7 @@ void cbeTransformScale(CBEnchanted *cb) {
 	float scaleX = cb->popValue().toFloat();
 
 	ALLEGRO_TRANSFORM t;
+	al_identity_transform(&t);
 	al_scale_transform(&t, scaleX, scaleY);
 	al_use_transform(&t);
 	cb->pushValue(0);
@@ -360,6 +363,7 @@ void cbeTransformTranslate(CBEnchanted *cb) {
 	float transX = cb->popValue().toFloat();
 
 	ALLEGRO_TRANSFORM t;
+	al_identity_transform(&t);
 	al_translate_transform(&t, transX, transY);
 	al_use_transform(&t);
 	cb->pushValue(0);
