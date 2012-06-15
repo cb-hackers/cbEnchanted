@@ -6,7 +6,7 @@ Text 10, 10, "Avaa kuva tulostusta varten"
 DrawScreen
 Wait 1000
 
-file$ = cbeFileDialog("./Media", "Avaa kuvatiedosto", "*.bmp;*.jpg;*.png;*.pcx", CBE_FILECHOOSER_FILE_MUST_EXIS)
+file$ = cbeFileDialog("./Media", "Avaa kuvatiedosto", "*.bmp;*.jpg;*.png;*.pcx", CBE_FILECHOOSER_FILE_MUST_EXIST)
 img = LoadImage(file)
 
 Repeat
