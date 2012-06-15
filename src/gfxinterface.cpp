@@ -278,19 +278,20 @@ void GfxInterface::commandDrawScreen(void) {
 			//Setting target to temporary bitmap
 			al_set_target_bitmap(drawscreenTempBitmap);
 			//Saving blender state
-			int32_t a,b,c;
-			al_get_blender(&a,&b,&c);
+			int32_t a,b,c, aa, bb, cc;
+			al_get_separate_blender(&a,&b,&c, &aa, &bb, &cc);
 			//Setting blender state to replace
-			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+			al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
 			//Drawing backbuffer to temporary bitmap
 			al_draw_bitmap(windowRenderTarget->getBitmap(),0,0,0);
 			//Swaping window buffers
 			al_flip_display();
 			windowRenderTarget->setAsCurrent(true);
+			windowRenderTarget->useWorldCoords(false);
 			//Drawing temporary bitmap on backbuffer.
 			al_draw_bitmap(drawscreenTempBitmap,0,0,0);
 			//Restoring blender state
-			al_set_blender(a,b,c);
+			al_set_separate_blender(a, b, c, aa, bb, cc);
 		}
 	}
 }
