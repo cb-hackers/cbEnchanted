@@ -1,0 +1,18 @@
+Include "include/customfunctions.cb"
+
+SCREEN 640, 480
+
+Text 10, 10, "Avaa kuva tulostusta varten"
+DrawScreen
+Wait 1000
+
+file$ = cbeFileDialog("./Media", "Avaa kuvatiedosto", "*.bmp;*.jpg;*.png;*.pcx", CBE_FILECHOOSER_FILE_MUST_EXIS)
+img = LoadImage(file)
+
+Repeat
+
+    DrawImage img, ScreenWidth() / 2 - ImageWidth(img) / 2, ScreenHeight() / 2 - ImageHeight(img) / 2
+    
+    DrawScreen
+    
+Until KeyHit(1)
