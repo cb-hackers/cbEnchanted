@@ -15,7 +15,7 @@ CBObject::CBObject(bool floor):
 	posX(0),
 	posY(0),
 	angle(0),
-	alphaBlend(255),
+	alphaBlend(1.0f),
 	startFrame(0),
 	maxFrames(0),
 	frameWidth(0),
@@ -389,7 +389,12 @@ void CBObject::render(RenderTarget &target) {
 			// Now do the loop-de-la-loop to fill the visible area with copies of this object.
 			for (; x - sizeX < areaRight; x += sizeX) {
 				for (float iterY = y; iterY - sizeY < areaTop; iterY += sizeY) {
-					target.drawBitmap(texture, x, iterY);
+					if (alphaBlend < 1.0f) {
+						target.drawBitmap(texture, x, iterY, al_map_rgba_f(1.0f, 1.0f, 1.0f, alphaBlend));
+					}
+					else {
+						target.drawBitmap(texture, x, iterY);
+					}
 				}
 			}
 		}
