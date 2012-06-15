@@ -103,8 +103,10 @@ void CameraInterface::commandTranslateCamera(void) {
 }
 
 void CameraInterface::commandPositionCamera(void) {
-	cameraZoom = cb->popValue().toFloat();
-	if (cameraZoom < MIN_CAMERA_ZOOM) cameraZoom = MIN_CAMERA_ZOOM;
+	float newZoom = cb->popValue().toFloat();
+	if (newZoom > MIN_CAMERA_ZOOM) {
+		cameraZoom = newZoom;
+	}
 	cameraY = cb->popValue().toFloat();
 	cameraX = cb->popValue().toFloat();
 	cameraMoved();
