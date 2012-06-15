@@ -397,7 +397,11 @@ void cbeSetLineWidth(CBEnchanted *cb) {
 void cbeFileDialog(CBEnchanted * cb) {
 	int mode = cb->popValue().getInt();
 	string patterns = cb->popValue().toString().getRef();
+#ifdef _WIN32
 	string title = cb->popValue().toString().getRef();
+#else
+	string title = cb->popValue().toString().getUtf8Encoded();
+#endif
 	ALLEGRO_PATH * path = cb->popValue().toString().getPath();
 
 	ALLEGRO_FILECHOOSER * fC = al_create_native_file_dialog(al_path_cstr(path, ALLEGRO_NATIVE_PATH_SEP), title.c_str(), patterns.c_str(), mode);
