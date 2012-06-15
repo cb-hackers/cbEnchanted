@@ -399,6 +399,10 @@ void CollisionCheck::CircleMapTest() {
 	//  * 3 = left
 	bool collided[4] = {false, false, false, false};
 
+	// Collision coordinates
+	float colX[4] = {0.0f};
+	float colY[4] = {0.0f};
+
 	// The current map is the object in mObject2
 	CBMap *cbmap = static_cast<CBMap*>(mObject2);
 
@@ -443,11 +447,15 @@ void CollisionCheck::CircleMapTest() {
 								// It seems to be left.
 								collided[3] = true;
 								objX = x + tileWidth + eps + objR;
+								colX[3] = objX - objR;
+								colY[3] = objY;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								collided[1] = true;
 								objX = x - eps - objR;
+								colX[1] = objX + objR;
+								colY[1] = objY;
 							}
 						}
 						else {
@@ -459,12 +467,16 @@ void CollisionCheck::CircleMapTest() {
 								cornerX = x + tileWidth;
 								isCornerSet = true;
 								collided[3] = true;
+								colX[3] = cornerX;
+								colY[3] = cornerY;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								cornerX = x;
 								isCornerSet = true;
 								collided[1] = true;
+								colX[1] = cornerX;
+								colY[1] = cornerY;
 							}
 
 							if (isCornerSet) {
@@ -480,13 +492,17 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileX < startTileX + checkTilesX) {
 								// It seems to be left.
-								objX = x + tileWidth + eps + objR;
 								collided[3] = true;
+								objX = x + tileWidth + eps + objR;
+								colX[3] = objX - objR;
+								colY[3] = objY;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
-								objX = x - eps - objR;
 								collided[1] = true;
+								objX = x - eps - objR;
+								colX[1] = objX + objR;
+								colY[1] = objY;
 							}
 						}
 						else {
@@ -498,12 +514,16 @@ void CollisionCheck::CircleMapTest() {
 								cornerX = x + tileWidth;
 								isCornerSet = true;
 								collided[3] = true;
+								colX[3] = cornerX;
+								colY[3] = cornerY;
 							}
 							else if (tileX > startTileX + checkTilesX) {
 								// It seems to be right.
 								cornerX = x;
 								isCornerSet = true;
 								collided[1] = true;
+								colX[1] = cornerX;
+								colY[1] = cornerY;
 							}
 
 							if (isCornerSet) {
@@ -538,13 +558,17 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
-								objY = y - tileHeight - eps - objR;
 								collided[0] = true;
+								objY = y - tileHeight - eps - objR;
+								colX[0] = objX;
+								colY[0] = objY + objR;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
-								objY = y + eps + objR;
 								collided[2] = true;
+								objY = y + eps + objR;
+								colX[2] = objX;
+								colY[2] = objY - objR;
 							}
 						}
 						else {
@@ -556,12 +580,16 @@ void CollisionCheck::CircleMapTest() {
 								cornerY = y - tileHeight;
 								isCornerSet = true;
 								collided[0] = true;
+								colX[0] = cornerX;
+								colY[0] = cornerY;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								cornerY = y;
 								isCornerSet = true;
 								collided[2] = true;
+								colX[2] = cornerX;
+								colY[2] = cornerY;
 							}
 
 							if (isCornerSet) {
@@ -577,13 +605,17 @@ void CollisionCheck::CircleMapTest() {
 							// Check the direction to where we collided
 							if (tileY < startTileY + checkTilesY) {
 								// It seems to be top.
-								objY = y - tileHeight - eps - objR;
 								collided[0] = true;
+								objY = y - tileHeight - eps - objR;
+								colX[0] = objX;
+								colY[0] = objY + objR;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
-								objY = y + eps + objR;
 								collided[2] = true;
+								objY = y + eps + objR;
+								colX[2] = objX;
+								colY[2] = objY - objR;
 							}
 						}
 						else {
@@ -595,12 +627,16 @@ void CollisionCheck::CircleMapTest() {
 								cornerY = y - tileHeight;
 								isCornerSet = true;
 								collided[0] = true;
+								colX[0] = cornerX;
+								colY[0] = cornerY;
 							}
 							else if (tileY > startTileY + checkTilesY) {
 								// It seems to be bottom.
 								cornerY = y;
 								isCornerSet = true;
 								collided[2] = true;
+								colX[2] = cornerX;
+								colY[2] = cornerY;
 							}
 
 							if (isCornerSet) {
@@ -623,19 +659,19 @@ void CollisionCheck::CircleMapTest() {
 	// Let's add those collisions.
 	if (collided[0]) {
 		// Top
-		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, 0.0, 0.0));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 270.0, colX[0], colY[0]));
 	}
 	if (collided[1]) {
 		// Right
-		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, 0.0, 0.0));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 180.0, colX[1], colY[1]));
 	}
 	if (collided[2]) {
 		// Bottom
-		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, 0.0, 0.0));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 90.0, colX[2], colY[2]));
 	}
 	if (collided[3]) {
 		// Left
-		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, 0.0, 0.0));
+		mObject1->addCollision(new Collision(mObject1, mObject2, 0.0, colX[3], colY[3]));
 	}
 }
 
