@@ -275,9 +275,16 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 		float areaLeft = camX - 0.5f * scrW;
 		float areaRight = camX + 0.5f * scrW;
 
-		// Coordinates to draw to. Need to flip Y-coordinate cuz CB is weeeird...
-		float x = posX + tileWidth * 0.5f;
-		float y = -posY - tileHeight * 0.75f;
+		// Coordinates to draw to.
+		float x = posX;
+		float y = posY;
+		// Need to fix if map width/height isn't divisible by 2
+		if (mapWidth % 2) {
+			x += tileWidth * 0.5f;
+		}
+		if (mapHeight % 2) {
+			y -= tileHeight * 0.5f;
+		}
 
 		// Move drawing coordinates so that they're just outside the visible areas
 		// bottom left corner.
@@ -311,7 +318,9 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 				worldCoordinatesToMapCoordinates(testX, testY);
 
 				if (testX >= 0 && testY >= 0) {
-					int32_t tileNum = getMapWorldCoordinates(level, x, iterY);
+					testX /= tileWidth;
+					testY /= tileHeight;
+					int32_t tileNum = getMap(level, testX, testY);
 					if (tileNum > 0) {
 						drawTile(target, tileNum+(int)currentFrame[tileNum], x, iterY);
 					}
