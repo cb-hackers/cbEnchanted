@@ -68,6 +68,23 @@
 /** ID for custom function cbeFileDialog */
 #define CBE_FILEDIALOG 22
 
+/** ID for custom function cbeSToWX */
+#define CBE_S_TO_W_X 23
+
+/** ID for custom function cbeSToWY */
+#define CBE_S_TO_W_Y 24
+
+/** ID for custom function cbeWToSX */
+#define CBE_W_TO_S_X 25
+
+/** ID for custom function cbeWToSY */
+#define CBE_W_TO_S_Y 26
+
+/** ID for custom function cbeObjectSX */
+#define CBE_OBJECT_S_X 27
+
+/** ID for custom function cbeObjectSY */
+#define CBE_OBJECT_S_Y 28
 /** @} */
 
 #endif // CUSTOMFUNCTIONDEFINES_H

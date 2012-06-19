@@ -141,13 +141,13 @@ Function cbeTransformReset()
 EndFunction
 
 //Returns the camera's real angle
-Function cbeCameraAngle()
+Function cbeCameraAngle#()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 19
 EndFunction
 
 //Returns the zoom factor of the camera
-Function cbeCameraZoom()
+Function cbeCameraZoom#()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 20
 EndFunction
@@ -170,3 +170,40 @@ Function cbeFileDialog(path As String, title As String, patterns As String, mode
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 22
 EndFunction
+
+//Coordinatesystem conversions
+//----------------------------
+
+Function cbeSToWX#(x As Float, y As Float)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 23
+EndFunction
+
+Function cbeSToWY#(x As Float, y As Float)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 24
+EndFunction
+
+Function cbeWToSX#(x As Float, y As Float)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 25
+EndFunction
+
+Function cbeWToSY#(x As Float, y As Float)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 26
+EndFunction
+
+
+
+Function cbeObjectSX#(obj)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 27
+EndFunction
+
+Function cbeObjectSY#(obj)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 28
+EndFunction
+
+

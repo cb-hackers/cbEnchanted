@@ -142,5 +142,29 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeFileDialog);
 	func.setFuncId(CBE_FILEDIALOG);
 	this->add(func);
+
+	func.setFuncPtr(&cbeWToSX);
+	func.setFuncId(CBE_W_TO_S_X);
+	this->add(func);
+
+	func.setFuncPtr(&cbeWToSY);
+	func.setFuncId(CBE_W_TO_S_Y);
+	this->add(func);
+
+	func.setFuncPtr(&cbeSToWX);
+	func.setFuncId(CBE_S_TO_W_X);
+	this->add(func);
+
+	func.setFuncPtr(&cbeSToWY);
+	func.setFuncId(CBE_S_TO_W_Y);
+	this->add(func);
+
+	func.setFuncPtr(&cbeObjectSX);
+	func.setFuncId(CBE_OBJECT_S_X);
+	this->add(func);
+
+	func.setFuncPtr(&cbeObjectSY);
+	func.setFuncId(CBE_OBJECT_S_Y);
+	this->add(func);
 }
 

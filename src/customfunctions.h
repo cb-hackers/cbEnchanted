@@ -50,6 +50,18 @@ void cbeSetLineWidth(CBEnchanted *cb);
 
 void cbeFileDialog(CBEnchanted *cb);
 
+void cbeWToSX(CBEnchanted *cb);
+
+void cbeWToSY(CBEnchanted *cb);
+
+void cbeSToWX(CBEnchanted *cb);
+
+void cbeSToWY(CBEnchanted *cb);
+
+void cbeObjectSX(CBEnchanted *cb);
+
+void cbeObjectSY(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

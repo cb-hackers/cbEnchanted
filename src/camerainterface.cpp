@@ -129,6 +129,11 @@ void CameraInterface::screenCoordToWorld(float &x, float &y) {
 	y = -y;
 }
 
+void CameraInterface::worldCoordToScreen(float &x, float &y) {
+	y = -y;
+	al_transform_coordinates(getWorldTransform(), &x, &y);
+}
+
 void CameraInterface::updateCamFollow() {
 	switch (followStyle) {
 		case 1: {

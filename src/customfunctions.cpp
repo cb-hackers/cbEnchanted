@@ -427,5 +427,56 @@ void cbeFileDialog(CBEnchanted * cb) {
 	al_destroy_native_file_dialog(fC);
 
 }
+/** Converts the world coordinates to the screen coordinates */
+void cbeWToSX(CBEnchanted *cb) {
+	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	cb->worldCoordToScreen(x, y);
+	cb->pushValue(x);
+}
+
+/** Converts the world coordinates to the screen coordinates */
+void cbeWToSY(CBEnchanted *cb) {
+	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	cb->worldCoordToScreen(x, y);
+	cb->pushValue(y);
+}
+
+/** Converts the screen coordinates to the world coordinates */
+void cbeSToWX(CBEnchanted *cb) {
+	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	cb->screenCoordToWorld(x, y);
+	cb->pushValue(x);
+}
+
+/** Converts the screen coordinates to the world coordinates */
+void cbeSToWY(CBEnchanted *cb) {
+	float x = cb->popValue().toFloat();
+	float y = cb->popValue().toFloat();
+	cb->screenCoordToWorld(x, y);
+	cb->pushValue(y);
+}
+
+/** Returns the object's position in the screen coordinates */
+void cbeObjectSX(CBEnchanted *cb) {
+	int32_t id = cb->popValue().toInt();
+	CBObject *obj = cb->getObject(id);
+	float x = obj->getX();
+	float y = obj->getY();
+	cb->worldCoordToScreen(x, y);
+	cb->pushValue(x);
+}
+
+/** Returns the object's position in the screen coordinates */
+void cbeObjectSY(CBEnchanted *cb) {
+	int32_t id = cb->popValue().toInt();
+	CBObject *obj = cb->getObject(id);
+	float x = obj->getX();
+	float y = obj->getY();
+	cb->worldCoordToScreen(x, y);
+	cb->pushValue(y);
+}
 
 /** @} */
