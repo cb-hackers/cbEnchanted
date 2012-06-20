@@ -327,7 +327,6 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 				}
 			}
 		}
-		target.useWorldCoords(true);
 	}
 }
 
@@ -656,15 +655,15 @@ bool CBMap::mapRayCast(float x1, float y1, float x2, float y2) {
 
 /** Converts tilemap based coordinates to world coordinates */
 void CBMap::worldCoordinatesToMapCoordinates(float &x, float &y) {
-	x = x + this->mapWidth * this->tileWidth / 2;
-	y = -y + this->mapHeight * this->tileHeight / 2;
+	x = x - posX + this->mapWidth * this->tileWidth / 2;
+	y = -y + posY + this->mapHeight * this->tileHeight / 2;
 }
 
 
 /** Converts world coordinates to tilemap based coordinates */
 void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
-	x = x - this->mapWidth * this->tileWidth / 2;
-	y = this->mapHeight * this->tileHeight / 2 - y;
+	x = x - this->mapWidth * this->tileWidth / 2 + posX;
+	y = this->mapHeight * this->tileHeight / 2 - y - posY;
 }
 
 
