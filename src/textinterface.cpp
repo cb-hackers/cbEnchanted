@@ -14,7 +14,7 @@
 #ifdef _WIN32
 	#include "util.h" // For converting UTF-8 to CP1252, console output
 #endif
-
+#ifndef CBE_LIB
 TextInterface::TextInterface() : locationX(0), locationY(0) {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -212,6 +212,18 @@ void TextInterface::functionLoadFont(void) {
 	}
 }
 
+void TextInterface::functionTextWidth(void) {
+	cb->pushValue(al_get_text_width(currentFont, cb->popValue().toString().getRef().c_str()));
+}
+
+void TextInterface::functionTextHeight(void) {
+	int dummy;
+	int height;
+	al_get_text_dimensions(currentFont, cb->popValue().toString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
+	cb->pushValue(height);
+}
+
+#endif
 void TextInterface::renderAddTexts(RenderTarget &r){
 	if (texts.empty()) return;
 	r.setAsCurrent();
@@ -225,13 +237,3 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 	//al_hold_bitmap_drawing(false);
 }
 
-void TextInterface::functionTextWidth(void) {
-	cb->pushValue(al_get_text_width(currentFont, cb->popValue().toString().getRef().c_str()));
-}
-
-void TextInterface::functionTextHeight(void) {
-	int dummy;
-	int height;
-	al_get_text_dimensions(currentFont, cb->popValue().toString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
-	cb->pushValue(height);
-}

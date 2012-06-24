@@ -109,7 +109,6 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	int32_t endPos; // End of the executable
 
 	uint32_t nStrings; // Number of strings
-	uint32_t size; // Length of CoolBasic data
 
 	// Input file, opened for reading only
 	ifstream input;
@@ -173,11 +172,11 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	startPos = input.tellg();
 
 	// Read code to memory and close the file
-	size = endPos - startPos;
-	code = new char [size];
+	codeSize = endPos - startPos;
+	code = new char [codeSize];
 	codeBase = code;
 
-	input.read(code, size);
+	input.read(code, codeSize);
 	input.close();
 
 	std::map <uint32_t, uint32_t> offsets;
@@ -187,7 +186,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	// 			Handle functions and types
 	uint32_t ncmd = 0;
 	uint32_t i = 0;
-	while (i < size) {
+	while (i < codeSize) {
 		offsets[ncmd] = i;
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
@@ -211,10 +210,9 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
 		}
 	}
-	map<int32_t,int32_t> functionMaping;
 	//Goto and if
 	i = 0;
-	while (i < size) {
+	while (i < codeSize) {
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
 		i++;
@@ -398,6 +396,139 @@ void CBEnchanted::stop() {
 void CBEnchanted::cleanup() {
 	cleanupSoundInterface();
 	delete [] this->argv;
+}
+
+void CBEnchanted::resolveCustomFunctions() {
+	uint32_t i = 0;
+	while (i < codeSize) {
+		//roffsets[i] = ncmd;
+		uint8_t cmd = *(uint8_t *)(code + i);
+		i++;
+		switch (cmd) {
+			case 65:
+			case 66:
+			case 67:
+			case 73:
+			case 74:
+			case 78:
+			case 80:
+			case 81:
+			case 84:
+			case 86:
+			case 90: i += 4; break;
+			case 68:
+			case 79: i ++; break;
+			case 85: {//pushFunctionPtr
+				if (cmd == 85) { //custom function check
+					uint32_t i2 = *(int32_t *)(code + i);
+					if (functionMaping.find(i2) != functionMaping.end()) { //Already parsed function
+						*(uint8_t *)(code + i - 1) = 100; //Custom function call
+						*(int32_t *)(code + i) = functionMaping[i2];
+						goto already_parsed;
+					}
+					//command 99
+					if (code[i2++] != 73) {
+						FIXME("[%i] Unexpected opcode1: %i, expecting 73.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					for (int32_t c = 0; c != 5; c++) {
+						if (code[i2++] != 73) {
+							FIXME("[%i] Unexpected opcode2: %i, expecting 73.",i2,code[i2]);
+							goto not_custom_function;
+						}
+						i2 += 4;
+					}
+					if (code[i2++] != 67) {
+						FIXME("[%i] Unexpected opcode3: %i, expecting 67.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					if (*(int32_t*)(code + i2) != 99) {
+						FIXME("[%i] Unexpected command %i, expecting 79.",i2,code[i2]);
+						goto not_custom_function;
+					}
+					i2 += 4;
+					//commandFunction
+					int32_t paramCount = 0;
+					vector<int32_t> params;
+					int32_t opc;
+					int32_t comc;
+					while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2 + 1)) == 79) {
+						i2 += 6;
+						paramCount++;
+						params.insert(params.begin(), *(int32_t*)(code + i2));
+						i2 += 9;
+					}
+					int32_t groupId;
+					int32_t funcId;
+
+					//Group id
+					if (code[i2++] != 73) { //PushInt
+						goto not_custom_function;
+					}
+					groupId = *(int32_t*)(code + i2);
+					i2 += 4;
+					if (code[i2++] != 65) { //Set int var
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					//Func id
+					if (code[i2++] != 73) { //PushInt
+						goto not_custom_function;
+					}
+					funcId = *(int32_t*)(code + i2);
+					i2 += 4;
+					if (code[i2++] != 65) { //Set int var
+						goto not_custom_function;
+					}
+					i2 += 4;
+
+					//Return
+					if (code[i2++] != 73) { //PushInt
+						goto not_custom_function;
+					}
+					int pushValue = *(int32_t*)(code + i2);
+					if (pushValue != 0) { //Return == 0
+						if (pushValue != 2 && pushValue != 5) { //handlePushSomething() IDs of float(2) and string(5)
+							goto not_custom_function;
+						}
+						i2 += 4;
+						if (code[i2++] != 74) { //PushSomething
+							goto not_custom_function;
+						}
+						pushValue = *(int32_t*)(code + i2);
+						if (pushValue != 0) { //Return 0.0 or ""
+							goto not_custom_function;
+						}
+					}
+					i2 += 4;
+
+					if (code[i2++] != 67) { //call command
+						goto not_custom_function;
+					}
+					if (*(int32_t*)(code + i2) != 22) { //Return
+						goto not_custom_function;
+					}
+
+					CustomFunction func(0,groupId,funcId);
+					func.setParams(params);
+					int32_t handle = customFunctionHandler.getHandle(func);
+					functionMaping[*(int32_t *)(code + i)] = handle;
+					*(uint8_t *)(code + i - 1) = 100; //Custom function call
+					*(int32_t *)(code + i) = handle;
+					INFO("Added custom function with handle %i",handle);
+				}
+				already_parsed:
+				not_custom_function:
+				i +=4;
+				break;
+			}
+
+			default: FIXME("[%i] Unhandled preparsing3: %i",i, (uint32_t) cmd);
+		}
+	}
 }
 
 FORCEINLINE void CBEnchanted::handlePushFuncptr(void) {

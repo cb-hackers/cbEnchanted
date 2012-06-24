@@ -8,16 +8,16 @@ class CBEnchanted;
 
 class EffectInterface {
 	public:
+#ifndef CBE_LIB
 		EffectInterface();
 		~EffectInterface();
-
 		void commandParticleMovement(void);
 		void commandParticleAnimation(void);
 		void commandParticleEmission(void);
-
 		void functionMakeEmitter(void);
-		void deleteParticleEmitter(CBParticleEmitter *p);
+#endif
 		void updateRogueParticles(void);
+		void deleteParticleEmitter(CBParticleEmitter *p);
 	private:
 		CBEnchanted *cb;
 		vector<CBParticleEmitter*> rogueEmitters;

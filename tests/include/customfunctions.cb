@@ -206,4 +206,16 @@ Function cbeObjectSY#(obj)
     funcId = 28
 EndFunction
 
+Function cbeResolveCustomFunction()
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 29
+EndFunction
+
+Function cbeLoadLibrary(path$, resolvesymbols = 1)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 30
+EndFunction
+
+
+
 

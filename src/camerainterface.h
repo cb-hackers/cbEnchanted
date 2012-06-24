@@ -7,9 +7,9 @@ class CBObject;
 
 class CameraInterface {
 	public:
+#ifndef CBE_LIB
 		CameraInterface();
 		~CameraInterface();
-
 		void commandCloneCameraPosition(void);
 		void commandCloneCameraOrientation(void);
 		void commandCameraFollow(void);
@@ -24,6 +24,7 @@ class CameraInterface {
 		void functionCameraX(void);
 		void functionCameraY(void);
 		void functionCameraAngle(void);
+#endif
 
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }

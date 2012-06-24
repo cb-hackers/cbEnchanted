@@ -8,7 +8,7 @@ class CBEnchanted;
 class MathInterface {
 	public:
 		MathInterface();
-
+#ifndef CBE_LIB
 		void commandRandomize(void);
 
 		void functionInt(void);
@@ -35,7 +35,7 @@ class MathInterface {
 		void functionWrapAngle(void);
 		void functionDistance(void);
 		void functionBoxOverlap(void);
-
+#endif
 		static float wrapAngle(float v);
 		static int32_t wrapAngle(int32_t v);
 		static double square(float v);

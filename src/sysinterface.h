@@ -4,12 +4,11 @@
 #include "precomp.h"
 #include "cbdll.h"
 
-using namespace std;
-
 class CBEnchanted;
 
 class SysInterface {
 	public:
+#ifndef CBE_LIB
 		SysInterface();
 		~SysInterface();
 		void initializeSysInterface();
@@ -35,6 +34,7 @@ class SysInterface {
 		void functionGetEXEName(void);
 		void functionFPS(void);
 		void functionCrc32(void);
+#endif
 
 		/** Asks for user confirmation before closing the program, returns true if program should be terminated. */
 		bool askForExit();

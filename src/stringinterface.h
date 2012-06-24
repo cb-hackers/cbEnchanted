@@ -6,7 +6,7 @@ class CBEnchanted;
 class StringInterface {
 	public:
 		StringInterface();
-
+#ifndef CBE_LIB
 		void functionStr(void);
 		void functionLeft(void);
 		void functionRight(void);
@@ -30,6 +30,7 @@ class StringInterface {
 		void functionStrMove(void);
 		void functionCountWords(void);
 		void functionGetWord(void);
+#endif
 	private:
 		CBEnchanted *cb;
 

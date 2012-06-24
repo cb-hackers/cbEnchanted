@@ -16,6 +16,7 @@
 #include <allegro5/allegro_native_dialog.h>
 #include "util.h"
 
+#ifndef CBE_LIB
 SysInterface::SysInterface() : windowTitle(""), confirmationStr("") {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -190,6 +191,7 @@ void SysInterface::functionCrc32(void) {
 	}
 	cb->pushValue((int32_t)result.checksum());
 }
+#endif
 
 /** Asks for user confirmation before closing the program, returns true if program should be terminated. */
 bool SysInterface::askForExit() {

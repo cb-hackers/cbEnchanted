@@ -48,14 +48,17 @@ class CBEnchanted :
 
 {
 	public:
+#ifndef CBE_LIB
 		CBEnchanted();
 		~CBEnchanted();
-
-		static CBEnchanted *instance();
 		bool init(const char* file, int argc, char **argv);
 		void run();
-		void stop();
 		void cleanup();
+#endif
+		void resolveCustomFunctions();
+		void dllInit();
+		void stop();
+		static CBEnchanted *instance();
 		bool isSafeExit() const { return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
 		bool isSmooth2D() const { return smooth2d; }
@@ -70,21 +73,25 @@ class CBEnchanted :
 		int getArgc() const { return argc; }
 		/** Returns commandline arguments */
 		char** getArgv() const { return argv; }
+		CustomFunctionHandler *getCustomFunctionHandler() { return &customFunctionHandler; }
 	private:
 
 		char *code;
 		char *codeBase;
+		uint32_t codeSize; // Length of CoolBasic data
 		vector <char*> pos;
 		bool initialized;
 		bool running;
 		bool safeExit;
 		bool smooth2d;
 		bool clearArray;
+		map<int32_t,int32_t> functionMaping;
 		float frameLimit;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;
 		Any selectValue;
 
+#ifndef CBE_LIB
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
 		void handleSetFloat(void);
@@ -104,9 +111,9 @@ class CBEnchanted :
 		void commandSelect(void);
 		void commandCase(void);
 		void commandFunction(void);
-		void commandSetGlobalVariable(void); //80
-		void commandSetArrayNumbers(void); //97
-		void commandSetGlobalVariableNumbers(void); //98
+		void commandSetGlobalVariable(void);
+		void commandSetArrayNumbers(void);
+		void commandSetGlobalVariableNumbers(void);
 		void commandType(void);
 		void commandSetTypeMemberField(void);
 		void commandSetVariableNumbers(void);
@@ -132,6 +139,7 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
+#endif
 
 		/** A map for functionConvertToInteger() and functionConvertToType(). */
 		std::map<int32_t, void*> typeConvertMap;

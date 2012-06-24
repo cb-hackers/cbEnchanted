@@ -2,12 +2,14 @@
 #include "cbenchanted.h"
 #include "customfunctiondefines.h"
 #include "customfunctions.h"
+#ifndef CBE_LIB
 CustomFunctionHandler::CustomFunctionHandler() {
 
 #ifndef DISABLE_CUSTOMS
 	importCustomFunctions();
 #endif
 }
+#endif
 
 int32_t CustomFunctionHandler::getHandle(CustomFunction &a) {
 	for (vector<CustomFunction>::iterator i = functions.begin(); i != functions.end(); i++) {
@@ -49,6 +51,7 @@ void CustomFunctionHandler::add(CustomFunction &a) {
 	functions.push_back(a);
 }
 
+#ifndef CBE_LIB
 /** Adds custom functions to CustomFunctionHandler
   */
 void CustomFunctionHandler::importCustomFunctions() {
@@ -166,5 +169,13 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeObjectSY);
 	func.setFuncId(CBE_OBJECT_S_Y);
 	this->add(func);
-}
 
+	func.setFuncPtr(&cbeResolveCustomFunctions);
+	func.setFuncId(CBE_RESOLVE_CUSTOM_FUNCTIONS);
+	this->add(func);
+
+	func.setFuncPtr(&cbeLoadLibrary);
+	func.setFuncId(CBE_LOAD_LIBRARY);
+	this->add(func);
+}
+#endif
