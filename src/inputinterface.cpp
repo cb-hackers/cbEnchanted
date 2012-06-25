@@ -185,6 +185,8 @@ void InputInterface::commandPositionMouse(void) {
 	al_set_mouse_xy(cb->getWindow(),mX,mY);
 	mouseX = mX;
 	mouseY = mY;
+	lastMouseX = mX;
+	lastMouseY = mY;
 }
 
 void InputInterface::commandWaitMouse(void) {
