@@ -101,7 +101,9 @@ int32_t Any::toInt() const {
 	if (type() == Any::String) {
 		if (dString == 0) return 0;
 		try {
-			return boost::lexical_cast<int32_t>(dString->str);
+			std::string tmp = dString->str;
+			boost::algorithm::trim(tmp);
+			return boost::lexical_cast<int32_t>(tmp);
 		}
 		catch (boost::bad_lexical_cast &) {
 			return 0;
@@ -122,7 +124,9 @@ float Any::toFloat() const {
 	if (type() == Any::String) {
 		if (dString == 0) return 0;
 		try {
-			return boost::lexical_cast<float>(dString->str);
+			std::string tmp = dString->str;
+			boost::algorithm::trim(tmp);
+			return boost::lexical_cast<float>(tmp);
 		}
 		catch (boost::bad_lexical_cast &) {
 			return 0;
