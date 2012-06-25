@@ -941,10 +941,11 @@ void ObjectInterface::updateObjects(){
 	lastUpdate = currentTime;
 	std::map<int32_t,CBObject*>::iterator i;
 	for (i = objectMap.begin(); i != objectMap.end();) {
-		if((*i).second->updateObject(updateTime)){ //updateObject returns true if object should be deleted
-			removeFromDrawOrder((*i).second);
-			delete (*i).second;
-			//i = objectMap.erase(i);
+		CBObject *obj = (*i).second;
+		if(obj->updateObject(updateTime)){ //updateObject returns true if object should be deleted
+			removeFromDrawOrder(obj);
+			delete obj;
+			i = objectMap.erase(i);
 		}
 		else {
 			++i;
