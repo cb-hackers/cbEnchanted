@@ -1,3 +1,5 @@
+Smooth2D ON
+
 Include "include/customfunctions.cb"
 
 floor=MakeObjectFloor()

@@ -327,6 +327,10 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 				}
 			}
 		}
+
+		// We have earlier used pixel precise world coordinates, so we now need
+		// to reset to using normal world coordinates.
+		target.useWorldCoords(true);
 	}
 }
 
