@@ -253,6 +253,10 @@ void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		y = -y;
 	}
+	if (!CBEnchanted::instance()->isSmooth2D()) {
+		x = int(x + 0.5f);
+		y = int(y + 0.5f);
+	}
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
