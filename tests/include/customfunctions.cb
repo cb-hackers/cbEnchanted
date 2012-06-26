@@ -46,17 +46,14 @@ Function cbeClsColor(r, g, b, a)
     funcId = 3
 EndFunction
 
-// Use these constants when using cbeSetBlendMode()
-// If you don't want to modify alpha blending, set the second parameter 0.
-
 // ----------------------------------------------------------------------------
 // cbeSetBlendMode()
 // ---
 // Sets the way colors are blended together when graphics with alpha are
-// drawn over each other.
+// drawn over each other. If you don't want to modify alpha blending, set the
+// second parameter to 0.
 // ---
 // Use the constants below with this function.
-// If you don't want to modify alpha blending, set the second parameter 0.
 // ----------------------------------------------------------------------------
 Const CBE_BLEND_RESET = 0
 Const CBE_BLEND_ADDITIVE = 1
@@ -85,6 +82,7 @@ Const CBE_BLEND_ZERO = 1
 Const CBE_BLEND_ONE = 2
 Const CBE_BLEND_ALPHA = 3
 Const CBE_BLEND_INVERSE_ALPHA = 4
+
 Function cbeSetBlendModeAdvanced(op, src, dst, alphaOp = 0, alphaSrc = 0, alphaDst = 0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 5
@@ -105,19 +103,19 @@ EndFunction
 Function cbeDrawTintedScaledRotatedImageRegion(img, sX#, sY#, sW#, sY#, centerX#, centerY#, scaleX#, scaleY#, angle#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 6
-End Function
-
+EndFunction
 
 // ============================================================================
 // BINARY OPERATIONS
 // ---
 // These operations work on integers and are the equivelants of ~, &, | and ^
-// in C++. These functions are:
+// operators in C++. These functions are:
 //  * cbeBNot()  =>  ~
 //  * cbeBAnd()  =>  &
 //  * cbeBOr()   =>  |
 //  * cbeBXor()  =>  ^
 // ============================================================================
+
 Function cbeBNot(i)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 7
@@ -161,7 +159,6 @@ Function cbeShowConsole(visibleOrNot)
     funcId = 12
 EndFunction
 
-
 // ----------------------------------------------------------------------------
 // cbeSetSystemCursor()
 // ---
@@ -199,14 +196,13 @@ EndFunction
 // ---
 // These transformations are used for all future drawing operations that
 // are drawn originally at screen coordinates. The functions are:
-//  * cbeTransfromBuild()
-//  * cbeTransformRotate()
-//  * cbeTransformScale()
-//  * cbeTransformTranslate()
-//  * cbeTransformReset()
+//  * cbeTransfromBuild() ...... scale, rotation and translation transformation
+//  * cbeTransformRotate() ..... rotation transformation
+//  * cbeTransformScale() ...... scale transformation
+//  * cbeTransformTranslate() .. translation trasformation
+//  * cbeTransformReset() ...... resets the identity (default) transformation
 // ============================================================================
 
-// Applies a scale, rotate and translate transformation.
 Function cbeTransformBuild(transX#, transY#, scaleX#, scaleY#, angle#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 14
@@ -227,11 +223,11 @@ Function cbeTransformTranslate(transX#, transY#)
     funcId = 17
 EndFunction
 
-// Resets the identity transformation which is the default one.
 Function cbeTransformReset()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 18
 EndFunction
+
 
 // ----------------------------------------------------------------------------
 // cbeCameraAngle()
