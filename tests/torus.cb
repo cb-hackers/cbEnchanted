@@ -89,7 +89,7 @@ Repeat
             ty2#=240+RoundDown(s2*y2)
             tx3#=320+RoundDown(s3*x3)
             ty3#=240+RoundDown(s3*y3)
-            Triangle(tx1#,ty1#,tx2#,ty2#,tx3#,ty3#,1,True)
+            cbeTriangle(tx1#,ty1#,tx2#,ty2#,tx3#,ty3#)
             i=i+1
             x4# = cosa2*t(i,1,0)+sina2*(cosa1*t(i,1,1)+sina1*t(i,1,2))
             y4# = cosa2*(cosa1*t(i,1,1)+sina1*t(i,1,2))-sina2*t(i,1,0)
@@ -100,7 +100,7 @@ Repeat
             y2=240+RoundDown(s2*y2)
             x3=320+RoundDown(s3*x3)
             y3=240+RoundDown(s3*y3)
-            Triangle(x1,y1,x2,y2,x3,y3,1,True)
+            cbeTriangle(x1,y1,x2,y2,x3,y3)
         Else
             i = i + 1
         EndIf

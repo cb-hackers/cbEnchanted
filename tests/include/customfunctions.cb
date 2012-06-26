@@ -186,7 +186,7 @@ Const CBE_SYSTEM_CURSOR_LINK = 17
 Const CBE_SYSTEM_CURSOR_ALT_SELECT = 18
 Const CBE_SYSTEM_CURSOR_UNAVAILABLE = 19
 
-Function cbeSetSystemCursor(t)
+Function cbeSetSystemCursor(mouseCursorConstant)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 13
 EndFunction
