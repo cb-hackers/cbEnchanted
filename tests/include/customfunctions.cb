@@ -1,15 +1,46 @@
+// ****************************************************************************
+// *                                 ########                                 *
+// *                       CBENCHANTED CUSTOM FUNCTIONS                       *
+// *                                    --                                    *
+// *                 Superpowers for your cbEnchanted programs                *
+// *                                 ########                                 *
+// ****************************************************************************
+
+// ----------------------------------------------------------------------------
+// This constant defines the group for cbEnchanted core custom functions.
+// More groups will be added to deal with different kinds of custom functions.
+// Plans are made for custom groups for linked libraries that use the internals
+// of cbEnchanted, thus gaining a big performance boost and the ability to do
+// things that would otherwise be difficult or almost impossible to do with CB.
+// ----------------------------------------------------------------------------
 Const CBE_CUSTOM_FUNCTION_GROUP = 1
 
+// ----------------------------------------------------------------------------
+// cbeTriangle()
+// ---
+// Draws a triangle, given coordinates are the end points of each corner.
+// The last parameter determines whether the triangle is filled or not.
+// ----------------------------------------------------------------------------
 Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, fill = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 1
 EndFunction
 
+// ----------------------------------------------------------------------------
+// cbeColor()
+// ---
+// Sets the current drawing color with an rgba value.
+// ----------------------------------------------------------------------------
 Function cbeColor(r, g, b, a)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 2
 EndFunction
 
+// ----------------------------------------------------------------------------
+// cbeClsColor()
+// ---
+// Sets the current Cls color with an rgba value.
+// ----------------------------------------------------------------------------
 Function cbeClsColor(r, g, b, a)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 3
@@ -17,6 +48,16 @@ EndFunction
 
 // Use these constants when using cbeSetBlendMode()
 // If you don't want to modify alpha blending, set the second parameter 0.
+
+// ----------------------------------------------------------------------------
+// cbeSetBlendMode()
+// ---
+// Sets the way colors are blended together when graphics with alpha are
+// drawn over each other.
+// ---
+// Use the constants below with this function.
+// If you don't want to modify alpha blending, set the second parameter 0.
+// ----------------------------------------------------------------------------
 Const CBE_BLEND_RESET = 0
 Const CBE_BLEND_ADDITIVE = 1
 Const CBE_BLEND_OVERWRITE = 2
@@ -25,10 +66,18 @@ Function cbeSetBlendMode(blendType, setAlphaToo = 1)
     funcId = 4
 EndFunction
 
-// Use these constants when using cbeSetBlendModeAdvanced(). You can supply only
+// ----------------------------------------------------------------------------
+// cbeSetBlendModeAdvanced()
+// ---
+// Sets the way colors are blended together when graphics with alpha are
+// drawn over each other. This function is an advanced version of
+// cbeSetBlendMode(). For information regarding how it is used, look it up at
+// http://liballeg.org/a5docs/5.0.6/graphics.html#al_set_separate_blender
+// ---
+// Please use the constants below with this function. You can supply only
 // the first three parameters and cbEnchanted will apply that blending to alpha
 // channel, too.
-// See http://liballeg.org/a5docs/5.0.6/graphics.html#al_set_separate_blender for more info
+// ----------------------------------------------------------------------------
 Const CBE_BLEND_ADD = 1
 Const CBE_BLEND_DEST_MINUS_SRC = 2
 Const CBE_BLEND_SRC_MINUS_DEST = 3
@@ -36,19 +85,39 @@ Const CBE_BLEND_ZERO = 1
 Const CBE_BLEND_ONE = 2
 Const CBE_BLEND_ALPHA = 3
 Const CBE_BLEND_INVERSE_ALPHA = 4
-
 Function cbeSetBlendModeAdvanced(op, src, dst, alphaOp = 0, alphaSrc = 0, alphaDst = 0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 5
 EndFunction
- 
-Function cbeDrawTintedScaledRotatedImageBox(img, startX As Float, startY As Float, width As Float, height As Float, toX As Float, toY As Float, scaleX As Float, scaleY As Float, angle As Float)
+
+// ----------------------------------------------------------------------------
+// Draws a part of an image, tinted with the current color, rotated and scaled.
+// Parameters:
+//  * img ................. Image to draw
+//  * sX, sY .............. Top left coordinates of the image region to draw
+//  * sW, sY .............. Width and height of the image region to draw
+//  * centerX, centerY .... Coordinates to draw to. Image region is scaled and
+//                          rotated around this point.
+//  * scaleX, scaleY ...... How much is the image region scaled when drawn.
+//                          1 means no scaling.
+//  * angle ............... Rotation angle in degrees
+// ----------------------------------------------------------------------------
+Function cbeDrawTintedScaledRotatedImageRegion(img, sX#, sY#, sW#, sY#, centerX#, centerY#, scaleX#, scaleY#, angle#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 6
 End Function
 
 
-//Binary operations
+// ============================================================================
+// BINARY OPERATIONS
+// ---
+// These operations work on integers and are the equivelants of ~, &, | and ^
+// in C++. These functions are:
+//  * cbeBNot()  =>  ~
+//  * cbeBAnd()  =>  &
+//  * cbeBOr()   =>  |
+//  * cbeBXor()  =>  ^
+// ============================================================================
 Function cbeBNot(i)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 7
@@ -69,20 +138,37 @@ Function cbeBXor(a, b)
     funcId = 10
 EndFunction
 
-// Reads an UTF-8 encoded line and converts all possible characters to Windows-1252.
+
+// ----------------------------------------------------------------------------
+// cbeReadLineUTF8()
+// ---
+// Reads an UTF-8 encoded line and converts all possible characters to
+// Windows-1252 encoding. This function needs a file handle received from a
+// successful OpenToRead() or OpenToEdit() function call.
+// ----------------------------------------------------------------------------
 Function cbeReadLineUTF8$(fileHandle)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 11
 EndFunction
 
+// ----------------------------------------------------------------------------
+// cbeShowConsole()
+// ---
 // Toggles console visibility. Only applies to Windows.
+// ----------------------------------------------------------------------------
 Function cbeShowConsole(visibleOrNot)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 12
 EndFunction
 
 
-//Standart cursor constants for cbeSetSystemCursor
+// ----------------------------------------------------------------------------
+// cbeSetSystemCursor()
+// ---
+// Sets system cursor. Returns 1 on success, 0 otherwise. Please use the
+// constants defined below as the parameter. For more info, consult
+// http://liballeg.org/a5docs/5.0.6/mouse.html#al_set_system_mouse_cursor
+// ----------------------------------------------------------------------------
 Const CBE_SYSTEM_CURSOR_DEFAULT = 1
 Const CBE_SYSTEM_CURSOR_ARROW = 2
 Const CBE_SYSTEM_CURSOR_BUSY = 3
@@ -103,32 +189,39 @@ Const CBE_SYSTEM_CURSOR_LINK = 17
 Const CBE_SYSTEM_CURSOR_ALT_SELECT = 18
 Const CBE_SYSTEM_CURSOR_UNAVAILABLE = 19
 
-//Sets system cursor. Returns 1 on success otherwise 0.
 Function cbeSetSystemCursor(t)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 13
 EndFunction
 
+// ============================================================================
+// TRANSLATION FUNCTIONS - Untested, use at your own risk.
+// ---
+// These transformations are used for all future drawing operations that
+// are drawn originally at screen coordinates. The functions are:
+//  * cbeTransfromBuild()
+//  * cbeTransformRotate()
+//  * cbeTransformScale()
+//  * cbeTransformTranslate()
+//  * cbeTransformReset()
+// ============================================================================
 
-// Applies a scale, rotate and translate transformation to all future drawing operations.
+// Applies a scale, rotate and translate transformation.
 Function cbeTransformBuild(transX#, transY#, scaleX#, scaleY#, angle#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 14
 EndFunction
 
-// Applies a rotation transformation to the given transformation.
 Function cbeTransformRotate(angle#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 15
 EndFunction
 
-// Applies a scale transformation to the current transformation.
 Function cbeTransformScale(scaleX#, scaleY#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 16
 EndFunction
 
-// Applies a translate transformation to the current transformation.
 Function cbeTransformTranslate(transX#, transY#)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 17
@@ -140,25 +233,50 @@ Function cbeTransformReset()
     funcId = 18
 EndFunction
 
-//Returns the camera's real angle
+// ----------------------------------------------------------------------------
+// cbeCameraAngle()
+// ---
+// The whole world can be rotated by giving an extra parameter to TurnCamera or
+// RotateCamera. This function returns the cameras real angle.
+// ----------------------------------------------------------------------------
 Function cbeCameraAngle#()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 19
 EndFunction
 
-//Returns the zoom factor of the camera
+// ----------------------------------------------------------------------------
+// cbeCameraZoom()
+// ---
+// The whole world can be zoomed by giving MoveCamera or TranslateCamera a
+// third parameter. This function returns the zoom factor of the camera.
+// ----------------------------------------------------------------------------
 Function cbeCameraZoom#()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 20
 EndFunction
 
+// ----------------------------------------------------------------------------
+// cbeSetLineWith()
+// ---
+// Use this function to set the line width of Line, Box, Circle, Ellipse and
+// cbeTriangle().
+// ----------------------------------------------------------------------------
 Function cbeSetLineWidth(width As Float = 1.0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 21
 EndFunction
 
-//These constants are possible cbeFileDialog's mode parameter's values
-//See http://liballeg.org/a5docs/5.0.6/native_dialog.html#al_create_native_file_dialog for more info
+// ----------------------------------------------------------------------------
+// cbeFileDialog()
+// ---
+// Shows the native file dialog window. You can use this function to create a
+// file chooser that is cross-platform and uses the internals of users
+// operating system.
+// ---
+// Use the constants below with this function. You can combine those constants
+// with the custom binary functions. For more info, see
+// http://liballeg.org/a5docs/5.0.6/native_dialog.html#al_create_native_file_dialog
+// ----------------------------------------------------------------------------
 Const CBE_FILECHOOSER_FILE_MUST_EXIST = 1
 Const CBE_FILECHOOSER_SAVE = 2
 Const CBE_FILECHOOSER_FOLDER = 4
@@ -171,8 +289,23 @@ Function cbeFileDialog(path As String, title As String, patterns As String, mode
     funcId = 22
 EndFunction
 
-//Coordinatesystem conversions
-//----------------------------
+// ============================================================================
+// COORDINATE SYSTEM CONVERSIONS
+// ---
+// Convert screen coordinates to real world ooordinates. The return values take
+// the world rotation and zooming into account, thus returning accurate
+// results. These functions are also quite fast. You must always give the
+// first four functions accurate x and y coordinates in order for the inner
+// math to work correctly.
+// ---
+// The functions are:
+//  * cbeSToWX() ....... screen X -> world X
+//  * cbeSToWY() ....... screen Y -> world Y
+//  * cbeWToSX() ....... world X -> screen X
+//  * cbeWToSY() ....... world Y -> screen Y
+//  * cbeObjectSX() .... Object X -> screen X
+//  * cbeObjectSY() .... Object Y -> screen Y
+// ============================================================================
 
 Function cbeSToWX#(x As Float, y As Float)
     group = CBE_CUSTOM_FUNCTION_GROUP
@@ -194,8 +327,6 @@ Function cbeWToSY#(x As Float, y As Float)
     funcId = 26
 EndFunction
 
-
-
 Function cbeObjectSX#(obj)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 27
@@ -205,5 +336,4 @@ Function cbeObjectSY#(obj)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 28
 EndFunction
-
 
