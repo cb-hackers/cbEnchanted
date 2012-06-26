@@ -5,7 +5,6 @@ class CBEnchanted;
 class CBImage;
 class ImageInterface {
 	public:
-#ifndef CBE_LIB
 		ImageInterface();
 		~ImageInterface();
 		void initializeImages();
@@ -31,7 +30,6 @@ class ImageInterface {
 		void functionImageHeight(void);
 		void functionImagesOverlap(void);
 		void functionImagesCollide(void);
-#endif
 
 		CBImage *getImage(int32_t id) { CBImage *img = cbImages[id];assert(img);return img; }
 

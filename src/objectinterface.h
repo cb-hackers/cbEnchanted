@@ -9,7 +9,6 @@ class CollisionCheck;
 
 class ObjectInterface {
 	public:
-#ifndef CBE_LIB
 		ObjectInterface();
 		~ObjectInterface();
 
@@ -77,7 +76,6 @@ class ObjectInterface {
 		void functionCollisionY(void);
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
-#endif
 
 		void updateObjects();
 		int32_t addMap(CBMap *mapObj);

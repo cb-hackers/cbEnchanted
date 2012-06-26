@@ -5,7 +5,6 @@
 #include "cbimage.h"
 #include "cbparticleemitter.h"
 
-#ifndef CBE_LIB
 
 EffectInterface::EffectInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -51,9 +50,14 @@ void EffectInterface::functionMakeEmitter(void) {
 	cb->pushValue(id);
 }
 
-#endif
+void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p)
+{
+	p->stopEmitting();
+	rogueEmitters.push_back(p);
+}
 
-void EffectInterface::updateRogueParticles(void) {
+void EffectInterface::updateRogueParticles(void)
+{
 	for (vector<CBParticleEmitter*>::iterator i = rogueEmitters.begin(); i != rogueEmitters.end();) {
 		if ((*i)->updateObject(0)) { //updateObject returns true if object should be deleted
 			cb->removeFromDrawOrder(*i);
@@ -64,9 +68,4 @@ void EffectInterface::updateRogueParticles(void) {
 			++i;
 		}
 	}
-}
-
-void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p) {
-	p->stopEmitting();
-	rogueEmitters.push_back(p);
 }

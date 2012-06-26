@@ -16,7 +16,6 @@ struct AddText{
 
 class TextInterface {
 	public:
-#ifndef CBE_LIB
 		TextInterface();
 		~TextInterface();
 
@@ -33,8 +32,6 @@ class TextInterface {
 
 		void functionLoadFont(void);
 		void functionTextWidth(void);
-#endif
-
 		void functionTextHeight(void);
 		void renderAddTexts(RenderTarget &r);
 		bool initializeFonts();

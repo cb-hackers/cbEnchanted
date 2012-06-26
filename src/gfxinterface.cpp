@@ -7,7 +7,7 @@
 #include "util.h"
 #include "errorsystem.h"
 #include <iostream>
-#ifndef CBE_LIB
+
 const char *screenGammaFragmentShaderCode =
 		"uniform sampler2D screenBuf; \n"
 		"uniform vec4 windowGamma; \n"
@@ -517,7 +517,6 @@ void GfxInterface::functionScreenDepth(void) {
 void GfxInterface::functionGFXModeExists(void) {
 	STUB;
 }
-#endif
 
 void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
 	currentRenderTarget = t;

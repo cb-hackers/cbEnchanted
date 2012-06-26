@@ -4,7 +4,7 @@
 #include "collisioncheck.h"
 #include <math.h>
 #include "util.h"
-#ifndef CBE_LIB
+
 MathInterface::MathInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -181,5 +181,3 @@ void MathInterface::functionBoxOverlap(void) {
 	// Flip y-coordinates because RectRectTest uses world coordinates
 	cb->pushValue(CollisionCheck::RectRectTest(x1, -y1, w1, h1, x2, -y2, w2, h2) ? 1 : 0);
 }
-
-#endif

@@ -3,7 +3,7 @@
 #include "meminterface.h"
 #include <cstring>
 #include <stdint.h>
-#ifndef CBE_LIB
+
 MemInterface::MemInterface() {
 	cb = static_cast<CBEnchanted*>(this);
 }
@@ -141,4 +141,3 @@ void MemInterface::functionPeekFloat(void){
 	uint8_t *mem = getMemblock(id);
 	cb->pushValue(*(float*)(&mem[position+4]));
 }
-#endif

@@ -10,7 +10,6 @@ class CBImage;
 
 class GfxInterface {
 	public:
-#ifndef CBE_LIB
 		GfxInterface();
 		~GfxInterface();
 
@@ -48,7 +47,6 @@ class GfxInterface {
 		void functionScreenHeight(void);
 		void functionScreenDepth(void);
 		void functionGFXModeExists(void);
-#endif
 
 		int32_t getFPS()const{return currentFPS;}
 

@@ -6,11 +6,11 @@
 #ifdef _WIN32
 	#include <Windows.h>
 #endif
+
 /** @addtogroup customfunctions
  * @{
  */
 
-#ifndef CBE_LIB
 /** VesQ's awesome triangle drawing function */
 void cbeTriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
@@ -479,17 +479,4 @@ void cbeObjectSY(CBEnchanted *cb) {
 	cb->pushValue(y);
 }
 
-void cbeResolveCustomFunctions(CBEnchanted *cb) {
-	cb->resolveCustomFunctions();
-}
-
-void cbeLoadLibrary(CBEnchanted *cb) {
-	bool t = cb->popValue().toBool();
-	typedef void (*cbeInitializeLibraryFuncType)(CBEnchanted *);
-	void * dll = loadDLL(cb->popValue().toString());
-	cbeInitializeLibraryFuncType cbeInitializeLibrary = (cbeInitializeLibraryFuncType)getDLLFunction(dll, "cbeInitializeLibrary");
-	cbeInitializeLibrary(cb);
-	if (t) cb->resolveCustomFunctions();
-}
-#endif
 /** @} */

@@ -10,10 +10,8 @@ class CustomFunctionHandler
 		void call(CBEnchanted *cb,int32_t handle);
 	private:
 		vector<CustomFunction> functions;
-		void add(CustomFunction &a);
-#ifndef CBE_LIB
 		void importCustomFunctions();
-#endif
+		void add(CustomFunction &a);
 };
 
 #endif // CUSTOMFUNCTIONHANDLER_H

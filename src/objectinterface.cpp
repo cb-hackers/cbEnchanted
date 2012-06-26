@@ -8,7 +8,7 @@
 #include "util.h"
 #include "collisioncheck.h"
 #include "errorsystem.h"
-#ifndef CBE_LIB
+
 ObjectInterface::ObjectInterface():
 	lastUpdate(0),
 	firstObject(0),
@@ -815,7 +815,6 @@ void ObjectInterface::functionNextObject(void) {
 	iter++;
 	cb->pushValue(handle);
 }
-#endif
 
 CBObject* ObjectInterface::getObject(int32_t key) {
 	if (objectMap.count(key) == 0) {

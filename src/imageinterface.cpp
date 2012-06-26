@@ -3,7 +3,7 @@
 #include "cbenchanted.h"
 #include "cbimage.h"
 #include "errorsystem.h"
-#ifndef CBE_LIB
+
 
 ImageInterface::ImageInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -274,4 +274,4 @@ void ImageInterface::functionImagesCollide(void) {
 		cb->pushValue(0);
 	}
 }
-#endif
+

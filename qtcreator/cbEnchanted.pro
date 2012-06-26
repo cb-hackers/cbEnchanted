@@ -1,92 +1,60 @@
 QT -= core gui #No qt
 
+TEMPLATE = app
 
-contains(CBE_CONFIG, staticlib) {
-	CONFIG += staticlib
-	DEFINES += CBE_LIB
-	TEMPLATE = lib
-} else {
-	CONFIG += console
-	TEMPLATE = app
-}
-CONFIG += thread
+CONFIG += thread console
 
 win32 {
-	staticlib {
-		# Disable security warnings
-		DEFINES += _CRT_SECURE_NO_WARNINGS
-		QMAKE_CXXFLAGS_DEBUG += -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
-		QMAKE_CXXFLAGS_RELEASE += -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
+	# Remove some automatically generated compiler flags
+	QMAKE_CFLAGS = -nologo
+	QMAKE_CXXFLAGS = -nologo
+	QMAKE_CFLAGS_WARN_ON =
+	QMAKE_CXXFLAGS_WARN_ON =
+	QMAKE_CFLAGS_RELEASE =
+	QMAKE_CXXFLAGS_RELEASE =
+	QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO =
+	QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO =
+	QMAKE_CFLAGS_DEBUG =
+	QMAKE_CXXFLAGS_DEBUG =
+	QMAKE_CFLAGS_LTCG =
+	QMAKE_CXXFLAGS_LTCG =
+	QMAKE_CFLAGS_MP =
+	QMAKE_CXXFLAGS_MP =
 
-		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
+	# Compiler flags and their meanings in order of appending
+	#  - Make wchar_t a native type
+	#  - Use standard scope behavior with for-loops
+	#  - Compile multiple source files by using multiple processes
+	#  - Set warning level to 3
+	#  - Catch C++ exceptions only and tell the compiler to assume that extern C functions never throw a C++ exception.
+	#  - Create single threaded executable (with and without debug)
+	# Debug only:
+	#  - Generate complete debugging information
+	# Release only:
+	#  - Enable whole program optimization
+	#  - Use maximum optimization (/Ob2gity /Gs)
+	QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
+	QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
 
-		contains(CBE_CONFIG,optimized_debug) {
-			#DEFINES += VC_USE_FORCEINLINE
-			QMAKE_LFLAGS_RELEASE += -DEBUG
-			QMAKE_CXXFLAGS_RELEASE += -Zi
-			QMAKE_CFLAGS_RELEASE += -Zi
-		} else {
-			# Compiler flags:
-			#  - Enable whole program optimization
-			#  - Catch C++ exceptions only and tell the compiler to assume that
-			#    extern C functions never throw a C++ exception
-			QMAKE_CXXFLAGS_RELEASE += -GL -EHsc
-			DEFINES += VC_USE_FORCEINLINE
-		}
+	# Add some flags to CFLAGS too
+	QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
+	QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
+
+	# Disable security warnings
+	DEFINES += _CRT_SECURE_NO_WARNINGS
+
+	contains(CBE_CONFIG,optimized_debug) {
+		#DEFINES += VC_USE_FORCEINLINE
+		QMAKE_LFLAGS_RELEASE += -DEBUG
+		QMAKE_CXXFLAGS_RELEASE += -Zi
+		QMAKE_CFLAGS_RELEASE += -Zi
 	} else {
-		# Remove some automatically generated compiler flags
-		QMAKE_CFLAGS = -nologo
-		QMAKE_CXXFLAGS = -nologo
-		QMAKE_CFLAGS_WARN_ON =
-		QMAKE_CXXFLAGS_WARN_ON =
-		QMAKE_CFLAGS_RELEASE =
-		QMAKE_CXXFLAGS_RELEASE =
-		QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO =
-		QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO =
-		QMAKE_CFLAGS_DEBUG =
-		QMAKE_CXXFLAGS_DEBUG =
-		QMAKE_CFLAGS_LTCG =
-		QMAKE_CXXFLAGS_LTCG =
-		QMAKE_CFLAGS_MP =
-		QMAKE_CXXFLAGS_MP =
-
-		# Compiler flags and their meanings in order of appending
-		#  - Make wchar_t a native type
-		#  - Use standard scope behavior with for-loops
-		#  - Compile multiple source files by using multiple processes
-		#  - Set warning level to 3
-		#  - Catch C++ exceptions only and tell the compiler to assume that extern C functions never throw a C++ exception.
-		#  - Create single threaded executable (with and without debug)
-		# Debug only:
-		#  - Generate complete debugging information
-		# Release only:
+		# Compiler flags:
 		#  - Enable whole program optimization
-		#  - Use maximum optimization (/Ob2gity /Gs)
-		QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
-		QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
-
-		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
-
-		# Disable security warnings
-		DEFINES += _CRT_SECURE_NO_WARNINGS
-
-		contains(CBE_CONFIG,optimized_debug) {
-			#DEFINES += VC_USE_FORCEINLINE
-			QMAKE_LFLAGS_RELEASE += -DEBUG
-			QMAKE_CXXFLAGS_RELEASE += -Zi
-			QMAKE_CFLAGS_RELEASE += -Zi
-		} else {
-			# Compiler flags:
-			#  - Enable whole program optimization
-			#  - Catch C++ exceptions only and tell the compiler to assume that
-			#    extern C functions never throw a C++ exception
-			QMAKE_CXXFLAGS_RELEASE += -GL -EHsc
-			DEFINES += VC_USE_FORCEINLINE
-		}
+		#  - Catch C++ exceptions only and tell the compiler to assume that
+		#    extern C functions never throw a C++ exception
+		QMAKE_CXXFLAGS_RELEASE += -GL -EHsc
+		DEFINES += VC_USE_FORCEINLINE
 	}
 }
 

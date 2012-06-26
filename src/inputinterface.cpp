@@ -6,7 +6,7 @@
 #include "errorsystem.h"
 #include "utf8.h"
 #include "util.h"
-#ifndef CBE_LIB
+
 InputInterface::InputInterface() :
 	lastMouseX(0),
 	lastMouseY(0),
@@ -500,7 +500,6 @@ void InputInterface::functionEscapeKey(void) {
 	cb->pushValue(keyStates[ALLEGRO_KEY_ESCAPE] & Down);
 }
 
-
 bool InputInterface::initializeInputs() {
 	if (!al_install_keyboard()) return false;
 	if (!al_install_mouse()) return false;
@@ -508,7 +507,7 @@ bool InputInterface::initializeInputs() {
 	al_register_event_source(cb->getEventQueue(),al_get_mouse_event_source());
 	return true;
 }
-#endif
+
 
 void InputInterface::preEventLoopUpdate() {
 	for (uint32_t i = 0; i < ALLEGRO_KEY_MAX; i++) {

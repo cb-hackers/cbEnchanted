@@ -62,10 +62,6 @@ void cbeObjectSX(CBEnchanted *cb);
 
 void cbeObjectSY(CBEnchanted *cb);
 
-void cbeResolveCustomFunctions(CBEnchanted *cb);
-
-void cbeLoadLibrary(CBEnchanted *cb);
-
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H
