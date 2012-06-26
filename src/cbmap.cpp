@@ -204,14 +204,14 @@ bool CBMap::loadMap(string file) {
 bool CBMap::loadTileset(string path) {
 	if (CBEnchanted::instance()->isSmooth2D()) {
 		// Unset linear filtering for image operations
-		//al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
 	}
 
 	bool success = load(path, al_map_rgb(maskR, maskG, maskB));
 
 	if (CBEnchanted::instance()->isSmooth2D()) {
 		// Set linear filtering for image operations
-		//al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 	}
 	return success;
 }
@@ -227,14 +227,14 @@ void CBMap::paintObject(const RenderTarget &tex) {
 	}
 	if (CBEnchanted::instance()->isSmooth2D()) {
 		// Unset linear filtering for image operations
-		//al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
 	}
 	renderTarget->copy(&tex);
 	texture = al_clone_bitmap(renderTarget->getBitmap());
 	al_convert_mask_to_alpha(texture, maskColor);
 	if (CBEnchanted::instance()->isSmooth2D()) {
 		// Set linear filtering for image operations
-		//al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 	}
 	painted = true;
 }
