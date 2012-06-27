@@ -342,8 +342,9 @@ void FileInterface::functionFileSize(void) {
 
 void FileInterface::functionEOF(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
-
+	fgetc(file);
 	cb->pushValue(feof(file) != 0);
+	fseek(file, -1, SEEK_CUR);
 }
 
 void FileInterface::functionReadByte(void) {
@@ -380,11 +381,18 @@ void FileInterface::functionReadString(void) {
 	int32_t l;
 	fread(&l, sizeof(int32_t), 1, file);
 
+	stringstream ss;
+	ss << l;
+
+	INFO(ss.str());
+
 	char * cstr = new char[l + 1];
 
 	cstr[l] = '\0';
 
 	fread(cstr, 1, l, file);
+
+	INFO(cstr);
 
 	string str(cstr);
 
