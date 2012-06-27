@@ -381,18 +381,11 @@ void FileInterface::functionReadString(void) {
 	int32_t l;
 	fread(&l, sizeof(int32_t), 1, file);
 
-	stringstream ss;
-	ss << l;
-
-	INFO(ss.str());
-
 	char * cstr = new char[l + 1];
 
 	cstr[l] = '\0';
 
 	fread(cstr, 1, l, file);
-
-	INFO(cstr);
 
 	string str(cstr);
 
