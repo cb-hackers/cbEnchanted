@@ -151,7 +151,7 @@ void FileInterface::commandWriteString(void) {
 	int l = int(sstring.length());
 
 	fwrite(&l, sizeof(int32_t), 1, file);
-	fwrite(sstring.c_str(), l, 1, file);
+	fwrite(sstring.c_str(), sizeof(char), l, file);
 
 }
 
@@ -377,18 +377,20 @@ void FileInterface::functionReadFloat(void) {
 void FileInterface::functionReadString(void) {
 	FILE *file = filestrs[cb->popValue().getInt()];
 
-	int32_t i;
-	fread(&i, sizeof(int32_t), 1, file);
+	int32_t l;
+	fread(&l, sizeof(int32_t), 1, file);
 
-	char * str;
-	str = new char [i + 1];
-	fread(str, i, 1, file);
+	char * cstr = new char[l + 1];
 
-	string line(str);
+	cstr[l] = '\0';
 
-	delete[] str;
+	fread(cstr, 1, l, file);
 
-	cb->pushValue(line);
+	string str(cstr);
+
+	cb->pushValue(str);
+
+	delete[] cstr;
 }
 
 void FileInterface::functionReadLine(void) {
