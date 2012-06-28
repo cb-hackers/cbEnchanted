@@ -342,7 +342,7 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 	setAsCurrent();
 	convertCoords(x, y);
 	if ((flags & Center) == Center) {
-		al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, text.getUtf8Encoded().c_str());
+		al_draw_text(font, color, x, y - al_get_font_ascent(font) * 0.5f, ALLEGRO_ALIGN_CENTRE, text.getUtf8Encoded().c_str());
 		return;
 	}
 	if ((flags & VCenter) == VCenter) {
@@ -352,13 +352,12 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 		y -= al_get_font_ascent(font);
 	}
 	if ((flags & HCenter) == HCenter) {
-		al_get_text_width(font, text.getUtf8Encoded().c_str());
 		al_draw_text(
 			font,
 			color,
-			x - al_get_text_width(font,text.getUtf8Encoded().c_str()) * 0.5f,
+			x,
 			y,
-			0,
+			ALLEGRO_ALIGN_CENTRE,
 			text.getUtf8Encoded().c_str()
 		);
 		return;
