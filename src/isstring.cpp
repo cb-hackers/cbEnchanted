@@ -25,7 +25,9 @@ ISString::ISString(const ISString &str): data(str.data) {
 
 /** Destructor */
 ISString::~ISString() {
-	if (data) data->decreaseRefCount();
+	if (data) {
+		data->decreaseRefCount();
+	}
 }
 
 /** Assignment operator */

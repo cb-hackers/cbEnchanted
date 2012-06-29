@@ -36,10 +36,6 @@ void Array<T>::init(uint32_t *dims, uint32_t dimCount) {
 
 template <class T>
 void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
-	if (typeid(ISString) == typeid(T) && copy) {
-		FIXME("Redim + \"ClearArray OFF\" is not supported with string arrays");
-		copy = false;
-	}
 	if (copy) {
 		uint32_t s(1);
 		uint32_t dimMult[5] = {0};
@@ -55,46 +51,111 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 		}
 		switch (dimCount) {
 			case 1:
-				memcpy(newData,data,sizeof(T) * copySize[0]); break;
-			case 2:
-				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
-					uint32_t place1 = dimMult[0] * i1;
-					uint32_t place2 = dimensions[0] * i1;
-					debug_breakpoint_place();
-					memcpy(newData + place1, data + place2, sizeof(T) * copySize[1]);
-				}
-				break;
-			case 3:
-
-				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
-					for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
-						uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2;
-						uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2;
-						memcpy(newData + place1, data + place2, sizeof(T) * copySize[2]);
+				if (typeid(T) == typeid(ISString)) {
+					for (uint32_t i = 0; i < copySize[0]; i++) {
+						newData[i] = data[i];
 					}
 				}
-			case 4:
-				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
-					for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
-						for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
-							uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3;
-							uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[3] * i3;
-							memcpy(newData + place1, data + place2, sizeof(T) * copySize[3]);
+				else {
+					memcpy(newData,data,sizeof(T) * copySize[0]);
+				}
+				break;
+			case 2:
+				if (typeid(T) == typeid(ISString)) {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						uint32_t place1 = dimMult[0] * i1;
+						uint32_t place2 = dimensions[0] * i1;
+						for (uint32_t i2 = 0; i2 < copySize[1]; i2++) {
+							newData[place1 + i2] = newData[place2 + i2];
 						}
 					}
 				}
-			case 5:
-				for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
-					for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
-						for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
-							for (uint32_t i4 = 0; i4 != copySize[3]; i4++) {
-								uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3 + dimMult[3] * i4;
-								uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[2] * i3 + dimensions[3] * i4;
-								memcpy(newData + place1, data + place2, sizeof(T) * copySize[4]);
+				else {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						uint32_t place1 = dimMult[0] * i1;
+						uint32_t place2 = dimensions[0] * i1;
+						memcpy(newData + place1, data + place2, sizeof(T) * copySize[1]);
+					}
+				}
+				break;
+			case 3:
+				if (typeid(T) == typeid(ISString)) {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2;
+							uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2;
+							for (uint32_t i3 = 0; i3 < copySize[2]; i3++) {
+								newData[place1 + i3] = data[place2 + i3];
 							}
 						}
 					}
 				}
+				else {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2;
+							uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2;
+							memcpy(newData + place1, data + place2, sizeof(T) * copySize[2]);
+						}
+					}
+				}
+				break;
+			case 4:
+				if (typeid(T) == typeid(ISString)) {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
+								uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3;
+								uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[3] * i3;
+								for (uint32_t i4 = 0; i4 < copySize[3]; i4++) {
+									newData[place1 + i4] = data[place2 + i4];
+								}
+							}
+						}
+					}
+				}
+				else {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
+								uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3;
+								uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[3] * i3;
+								memcpy(newData + place1, data + place2, sizeof(T) * copySize[3]);
+							}
+						}
+					}
+				}
+				break;
+			case 5:
+				if (typeid(T) == typeid(ISString)) {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
+								for (uint32_t i4 = 0; i4 != copySize[3]; i4++) {
+									uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3 + dimMult[3] * i4;
+									uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[2] * i3 + dimensions[3] * i4;
+									for (uint32_t i5 = 0; i5 < copySize[4]; i5++) {
+										newData[place1 + i5] = data[place2];
+									}
+								}
+							}
+						}
+					}
+				}
+				else {
+					for (uint32_t i1 = 0; i1 != copySize[0]; i1++) {
+						for (uint32_t i2 = 0; i2 != copySize[1]; i2++) {
+							for (uint32_t i3 = 0; i3 != copySize[2]; i3++) {
+								for (uint32_t i4 = 0; i4 != copySize[3]; i4++) {
+									uint32_t place1 = dimMult[0] * i1 + dimMult[1] * i2 + dimMult[2] * i3 + dimMult[3] * i4;
+									uint32_t place2 = dimensions[0] * i1 + dimensions[1] * i2 + dimensions[2] * i3 + dimensions[3] * i4;
+									memcpy(newData + place1, data + place2, sizeof(T) * copySize[4]);
+								}
+							}
+						}
+					}
+				}
+				break;
 		}
 		delete[] data;
 		data = newData;
@@ -107,11 +168,6 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 		size = s;
 	}
 	else {
-		if (typeid(T) == typeid(ISString)) {
-			for (uint32_t i = 0; i != size; i++) {
-				data[i].~T();
-			}
-		}
 		delete[] data;
 		uint32_t s(1);
 		for (uint32_t i = 0; i < dimCount; ++i) {

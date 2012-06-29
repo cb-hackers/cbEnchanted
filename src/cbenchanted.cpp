@@ -1016,17 +1016,15 @@ FORCEINLINE void CBEnchanted::handlePushSomething(void) {
 
 			switch (type){
 				case 3:
-					pushValue(getIntegerArray(id).get(pos));break;
+					pushValue(getIntegerArray(id).get(pos)); break;
 				case 4:
-					pushValue(getFloatArray(id).get(pos));break;
-				break;
+					pushValue(getFloatArray(id).get(pos)); break;
 				case 7:
-					pushValue((int32_t)getShortArray(id).get(pos));break;
+					pushValue((int32_t)getShortArray(id).get(pos)); break;
 				case 8:
-					pushValue((int32_t)getByteArray(id).get(pos));break;
-
+					pushValue((int32_t)getByteArray(id).get(pos)); break;
 				case 6:
-					pushValue(getStringArray(id).get(pos));break;
+					pushValue(getStringArray(id).get(pos)); break;
 				default:
 					FIXME("handlePushSomething: Undefined array type %i", type);
 			}
@@ -1208,7 +1206,7 @@ void CBEnchanted::commandReDim(void) {
 			break;
 		}
 		case 6: {
-			Array<ISString> a = getStringArray(arrId);
+			Array<ISString> &a = getStringArray(arrId);
 			a.resize(dimensions, n, !clearArray);
 			break;
 		}
