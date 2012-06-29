@@ -66,10 +66,8 @@ class CBEnchanted :
 
 		/** Error system for public access */
 		ErrorSystem *errors;
-		/** Returns commandline arguments count */
-		int getArgc() const { return argc; }
-		/** Returns commandline arguments */
-		char** getArgv() const { return argv; }
+		/** Returns commandline arguments in a single string. */
+		std::string getCommandLine() { return cmdLine; }
 	private:
 
 		char *code;
@@ -141,9 +139,8 @@ class CBEnchanted :
 		/** Returns new ID for typeConvertMap */
 		int32_t nextTypeId() {static int32_t idCounter = 0; return ++idCounter;}
 
-		/** Commandline stuff */
-		int argc;
-		char **argv;
+		/** Commandline arguments, concatenated to a single string. */
+		std::string cmdLine;
 
 		/** Current datalist readpoint */
 		uint32_t dataPos;

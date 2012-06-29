@@ -153,11 +153,7 @@ void SysInterface::functionTimer(void) {
 }
 
 void SysInterface::functionCommandLine(void) {
-	ostringstream ss;
-	for (int i = 1; i < cb->getArgc(); i++) {
-		ss << cb->getArgv()[i] << ' ';
-	}
-	cb->pushValue(ss.str());
+	cb->pushValue(cb->getCommandLine());
 }
 
 void SysInterface::functionGetEXEName(void) {
