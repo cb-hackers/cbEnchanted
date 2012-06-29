@@ -167,6 +167,7 @@ void CollisionCheck::RectCircleTest() {
 
 /** A rectangle - rectangle collision test */
 void CollisionCheck::RectRectTest() {
+	DrawCollisionBoundaries();
 	// Get the object coordinates here and modify them freely, later position the object according to them
 	float objX = mObject1->getX();
 	float objY = mObject1->getY();
@@ -175,53 +176,57 @@ void CollisionCheck::RectRectTest() {
 	float objW = mObject1->getRange1();
 	float objH = mObject1->getRange2();
 
+	float cObjX = mObject2->getX();
+	float cObjY = mObject2->getY();
+	float cObjW = mObject2->getRange1();
+	float cObjH = mObject2->getRange2();
+
 	// First check collision in x-direction
 	if (RectRectTest(objX, safeY, objW, objH,
-			mObject2->getX(), mObject2->getY(), mObject2->getRange1(), mObject2->getRange2())) {
+			cObjX, cObjY, cObjW, cObjH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
-		float collisionAngle = atan2(mObject2->getY() - safeY, mObject2->getX() - objX);
+		float collisionAngle = atan2(cObjY - safeY, cObjX - objX);
 		// collisionAngle is now in range -PI...PI, turn it to degrees!
 		collisionAngle = ((collisionAngle + M_PI) / M_PI) * 180.0f;
 
-
 		// Check the colliding direction
-		if (objX > mObject2->getX()) {
+		if (objX > cObjX) {
 			// Left?
-			//DEBUG("Box collision at left side of colliding object");
-			objX = mObject2->getX() + mObject2->getRange1() + 1.0f;
+			DEBUG("Box collision at left side of colliding object");
+			objX = cObjX + cObjW/2 + objW/2 + 1.5f;
 			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX - mObject1->getRange1()/2 - 1.0f, objY));
 		}
 		else {
 			// Right?
-			//DEBUG("Box collision at right side of colliding object");
-			objX = mObject2->getX() - mObject2->getRange1() - 1.0f;
+			DEBUG("Box collision at right side of colliding object");
+			objX = cObjX - cObjW/2 - objW/2 - 1.5f;
 			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX + mObject1->getRange1()/2 + 1.0f, objY));
 		}
 	}
 
 	// Then check collision in y-direction
 	if (RectRectTest(objX, objY, objW, objH,
-			mObject2->getX(), mObject2->getY(), mObject2->getRange1(), mObject2->getRange2())) {
+			cObjX, cObjY, cObjW, cObjH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
-		float collisionAngle = atan2(mObject2->getY() - objY, mObject2->getX() - objX);
+		float collisionAngle = atan2(cObjY - objY, cObjX - objX);
 		// collisionAngle is now in range -PI...PI, turn it to degrees!
 		collisionAngle = ((collisionAngle + M_PI) / M_PI) * 180.0f;
 
 		// Check the colliding direction
-		if (objY > mObject2->getY()) {
+		if (objY > cObjY) {
 			// Bottom?
-			//DEBUG("Box collision at bottom side of colliding object");
-			objY = mObject2->getY() + mObject2->getRange2() + 1.0f;
+			DEBUG("Box collision at bottom side of colliding object");
+			objY = cObjY + cObjH/2 + objH/2 + 1.5f;
 			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY - mObject1->getRange2()/2 - 1.0f));
 		}
 		else {
 			// Top?
-			//DEBUG("Box collision at top side of colliding object");
-			objY = mObject2->getY() - mObject2->getRange2() - 1.0f;
+			DEBUG("Box collision at top side of colliding object");
+			objY = cObjY - cObjH/2 - objH/2 - 1.5f;
 			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY + mObject1->getRange2()/2 + 1.0f));
 		}
 	}
