@@ -70,7 +70,6 @@ void CBEnchanted::run() {
  * CBEnchanted::init - Initialize the interpreter
  */
 bool CBEnchanted::init(const char* file, int argc, char** argv) {
-
 #ifdef _WIN32
 	// Set console output codepage to Windows-1252
 	SetConsoleOutputCP(1252);
@@ -132,10 +131,15 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		return false;
 	}
 
+	// Find out size of the file by seeking to it's end
 	input.seekg(-4, ios::end);
 	endPos = input.tellg();
+	
+	// Read the offset for CB-bytecode and go there
 	input.read((char *)(&startPos), 4);
 	input.seekg(24 - startPos, ios::end);
+	
+	// Number of strings
 	input.read((char *)(&nStrings), 4);
 
 	// Read and decrypt strings
@@ -166,7 +170,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		setString(i, s);
 	}
 
-	// Skip useless data and directly to beginning of the bytecode
+	// Skip useless data and go to beginning of the bytecode
 	input.seekg(32, ios::cur);
 	startPos = input.tellg();
 
@@ -1006,15 +1010,14 @@ FORCEINLINE void CBEnchanted::handlePushSomething(void) {
 		case 4: //Float array
 		case 6:
 		case 7:
-		case 8:
-		{
+		case 8: {
 			uint32_t id = *(uint32_t *)(code);
 			code += 4;
 
 			int32_t dimensions = popValue().getInt();
 			uint32_t pos = popArrayDimensions2(id, dimensions, type);
 
-			switch (type){
+			switch (type) {
 				case 3:
 					pushValue(getIntegerArray(id).get(pos)); break;
 				case 4:
@@ -1298,8 +1301,7 @@ void CBEnchanted::functionConvertToType(void) {
 	}
 }
 
-FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
-{
+FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type) {
 	uint32_t pos = 0;
 	switch (type) {
 		case 1: {
@@ -1451,15 +1453,13 @@ void CBEnchanted::commandSetGlobalVariableNumbers(void) {
 	initGlobalVars(byteCount, shortCount, stringCount, floatCount, integerCount);
 }
 
-void CBEnchanted::commandType(void)
-{
+void CBEnchanted::commandType(void) {
 	int32_t typeMemberSize = popValue().getInt();
 	addType(typeMemberSize - 4);
 	//cpos += 5;
 }
 
-void CBEnchanted::commandSetTypeMemberField(void)
-{
+void CBEnchanted::commandSetTypeMemberField(void) {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
 	int32_t place = popValue().getInt() - 12;
