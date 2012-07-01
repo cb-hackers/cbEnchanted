@@ -210,10 +210,10 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			case 90: i += 4; break;
 			case 68:
 			case 79: i ++; break;
-			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
+			default: FIXME("[%i] Unhandled preparsing1: %i", i, (uint32_t) cmd);
 		}
 	}
-	map<int32_t,int32_t> functionMaping;
+	map <int32_t, int32_t> functionMaping;
 	//Goto and if
 	i = 0;
 	while (i < size) {
@@ -259,24 +259,24 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					}
 					//command 99
 					if (code[i2++] != 73) {
-						FIXME("[%i] Unexpected opcode1: %i, expecting 73.",i2,code[i2]);
+						FIXME("[%i] Unexpected opcode1: %i, expecting 73.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					i2 += 4;
 
 					for (int32_t c = 0; c != 5; c++) {
 						if (code[i2++] != 73) {
-							FIXME("[%i] Unexpected opcode2: %i, expecting 73.",i2,code[i2]);
+							FIXME("[%i] Unexpected opcode2: %i, expecting 73.", i2, code[i2]);
 							goto not_custom_function;
 						}
 						i2 += 4;
 					}
 					if (code[i2++] != 67) {
-						FIXME("[%i] Unexpected opcode3: %i, expecting 67.",i2,code[i2]);
+						FIXME("[%i] Unexpected opcode3: %i, expecting 67.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					if (*(int32_t*)(code + i2) != 99) {
-						FIXME("[%i] Unexpected command %i, expecting 79.",i2,code[i2]);
+						FIXME("[%i] Unexpected command %i, expecting 79.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					i2 += 4;
@@ -343,19 +343,19 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 						goto not_custom_function;
 					}
 
-					CustomFunction func(0,groupId,funcId);
+					CustomFunction func(0, groupId, funcId);
 					func.setParams(params);
 					int32_t handle = customFunctionHandler.getHandle(func);
 					functionMaping[*(int32_t *)(code + i)] = handle;
 					*(uint8_t *)(code + i - 1) = 100; //Custom function call
 					*(int32_t *)(code + i) = handle;
-					INFO("Added custom function with handle %i",handle);
+					INFO("Added custom function with handle %i", handle);
 				}
 				already_parsed:
 				not_custom_function:
 #endif //DISABLE_CUSTOMS
 
-				i +=4;
+				i += 4;
 				break;
 			}
 
@@ -484,7 +484,7 @@ FORCEINLINE void CBEnchanted::handleSetInt(void) {
 
 	int32_t value = popValue().toInt();
 	setIntegerVariable(var, value);
-	HCDEBUG("[%i]: Setting int variable %i to value: %i", code - codeBase, var,value);
+	HCDEBUG("[%i]: Setting int variable %i to value: %i", code - codeBase, var, value);
 }
 
 /*
@@ -953,7 +953,7 @@ FORCEINLINE void CBEnchanted::commandArrayAssign(void) {
 	uint32_t id = *(uint32_t *)(code);
 	code += 4;
 
-	uint32_t pos = popArrayDimensions1(id,n,type);
+	uint32_t pos = popArrayDimensions1(id, n, type);
 	switch (type) {
 		case 1: getIntegerArray(id).set(pos, popValue().toInt()); break;
 		case 2: getFloatArray(id).set(pos, popValue().toFloat()); break;
@@ -971,7 +971,7 @@ FORCEINLINE void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue().getInt();
 	int32_t var = *(int32_t *)(code);
 	code += 4;
-	//HCDEBUG("[%i] Push variable: %i",cpos,type);
+	//HCDEBUG("[%i] Push variable: %i", cpos, type);
 	switch (type) {
 		case 1: pushValue(getIntegerVariable(var)); break;
 		case 2: pushValue(getFloatVariable(var)); break;
@@ -1132,7 +1132,7 @@ FORCEINLINE void CBEnchanted::handlePushTypeMemberVariable(void) {
 FORCEINLINE void CBEnchanted::handleCustomFunctionCall() {
 	int32_t handle = *(int32_t *)(code);
 	code += 4;
-	customFunctionHandler.call(this,handle);
+	customFunctionHandler.call(this, handle);
 }
 
 /*
@@ -1167,7 +1167,7 @@ void CBEnchanted::commandInsert(void) {
 }
 
 void CBEnchanted::commandClearArray(void) {
-	clearArray = (bool)popValue().toBool();
+	clearArray = popValue().toBool();
 }
 
 void CBEnchanted::commandReDim(void) {
@@ -1185,7 +1185,6 @@ void CBEnchanted::commandReDim(void) {
 	for (int32_t i = n - 1; i >= 0; --i) {
 		dimensions[i] = popValue().toInt() + 1; // Size of dimension
 	}
-
 
 	switch (type){
 		case 3: {
@@ -1412,9 +1411,9 @@ void CBEnchanted::commandSetVariable(void) {
 		}
 		case 4: { // Typepointer tjsp
 			int32_t id = popValue().getInt();
-			void * ptr = popValue().toTypePtr();
+			void *ptr = popValue().toTypePtr();
 
-			setTypePointerVariable(id,ptr);
+			setTypePointerVariable(id, ptr);
 			break;
 		}
 		default:

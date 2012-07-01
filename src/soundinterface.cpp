@@ -4,7 +4,6 @@
 #include "any.h"
 #include "errorsystem.h"
 
-
 SoundInterface::SoundInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }

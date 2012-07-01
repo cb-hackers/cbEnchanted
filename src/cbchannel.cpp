@@ -7,8 +7,7 @@
 #include "cbenchanted.h"
 #include "errorsystem.h"
 
-CBChannel::CBChannel(): bufferCount(3), sampleCount(8192), stream(NULL)
-{
+CBChannel::CBChannel(): bufferCount(3), sampleCount(8192), stream(NULL) {
 
 }
 
@@ -26,7 +25,6 @@ CBChannel::~CBChannel() {
 }
 
 bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq) {
-
 	instance = al_create_sample_instance(sound.getSample());
 	if (!al_attach_sample_instance_to_mixer(instance, mixer)) {
 		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not attach sample instance to mixer.\nSource file: " + sound.getSourceFile());
@@ -173,10 +171,10 @@ bool CBChannel::isPlaying() {
 	switch (playType) {
 		case Sound:
 			return al_get_sample_instance_playing(instance);
-		break;
+			break;
 		case Stream:
 			return al_get_audio_stream_playing(stream);
-		break;
+			break;
 	}
 	return 0;
 }
@@ -186,9 +184,9 @@ void CBChannel::stop() {
 	switch (playType) {
 		case Sound:
 			al_set_sample_instance_playing(instance, false);
-		break;
+			break;
 		case Stream:
 			al_set_audio_stream_playing(stream, false);
-		break;
+			break;
 	}
 }
