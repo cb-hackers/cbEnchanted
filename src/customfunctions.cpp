@@ -208,7 +208,7 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 
 /** Draws image region with scaling, rotating and tinting. */
 void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 	float angle = cb->popValue().toFloat();
 	float scaley = cb->popValue().toFloat();
 	float scalex = cb->popValue().toFloat();
