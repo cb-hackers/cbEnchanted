@@ -62,6 +62,26 @@ void cbeObjectSX(CBEnchanted *cb);
 
 void cbeObjectSY(CBEnchanted *cb);
 
+void cbePushByte(CBEnchanted *cb);
+
+void cbePushShort(CBEnchanted *cb);
+
+void cbePushInteger(CBEnchanted *cb);
+
+void cbePushFloat(CBEnchanted *cb);
+
+void cbePushString(CBEnchanted *cb);
+
+void cbePopByte(CBEnchanted *cb);
+
+void cbePopShort(CBEnchanted *cb);
+
+void cbePopInteger(CBEnchanted *cb);
+
+void cbePopFloat(CBEnchanted *cb);
+
+void cbePopString(CBEnchanted *cb);
+
 /** @} */
 
 #endif // CUSTOMFUNCTIONS_H

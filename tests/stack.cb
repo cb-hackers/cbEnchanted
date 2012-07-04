@@ -1,0 +1,51 @@
+Const CBE_STACK = 100
+
+Function cbePushByte(v As Byte)
+    group = CBE_STACK
+    funcId = 1
+EndFunction
+
+Function cbePushShort(v As Short)
+    group = CBE_STACK
+    funcId = 2
+EndFunction
+
+Function cbePushInteger(v As Integer)
+    group = CBE_STACK
+    funcId = 3
+EndFunction
+
+Function cbePushFloat(v As Float)
+    group = CBE_STACK
+    funcId = 4
+EndFunction
+
+Function cbePushString(v As String)
+    group = CBE_STACK
+    funcId = 5
+EndFunction
+
+Function cbePopByte()
+    group = CBE_STACK
+    funcId = 6
+EndFunction
+
+Function cbePopShort()
+    group = CBE_STACK
+    funcId = 7
+EndFunction
+
+Function cbePopInteger()
+    group = CBE_STACK
+    funcId = 8
+EndFunction
+
+Function cbePopFloat()
+    group = CBE_STACK
+    funcId = 9
+EndFunction
+
+Function cbePopString()
+    group = CBE_STACK
+    funcId = 10
+EndFunction

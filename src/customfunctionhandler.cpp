@@ -166,5 +166,47 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeObjectSY);
 	func.setFuncId(CBE_OBJECT_S_Y);
 	this->add(func);
+	
+	func.setGroupId(CBE_STACK);
+	
+	func.setFuncPtr(&cbePushByte);
+	func.setFuncId(CBE_PUSH_BYTE);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePushShort);
+	func.setFuncId(CBE_PUSH_SHORT);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePushInteger);
+	func.setFuncId(CBE_PUSH_INTEGER);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePushFloat);
+	func.setFuncId(CBE_PUSH_FLOAT);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePushString);
+	func.setFuncId(CBE_PUSH_STRING);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePopByte);
+	func.setFuncId(CBE_POP_BYTE);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePopShort);
+	func.setFuncId(CBE_POP_SHORT);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePopInteger);
+	func.setFuncId(CBE_POP_INTEGER);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePopFloat);
+	func.setFuncId(CBE_POP_FLOAT);
+	this->add(func);
+	
+	func.setFuncPtr(&cbePopString);
+	func.setFuncId(CBE_POP_STRING);
+	this->add(func);
 }
 

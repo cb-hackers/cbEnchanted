@@ -479,4 +479,44 @@ void cbeObjectSY(CBEnchanted *cb) {
 	cb->pushValue(y);
 }
 
+void cbePushByte(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushShort(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushInteger(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushFloat(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushString(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePopByte(CBEnchanted *cb) {
+
+}
+
+void cbePopShort(CBEnchanted *cb) {
+
+}
+
+void cbePopInteger(CBEnchanted *cb) {
+
+}
+
+void cbePopFloat(CBEnchanted *cb) {
+
+}
+
+void cbePopString(CBEnchanted *cb) {
+
+}
+
 /** @} */

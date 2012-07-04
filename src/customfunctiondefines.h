@@ -87,4 +87,16 @@
 #define CBE_OBJECT_S_Y 28
 /** @} */
 
+#define CBE_STACK 100
+#define CBE_PUSH_BYTE 1
+#define CBE_PUSH_SHORT 2
+#define CBE_PUSH_INTEGER 3
+#define CBE_PUSH_FLOAT 4
+#define CBE_PUSH_STRING 5
+#define CBE_POP_BYTE 6
+#define CBE_POP_SHORT 7
+#define CBE_POP_INTEGER 8
+#define CBE_POP_FLOAT 9
+#define CBE_POP_STRING 10
+
 #endif // CUSTOMFUNCTIONDEFINES_H
