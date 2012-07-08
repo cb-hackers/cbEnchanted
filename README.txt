@@ -2,10 +2,12 @@
 ------------------
 
 cbEnchanted is a remake of CoolBasic beta runtime.
-The CBCompiler.exe files in this release are modified
-in such a way that only the old runtime is replaced
-with the new, cbEnchanted runtime. All the other parts
-of compiler is owned by Jukka Lavonen.
+The CBCompiler.exe files in Windows release are modified
+in such a way that the old runtime is replaced
+with the new, cbEnchanted runtime. The compiler has also
+been replaced with a modded compiler that has its function
+limit raised to 2000. All the other parts of CBCompiler are
+owned by Jukka Lavonen.
 
 All hail CoolBasic! http://www.coolbasic.com
 
