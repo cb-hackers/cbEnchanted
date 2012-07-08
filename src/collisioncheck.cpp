@@ -181,9 +181,13 @@ void CollisionCheck::RectRectTest() {
 	float cObjW = mObject2->getRange1();
 	float cObjH = mObject2->getRange2();
 
+	// Hacky fix to correct https://github.com/VesQ/cbEnchanted/issues/126
+	float chckW = (objW + cObjW) / 2;
+	float chckH = (objH + cObjH) / 2;
+
 	// First check collision in x-direction
-	if (RectRectTest(objX, safeY, objW, objH,
-			cObjX, cObjY, cObjW, cObjH)) {
+	if (RectRectTest(objX, safeY, chckW, chckH,
+			cObjX, cObjY, chckW, chckH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
@@ -194,21 +198,21 @@ void CollisionCheck::RectRectTest() {
 		// Check the colliding direction
 		if (objX > cObjX) {
 			// Left?
-			DEBUG("Box collision at left side of colliding object");
-			objX = cObjX + cObjW/2 + objW/2 + 1.5f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX - mObject1->getRange1()/2 - 1.0f, objY));
+			//DEBUG("Box collision at left side of colliding object");
+			objX = cObjX + cObjW/2 + objW/2 + 1.0f;
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX - objW/2 - 1.0f, objY));
 		}
 		else {
 			// Right?
-			DEBUG("Box collision at right side of colliding object");
-			objX = cObjX - cObjW/2 - objW/2 - 1.5f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX + mObject1->getRange1()/2 + 1.0f, objY));
+			//DEBUG("Box collision at right side of colliding object");
+			objX = cObjX - cObjW/2 - objW/2 - 1.0f;
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX + objW/2 + 1.0f, objY));
 		}
 	}
 
 	// Then check collision in y-direction
-	if (RectRectTest(objX, objY, objW, objH,
-			cObjX, cObjY, cObjW, cObjH)) {
+	if (RectRectTest(objX, objY, chckW, chckH,
+			cObjX, cObjY, chckW, chckH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
@@ -219,15 +223,15 @@ void CollisionCheck::RectRectTest() {
 		// Check the colliding direction
 		if (objY > cObjY) {
 			// Bottom?
-			DEBUG("Box collision at bottom side of colliding object");
-			objY = cObjY + cObjH/2 + objH/2 + 1.5f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY - mObject1->getRange2()/2 - 1.0f));
+			//DEBUG("Box collision at bottom side of colliding object");
+			objY = cObjY + cObjH/2 + objH/2 + 1.0f;
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY - objH/2 - 1.0f));
 		}
 		else {
 			// Top?
-			DEBUG("Box collision at top side of colliding object");
-			objY = cObjY - cObjH/2 - objH/2 - 1.5f;
-			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY + mObject1->getRange2()/2 + 1.0f));
+			//DEBUG("Box collision at top side of colliding object");
+			objY = cObjY - cObjH/2 - objH/2 - 1.0f;
+			mObject1->addCollision(new Collision(mObject1, mObject2, collisionAngle, objX, objY + objH/2 + 1.0f));
 		}
 	}
 
