@@ -31,7 +31,8 @@ class CBImage
 		void setAnimParams(int32_t frameW,int32_t frameH,int32_t begin,int32_t animL);
 		void resize(int32_t w, int32_t h);
 		CBImage *clone();
-		ALLEGRO_BITMAP *getMaskedBitmap() const {return maskedBitmap;}
+		ALLEGRO_BITMAP *getMaskedBitmap() const { return maskedBitmap; }
+		ALLEGRO_BITMAP *getUnmaskedBitmap() const { return unmaskedBitmap; }
 		/** Set this CBImage ready for drawing operations or set it back for drawing. */
 		void switchMaskBitmaps(bool switchToUnmasked);
 		/** Rotates an image with the given angle (in degrees) clockwise. */
@@ -42,6 +43,8 @@ class CBImage
 		bool collides(CBImage *img, float x1, float y1, float x2, float y2);
 		inline int32_t getHotSpotX() {return hotspotX;}
 		inline int32_t getHotSpotY() {return hotspotY;}
+
+		bool masked() { return isMasked; }
 	private:
 
 		int32_t hotspotX,hotspotY;

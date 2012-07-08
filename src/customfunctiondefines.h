@@ -23,8 +23,11 @@
 /** ID for custom function cbeSetBlendModeAdvanced() */
 #define CBE_CUSTOM_SET_BLEND_MODE_ADVANCED 5
 
-/** ID for custom function cbeDrawTintedScaledRotatedImageRegion() */
-#define CBE_DRAW_TINTED_SCALED_ROTATED_IMAGE_REGION 6
+/** ID for custom function cbeDrawTintedImage() */
+#define CBE_DRAW_TINTED_IMAGE 6
+
+/** ID for custom function cbeDrawImage() */
+#define CBE_DRAW_IMAGE 29
 
 /** IDs for binary operations */
 #define CBE_BINARY_NOT 7
@@ -85,6 +88,10 @@
 
 /** ID for custom function cbeObjectSY */
 #define CBE_OBJECT_S_Y 28
+
+// NOTE: ID 29 is defined earlier as CBE_DRAW_IMAGE
+
+
 /** @} */
 
 #define CBE_STACK 100

@@ -1,14 +1,13 @@
-
-
 Include "include/customfunctions.cb"
 FrameLimit 40
-img = LoadImage("Media\Map.BMP")
+img = LoadImage("Media\map.bmp")
 
 Repeat 
 
     cbeColor(255, 255, 255, 127)
     ang# = WrapAngle(ang#+0.5)
-    cbeDrawTintedScaledRotatedImageBox(img, 10, 10, 200, 100, 200, 150, 1.0, 1.0, ang)
+    cbeDrawTintedImage(img, 200, 150, ang#, 0.5, 1.0)
+    cbeDrawImage(img, 50, 38, ang#, 0.25, 0.25)
 
     Text 0, 0, FPS()
 DrawScreen

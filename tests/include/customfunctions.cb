@@ -89,21 +89,53 @@ Function cbeSetBlendModeAdvanced(op, src, dst, alphaOp = 0, alphaSrc = 0, alphaD
 EndFunction
 
 // ----------------------------------------------------------------------------
+// cbeDrawTintedImage()
+// ---
 // Draws a part of an image, tinted with the current color, rotated and scaled.
+// Tinting means that all the colors of the image will be multiplied by the
+// current drawing color. For example, if you want to emphasize red color on
+// your image, you could do cbeColor(255, 128, 128, 255) first and then draw
+// your image using this function. For more information, see
+// http://liballeg.org/a5docs/5.0.6/graphics.html#al_draw_tinted_bitmap
+// ---
 // Parameters:
 //  * img ................. Image to draw
-//  * sX, sY .............. Top left coordinates of the image region to draw
-//  * sW, sY .............. Width and height of the image region to draw
 //  * centerX, centerY .... Coordinates to draw to. Image region is scaled and
 //                          rotated around this point.
+//  * angle ............... Rotation angle in degrees
 //  * scaleX, scaleY ...... How much is the image region scaled when drawn.
 //                          1 means no scaling.
-//  * angle ............... Rotation angle in degrees
+//  * sX, sY .............. Top left coordinates of the image region to draw
+//  * sW, sH .............. Width and height of the image region to draw.
+//                          NOTE: If these are both 0, no cropping will be done
+//                          and the whole image will be drawn.
 // ----------------------------------------------------------------------------
-Function cbeDrawTintedScaledRotatedImageRegion(img, sX#, sY#, sW#, sY#, centerX#, centerY#, scaleX#, scaleY#, angle#)
+Function cbeDrawTintedImage(img, centerX#, centerY#, angle# = 0.0, scaleX# = 1.0, scaleY# = 1.0, sX# = 0.0, sY# = 0.0, sW# = 0.0, sH# = 0.0)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 6
 EndFunction
+
+// ----------------------------------------------------------------------------
+// cbeDrawImage()
+// ---
+// Draws a part of an image, rotated and scaled.
+// Parameters:
+//  * img ................. Image to draw
+//  * centerX, centerY .... Coordinates to draw to. Image region is scaled and
+//                          rotated around this point.
+//  * angle ............... Rotation angle in degrees
+//  * scaleX, scaleY ...... How much is the image region scaled when drawn.
+//                          1 means no scaling.
+//  * sX, sY .............. Top left coordinates of the image region to draw
+//  * sW, sH .............. Width and height of the image region to draw.
+//                          NOTE: If these are both 0, no cropping will be done
+//                          and the whole image will be drawn.
+// ----------------------------------------------------------------------------
+Function cbeDrawImage(img, centerX#, centerY#, angle# = 0.0, scaleX# = 1.0, scaleY# = 1.0, sX# = 0.0, sY# = 0.0, sW# = 0.0, sH# = 0.0)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 29
+EndFunction
+
 
 // ============================================================================
 // BINARY OPERATIONS

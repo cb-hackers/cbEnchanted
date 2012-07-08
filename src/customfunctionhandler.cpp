@@ -75,8 +75,12 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncId(CBE_CUSTOM_SET_BLEND_MODE_ADVANCED);
 	this->add(func);
 
-	func.setFuncPtr(&cbeDrawTintedScaledRotatedImageRegion);
-	func.setFuncId(CBE_DRAW_TINTED_SCALED_ROTATED_IMAGE_REGION);
+	func.setFuncPtr(&cbeDrawTintedImage);
+	func.setFuncId(CBE_DRAW_TINTED_IMAGE);
+	this->add(func);
+
+	func.setFuncPtr(&cbeDrawImage);
+	func.setFuncId(CBE_DRAW_IMAGE);
 	this->add(func);
 
 	func.setFuncPtr(&cbeBNot);

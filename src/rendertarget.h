@@ -38,9 +38,11 @@ class RenderTarget
 		void drawBitmap(ALLEGRO_BITMAP *r,float x, float y, float rot);
 		void drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float rw, float rh, float x, float y);
 		void drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float x, float y, float rot);
-		void drawBitmapTintedScaledRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float angle);
-		void drawBitmap(ALLEGRO_BITMAP *r,float x, float y, float rot,const ALLEGRO_COLOR &tint);
-		void drawBitmap(ALLEGRO_BITMAP *r,float x, float y, const ALLEGRO_COLOR &tint);
+		void drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float rot);
+		void drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, float dx, float dy, float xscale, float yscale, float rot);
+		void drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint);
+		void drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, float xscale, float yscale, const ALLEGRO_COLOR &tint);
+		void drawBitmap(ALLEGRO_BITMAP *r, float x, float y, const ALLEGRO_COLOR &tint);
 		void drawBitmapMirrored(ALLEGRO_BITMAP *r,int flags);
 		void drawParticles(CBImage *tex, const vector<Particle> &particles, int32_t particleLifeTime, int32_t animLength);
 		void drawText(const ALLEGRO_FONT *font, const ISString &text, float x, float y, const ALLEGRO_COLOR &color, int flags = Left|Top);
