@@ -167,7 +167,6 @@ void CollisionCheck::RectCircleTest() {
 
 /** A rectangle - rectangle collision test */
 void CollisionCheck::RectRectTest() {
-	DrawCollisionBoundaries();
 	// Get the object coordinates here and modify them freely, later position the object according to them
 	float objX = mObject1->getX();
 	float objY = mObject1->getY();
