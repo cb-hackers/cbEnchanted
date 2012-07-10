@@ -383,7 +383,9 @@ void GfxInterface::commandEllipse(void) {
 }
 
 void GfxInterface::commandPickColor(void) {
-	STUB;
+	int y = cb->popValue().toInt();
+	int x = cb->popValue().toInt();
+	cb->setDrawColor(windowRenderTarget->getPixel(x, y));
 }
 
 void GfxInterface::commandScreenGamma(void) {
