@@ -34,10 +34,10 @@ void CollisionCheck::setCollisionType1(uint16_t c) {
 	switch (c) {
 		case 1:
 			mCollisionType1 = Box;
-		break;
+			break;
 		case 2:
 			mCollisionType1 = Circle;
-		break;
+			break;
 		default:
 			INFO("Error: Unsupported collision type %i set for the colliding object", c);
 			mObject1 = 0;
@@ -62,7 +62,7 @@ void CollisionCheck::setCollisionType2(uint16_t c) {
 				mObject1 = 0;
 				mObject2 = 0;
 			}
-		break;
+			break;
 		case 2:
 			// The other collision type must also be Circle
 			if (mCollisionType1 == Circle) {
@@ -73,7 +73,7 @@ void CollisionCheck::setCollisionType2(uint16_t c) {
 				mObject1 = 0;
 				mObject2 = 0;
 			}
-		break;
+			break;
 		case 4:
 			// The other collision type must be Box or Circle
 			if (mCollisionType1 == Box || mCollisionType1 == Circle) {
@@ -84,7 +84,7 @@ void CollisionCheck::setCollisionType2(uint16_t c) {
 				mObject1 = 0;
 				mObject2 = 0;
 			}
-		break;
+			break;
 		default:
 			INFO("Error: Unsupported collision type %i set for the object to collide to", c);
 			mObject1 = 0;
@@ -99,6 +99,9 @@ void CollisionCheck::setCollisionType2(uint16_t c) {
  */
 void CollisionCheck::setCollisionHandling(uint16_t h) {
 	switch (h) {
+		case 0:
+			mCollisionHandling = Unhandled;
+			break;
 		case 1:
 			if (mCollisionType1 == Circle) {
 				mCollisionHandling = Stop;
@@ -108,10 +111,10 @@ void CollisionCheck::setCollisionHandling(uint16_t h) {
 				mObject1 = 0;
 				mObject2 = 0;
 			}
-		break;
+			break;
 		case 2:
 			mCollisionHandling = Slide;
-		break;
+			break;
 		default:
 			INFO("Error: Unsupported collision handling type %i", h);
 			mObject1 = 0;
@@ -140,14 +143,14 @@ void CollisionCheck::testCollision() {
 				case Circle: RectCircleTest(); break;
 				case Map: RectMapTest(); break;
 			}
-		break;
+			break;
 		case Circle:
 			switch (mCollisionType2) {
 				case Box: CircleRectTest(); break;
 				case Circle: CircleCircleTest(); break;
 				case Map: CircleMapTest(); break;
 			}
-		break;
+			break;
 	}
 }
 
@@ -185,8 +188,7 @@ void CollisionCheck::RectRectTest() {
 	float chckH = (objH + cObjH) / 2;
 
 	// First check collision in x-direction
-	if (RectRectTest(objX, safeY, chckW, chckH,
-			cObjX, cObjY, chckW, chckH)) {
+	if (RectRectTest(objX, safeY, chckW, chckH, cObjX, cObjY, chckW, chckH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
@@ -210,8 +212,7 @@ void CollisionCheck::RectRectTest() {
 	}
 
 	// Then check collision in y-direction
-	if (RectRectTest(objX, objY, chckW, chckH,
-			cObjX, cObjY, chckW, chckH)) {
+	if (RectRectTest(objX, objY, chckW, chckH, cObjX, cObjY, chckW, chckH)) {
 		// We have a collision! Calculate collision angle
 
 		// Calculate collision angle
@@ -237,7 +238,9 @@ void CollisionCheck::RectRectTest() {
 	safeX = objX;
 	safeY = objY;
 
-	mObject1->positionObject(safeX, safeY);
+	if (mCollisionHandling != Unhandled) {
+		mObject1->positionObject(safeX, safeY);
+	}
 }
 
 /** A circle - circle collision test */
@@ -286,7 +289,10 @@ void CollisionCheck::CircleCircleTest() {
 	// And then the resetion.
 	safeX = objX;
 	safeY = objY;
-	mObject1->setPosition(safeX, safeY);
+
+	if (mCollisionHandling != Unhandled) {
+		mObject1->positionObject(safeX, safeY);
+	}
 }
 
 /** A rectangle - map collision test */
@@ -377,7 +383,9 @@ void CollisionCheck::RectMapTest() {
 	safeX = objX;
 	safeY = objY;
 
-	mObject1->positionObject(safeX, safeY);
+	if (mCollisionHandling != Unhandled) {
+		mObject1->positionObject(safeX, safeY);
+	}
 
 	// Let's add those collisions.
 	if (collided[0]) {
@@ -662,7 +670,10 @@ void CollisionCheck::CircleMapTest() {
 
 	safeX = objX;
 	safeY = objY;
-	mObject1->setPosition(objX, objY);
+
+	if (mCollisionHandling != Unhandled) {
+		mObject1->positionObject(safeX, safeY);
+	}
 
 	// Let's add those collisions.
 	if (collided[0]) {
