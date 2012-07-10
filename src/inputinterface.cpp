@@ -23,6 +23,7 @@ InputInterface::InputInterface() :
 	cb = static_cast <CBEnchanted *> (this);
 
 	memset(keyStates, 0, ALLEGRO_KEY_MAX);
+	memset(mouseButtonStates, 0, MAX_MOUSE_BUTTONS);
 
 	// Init cbKeyMap values to 0
 	for (int i = 0; i < 222; ++i) {
