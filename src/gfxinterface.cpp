@@ -129,7 +129,19 @@ void GfxInterface::commandScreen(void) {
 			al_destroy_display(window);
 			window = al_create_display(width, height);
 			if (window == 0) {
-				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+				if (cb->isSmooth2D()) {
+					cb->errors->createError("Can't create window","Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
+					cb->setSmooth2D(false);
+					window = al_create_display(width, height);
+					if (window == 0) {
+						cb->errors->createFatalError("Can't create window","Creating window failed in command Screen, even when Smooth2D was unset.");
+						return;
+					}
+				}
+				else {
+					cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+					return;
+				}
 				return;
 			}
 			resizeTempBitmap(width, height);
@@ -424,20 +436,6 @@ void GfxInterface::commandDrawToWorld(void) {
 void GfxInterface::commandSmooth2D(void) {
 	bool toggled = cb->popValue().toBool();
 	cb->setSmooth2D(toggled);
-	if (toggled) {
-		// Set new display flags for antialiasing
-		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_REQUIRE);
-		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_REQUIRE);
-		// Set linear filtering for image operations
-		al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
-	}
-	else {
-		// Remove antialiasing flags
-		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_DONTCARE);
-		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_DONTCARE);
-		// Unset linear filtering for image operations
-		al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
-	}
 }
 
 void GfxInterface::commandScreenShot(void) {

@@ -59,7 +59,7 @@ class CBEnchanted :
 		bool isSafeExit() const { return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
 		bool isSmooth2D() const { return smooth2d; }
-		void setSmooth2D(bool toggled) { smooth2d = toggled; }
+		void setSmooth2D(bool toggled);
 		inline void setFrameLimit(float pFrameLimit) { frameLimit = pFrameLimit; }
 		inline float getFrameLimit() const { return frameLimit; }
 		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
