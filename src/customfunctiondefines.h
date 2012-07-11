@@ -86,7 +86,7 @@
 /** ID for custom function cbeObjectSY */
 #define CBE_OBJECT_S_Y 28
 
-#define CBE_RESOLVE_CUSTOM_FUNCTIONS 29
+#define CBE_LINK_CUSTOM_FUNCTIONS 29
 
 #define CBE_LOAD_LIBRARY 30
 

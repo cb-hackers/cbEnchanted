@@ -55,7 +55,6 @@ class CBEnchanted :
 		void run();
 		void cleanup();
 #endif
-		void resolveCustomFunctions();
 		void dllInit();
 		void stop();
 		static CBEnchanted *instance();

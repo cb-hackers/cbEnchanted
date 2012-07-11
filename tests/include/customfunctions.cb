@@ -206,7 +206,7 @@ Function cbeObjectSY#(obj)
     funcId = 28
 EndFunction
 
-Function cbeResolveCustomFunction()
+Function cbeLinkCustomFunctions()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 29
 EndFunction

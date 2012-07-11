@@ -2,6 +2,7 @@
 #include <allegro5/allegro.h>
 #include "cbenchanted.h"
 
+#ifndef CBE_LIB
 int main(int argc, char** argv) {
 	CBEnchanted cb;
 	#ifdef TEST
@@ -27,4 +28,6 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+
+#endif
 

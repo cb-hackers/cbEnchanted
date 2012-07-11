@@ -2,6 +2,7 @@
 #include "animinterface.h"
 #include "debug.h"
 
+#ifndef CBE_LIB
 AnimInterface::AnimInterface() {
 
 }
@@ -33,3 +34,5 @@ void AnimInterface::functionAnimationHeight(void) {
 void AnimInterface::functionAnimationPlaying(void) {
 	STUB;
 }
+
+#endif

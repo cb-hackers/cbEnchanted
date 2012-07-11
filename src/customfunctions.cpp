@@ -479,8 +479,9 @@ void cbeObjectSY(CBEnchanted *cb) {
 	cb->pushValue(y);
 }
 
-void cbeResolveCustomFunctions(CBEnchanted *cb) {
-	cb->resolveCustomFunctions();
+void cbeLinkCustomFunctions(CBEnchanted *cb) {
+	cb->getCustomFunctionHandler()->link();
+	cb->pushValue(0);
 }
 
 void cbeLoadLibrary(CBEnchanted *cb) {
@@ -489,7 +490,8 @@ void cbeLoadLibrary(CBEnchanted *cb) {
 	void * dll = loadDLL(cb->popValue().toString());
 	cbeInitializeLibraryFuncType cbeInitializeLibrary = (cbeInitializeLibraryFuncType)getDLLFunction(dll, "cbeInitializeLibrary");
 	cbeInitializeLibrary(cb);
-	if (t) cb->resolveCustomFunctions();
+	if (t) cb->getCustomFunctionHandler()->link();
+	cb->pushValue(0);
 }
 #endif
 /** @} */

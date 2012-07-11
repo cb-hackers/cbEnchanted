@@ -1,5 +1,7 @@
 QT -= core gui #No qt
 
+#Building static library
+#CBE_CONFIG += staticlib
 
 contains(CBE_CONFIG, staticlib) {
 	CONFIG += staticlib
@@ -15,12 +17,12 @@ win32 {
 	staticlib {
 		# Disable security warnings
 		DEFINES += _CRT_SECURE_NO_WARNINGS
-		QMAKE_CXXFLAGS_DEBUG += -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
-		QMAKE_CXXFLAGS_RELEASE += -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
+		QMAKE_CXXFLAGS_DEBUG += -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MDd -Zi
+		QMAKE_CXXFLAGS_RELEASE += -Zc:wchar_t -Zc:forScope -MP -W3 -MD -EHsc -GL -Ox
 
 		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
+		QMAKE_CFLAGS_DEBUG += -MDd -Zc:wchar_t -Zi
+		QMAKE_CFLAGS_RELEASE += -MD -Zc:wchar_t -Ox
 
 		contains(CBE_CONFIG,optimized_debug) {
 			#DEFINES += VC_USE_FORCEINLINE
@@ -64,12 +66,12 @@ win32 {
 		# Release only:
 		#  - Enable whole program optimization
 		#  - Use maximum optimization (/Ob2gity /Gs)
-		QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
-		QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
+		QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MDd -Zi
+		QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MD -EHsc -GL -Ox
 
 		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
+		QMAKE_CFLAGS_DEBUG += -MDd -Zc:wchar_t -Zi
+		QMAKE_CFLAGS_RELEASE += -MD -Zc:wchar_t -Ox
 
 		# Disable security warnings
 		DEFINES += _CRT_SECURE_NO_WARNINGS
@@ -88,6 +90,21 @@ win32 {
 			DEFINES += VC_USE_FORCEINLINE
 		}
 	}
+
+	# Support only Win2K and above
+	DEFINES += _WIN32_WINNT=0x0500
+	CONFIG(release, debug|release){
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-md -lallegro_ttf-5.0.6-static-md -lallegro_primitives-5.0.6-static-md -lallegro_image-5.0.6-static-md -lallegro_font-5.0.6-static-md -lallegro_dialog-5.0.6-static-md -lallegro_audio-5.0.6-static-md -lallegro_acodec-5.0.6-static-md
+		LIBS += -llibvorbisfile-1.3.2-static-md -lzlib-1.2.5-static-md -llibogg-1.2.1-static-md -llibFLAC-1.2.1-static-md -lfreetype-2.4.8-static-md -ldumb-0.9.3-static-md -llibvorbis-1.3.2-static-md
+		DEFINES += NDEBUG
+	}
+	else {
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-md-debug -lallegro_ttf-5.0.6-static-md-debug -lallegro_primitives-5.0.6-static-md-debug -lallegro_image-5.0.6-static-md-debug -lallegro_font-5.0.6-static-md-debug -lallegro_dialog-5.0.6-static-md-debug -lallegro_audio-5.0.6-static-md-debug -lallegro_acodec-5.0.6-static-md-debug
+		LIBS += -llibvorbisfile-1.3.2-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
+	}
+	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
+	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"
+
 }
 
 contains(CBE_CONFIG,optimized_debug) {
@@ -117,18 +134,3 @@ DEFINES += ALLEGRO_STATICLINK
 	DEFINES += TEST
 }
 
-win32{
-	# Support only Win2K and above
-	DEFINES += _WIN32_WINNT=0x0500
-	CONFIG(release, debug|release){
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-mt -lallegro_ttf-5.0.6-static-mt -lallegro_primitives-5.0.6-static-mt -lallegro_image-5.0.6-static-mt -lallegro_font-5.0.6-static-mt -lallegro_dialog-5.0.6-static-mt -lallegro_audio-5.0.6-static-mt -lallegro_acodec-5.0.6-static-mt
-		LIBS += -llibvorbisfile-1.3.2-static-mt -lzlib-1.2.5-static-mt -llibogg-1.2.1-static-mt -llibFLAC-1.2.1-static-mt -lfreetype-2.4.8-static-mt -ldumb-0.9.3-static-mt -llibvorbis-1.3.2-static-mt
-		DEFINES += NDEBUG
-	}
-	else {
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-mt-debug -lallegro_ttf-5.0.6-static-mt-debug -lallegro_primitives-5.0.6-static-mt-debug -lallegro_image-5.0.6-static-mt-debug -lallegro_font-5.0.6-static-mt-debug -lallegro_dialog-5.0.6-static-mt-debug -lallegro_audio-5.0.6-static-mt-debug -lallegro_acodec-5.0.6-static-mt-debug
-		LIBS += -llibvorbisfile-1.3.2-static-mt-debug -lzlib-1.2.5-static-mt-debug -llibogg-1.2.1-static-mt-debug -llibFLAC-1.2.1-static-mt-debug -lfreetype-2.4.8-static-mt-debug -ldumb-0.9.3-static-mt-debug -llibvorbis-1.3.2-static-mt-debug
-	}
-	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
-	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"
-}

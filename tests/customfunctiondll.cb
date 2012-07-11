@@ -1,0 +1,11 @@
+
+
+Function testFunction()
+    groupId = 1337
+    funcId = 1
+EndFunction
+
+Include "include/customfunctions.cb"
+cbeLoadLibrary("D:\Lassi\Projektit\cbEnchanted\cbEnchanted\tests\cbeDllTest-build-desktop-Qt_4_8_0_for_Desktop_-_MSVC2010__Qt_SDK__Debug\debug\cbeDllTest.dll")
+testFunction()
+WaitKey
