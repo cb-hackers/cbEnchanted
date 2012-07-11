@@ -21,7 +21,7 @@ Const CBE_CUSTOM_FUNCTION_GROUP = 1
 // Draws a triangle, given coordinates are the end points of each corner.
 // The last parameter determines whether the triangle is filled or not.
 // ----------------------------------------------------------------------------
-Function cbeTriangle(x1 As Float, y1 As Float, x2 As Float, y2 As Float, x3 As Float, y3 As Float, fill = 1)
+Function cbeTriangle(cbeX1 As Float, cbeY1 As Float, cbeX2 As Float, cbeY2 As Float, cbeX3 As Float, cbeY3 As Float, cbeFill = 1)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 1
 EndFunction
@@ -31,7 +31,7 @@ EndFunction
 // ---
 // Sets the current drawing color with an rgba value.
 // ----------------------------------------------------------------------------
-Function cbeColor(r, g, b, a)
+Function cbeColor(cbeR, cbeG, cbeB, cbeA)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 2
 EndFunction
@@ -41,7 +41,7 @@ EndFunction
 // ---
 // Sets the current Cls color with an rgba value.
 // ----------------------------------------------------------------------------
-Function cbeClsColor(r, g, b, a)
+Function cbeClsColor(cbeR, cbeG, cbeB, cbeA)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 3
 EndFunction
@@ -58,7 +58,7 @@ EndFunction
 Const CBE_BLEND_RESET = 0
 Const CBE_BLEND_ADDITIVE = 1
 Const CBE_BLEND_OVERWRITE = 2
-Function cbeSetBlendMode(blendType, setAlphaToo = 1)
+Function cbeSetBlendMode(cbeBlendType, cbeSetAlphaToo = 1)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 4
 EndFunction
@@ -83,7 +83,7 @@ Const CBE_BLEND_ONE = 2
 Const CBE_BLEND_ALPHA = 3
 Const CBE_BLEND_INVERSE_ALPHA = 4
 
-Function cbeSetBlendModeAdvanced(op, src, dst, alphaOp = 0, alphaSrc = 0, alphaDst = 0)
+Function cbeSetBlendModeAdvanced(cbeOp, cbeSrc, cbeDst, cbeAlphaOp = 0, cbeAlphaSrc = 0, cbeAlphaDst = 0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 5
 EndFunction
@@ -110,7 +110,7 @@ EndFunction
 //                          NOTE: If these are both 0, no cropping will be done
 //                          and the whole image will be drawn.
 // ----------------------------------------------------------------------------
-Function cbeDrawTintedImage(img, centerX#, centerY#, angle# = 0.0, scaleX# = 1.0, scaleY# = 1.0, sX# = 0.0, sY# = 0.0, sW# = 0.0, sH# = 0.0)
+Function cbeDrawTintedImage(cbeImg, cbeCenterX#, cbeCenterY#, cbeAngle# = 0.0, cbeScaleX# = 1.0, cbeScaleY# = 1.0, cbeSX# = 0.0, cbeSY# = 0.0, cbeSW# = 0.0, cbeSH# = 0.0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 6
 EndFunction
@@ -131,7 +131,7 @@ EndFunction
 //                          NOTE: If these are both 0, no cropping will be done
 //                          and the whole image will be drawn.
 // ----------------------------------------------------------------------------
-Function cbeDrawImage(img, centerX#, centerY#, angle# = 0.0, scaleX# = 1.0, scaleY# = 1.0, sX# = 0.0, sY# = 0.0, sW# = 0.0, sH# = 0.0)
+Function cbeDrawImage(cbeImg, cbeCenterX#, cbeCenterY#, cbeAngle# = 0.0, cbeScaleX# = 1.0, cbeScaleY# = 1.0, cbeSX# = 0.0, cbeSY# = 0.0, cbeSW# = 0.0, cbeSH# = 0.0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 29
 EndFunction
@@ -148,22 +148,22 @@ EndFunction
 //  * cbeBXor()  =>  ^
 // ============================================================================
 
-Function cbeBNot(i)
+Function cbeBNot(cbeParam)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 7
 EndFunction
 
-Function cbeBAnd(a, b)
+Function cbeBAnd(cbeParam1, cbeParam2)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 8
 EndFunction
 
-Function cbeBOr(a, b)
+Function cbeBOr(cbeParam1, cbeParam2)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 9
 EndFunction
 
-Function cbeBXor(a, b)
+Function cbeBXor(cbeParam1, cbeParam3)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 10
 EndFunction
@@ -176,7 +176,7 @@ EndFunction
 // Windows-1252 encoding. This function needs a file handle received from a
 // successful OpenToRead() or OpenToEdit() function call.
 // ----------------------------------------------------------------------------
-Function cbeReadLineUTF8$(fileHandle)
+Function cbeReadLineUTF8$(cbeFileHandle)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 11
 EndFunction
@@ -186,7 +186,7 @@ EndFunction
 // ---
 // Toggles console visibility. Only applies to Windows.
 // ----------------------------------------------------------------------------
-Function cbeShowConsole(visibleOrNot)
+Function cbeShowConsole(cbeIsVisible)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 12
 EndFunction
@@ -218,7 +218,7 @@ Const CBE_SYSTEM_CURSOR_LINK = 17
 Const CBE_SYSTEM_CURSOR_ALT_SELECT = 18
 Const CBE_SYSTEM_CURSOR_UNAVAILABLE = 19
 
-Function cbeSetSystemCursor(mouseCursorConstant)
+Function cbeSetSystemCursor(cbeCursorConstant)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 13
 EndFunction
@@ -235,22 +235,22 @@ EndFunction
 //  * cbeTransformReset() ...... resets the identity (default) transformation
 // ============================================================================
 
-Function cbeTransformBuild(transX#, transY#, scaleX#, scaleY#, angle#)
+Function cbeTransformBuild(cbeTransX#, cbeTransY#, cbeScaleX#, cbeScaleY#, cbeAngle#)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 14
 EndFunction
 
-Function cbeTransformRotate(angle#)
+Function cbeTransformRotate(cbeAngle#)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 15
 EndFunction
 
-Function cbeTransformScale(scaleX#, scaleY#)
+Function cbeTransformScale(cbeScaleX#, cbeScaleY#)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 16
 EndFunction
 
-Function cbeTransformTranslate(transX#, transY#)
+Function cbeTransformTranslate(cbeTransX#, cbeTransY#)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 17
 EndFunction
@@ -289,7 +289,7 @@ EndFunction
 // Use this function to set the line width of Line, Box, Circle, Ellipse and
 // cbeTriangle().
 // ----------------------------------------------------------------------------
-Function cbeSetLineWidth(width As Float = 1.0)
+Function cbeSetLineWidth(cbeWidth As Float = 1.0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 21
 EndFunction
@@ -312,7 +312,7 @@ Const CBE_FILECHOOSER_PICTURES = 8
 Const CBE_FILECHOOSER_SHOW_HIDDEN = 16
 Const CBE_FILECHOOSER_MULTIPLE = 32
 
-Function cbeFileDialog(path As String, title As String, patterns As String, mode As Integer)
+Function cbeFileDialog(cbePath As String, cbeTitle As String, cbePatterns As String, cbeMode As Integer)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 22
 EndFunction
@@ -335,32 +335,32 @@ EndFunction
 //  * cbeObjectSY() .... Object Y -> screen Y
 // ============================================================================
 
-Function cbeSToWX#(x As Float, y As Float)
+Function cbeSToWX#(cbeX As Float, cbeY As Float)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 23
 EndFunction
 
-Function cbeSToWY#(x As Float, y As Float)
+Function cbeSToWY#(cbeX As Float, cbeY As Float)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 24
 EndFunction
 
-Function cbeWToSX#(x As Float, y As Float)
+Function cbeWToSX#(cbeX As Float, cbeY As Float)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 25
 EndFunction
 
-Function cbeWToSY#(x As Float, y As Float)
+Function cbeWToSY#(cbeX As Float, cbeY As Float)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 26
 EndFunction
 
-Function cbeObjectSX#(obj)
+Function cbeObjectSX#(cbeObj)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 27
 EndFunction
 
-Function cbeObjectSY#(obj)
+Function cbeObjectSY#(cbeObj)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
     cbeFuncId = 28
 EndFunction
