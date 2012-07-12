@@ -2,7 +2,7 @@
 #define FILEINTERFACE_H
 
 #include "precomp.h"
-class CBEnchanted;
+
 class FileInterface {
 	public:
 #ifndef CBE_LIB
@@ -48,7 +48,6 @@ class FileInterface {
 		void functionReadString(void);
 		void functionReadLine(void);
 #endif
-
 		/** Gets a FILE pointer from the given ID. */
 		FILE* getFile(int32_t id);
 	private:

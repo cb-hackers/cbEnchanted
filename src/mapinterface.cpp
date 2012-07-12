@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "cbenchanted.h"
 #include "errorsystem.h"
+
 #ifndef CBE_LIB
 MapInterface::MapInterface() {
 	cb = static_cast<CBEnchanted*>(this);

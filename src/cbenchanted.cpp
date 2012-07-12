@@ -79,7 +79,6 @@ void CBEnchanted::run() {
  * CBEnchanted::init - Initialize the interpreter
  */
 bool CBEnchanted::init(const char* file, int argc, char** argv) {
-
 #ifdef _WIN32
 	// Set console output codepage to Windows-1252
 	SetConsoleOutputCP(1252);
@@ -91,18 +90,16 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 
 	INFO("Initializing");
 
-	// Store commandline parameters and their count. If testable exe, skip first one.
-	if (file != NULL) {
-		this->argc = argc - 1;
-		this->argv = new char*[this->argc];
-		this->argv[0] = argv[0];
-		for (int i = 2; i < argc; i++) {
-			this->argv[i-1] = argv[i];
-		}
+	// Store commandline parameters. If testable exe, skip first one.
+	ostringstream ss;
+	int argStart = (file != NULL) ? 2 : 1;
+	for (int i = argStart; i < argc; i++) {
+		ss << argv[i];
+		ss << ' ';
 	}
-	else {
-		this->argc = argc;
-		this->argv = argv;
+	cmdLine = ss.str();
+	if (!cmdLine.empty()) {
+		boost::algorithm::trim(cmdLine);
 	}
 
 	// Initialize error system first, because we can.
@@ -118,6 +115,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	int32_t endPos; // End of the executable
 
 	uint32_t nStrings; // Number of strings
+	uint32_t size; // Length of CoolBasic data
 
 	// Input file, opened for reading only
 	ifstream input;
@@ -142,10 +140,15 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		return false;
 	}
 
+	// Find out size of the file by seeking to it's end
 	input.seekg(-4, ios::end);
 	endPos = input.tellg();
+	
+	// Read the offset for CB-bytecode and go there
 	input.read((char *)(&startPos), 4);
 	input.seekg(24 - startPos, ios::end);
+	
+	// Number of strings
 	input.read((char *)(&nStrings), 4);
 
 	// Read and decrypt strings
@@ -176,16 +179,16 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		setString(i, s);
 	}
 
-	// Skip useless data and directly to beginning of the bytecode
+	// Skip useless data and go to beginning of the bytecode
 	input.seekg(32, ios::cur);
 	startPos = input.tellg();
 
 	// Read code to memory and close the file
-	codeSize = endPos - startPos;
-	code = new char [codeSize];
+	size = endPos - startPos;
+	code = new char [size];
 	codeBase = code;
 
-	input.read(code, codeSize);
+	input.read(code, size);
 	input.close();
 
 	std::map <uint32_t, uint32_t> offsets;
@@ -195,7 +198,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	// 			Handle functions and types
 	uint32_t ncmd = 0;
 	uint32_t i = 0;
-	while (i < codeSize) {
+	while (i < size) {
 		offsets[ncmd] = i;
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
@@ -216,12 +219,13 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			case 90: i += 4; break;
 			case 68:
 			case 79: i ++; break;
-			default: FIXME("[%i] Unhandled preparsing1: %i",i, (uint32_t) cmd);
+			default: FIXME("[%i] Unhandled preparsing1: %i", i, (uint32_t) cmd);
 		}
 	}
+	map <int32_t, int32_t> functionMaping;
 	//Goto and if
 	i = 0;
-	while (i < codeSize) {
+	while (i < size) {
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
 		i++;
@@ -264,24 +268,24 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					}
 					//command 99
 					if (code[i2++] != 73) {
-						FIXME("[%i] Unexpected opcode1: %i, expecting 73.",i2,code[i2]);
+						FIXME("[%i] Unexpected opcode1: %i, expecting 73.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					i2 += 4;
 
 					for (int32_t c = 0; c != 5; c++) {
 						if (code[i2++] != 73) {
-							FIXME("[%i] Unexpected opcode2: %i, expecting 73.",i2,code[i2]);
+							FIXME("[%i] Unexpected opcode2: %i, expecting 73.", i2, code[i2]);
 							goto not_custom_function;
 						}
 						i2 += 4;
 					}
 					if (code[i2++] != 67) {
-						FIXME("[%i] Unexpected opcode3: %i, expecting 67.",i2,code[i2]);
+						FIXME("[%i] Unexpected opcode3: %i, expecting 67.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					if (*(int32_t*)(code + i2) != 99) {
-						FIXME("[%i] Unexpected command %i, expecting 79.",i2,code[i2]);
+						FIXME("[%i] Unexpected command %i, expecting 79.", i2, code[i2]);
 						goto not_custom_function;
 					}
 					i2 += 4;
@@ -345,8 +349,9 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					if (*(int32_t*)(code + i2) != 22) { //Return
 						goto not_custom_function;
 					}
-
-					CustomFunction func(0,groupId,funcId);
+					CustomFunction func;
+					func.setFuncId(funcId);
+					func.setGroupId(groupId);
 					customFunctionHandler.addDefinition(func);
 					functionMaping[*(int32_t *)(code + i)] = func.getHandle();
 					*(uint8_t *)(code + i - 1) = 100; //Custom function call
@@ -357,7 +362,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 				not_custom_function:
 #endif //DISABLE_CUSTOMS
 
-				i +=4;
+				i += 4;
 				break;
 			}
 
@@ -402,7 +407,6 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 
 void CBEnchanted::cleanup() {
 	cleanupSoundInterface();
-	delete [] this->argv;
 }
 
 FORCEINLINE void CBEnchanted::handlePushFuncptr(void) {
@@ -488,7 +492,7 @@ FORCEINLINE void CBEnchanted::handleSetInt(void) {
 
 	int32_t value = popValue().toInt();
 	setIntegerVariable(var, value);
-	HCDEBUG("[%i]: Setting int variable %i to value: %i", code - codeBase, var,value);
+	HCDEBUG("[%i]: Setting int variable %i to value: %i", code - codeBase, var, value);
 }
 
 /*
@@ -957,7 +961,7 @@ FORCEINLINE void CBEnchanted::commandArrayAssign(void) {
 	uint32_t id = *(uint32_t *)(code);
 	code += 4;
 
-	uint32_t pos = popArrayDimensions1(id,n,type);
+	uint32_t pos = popArrayDimensions1(id, n, type);
 	switch (type) {
 		case 1: getIntegerArray(id).set(pos, popValue().toInt()); break;
 		case 2: getFloatArray(id).set(pos, popValue().toFloat()); break;
@@ -975,7 +979,7 @@ FORCEINLINE void CBEnchanted::handlePushVariable(void) {
 	uint32_t type = popValue().getInt();
 	int32_t var = *(int32_t *)(code);
 	code += 4;
-	//HCDEBUG("[%i] Push variable: %i",cpos,type);
+	//HCDEBUG("[%i] Push variable: %i", cpos, type);
 	switch (type) {
 		case 1: pushValue(getIntegerVariable(var)); break;
 		case 2: pushValue(getFloatVariable(var)); break;
@@ -1014,27 +1018,24 @@ FORCEINLINE void CBEnchanted::handlePushSomething(void) {
 		case 4: //Float array
 		case 6:
 		case 7:
-		case 8:
-		{
+		case 8: {
 			uint32_t id = *(uint32_t *)(code);
 			code += 4;
 
 			int32_t dimensions = popValue().getInt();
 			uint32_t pos = popArrayDimensions2(id, dimensions, type);
 
-			switch (type){
+			switch (type) {
 				case 3:
-					pushValue(getIntegerArray(id).get(pos));break;
+					pushValue(getIntegerArray(id).get(pos)); break;
 				case 4:
-					pushValue(getFloatArray(id).get(pos));break;
-				break;
+					pushValue(getFloatArray(id).get(pos)); break;
 				case 7:
-					pushValue((int32_t)getShortArray(id).get(pos));break;
+					pushValue((int32_t)getShortArray(id).get(pos)); break;
 				case 8:
-					pushValue((int32_t)getByteArray(id).get(pos));break;
-
+					pushValue((int32_t)getByteArray(id).get(pos)); break;
 				case 6:
-					pushValue(getStringArray(id).get(pos));break;
+					pushValue(getStringArray(id).get(pos)); break;
 				default:
 					FIXME("handlePushSomething: Undefined array type %i", type);
 			}
@@ -1174,7 +1175,7 @@ void CBEnchanted::commandInsert(void) {
 }
 
 void CBEnchanted::commandClearArray(void) {
-	clearArray = (bool)popValue().toBool();
+	clearArray = popValue().toBool();
 }
 
 void CBEnchanted::commandReDim(void) {
@@ -1192,7 +1193,6 @@ void CBEnchanted::commandReDim(void) {
 	for (int32_t i = n - 1; i >= 0; --i) {
 		dimensions[i] = popValue().toInt() + 1; // Size of dimension
 	}
-
 
 	switch (type){
 		case 3: {
@@ -1216,7 +1216,7 @@ void CBEnchanted::commandReDim(void) {
 			break;
 		}
 		case 6: {
-			Array<ISString> a = getStringArray(arrId);
+			Array<ISString> &a = getStringArray(arrId);
 			a.resize(dimensions, n, !clearArray);
 			break;
 		}
@@ -1308,8 +1308,7 @@ void CBEnchanted::functionConvertToType(void) {
 	}
 }
 
-FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type)
-{
+FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type) {
 	uint32_t pos = 0;
 	switch (type) {
 		case 1: {
@@ -1420,9 +1419,9 @@ void CBEnchanted::commandSetVariable(void) {
 		}
 		case 4: { // Typepointer tjsp
 			int32_t id = popValue().getInt();
-			void * ptr = popValue().toTypePtr();
+			void *ptr = popValue().toTypePtr();
 
-			setTypePointerVariable(id,ptr);
+			setTypePointerVariable(id, ptr);
 			break;
 		}
 		default:
@@ -1461,15 +1460,13 @@ void CBEnchanted::commandSetGlobalVariableNumbers(void) {
 	initGlobalVars(byteCount, shortCount, stringCount, floatCount, integerCount);
 }
 
-void CBEnchanted::commandType(void)
-{
+void CBEnchanted::commandType(void) {
 	int32_t typeMemberSize = popValue().getInt();
 	addType(typeMemberSize - 4);
 	//cpos += 5;
 }
 
-void CBEnchanted::commandSetTypeMemberField(void)
-{
+void CBEnchanted::commandSetTypeMemberField(void) {
 	int32_t varType = popValue().getInt();
 	void * typePtr = getTypePointerVariable(popValue().getInt());
 	int32_t place = popValue().getInt() - 12;
@@ -1548,5 +1545,23 @@ void CBEnchanted::functionRead(void) {
 
 	code = tempCode;
 }
-
 #endif
+
+
+void CBEnchanted::setSmooth2D(bool toggled) {
+	if (toggled) {
+		// Set new display flags for antialiasing
+		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_REQUIRE);
+		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_REQUIRE);
+		// Set linear filtering for image operations
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+	}
+	else {
+		// Remove antialiasing flags
+		al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_DONTCARE);
+		al_set_new_display_option(ALLEGRO_SAMPLES, 6, ALLEGRO_DONTCARE);
+		// Unset linear filtering for image operations
+		al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR));
+	}
+	smooth2d = toggled;
+}

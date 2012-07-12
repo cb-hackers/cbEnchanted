@@ -16,7 +16,9 @@ void cbeSetBlendMode(CBEnchanted *cb);
 
 void cbeSetBlendModeAdvanced(CBEnchanted *cb);
 
-void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb);
+void cbeDrawTintedImage(CBEnchanted *cb);
+
+void cbeDrawImage(CBEnchanted *cb);
 
 void cbeBAnd(CBEnchanted *cb);
 
@@ -65,6 +67,26 @@ void cbeObjectSY(CBEnchanted *cb);
 void cbeLinkCustomFunctions(CBEnchanted *cb);
 
 void cbeLoadLibrary(CBEnchanted *cb);
+
+void cbePushByte(CBEnchanted *cb);
+
+void cbePushShort(CBEnchanted *cb);
+
+void cbePushInteger(CBEnchanted *cb);
+
+void cbePushFloat(CBEnchanted *cb);
+
+void cbePushString(CBEnchanted *cb);
+
+void cbePopByte(CBEnchanted *cb);
+
+void cbePopShort(CBEnchanted *cb);
+
+void cbePopInteger(CBEnchanted *cb);
+
+void cbePopFloat(CBEnchanted *cb);
+
+void cbePopString(CBEnchanted *cb);
 
 /** @} */
 

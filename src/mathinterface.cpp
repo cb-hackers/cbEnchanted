@@ -4,6 +4,7 @@
 #include "collisioncheck.h"
 #include <math.h>
 #include "util.h"
+
 #ifndef CBE_LIB
 MathInterface::MathInterface() {
 	cb = static_cast <CBEnchanted *> (this);

@@ -33,9 +33,9 @@ class TextInterface {
 
 		void functionLoadFont(void);
 		void functionTextWidth(void);
+		void functionTextHeight(void);
 #endif
 
-		void functionTextHeight(void);
 		void renderAddTexts(RenderTarget &r);
 		bool initializeFonts();
 		ALLEGRO_FONT *getCurrentFont() { return currentFont; }

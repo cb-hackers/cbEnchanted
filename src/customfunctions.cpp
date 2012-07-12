@@ -6,6 +6,7 @@
 #ifdef _WIN32
 	#include <Windows.h>
 #endif
+
 /** @addtogroup customfunctions
  * @{
  */
@@ -207,25 +208,100 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 }
 
 /** Draws image region with scaling, rotating and tinting. */
-void cbeDrawTintedScaledRotatedImageRegion(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
+void cbeDrawTintedImage(CBEnchanted *cb) {
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+
+	// Cropping parameters, source X and Y & width and height
+	float sH = cb->popValue().toFloat();
+	float sW = cb->popValue().toFloat();
+	float sY = cb->popValue().toFloat();
+	float sX = cb->popValue().toFloat();
+
+	// Scaling factors
+	float scaleY = cb->popValue().toFloat();
+	float scaleX = cb->popValue().toFloat();
+
+	// Angle
 	float angle = cb->popValue().toFloat();
-	float scaley = cb->popValue().toFloat();
-	float scalex = cb->popValue().toFloat();
-	float dy = cb->popValue().toFloat();
-	float dx = cb->popValue().toFloat();
-	float sh = cb->popValue().toFloat();
-	float sw = cb->popValue().toFloat();
-	float sy = cb->popValue().toFloat();
-	float sx = cb->popValue().toFloat();
+	angle = -(angle / 180.0) * M_PI;
+
+	// Center drawing coordinates
+	float centerY = cb->popValue().toFloat();
+	float centerX = cb->popValue().toFloat();
+
+	// Image ID
 	int32_t handle = cb->popValue().toInt();
-	if (cb->getImage(handle) == NULL) {
-		string err = "Image doesn't exist with id:" + boost::lexical_cast<string>(handle);
+	CBImage *img = cb->getImage(handle);
+	if (img == NULL) {
+		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
 		cb->errors->createError("Image not found!", err, "Image not found!");
 		return;
 	}
+	ALLEGRO_BITMAP *bm = 0;
+	if (img->masked()) {
+		bm = img->getMaskedBitmap();
+	}
+	else {
+		bm = img->getUnmaskedBitmap();
+	}
 
-	cb->getCurrentRenderTarget()->drawBitmapTintedScaledRegion(cb->getImage(handle)->getMaskedBitmap(), sx, sy, sw, sh, cb->getDrawColor(), dx, dy, scalex, scaley, angle);
+	// If sW and sH are 0, the image shall be drawn without any cropping.
+	if (sW == 0 && sH == 0) {
+		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, cb->getDrawColor());
+	}
+	else {
+		cb->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, cb->getDrawColor(), centerX, centerY, scaleX, scaleY, angle);
+	}
+
+	cb->pushValue(0);
+}
+
+/** Draws image region with scaling and rotating. */
+void cbeDrawImage(CBEnchanted *cb) {
+	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+
+	// Cropping parameters, source X and Y & width and height
+	float sH = cb->popValue().toFloat();
+	float sW = cb->popValue().toFloat();
+	float sY = cb->popValue().toFloat();
+	float sX = cb->popValue().toFloat();
+
+	// Scaling factors
+	float scaleY = cb->popValue().toFloat();
+	float scaleX = cb->popValue().toFloat();
+
+	// Angle
+	float angle = cb->popValue().toFloat();
+	angle = -(angle / 180.0) * M_PI;
+
+	// Center drawing coordinates
+	float centerY = cb->popValue().toFloat();
+	float centerX = cb->popValue().toFloat();
+
+	// Image ID
+	int32_t handle = cb->popValue().toInt();
+	CBImage *img = cb->getImage(handle);
+	if (img == NULL) {
+		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
+		cb->errors->createError("Image not found!", err, "Image not found!");
+		return;
+	}
+	ALLEGRO_BITMAP *bm = 0;
+	if (img->masked()) {
+		bm = img->getMaskedBitmap();
+	}
+	else {
+		bm = img->getUnmaskedBitmap();
+	}
+
+	// If sW and sH are 0, the image shall be drawn without any cropping.
+	if (sW == 0 && sH == 0) {
+		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, al_map_rgba_f(1, 1, 1, 1));
+	}
+	else {
+		cb->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, centerX, centerY, scaleX, scaleY, angle);
+	}
+
 	cb->pushValue(0);
 }
 
@@ -493,5 +569,47 @@ void cbeLoadLibrary(CBEnchanted *cb) {
 	if (t) cb->getCustomFunctionHandler()->link();
 	cb->pushValue(0);
 }
+
+void cbePushByte(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushShort(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+
+void cbePushInteger(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushFloat(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePushString(CBEnchanted *cb) {
+	cb->pushValue(0);
+}
+
+void cbePopByte(CBEnchanted *cb) {
+
+}
+
+void cbePopShort(CBEnchanted *cb) {
+
+}
+
+void cbePopInteger(CBEnchanted *cb) {
+
+}
+
+void cbePopFloat(CBEnchanted *cb) {
+
+}
+
+void cbePopString(CBEnchanted *cb) {
+
+}
+
 #endif
 /** @} */

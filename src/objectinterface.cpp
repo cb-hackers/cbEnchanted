@@ -8,6 +8,7 @@
 #include "util.h"
 #include "collisioncheck.h"
 #include "errorsystem.h"
+
 #ifndef CBE_LIB
 ObjectInterface::ObjectInterface():
 	lastUpdate(0),

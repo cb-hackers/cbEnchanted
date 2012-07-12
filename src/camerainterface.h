@@ -10,6 +10,7 @@ class CameraInterface {
 #ifndef CBE_LIB
 		CameraInterface();
 		~CameraInterface();
+
 		void commandCloneCameraPosition(void);
 		void commandCloneCameraOrientation(void);
 		void commandCameraFollow(void);
@@ -25,7 +26,6 @@ class CameraInterface {
 		void functionCameraY(void);
 		void functionCameraAngle(void);
 #endif
-
 		float getCameraX(void) { return cameraX; }
 		float getCameraY(void) { return cameraY; }
 		float getCameraZoom(void) { return cameraZoom; }

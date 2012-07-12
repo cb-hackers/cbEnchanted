@@ -78,7 +78,6 @@ class ObjectInterface {
 		void functionCollisionAngle(void);
 		void functionNextObject(void);
 #endif
-
 		void updateObjects();
 		int32_t addMap(CBMap *mapObj);
 

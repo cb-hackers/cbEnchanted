@@ -343,11 +343,11 @@ void StringInterface::functionGetWord(void) {
 	int32_t w = cb->popValue().toInt();
 	string str = cb->popValue().toString().getRef();
 
-	string::size_type l = sep.length();
-
 	if (sep.empty()) {
 		sep = ' ';
 	}
+
+	string::size_type l = sep.length();
 
 	int32_t sep_pos = 0;
 
@@ -366,4 +366,5 @@ void StringInterface::functionGetWord(void) {
 		cb->pushValue(str.substr(0));
 	}
 }
+
 #endif

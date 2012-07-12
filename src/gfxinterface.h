@@ -49,7 +49,6 @@ class GfxInterface {
 		void functionScreenDepth(void);
 		void functionGFXModeExists(void);
 #endif
-
 		int32_t getFPS()const{return currentFPS;}
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }

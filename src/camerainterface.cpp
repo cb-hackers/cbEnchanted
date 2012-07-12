@@ -123,6 +123,7 @@ void CameraInterface::functionCameraY(void) {
 void CameraInterface::functionCameraAngle(void) {
 	cb->pushValue(cameraAngle);
 }
+#endif
 
 void CameraInterface::screenCoordToWorld(float &x, float &y) {
 	al_transform_coordinates(getInverseWorldTransform(), &x, &y);
@@ -133,7 +134,6 @@ void CameraInterface::worldCoordToScreen(float &x, float &y) {
 	y = -y;
 	al_transform_coordinates(getWorldTransform(), &x, &y);
 }
-#endif
 
 void CameraInterface::updateCamFollow() {
 	switch (followStyle) {

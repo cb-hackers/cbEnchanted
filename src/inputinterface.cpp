@@ -23,6 +23,7 @@ InputInterface::InputInterface() :
 	cb = static_cast <CBEnchanted *> (this);
 
 	memset(keyStates, 0, ALLEGRO_KEY_MAX);
+	memset(mouseButtonStates, 0, MAX_MOUSE_BUTTONS);
 
 	// Init cbKeyMap values to 0
 	for (int i = 0; i < 222; ++i) {
@@ -500,7 +501,6 @@ void InputInterface::functionEscapeKey(void) {
 	cb->pushValue(keyStates[ALLEGRO_KEY_ESCAPE] & Down);
 }
 
-
 bool InputInterface::initializeInputs() {
 	if (!al_install_keyboard()) return false;
 	if (!al_install_mouse()) return false;
@@ -509,6 +509,7 @@ bool InputInterface::initializeInputs() {
 	return true;
 }
 #endif
+
 
 void InputInterface::preEventLoopUpdate() {
 	for (uint32_t i = 0; i < ALLEGRO_KEY_MAX; i++) {

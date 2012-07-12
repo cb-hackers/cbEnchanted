@@ -16,7 +16,8 @@ class CollisionCheck
 		};
 		/** The way collision are handled */
 		enum CollisionHandling {
-			Stop = 1,
+			Unhandled = 0,
+			Stop,
 			Slide
 		};
 

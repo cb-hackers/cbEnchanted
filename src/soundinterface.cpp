@@ -3,7 +3,6 @@
 #include "cbenchanted.h"
 #include "any.h"
 #include "errorsystem.h"
-
 #ifndef CBE_LIB
 SoundInterface::SoundInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -156,7 +155,6 @@ void SoundInterface::updateAudio(void) {
 		}
 	}
 }
-
 
 CBSound *SoundInterface::getSound(int32_t id) {
 	map<int32_t, CBSound*>::const_iterator i = sounds.find(id);

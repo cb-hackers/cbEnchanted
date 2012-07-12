@@ -61,30 +61,26 @@ class CBEnchanted :
 		bool isSafeExit() const { return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
 		bool isSmooth2D() const { return smooth2d; }
-		void setSmooth2D(bool toggled) { smooth2d = toggled; }
+		void setSmooth2D(bool toggled);
 		inline void setFrameLimit(float pFrameLimit) { frameLimit = pFrameLimit; }
 		inline float getFrameLimit() const { return frameLimit; }
 		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
+		CustomFunctionHandler *getCustomFunctionHandler() {return &customFunctionHandler;}
 
 		/** Error system for public access */
 		ErrorSystem *errors;
-		/** Returns commandline arguments count */
-		int getArgc() const { return argc; }
-		/** Returns commandline arguments */
-		char** getArgv() const { return argv; }
-		CustomFunctionHandler *getCustomFunctionHandler() { return &customFunctionHandler; }
+		/** Returns commandline arguments in a single string. */
+		std::string getCommandLine() { return cmdLine; }
 	private:
 
 		char *code;
 		char *codeBase;
-		uint32_t codeSize; // Length of CoolBasic data
 		vector <char*> pos;
 		bool initialized;
 		bool running;
 		bool safeExit;
 		bool smooth2d;
 		bool clearArray;
-		map<int32_t,int32_t> functionMaping;
 		float frameLimit;
 		ALLEGRO_EVENT_QUEUE * eventQueue;
 		CustomFunctionHandler customFunctionHandler;
@@ -110,9 +106,9 @@ class CBEnchanted :
 		void commandSelect(void);
 		void commandCase(void);
 		void commandFunction(void);
-		void commandSetGlobalVariable(void);
-		void commandSetArrayNumbers(void);
-		void commandSetGlobalVariableNumbers(void);
+		void commandSetGlobalVariable(void); //80
+		void commandSetArrayNumbers(void); //97
+		void commandSetGlobalVariableNumbers(void); //98
 		void commandType(void);
 		void commandSetTypeMemberField(void);
 		void commandSetVariableNumbers(void);
@@ -148,9 +144,8 @@ class CBEnchanted :
 		/** Returns new ID for typeConvertMap */
 		int32_t nextTypeId() {static int32_t idCounter = 0; return ++idCounter;}
 
-		/** Commandline stuff */
-		int argc;
-		char **argv;
+		/** Commandline arguments, concatenated to a single string. */
+		std::string cmdLine;
 
 		/** Current datalist readpoint */
 		uint32_t dataPos;

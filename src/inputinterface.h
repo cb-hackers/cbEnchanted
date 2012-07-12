@@ -11,7 +11,7 @@ class CBImage;
 
 class InputInterface {
 	public:
-		#ifndef CBE_LIB
+#ifndef CBE_LIB
 		InputInterface();
 
 		void commandCloseInput(void);

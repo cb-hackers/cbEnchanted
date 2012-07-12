@@ -3,6 +3,7 @@
 #include "cbenchanted.h"
 #include "cbimage.h"
 #include "errorsystem.h"
+
 #ifndef CBE_LIB
 
 ImageInterface::ImageInterface() {

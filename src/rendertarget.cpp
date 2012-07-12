@@ -253,6 +253,10 @@ void RenderTarget::convertCoords(float &x, float &y) {
 	if (worldCoordsEnabled) {
 		y = -y;
 	}
+	else if (!CBEnchanted::instance()->isSmooth2D()) {
+		x = int(x + 0.5f);
+		y = int(y + 0.5f);
+	}
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
@@ -288,18 +292,20 @@ void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float
 
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float x, float y, float rot) {
 	setAsCurrent();
-	convertCoords(x,y);
-	al_draw_tinted_scaled_rotated_bitmap_region(
-		r, sx, sy, sw, sh, tint, sw * 0.5f, sh * 0.5f, x, y, 1.0f, 1.0f, rot, 0
-	);
+	convertCoords(x, y);
+	al_draw_tinted_scaled_rotated_bitmap_region(r, sx, sy, sw, sh, tint, sw * 0.5f, sh * 0.5f, x, y, 1.0f, 1.0f, rot, 0);
 }
 
-void RenderTarget::drawBitmapTintedScaledRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float angle) {
+void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, const ALLEGRO_COLOR &tint, float dx, float dy, float xscale, float yscale, float rot) {
 	setAsCurrent();
-	convertCoords(dx,dy);
-	al_draw_tinted_scaled_rotated_bitmap_region(
-				r, sx, sy, sw, sh, tint, sw*0.5, sh*0.5, dx, dy, xscale, yscale, angle / 180.0 * M_PI, 0
-	);
+	convertCoords(dx, dy);
+	al_draw_tinted_scaled_rotated_bitmap_region(r, sx, sy, sw, sh, tint, sw * 0.5, sh * 0.5, dx, dy, xscale, yscale, rot, 0);
+}
+
+void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float sw, float sh, float dx, float dy, float xscale, float yscale, float rot) {
+	setAsCurrent();
+	convertCoords(dx, dy);
+	al_draw_tinted_scaled_rotated_bitmap_region(r, sx, sy, sw, sh, al_map_rgba_f(1, 1, 1, 1), sw * 0.5, sh * 0.5, dx, dy, xscale, yscale, rot, 0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
@@ -308,6 +314,12 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, co
 	al_draw_tinted_rotated_bitmap(
 		r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0
 	);
+}
+
+void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, float xscale, float yscale, const ALLEGRO_COLOR &tint) {
+	setAsCurrent();
+	convertCoords(x,y);
+	al_draw_tinted_scaled_rotated_bitmap(r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, xscale, yscale, rot, 0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, const ALLEGRO_COLOR &tint) {
@@ -338,7 +350,7 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 	setAsCurrent();
 	convertCoords(x, y);
 	if ((flags & Center) == Center) {
-		al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, text.getUtf8Encoded().c_str());
+		al_draw_text(font, color, x, y - al_get_font_ascent(font) * 0.5f, ALLEGRO_ALIGN_CENTRE, text.getUtf8Encoded().c_str());
 		return;
 	}
 	if ((flags & VCenter) == VCenter) {
@@ -348,13 +360,12 @@ void RenderTarget::drawText(const ALLEGRO_FONT *font, const ISString &text, floa
 		y -= al_get_font_ascent(font);
 	}
 	if ((flags & HCenter) == HCenter) {
-		al_get_text_width(font, text.getUtf8Encoded().c_str());
 		al_draw_text(
 			font,
 			color,
-			x - al_get_text_width(font,text.getUtf8Encoded().c_str()) * 0.5f,
+			x,
 			y,
-			0,
+			ALLEGRO_ALIGN_CENTRE,
 			text.getUtf8Encoded().c_str()
 		);
 		return;

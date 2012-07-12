@@ -5,8 +5,9 @@ class CBEnchanted;
 
 class StringInterface {
 	public:
-		StringInterface();
 #ifndef CBE_LIB
+		StringInterface();
+
 		void functionStr(void);
 		void functionLeft(void);
 		void functionRight(void);

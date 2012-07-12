@@ -11,9 +11,6 @@
 #include <fontconfig.h>
 #endif // FONTCONFIG_FOUND
 
-#ifdef _WIN32
-	#include "util.h" // For converting UTF-8 to CP1252, console output
-#endif
 #ifndef CBE_LIB
 TextInterface::TextInterface() : locationX(0), locationY(0) {
 	cb = static_cast <CBEnchanted *> (this);
@@ -88,20 +85,14 @@ void TextInterface::commandCenterText(void) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
 	switch (style) {
 		case 0:
-			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter
-			);
-		break;
+			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter);
+			break;
 		case 1:
-			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter
-			);
-		break;
+			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter);
+			break;
 		case 2:
-			cb->getCurrentRenderTarget()->drawText(
-				currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center
-			);
-		break;
+			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center);
+			break;
 	}
 }
 
@@ -117,10 +108,8 @@ void TextInterface::commandVerticalText(void) {
 	for(uint16_t i = 0; i < textLen; i++) {
 		string charac;
 		charac = Str[i];
-		cb->getCurrentRenderTarget()->drawText(
-			currentFont, ISString(charac), x, y, cb->getDrawColor()
-		);
-		y+=textHeight;
+		cb->getCurrentRenderTarget()->drawText(currentFont, ISString(charac), x, y, cb->getDrawColor());
+		y += textHeight;
 	}
 
 }
@@ -212,6 +201,7 @@ void TextInterface::functionLoadFont(void) {
 	}
 }
 
+
 void TextInterface::functionTextWidth(void) {
 	cb->pushValue(al_get_text_width(currentFont, cb->popValue().toString().getRef().c_str()));
 }
@@ -222,8 +212,8 @@ void TextInterface::functionTextHeight(void) {
 	al_get_text_dimensions(currentFont, cb->popValue().toString().getRef().c_str(), &dummy, &dummy, &dummy, &height);
 	cb->pushValue(height);
 }
-
 #endif
+
 void TextInterface::renderAddTexts(RenderTarget &r){
 	if (texts.empty()) return;
 	r.setAsCurrent();
@@ -232,7 +222,7 @@ void TextInterface::renderAddTexts(RenderTarget &r){
 	vector<AddText*>::iterator i;
 	r.useWorldCoords(false);
 	for(i = texts.begin(); i != texts.end(); i++){
-		r.drawText((*i)->font,(*i)->txt,(*i)->txtX,(*i)->txtY,(*i)->col);
+		r.drawText((*i)->font, (*i)->txt, (*i)->txtX,(*i)->txtY, (*i)->col);
 	}
 	//al_hold_bitmap_drawing(false);
 }

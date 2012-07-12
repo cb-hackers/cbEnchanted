@@ -27,6 +27,7 @@ class SoundInterface {
 		bool initializeSounds();
 		void cleanupSoundInterface(void);
 #endif
+
 		void updateAudio(void);
 		inline ALLEGRO_MIXER* getMixer() {return cbMixer;}
 		CBSound* getSound(int32_t id);

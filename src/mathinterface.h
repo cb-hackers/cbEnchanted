@@ -7,8 +7,9 @@ class CBEnchanted;
 
 class MathInterface {
 	public:
-		MathInterface();
 #ifndef CBE_LIB
+		MathInterface();
+
 		void commandRandomize(void);
 
 		void functionInt(void);

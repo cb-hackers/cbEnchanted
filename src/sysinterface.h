@@ -4,6 +4,8 @@
 #include "precomp.h"
 #include "cbdll.h"
 
+using namespace std;
+
 class CBEnchanted;
 
 class SysInterface {
