@@ -374,7 +374,7 @@ EndFunction
 // ----------------------------------------------------------------------------
 Function cbeLoadLibrary(path$, resolvesymbols = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 30
+    funcId = 31
 EndFunction
 
 // ----------------------------------------------------------------------------
@@ -385,5 +385,5 @@ EndFunction
 // ----------------------------------------------------------------------------
 Function cbeLinkCustomFunctions()
     group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 29
+    funcId = 30
 EndFunction
