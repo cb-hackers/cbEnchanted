@@ -16,13 +16,13 @@ win32 {
 	CONFIG(release, debug|release){
 		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-md -lallegro_ttf-5.0.6-static-md -lallegro_primitives-5.0.6-static-md -lallegro_image-5.0.6-static-md -lallegro_font-5.0.6-static-md -lallegro_dialog-5.0.6-static-md -lallegro_audio-5.0.6-static-md -lallegro_acodec-5.0.6-static-md
 		LIBS += -llibvorbisfile-1.3.2-static-md -lzlib-1.2.5-static-md -llibogg-1.2.1-static-md -llibFLAC-1.2.1-static-md -lfreetype-2.4.8-static-md -ldumb-0.9.3-static-md -llibvorbis-1.3.2-static-md
-		LIBS += -L"../../cbEnchanted-build-desktop-Qt_4_8_0_for_Desktop_-_MSVC2010__Qt_SDK__Release/release" -lcbEnchanted
+		LIBS += -L"../../cbEnchanted-libbuild-release/release" -lcbEnchanted
 		DEFINES += NDEBUG
 	}
 	else {
 		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-md-debug -lallegro_ttf-5.0.6-static-md-debug -lallegro_primitives-5.0.6-static-md-debug -lallegro_image-5.0.6-static-md-debug -lallegro_font-5.0.6-static-md-debug -lallegro_dialog-5.0.6-static-md-debug -lallegro_audio-5.0.6-static-md-debug -lallegro_acodec-5.0.6-static-md-debug
 		LIBS += -llibvorbisfile-1.3.2-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
-		LIBS += -L"../../cbEnchanted-build-desktop-Qt_4_8_0_for_Desktop_-_MSVC2010__Qt_SDK__Debug/debug" -lcbEnchanted
+		LIBS += -L"../../cbEnchanted-libbuild-debug/debug" -lcbEnchanted
 	}
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
 

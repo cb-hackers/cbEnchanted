@@ -563,11 +563,22 @@ void cbeLinkCustomFunctions(CBEnchanted *cb) {
 void cbeLoadLibrary(CBEnchanted *cb) {
 	bool t = cb->popValue().toBool();
 	typedef void (*cbeInitializeLibraryFuncType)(CBEnchanted *);
-	void * dll = loadDLL(cb->popValue().toString());
+	const ISString &path = cb->popValue().toString();
+	void * dll = loadDLL(path);
+	if (!dll) {
+		cb->errors->createError("Cannot open dll file " + path.getStdString());
+		cb->pushValue(0);
+		return;
+	}
 	cbeInitializeLibraryFuncType cbeInitializeLibrary = (cbeInitializeLibraryFuncType)getDLLFunction(dll, "cbeInitializeLibrary");
+	if (!cbeInitializeLibrary) {
+		cb->errors->createError("Cannot find cbeInitilizeLibrary function from " + path.getStdString());
+		cb->pushValue(0);
+		return;
+	}
 	cbeInitializeLibrary(cb);
 	if (t) cb->getCustomFunctionHandler()->link();
-	cb->pushValue(0);
+	cb->pushValue(1);
 }
 
 void cbePushByte(CBEnchanted *cb) {
