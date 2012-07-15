@@ -48,14 +48,16 @@ class CBEnchanted :
 
 {
 	public:
+#ifndef CBE_LIB
 		CBEnchanted();
 		~CBEnchanted();
-
-		static CBEnchanted *instance();
 		bool init(const char* file, int argc, char **argv);
 		void run();
-		void stop();
 		void cleanup();
+#endif
+		void dllInit();
+		void stop();
+		static CBEnchanted *instance();
 		bool isSafeExit() const { return safeExit; }
 		void setSafeExit(bool toggled) { safeExit = toggled; }
 		bool isSmooth2D() const { return smooth2d; }
@@ -63,6 +65,7 @@ class CBEnchanted :
 		inline void setFrameLimit(float pFrameLimit) { frameLimit = pFrameLimit; }
 		inline float getFrameLimit() const { return frameLimit; }
 		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
+		CustomFunctionHandler *getCustomFunctionHandler() {return &customFunctionHandler;}
 
 		/** Error system for public access */
 		ErrorSystem *errors;
@@ -83,6 +86,7 @@ class CBEnchanted :
 		CustomFunctionHandler customFunctionHandler;
 		Any selectValue;
 
+#ifndef CBE_LIB
 		void handlePushFuncptr(void);
 		void handleSetInt(void);
 		void handleSetFloat(void);
@@ -130,6 +134,7 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
+#endif
 
 		/** A map for functionConvertToInteger() and functionConvertToType(). */
 		std::map<int32_t, void*> typeConvertMap;

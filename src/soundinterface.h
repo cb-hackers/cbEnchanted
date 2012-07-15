@@ -11,6 +11,7 @@ class CBEnchanted;
 
 class SoundInterface {
 	public:
+#ifndef CBE_LIB
 		SoundInterface();
 		~SoundInterface();
 
@@ -24,8 +25,10 @@ class SoundInterface {
 		void functionSoundPlaying(void);
 
 		bool initializeSounds();
-		void updateAudio(void);
 		void cleanupSoundInterface(void);
+#endif
+
+		void updateAudio(void);
 		inline ALLEGRO_MIXER* getMixer() {return cbMixer;}
 		CBSound* getSound(int32_t id);
 		CBChannel* getChannel(int32_t id);

@@ -5,7 +5,7 @@
 #include "cbimage.h"
 #include "cbparticleemitter.h"
 
-
+#ifndef CBE_LIB
 EffectInterface::EffectInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -49,6 +49,7 @@ void EffectInterface::functionMakeEmitter(void) {
 	cb->addToDrawOrder(emitter);
 	cb->pushValue(id);
 }
+#endif
 
 void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p)
 {

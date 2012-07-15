@@ -2,7 +2,7 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 #include "errorsystem.h"
-
+#ifndef CBE_LIB
 FileInterface::FileInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -411,6 +411,7 @@ void FileInterface::functionReadLine(void) {
 	}
 	cb->pushValue(line);
 }
+#endif
 
 /** Gets a FILE pointer from the given ID. */
 FILE* FileInterface::getFile(int32_t id) {

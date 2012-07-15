@@ -12,6 +12,19 @@
 
 static CBEnchanted *cbInstance;
 
+CBEnchanted *CBEnchanted::instance() {
+	return cbInstance;
+}
+
+void CBEnchanted::stop() {
+	running = false;
+}
+
+void CBEnchanted::dllInit() {
+	cbInstance = this;
+}
+
+#ifndef CBE_LIB
 CBEnchanted::CBEnchanted() {
 	cbInstance = this;
 	initialized = false;
@@ -24,10 +37,6 @@ CBEnchanted::CBEnchanted() {
 
 CBEnchanted::~CBEnchanted() {
 	//delete[] code;
-}
-
-CBEnchanted *CBEnchanted::instance() {
-	return cbInstance;
 }
 
 /*
@@ -282,13 +291,11 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					i2 += 4;
 					//commandFunction
 					int32_t paramCount = 0;
-					vector<int32_t> params;
 					int32_t opc;
 					int32_t comc;
 					while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2 + 1)) == 79) {
 						i2 += 6;
 						paramCount++;
-						params.insert(params.begin(), *(int32_t*)(code + i2));
 						i2 += 9;
 					}
 					int32_t groupId;
@@ -342,14 +349,14 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 					if (*(int32_t*)(code + i2) != 22) { //Return
 						goto not_custom_function;
 					}
-
-					CustomFunction func(0, groupId, funcId);
-					func.setParams(params);
-					int32_t handle = customFunctionHandler.getHandle(func);
-					functionMaping[*(int32_t *)(code + i)] = handle;
+					CustomFunction func;
+					func.setFuncId(funcId);
+					func.setGroupId(groupId);
+					customFunctionHandler.addDefinition(func);
+					functionMaping[*(int32_t *)(code + i)] = func.getHandle();
 					*(uint8_t *)(code + i - 1) = 100; //Custom function call
-					*(int32_t *)(code + i) = handle;
-					INFO("Added custom function with handle %i", handle);
+					*(int32_t *)(code + i) = func.getHandle();
+					INFO("Added custom function with handle %i", func.getHandle());
 				}
 				already_parsed:
 				not_custom_function:
@@ -362,6 +369,11 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			default: FIXME("[%i] Unhandled preparsing2: %i",i, (uint32_t) cmd);
 		}
 	}
+
+#ifndef DISABLE_CUSTOMS
+	customFunctionHandler.link();
+#endif
+
 
 	eventQueue = al_create_event_queue();
 	if (!eventQueue) {
@@ -391,10 +403,6 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	initialized = true;
 	INFO("Initialized");
 	return true;
-}
-
-void CBEnchanted::stop() {
-	running = false;
 }
 
 void CBEnchanted::cleanup() {
@@ -1537,6 +1545,8 @@ void CBEnchanted::functionRead(void) {
 
 	code = tempCode;
 }
+#endif
+
 
 void CBEnchanted::setSmooth2D(bool toggled) {
 	if (toggled) {

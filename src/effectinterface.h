@@ -8,6 +8,7 @@ class CBEnchanted;
 
 class EffectInterface {
 	public:
+#ifndef CBE_LIB
 		EffectInterface();
 		~EffectInterface();
 
@@ -16,6 +17,7 @@ class EffectInterface {
 		void commandParticleEmission(void);
 
 		void functionMakeEmitter(void);
+#endif
 		void deleteParticleEmitter(CBParticleEmitter *p);
 		void updateRogueParticles(void);
 	private:

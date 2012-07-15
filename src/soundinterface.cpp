@@ -3,7 +3,7 @@
 #include "cbenchanted.h"
 #include "any.h"
 #include "errorsystem.h"
-
+#ifndef CBE_LIB
 SoundInterface::SoundInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -128,6 +128,17 @@ bool SoundInterface::initializeSounds()
 	return true;
 }
 
+//Deletes all sounds.
+void SoundInterface::cleanupSoundInterface() {
+	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); ++channel) {
+		delete channel->second;
+	}
+	for (map<int32_t, CBSound*>::iterator sound = sounds.begin(); sound != sounds.end(); sound++) {
+		delete sound->second;
+	}
+}
+#endif
+
 void SoundInterface::updateAudio(void) {
 	map<int32_t, CBChannel*>::iterator i = channels.begin();
 	map<int32_t, CBChannel*>::iterator i2;
@@ -142,16 +153,6 @@ void SoundInterface::updateAudio(void) {
 		else {
 			++i;
 		}
-	}
-}
-
-//Deletes all sounds.
-void SoundInterface::cleanupSoundInterface() {
-	for (map<int32_t, CBChannel*>::iterator channel = channels.begin(); channel != channels.end(); ++channel) {
-		delete channel->second;
-	}
-	for (map<int32_t, CBSound*>::iterator sound = sounds.begin(); sound != sounds.end(); sound++) {
-		delete sound->second;
 	}
 }
 

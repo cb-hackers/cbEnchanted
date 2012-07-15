@@ -11,6 +11,7 @@
  * @{
  */
 
+#ifndef CBE_LIB
 /** VesQ's awesome triangle drawing function */
 void cbeTriangle(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
@@ -554,6 +555,32 @@ void cbeObjectSY(CBEnchanted *cb) {
 	cb->pushValue(y);
 }
 
+void cbeLinkCustomFunctions(CBEnchanted *cb) {
+	cb->getCustomFunctionHandler()->link();
+	cb->pushValue(0);
+}
+
+void cbeLoadLibrary(CBEnchanted *cb) {
+	bool t = cb->popValue().toBool();
+	typedef void (*cbeInitializeLibraryFuncType)(CBEnchanted *);
+	const ISString &path = cb->popValue().toString();
+	void * dll = loadDLL(path);
+	if (!dll) {
+		cb->errors->createError("Cannot open dll file " + path.getStdString());
+		cb->pushValue(0);
+		return;
+	}
+	cbeInitializeLibraryFuncType cbeInitializeLibrary = (cbeInitializeLibraryFuncType)getDLLFunction(dll, "cbeInitializeLibrary");
+	if (!cbeInitializeLibrary) {
+		cb->errors->createError("Cannot find cbeInitilizeLibrary function from " + path.getStdString());
+		cb->pushValue(0);
+		return;
+	}
+	cbeInitializeLibrary(cb);
+	if (t) cb->getCustomFunctionHandler()->link();
+	cb->pushValue(1);
+}
+
 void cbePushByte(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
@@ -561,6 +588,7 @@ void cbePushByte(CBEnchanted *cb) {
 void cbePushShort(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
+
 
 void cbePushInteger(CBEnchanted *cb) {
 	cb->pushValue(0);
@@ -594,4 +622,5 @@ void cbePopString(CBEnchanted *cb) {
 
 }
 
+#endif
 /** @} */

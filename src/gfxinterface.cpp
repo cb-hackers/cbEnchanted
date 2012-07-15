@@ -28,7 +28,7 @@ const char *screenGammaFragmentShaderCode =
 		"	gl_FragColor = nyCol; \n"
 		"} \n";
 
-
+#ifndef CBE_LIB
 GfxInterface::GfxInterface() :
 	windowTitle(""),
 	window(0),
@@ -517,6 +517,7 @@ void GfxInterface::functionScreenDepth(void) {
 void GfxInterface::functionGFXModeExists(void) {
 	STUB;
 }
+#endif
 
 void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
 	currentRenderTarget = t;

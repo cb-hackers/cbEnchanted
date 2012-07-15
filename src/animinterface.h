@@ -3,6 +3,7 @@
 
 class AnimInterface {
 	public:
+#ifndef CBE_LIB
 		AnimInterface();
 		~AnimInterface();
 
@@ -13,6 +14,7 @@ class AnimInterface {
 		void functionAnimationWidth(void);
 		void functionAnimationHeight(void);
 		void functionAnimationPlaying(void);
+#endif
 	private:
 
 };

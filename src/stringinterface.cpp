@@ -3,7 +3,7 @@
 #include "cbenchanted.h"
 #include "stringinterface.h"
 #include "errorsystem.h"
-
+#ifndef CBE_LIB
 StringInterface::StringInterface() {
 	cb = static_cast <CBEnchanted *> (this);
 }
@@ -366,3 +366,5 @@ void StringInterface::functionGetWord(void) {
 		cb->pushValue(str.substr(0));
 	}
 }
+
+#endif

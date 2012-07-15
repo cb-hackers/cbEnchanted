@@ -4,7 +4,7 @@
 #include "cbenchanted.h"
 #include "cbobject.h"
 #define MIN_CAMERA_ZOOM 0.00001f
-
+#ifndef CBE_LIB
 CameraInterface::CameraInterface():
 	cameraX(0),
 	cameraY(0),
@@ -123,6 +123,7 @@ void CameraInterface::functionCameraY(void) {
 void CameraInterface::functionCameraAngle(void) {
 	cb->pushValue(cameraAngle);
 }
+#endif
 
 void CameraInterface::screenCoordToWorld(float &x, float &y) {
 	al_transform_coordinates(getInverseWorldTransform(), &x, &y);

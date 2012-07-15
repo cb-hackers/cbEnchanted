@@ -11,6 +11,7 @@ class CBImage;
 
 class InputInterface {
 	public:
+#ifndef CBE_LIB
 		InputInterface();
 
 		void commandCloseInput(void);
@@ -47,6 +48,7 @@ class InputInterface {
 		void functionDownKey(void);
 		void functionEscapeKey(void);
 		bool initializeInputs(void);
+#endif
 
 		/** Updates keystates and mouse buttons. Must been called before event loop. */
 		void preEventLoopUpdate();

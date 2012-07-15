@@ -17,13 +17,12 @@ class CustomFunction
 		CustomFunction() : function(0), groupId(0), funcId(0) {}
 		inline void call(CBEnchanted *cb) const { (*function)(cb); }
 		bool isNull() const {return function == 0;}
-		bool operator > (const CustomFunction &o);
-		bool operator < (const CustomFunction &o);
+		bool operator > (const CustomFunction &o) const;
+		bool operator < (const CustomFunction &o) const;
 		bool operator == (const CustomFunction &o);
+		bool operator != (const CustomFunction &o);
 		CustomFunc getFuncPtr() const { return function; }
 		void setFuncPtr(CustomFunc func) { function = func; }
-		void setParams(const vector<int32_t> &p) { params = p; }
-		const vector<int32_t> &getParams() const { return params; }
 		int32_t getHandle() const { return handle; }
 		void setHandle( int32_t h ) { handle = h; }
 		int32_t getGroup() const { return groupId; }
@@ -32,7 +31,6 @@ class CustomFunction
 		void setFuncId(int32_t f) { funcId = f; }
 
 	private:
-		vector<int32_t> params;
 		int32_t groupId;
 		int32_t funcId;
 		int32_t handle;

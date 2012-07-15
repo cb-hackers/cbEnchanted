@@ -6,7 +6,7 @@
 #include "errorsystem.h"
 #include "utf8.h"
 #include "util.h"
-
+#ifndef CBE_LIB
 InputInterface::InputInterface() :
 	lastMouseX(0),
 	lastMouseY(0),
@@ -508,6 +508,7 @@ bool InputInterface::initializeInputs() {
 	al_register_event_source(cb->getEventQueue(),al_get_mouse_event_source());
 	return true;
 }
+#endif
 
 
 void InputInterface::preEventLoopUpdate() {

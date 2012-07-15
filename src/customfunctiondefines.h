@@ -89,8 +89,9 @@
 /** ID for custom function cbeObjectSY */
 #define CBE_OBJECT_S_Y 28
 
-// NOTE: ID 29 is defined earlier as CBE_DRAW_IMAGE
+#define CBE_LINK_CUSTOM_FUNCTIONS 30
 
+#define CBE_LOAD_LIBRARY 31
 
 /** @} */
 

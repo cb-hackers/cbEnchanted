@@ -8,6 +8,7 @@ class CBEnchanted;
 
 class MapInterface {
 	public:
+#ifndef CBE_LIB
 		MapInterface();
 		~MapInterface();
 
@@ -21,7 +22,7 @@ class MapInterface {
 		void functionGetMap2(void);
 		void functionMapWidth(void);
 		void functionMapHeight(void);
-
+#endif
 		CBMap *getTileMap(){return tileMap;}
 		void deleteTileMap() { delete tileMap; tileMap = 0; }
 	private:

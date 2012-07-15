@@ -64,6 +64,10 @@ void cbeObjectSX(CBEnchanted *cb);
 
 void cbeObjectSY(CBEnchanted *cb);
 
+void cbeLinkCustomFunctions(CBEnchanted *cb);
+
+void cbeLoadLibrary(CBEnchanted *cb);
+
 void cbePushByte(CBEnchanted *cb);
 
 void cbePushShort(CBEnchanted *cb);

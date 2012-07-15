@@ -5,6 +5,7 @@
 
 class FileInterface {
 	public:
+#ifndef CBE_LIB
 		FileInterface();
 		~FileInterface();
 
@@ -46,7 +47,7 @@ class FileInterface {
 		void functionReadFloat(void);
 		void functionReadString(void);
 		void functionReadLine(void);
-
+#endif
 		/** Gets a FILE pointer from the given ID. */
 		FILE* getFile(int32_t id);
 	private:

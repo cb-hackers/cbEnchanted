@@ -6,6 +6,7 @@
 #include "cbenchanted.h"
 #include "errorsystem.h"
 
+#ifndef CBE_LIB
 MapInterface::MapInterface() {
 	cb = static_cast<CBEnchanted*>(this);
 	tileMap = 0;
@@ -106,3 +107,4 @@ void MapInterface::functionMapHeight(void) {
 	int32_t height = tileMap->mapSizeY();
 	cb->pushValue(height);
 }
+#endif
