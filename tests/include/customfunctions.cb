@@ -366,13 +366,13 @@ Function cbeObjectSY#(cbeObj)
 EndFunction
 
 // ----------------------------------------------------------------------------
-// cbeLoadLibrary(path$, resolvesymbols = 1)
+// cbeLoadLibrary()
 // ---
-// Loads a dll-library from given path and links functions with cb-side
-// header functions if the second parameter is not 0.
-// Using custom functions that haven't been linked will crash the program.
+// Loads a DLL from given path and links functions with CB-side header
+// functions if the second parameter is not 0. Using custom functions that
+// haven't been linked WILL crash the program.
 // ----------------------------------------------------------------------------
-Function cbeLoadLibrary(path$, resolvesymbols = 1)
+Function cbeLoadLibrary(cbePath$, cbeResolveSymbols = 1)
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 31
 EndFunction
@@ -380,8 +380,8 @@ EndFunction
 // ----------------------------------------------------------------------------
 // cbeLinkCustomFunctions()
 // ---
-// Links custom functions loaded from dll with cb-side header functions.
-// Use this if you don't link functions in cbeLoadLibrary. 
+// Links custom functions loaded from DLL with CB-side header functions.
+// Use this if you don't link functions in cbeLoadLibrary(). 
 // ----------------------------------------------------------------------------
 Function cbeLinkCustomFunctions()
     group = CBE_CUSTOM_FUNCTION_GROUP
