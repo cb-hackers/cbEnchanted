@@ -5,6 +5,16 @@
 #include <stdint.h>
 #include "errorsystem.h"
 #ifndef CBE_LIB
+#ifdef CBE_MEMBLOCK_BOUNDS_CHECK
+	#define MEMBLOCK_BOUNDS_CHECK(mem, funcName, index, sizeOf) \
+		if (((index) + (sizeOf)) > *((int32_t*)(mem))) \
+		{ CBEnchanted::instance()->errors->createError((funcName) + string(": Out of bounds"),\
+			"Index: " + boost::lexical_cast<string>(index) + "\nmemblock size: " + boost::lexical_cast<string>(*((int32_t*)(mem))));\
+			CBEnchanted::instance()->pushValue(0); return; }
+#else
+	#define MEMBLOCK_BOUNDS_CHECK(mem, funcName, index, sizeOf)
+#endif
+
 MemInterface::MemInterface() {
 	cb = static_cast<CBEnchanted*>(this);
 }
@@ -12,6 +22,17 @@ MemInterface::MemInterface() {
 MemInterface::~MemInterface() {
 
 }
+
+template<class T> static T &getMemBlockData(uint8_t *mem, uint32_t p) {
+#ifdef CBE_MEMBLOCK_BOUNDS_CHECK
+	if ((p + sizeof(T)) > *(int32_t*)mem) { //Out of bounds
+		CBEnchanted::instance()->errors->createError("");
+	}
+#endif
+	return *(T*)(mem + p + 4);
+}
+
+
 
 //DeleteMEMBlock
 void MemInterface::commandDeleteMEMBlock(void) {
@@ -59,6 +80,18 @@ void MemInterface::commandMemCopy(void) {
 
 	uint8_t *srcmem = getMemblock(srcId);
 	if (srcmem == 0) return;
+
+#ifdef CBE_MEMBLOCK_BOUNDS_CHECK
+	int32_t destMemSize = *(int32_t*)destmem;
+	int32_t srcMemSize = *(int32_t*)srcmem;
+	if ((dest + length > destMemSize) || (src + length > srcMemSize)) {
+		cb->errors->createError("MemCopy out of bounds", "Destination index: " + boost::lexical_cast<string>(dest)
+								+ "\n Source index: " + boost::lexical_cast<string>(src)
+								+ "\n Trying to copy " + boost::lexical_cast<string>(length) + " bytes");
+		return;
+	}
+#endif
+
 	memcpy(destmem + dest + 4, srcmem + src + 4, length);
 }
 
@@ -70,6 +103,7 @@ void MemInterface::commandPokeByte(void) {
 
 	uint8_t * mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PokeByte", position, 1);
 	*((uint8_t *)(mem + position + 4)) = value;
 }
 
@@ -81,6 +115,7 @@ void MemInterface::commandPokeShort(void) {
 
 	uint8_t * mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PokeShort", position, 2);
 	*((uint16_t *)(mem + position + 4)) = value;
 }
 
@@ -92,6 +127,7 @@ void MemInterface::commandPokeInt(void){
 
 	uint8_t * mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PokeInt", position, 4);
 	*((int32_t *)(mem + position + 4)) = value;
 }
 
@@ -103,6 +139,7 @@ void MemInterface::commandPokeFloat(void){
 
 	uint8_t * mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PokeFloat", position, 4);
 	*((float *)(mem + position + 4)) = value;
 }
 
@@ -134,6 +171,7 @@ void MemInterface::functionPeekByte(void) {
 
 	uint8_t *mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PeekByte", position, 1);
 	cb->pushValue(mem[position + 4]);
 }
 
@@ -144,6 +182,7 @@ void MemInterface::functionPeekShort(void) {
 
 	uint8_t *mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PeekShort", position, 2);
 	cb->pushValue(*(uint16_t*)(&mem[position + 4]));
 }
 
@@ -154,6 +193,7 @@ void MemInterface::functionPeekInt(void){
 
 	uint8_t *mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PeekInt", position, 4);
 	cb->pushValue(*(int32_t*)(&mem[position + 4]));
 }
 
@@ -164,6 +204,7 @@ void MemInterface::functionPeekFloat(void){
 
 	uint8_t *mem = getMemblock(id);
 	if (mem == 0) return;
+	MEMBLOCK_BOUNDS_CHECK(mem, "PeekFloat", position, 4);
 	cb->pushValue(*(float*)(&mem[position + 4]));
 }
 

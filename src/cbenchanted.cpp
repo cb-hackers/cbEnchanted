@@ -308,6 +308,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 }
 
 void CBEnchanted::parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap) {
+	CustomFunction func;
 	uint32_t i2 = *(int32_t *)(code + i);
 	map <int32_t, int32_t>::iterator funcIt = tempMap.find(i2);
 	if (funcIt != tempMap.end()) { //Already parsed function
@@ -401,7 +402,6 @@ void CBEnchanted::parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap
 	if (*(int32_t*)(code + i2) != 22) { //Return
 		goto not_custom_function;
 	}
-	CustomFunction func;
 	func.setFuncId(funcId);
 	func.setGroupId(groupId);
 	customFunctionHandler.addDefinition(func);
