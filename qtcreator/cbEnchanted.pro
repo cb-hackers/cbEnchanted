@@ -101,7 +101,7 @@ win32 {
 	else {
 		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.6-static-md-debug -lallegro_ttf-5.0.6-static-md-debug -lallegro_primitives-5.0.6-static-md-debug -lallegro_image-5.0.6-static-md-debug -lallegro_font-5.0.6-static-md-debug -lallegro_dialog-5.0.6-static-md-debug -lallegro_audio-5.0.6-static-md-debug -lallegro_acodec-5.0.6-static-md-debug
 		LIBS += -llibvorbisfile-1.3.2-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
-		DEFINES += CBE_MEMBLOCK_BOUNDS_CHECK
+		DEFINES += CBE_MEMBLOCK_BOUNDS_CHECK CBE_ARRAY_BOUNDS_CHECK
 	}
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
 	INCLUDEPATH += "$$(BOOST_INCLUDE)" "$$(ALLEGRO_INCLUDE)"

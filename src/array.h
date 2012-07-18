@@ -13,6 +13,8 @@ class Array {
 		T &get(uint32_t index)const { return data[index]; }
 		void set(uint32_t index, const T &t){ assert(index < size); data[index] = t;}
 		uint32_t getDimensionMultiplier(uint32_t dim) const { return this->dimensions[dim]; }
+		uint32_t getSize() const {return size;}
+		uint32_t *getDimensionSizes() { return dimensionSizes;}
 	private:
 		uint32_t dimensions[5];
 		uint32_t dimensionSizes[5];

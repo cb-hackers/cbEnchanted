@@ -1319,42 +1319,62 @@ void CBEnchanted::functionConvertToType(void) {
 	}
 }
 
+template<class T> FORCEINLINE uint32_t CBEnchanted::popArrayDimensions(Array<T> &a, int32_t n) {
+	uint32_t pos(0);
+#ifdef CBE_ARRAY_BOUNDS_CHECK
+	uint32_t index[5] = {0, 0, 0, 0, 0};
+	for (int32_t i = n - 1; i >= 0; --i) {
+		index[i] = popValue().getInt();
+		pos +=  index[i] * a.getDimensionMultiplier(i);
+	}
+	if (pos >= a.getSize()) {
+		string arrayStr;
+		string accessStr;
+		for (int i = 0; i < n; i++) {
+			if (i != 0) {
+				arrayStr += ", ";
+				accessStr += ", ";
+			}
+			arrayStr += boost::lexical_cast<string>(a.getDimensionSizes()[i] - 1);
+			accessStr += boost::lexical_cast<string>(index[i]);
+		}
+		errors->createError("Array access out of bounds", "Accessing ("+ accessStr +") array (" + arrayStr + ") ");
+		pos = 0;
+	}
+#else
+	for (int32_t i = n - 1; i >= 0; --i) {
+		pos += popValue().getInt() * a.getDimensionMultiplier(i);
+	}
+#endif
+	return pos;
+}
+
 FORCEINLINE uint32_t CBEnchanted::popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type) {
 	uint32_t pos = 0;
 	switch (type) {
 		case 1: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 4: {
 			Array<uint16_t> &a = getShortArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 5: {
 			Array<uint8_t> &a = getByteArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 2: {
 			Array<float> &a = getFloatArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 3: {
 			Array<ISString> &a = getStringArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 	}
@@ -1366,37 +1386,27 @@ FORCEINLINE uint32_t CBEnchanted::popArrayDimensions2(int32_t arrayId, int32_t n
 	switch (type) {
 		case 3: {
 			Array<int32_t> &a = getIntegerArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 7: {
 			Array<uint16_t> &a = getShortArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 8: {
 			Array<uint8_t> &a = getByteArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 4: {
 			Array<float> &a = getFloatArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 		case 6: {
 			Array<ISString> &a = getStringArray(arrayId);
-			for (int32_t i = n - 1; i >= 0; --i) {
-				pos += popValue().getInt() * a.getDimensionMultiplier(i);
-			}
+			return popArrayDimensions(a, n);
 			break;
 		}
 	}

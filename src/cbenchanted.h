@@ -134,6 +134,7 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
+		template<class T> uint32_t popArrayDimensions(Array<T> &a, int32_t n);
 
 		void parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap);
 #endif
@@ -152,5 +153,7 @@ class CBEnchanted :
 		/** Current datalist readpoint */
 		uint32_t dataPos;
 };
+
+
 
 #endif
