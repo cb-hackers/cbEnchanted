@@ -134,6 +134,8 @@ class CBEnchanted :
 
 		uint32_t popArrayDimensions1(int32_t arrayId, int32_t n, int32_t type);
 		uint32_t popArrayDimensions2(int32_t arrayId, int32_t n, int32_t type);
+
+		void parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap);
 #endif
 
 		/** A map for functionConvertToInteger() and functionConvertToType(). */
