@@ -62,6 +62,9 @@ list(APPEND LIBS "allegro_dialog")
 
 list(APPEND LIBS "png")
 list(APPEND LIBS "openal")
+if(UNIX)
+	list(APPEND LIBS "dl")
+endif()
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})

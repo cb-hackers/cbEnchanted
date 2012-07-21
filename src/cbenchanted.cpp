@@ -343,9 +343,10 @@ void CBEnchanted::parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap
 	}
 	i2 += 4;
 	//commandFunction
-	int32_t paramCount = 0;
+	int32_t paramCount;
 	int32_t opc;
 	int32_t comc;
+	paramCount = 0; //See line 385
 	while ((opc = code[i2]) == 67 && (comc = *(int32_t*)(code + i2 + 1)) == 79) {
 		i2 += 6;
 		paramCount++;
@@ -380,7 +381,8 @@ void CBEnchanted::parseCustomFunction(uint32_t i, map<int32_t, int32_t> &tempMap
 	if (code[i2++] != 73) { //PushInt
 		goto not_custom_function;
 	}
-	int pushValue = *(int32_t*)(code + i2);
+	int pushValue;
+	pushValue = *(int32_t*)(code + i2); //Not running constructor fixes cross initialization
 	if (pushValue != 0) { //Return == 0
 		if (pushValue != 2 && pushValue != 5) { //handlePushSomething() IDs of float(2) and string(5)
 			goto not_custom_function;
