@@ -17,6 +17,10 @@ class VariableStack {
 			stackLevel = 0;
 		}
 
+		~VariableStack() {
+			delete[] stackArray; //Why was this not here
+		}
+
 		FORCEINLINE void push(const Any &a) {
 			if (stackSize <= stackLevel) {
 				resize(stackSize * 2);

@@ -18,6 +18,9 @@ class ScopeHolder {
 		};
 	public:
 		ScopeHolder();
+		~ScopeHolder() {
+			delete[] scopes;
+		}
 		void pushScope(int32_t byteCount,int32_t shortCount,int32_t stringCount,int32_t floatCount,int32_t integerCount,int32_t typePtrCount);
 		void popScope();
 		FORCEINLINE int32_t &getIntVar(int32_t i) const {return currentScope->intVars[i-1];}
