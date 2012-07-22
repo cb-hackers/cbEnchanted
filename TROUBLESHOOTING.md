@@ -5,8 +5,10 @@ upon launch, with an empty window open.
 
 To fix this issue, create `/etc/allegro5rc` with the
 following content (Or edit it if it already exists)
+
     [audio]
     driver=alsa #or oss or openal, depending on what you use. Alsa should work.
+
 If you cannot do this due to, for example, lack of root
 privileges, try creating `~/allegro5rc` (The documentation
 erroneously refers to it as `~/.allegro5rc` which at the
