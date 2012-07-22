@@ -641,17 +641,41 @@ void ObjectInterface::functionObjectAngle(void) {
 void ObjectInterface::functionObjectSizeX(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	float size = fabs(object->getObjectSizeX() * cos(object->getAngle() / 180.0 * M_PI)) +
-			fabs(sin(object->getAngle() / 180.0 * M_PI) * object->getObjectSizeY());
-	cb->pushValue(int32_t(size + 0.5f));
+	if (object->type() == CBObject::Map)
+	{
+		// Maps have their own width function
+		// For them getObjectSizeX() returns the texture size!
+		cb->pushValue(reinterpret_cast<CBMap *>(object)->getSizeX());
+	}
+	else {
+		if (object->getAngle() == 0.0f) { // If object hasn't been rotated we can skip the expensive trigonometry
+			cb->pushValue(object->getObjectSizeX());
+		}
+		else {
+			float size = fabs(object->getObjectSizeX() * cos(object->getAngle() / 180.0 * M_PI)) +
+					fabs(sin(object->getAngle() / 180.0 * M_PI) * object->getObjectSizeY());
+			cb->pushValue(int32_t(size + 0.5f));
+		}
+	}
 }
 
 void ObjectInterface::functionObjectSizeY(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	float size = fabs(object->getObjectSizeY() * cos(object->getAngle() / 180.0 * M_PI)) +
-			fabs(sin((object->getAngle()) / 180.0 * M_PI) * object->getObjectSizeX());
-	cb->pushValue(int32_t(size + 0.5f));
+	if (object->type() == CBObject::Map)
+	{
+		cb->pushValue(reinterpret_cast<CBMap *>(object)->getSizeY());
+	}
+	else {
+		if (object->getAngle() == 0.0f) { // See functionObjectSizeX
+			cb->pushValue(object->getObjectSizeY());
+		}
+		else {
+			float size = fabs(object->getObjectSizeY() * cos(object->getAngle() / 180.0 * M_PI)) +
+					fabs(sin((object->getAngle()) / 180.0 * M_PI) * object->getObjectSizeX());
+			cb->pushValue(int32_t(size + 0.5f));
+		}
+	}
 }
 
 void ObjectInterface::functionObjectPlaying(void) {
