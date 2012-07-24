@@ -124,8 +124,7 @@ void SysInterface::commandSetWindow(void) {
 		// Window mode changes!
 #ifdef _WIN32
 		int action = 0;
-		switch (mode)
-		{
+		switch (mode) {
 			case 1:
 				action = SW_RESTORE;
 				break;
@@ -139,6 +138,7 @@ void SysInterface::commandSetWindow(void) {
 		ShowWindow(win, action); // Poof!
 // #elif something something, X11 here? OSX has to be handled separately as well
 #endif
+	}
 }
 
 void SysInterface::commandEnd(void) {
