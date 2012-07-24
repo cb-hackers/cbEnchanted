@@ -119,6 +119,26 @@ void SysInterface::commandSetWindow(void) {
 	// Oh dear Linux, why do you so kindly accept UTF-8 <3
 	al_set_window_title(cb->getWindow(), windowTitle.c_str());
 #endif
+
+	if (mode != 0) {
+		// Window mode changes!
+#ifdef _WIN32
+		int action = 0;
+		switch (mode)
+		{
+			case 1:
+				action = SW_RESTORE;
+				break;
+			case 2:
+				action = SW_MINIMIZE;
+				break;
+			case 3:
+				action = SW_MAXIMIZE;
+				break;
+		}
+		ShowWindow(win, action); // Poof!
+// #elif something something, X11 here? OSX has to be handled separately as well
+#endif
 }
 
 void SysInterface::commandEnd(void) {
