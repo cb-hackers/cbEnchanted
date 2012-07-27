@@ -21,7 +21,7 @@
 #  - cbEnchanted_x64-0.1.0/ 
 #    -- CBEnchanted
 #    -- CBEnchanted_debug
-#    -- README.txt
+#    -- README
 #    -- customfunctions.cb
 
 # Stop on error
@@ -93,9 +93,9 @@ make $@
 # Move the built CBEnchanted file to right place
 mv CBEnchanted "$DIR/build/release/$NAME/CBEnchanted_debug"
 
-# Copy README.txt and tests/include/customfunctions.cb
-# to the directory
-cp "$DIR/README.txt" "$DIR/build/release/$NAME/README.txt"
+# Copy README-release.txt as README and
+# tests/include/customfunctions.cb to the directory
+cp "$DIR/README-release.txt" "$DIR/build/release/$NAME/README"
 cp "$DIR/tests/include/customfunctions.cb" "$DIR/build/release/$NAME/customfunctions.cb"
 
 echo "---------------------------------"
