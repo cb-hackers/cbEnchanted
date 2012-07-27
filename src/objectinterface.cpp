@@ -641,8 +641,7 @@ void ObjectInterface::functionObjectAngle(void) {
 void ObjectInterface::functionObjectSizeX(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	if (object->type() == CBObject::Map)
-	{
+	if (object->type() == CBObject::Map) {
 		// Maps have their own width function
 		// For them getObjectSizeX() returns the texture size!
 		cb->pushValue(reinterpret_cast<CBMap *>(object)->getSizeX());
@@ -662,8 +661,7 @@ void ObjectInterface::functionObjectSizeX(void) {
 void ObjectInterface::functionObjectSizeY(void) {
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	if (object->type() == CBObject::Map)
-	{
+	if (object->type() == CBObject::Map) {
 		cb->pushValue(reinterpret_cast<CBMap *>(object)->getSizeY());
 	}
 	else {
