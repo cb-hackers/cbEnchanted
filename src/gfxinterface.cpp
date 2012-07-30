@@ -119,49 +119,52 @@ void GfxInterface::commandScreen(void) {
 	if ((al_get_display_flags(window) & flags) == flags) {
 		if (state != 2) {
 			al_resize_display(window, width, height);
-			resizeTempBitmap(width, height);
 		}
+		resizeTempBitmap(width, height);
 	}
 	else {
 		al_set_new_display_flags(flags);
 		unregisterWindow();
-		if (state != 2) {
-			al_destroy_display(window);
+		int windowW = al_get_display_width(window);
+		int windowH = al_get_display_height(window);
+		al_destroy_display(window);
+		if (state == 2) {
+			window = al_create_display(windowW, windowH);
+		}
+		else {
 			window = al_create_display(width, height);
-			if (window == 0) {
-				if (cb->isSmooth2D()) {
-					cb->errors->createError("Can't create window","Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
-					cb->setSmooth2D(false);
-					window = al_create_display(width, height);
-					if (window == 0) {
-						cb->errors->createFatalError("Can't create window","Creating window failed in command Screen, even when Smooth2D was unset.");
-						return;
-					}
+		}
+		if (window == 0) {
+			if (cb->isSmooth2D()) {
+				cb->errors->createError("Can't create window","Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
+				cb->setSmooth2D(false);
+				if (state == 2) {
+					window = al_create_display(al_get_display_width(window), al_get_display_height(window));
 				}
 				else {
-					cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+					window = al_create_display(width, height);
+				}
+				if (window == 0) {
+					cb->errors->createFatalError("Can't create window","Creating window failed in command Screen, even when Smooth2D was unset.");
 					return;
 				}
+			}
+			else {
+				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
 				return;
 			}
-			resizeTempBitmap(width, height);
+			return;
+		}
+		resizeTempBitmap(width, height);
+		if (state == 2) {
+			windowRenderTarget->swapBitmap( drawscreenTempBitmap);
+			resizableWindow = true;
+		}
+		else {
 			windowRenderTarget->swapBitmap( al_get_backbuffer(window) );
 			resizableWindow = false;
 		}
-		else { //cbSizable
-			int32_t w = al_get_display_width(window);
-			int32_t h = al_get_display_height(window);
-			al_resize_display(window, w, h);
-			if (cb->isSmooth2D()) {
-				al_destroy_bitmap(drawscreenTempBitmap);
-				drawscreenTempBitmap = al_create_bitmap(width, height);
-			}
-			else {
-				resizeTempBitmap(width, height);
-			}
-			windowRenderTarget->swapBitmap(drawscreenTempBitmap);
-			resizableWindow = true;
-		}
+
 		registerWindow();
 	}
 
