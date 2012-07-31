@@ -7,7 +7,7 @@
 #ifndef CBE_LIB
 #ifdef CBE_MEMBLOCK_BOUNDS_CHECK
 	#define MEMBLOCK_BOUNDS_CHECK(mem, funcName, index, sizeOf) \
-		if (((index) + (sizeOf)) > *((int32_t*)(mem))) \
+		if (index < 0 || ((index) + (sizeOf)) > *((int32_t*)(mem))) \
 		{ CBEnchanted::instance()->errors->createError((funcName) + string(": Out of bounds"),\
 			"Index: " + boost::lexical_cast<string>(index) + "\nmemblock size: " + boost::lexical_cast<string>(*((int32_t*)(mem))));\
 			CBEnchanted::instance()->pushValue(0); return; }
