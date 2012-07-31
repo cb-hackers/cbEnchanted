@@ -581,6 +581,39 @@ void cbeLoadLibrary(CBEnchanted *cb) {
 	cb->pushValue(1);
 }
 
+
+/** Returns display mode lists count **/
+void cbeGetGfxModesCount(CBEnchanted *cb) {
+	int32_t displayModesCount = al_get_num_display_modes();
+	cb->pushValue(displayModesCount);
+}
+
+/** Returns display mode in string **/
+void cbeGetGfxMode(CBEnchanted *cb) {
+	//int32_t displayModesCount = al_get_num_display_modes();
+	int32_t displayId = cb->popValue().toInt();
+
+	ALLEGRO_DISPLAY_MODE   displayData;
+
+	al_get_display_mode(displayId, &displayData);
+
+	string displayWidth = convertInt( displayData.width );
+	string displayHeight = convertInt( displayData.height );
+	string displayHertz = convertInt( displayData.refresh_rate );
+	//string displayWidth = boost::lexical_cast<string>( displayData.width );
+
+	string displayModeString =   string( displayWidth) + string(",") + string( displayHeight) + string(",") + string( displayHertz);
+
+	//cb->cleanup();
+	cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
+}
+
+string convertInt(int number) {
+	stringstream ss;//create a stringstream
+	ss << number;//add number to the stream
+	return ss.str();//return a string with the contents of the stream
+}
+
 void cbePushByte(CBEnchanted *cb) {
 	cb->pushValue(0);
 }

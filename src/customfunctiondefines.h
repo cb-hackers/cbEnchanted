@@ -93,6 +93,10 @@
 
 #define CBE_LOAD_LIBRARY 31
 
+#define CBE_GET_GFX_MODES_COUNT 32
+
+#define CBE_GET_GFX_MODE 33
+
 /** @} */
 
 #define CBE_STACK 100

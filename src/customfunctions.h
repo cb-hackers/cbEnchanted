@@ -68,6 +68,12 @@ void cbeLinkCustomFunctions(CBEnchanted *cb);
 
 void cbeLoadLibrary(CBEnchanted *cb);
 
+void cbeGetGfxModesCount(CBEnchanted *cb);
+
+void cbeGetGfxMode(CBEnchanted *cb);
+
+string convertInt(int number);
+
 void cbePushByte(CBEnchanted *cb);
 
 void cbePushShort(CBEnchanted *cb);
