@@ -582,36 +582,146 @@ void cbeLoadLibrary(CBEnchanted *cb) {
 }
 
 
-/** Returns display mode lists count **/
+/** Get fullscreen display modes count
+ * @returns List size
+ */
 void cbeGetGfxModesCount(CBEnchanted *cb) {
+	// Store the old flags for later restoring
+	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+
+	// Set the display flags for fullscreen
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	// Get display modes count
 	int32_t displayModesCount = al_get_num_display_modes();
+
+	// Restore old flags
+	al_set_new_display_flags(oldFlags);
+
+	// Return the modes count
 	cb->pushValue(displayModesCount);
 }
 
-/** Returns display mode in string **/
+/** Returns the fullscreen display mode in ID as string
+ * @param id Id of the display mode. MUST BE in range of 0 to cbeGetGfxModesCount()-1.
+ * @returns Display mode as string. I.e. cbeGetGfxMode(0) returns a string "640,480,60,32" (in most cases).
+ */
 void cbeGetGfxMode(CBEnchanted *cb) {
-	//int32_t displayModesCount = al_get_num_display_modes();
+	// Store the old flags for later restoring
+	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+
+	// Set the display flags for fullscreen
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	// Get display modes count
+	int32_t displayModesCount = al_get_num_display_modes();
+
+	// Pop the ID from input
 	int32_t displayId = cb->popValue().toInt();
 
-	ALLEGRO_DISPLAY_MODE   displayData;
+	// Check if displayId is valid
+	if (displayId < 0 || displayId >= displayModesCount) {
+		string id = boost::lexical_cast<string>(displayId);
+		string count = boost::lexical_cast<string>(displayModesCount);
+		bool ignore = cb->errors->createError("Trying to get gfx mode with ID " + id + " out of " + count, "When ignored, the first display mode available in the list is returned.");
 
-	al_get_display_mode(displayId, &displayData);
+		// If ignored, displayId is 0
+		if (ignore) {
+			displayId = 0;
+		}
+	}
 
-	string displayWidth = convertInt( displayData.width );
-	string displayHeight = convertInt( displayData.height );
-	string displayHertz = convertInt( displayData.refresh_rate );
-	//string displayWidth = boost::lexical_cast<string>( displayData.width );
+	// Where the display modes data is stored
+	ALLEGRO_DISPLAY_MODE *displayData = new ALLEGRO_DISPLAY_MODE;
 
-	string displayModeString =   string( displayWidth) + string(",") + string( displayHeight) + string(",") + string( displayHertz);
+	// Get the display mode with id
+	al_get_display_mode(displayId, displayData);
 
-	//cb->cleanup();
-	cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
+	// Restore old flags
+	al_set_new_display_flags(oldFlags);
+
+	if (displayData != NULL) {
+		// Initialize the string to be returned
+		string displayModeString;
+
+		// Construct the string
+		displayModeString =	boost::lexical_cast<string>(displayData->width);
+		displayModeString += "," + boost::lexical_cast<string>(displayData->height);
+		displayModeString += "," + boost::lexical_cast<string>(displayData->refresh_rate);
+		displayModeString += "," + boost::lexical_cast<string>(al_get_pixel_format_bits(displayData->format));
+
+		// Return the display mode
+		cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
+	}
+	else {
+		INFO("As something funny happened, you got an empty display mode...")
+		cb->pushValue("");
+	}
 }
 
-string convertInt(int number) {
-	stringstream ss;//create a stringstream
-	ss << number;//add number to the stream
-	return ss.str();//return a string with the contents of the stream
+void cbeGetBestGfxMode(CBEnchanted *cb) {
+
+	// Initials
+	int32_t bestHertz = 0;
+	int32_t bestDisplayId = -1;
+	bool no32BitFound = true;
+
+	// Store the old flags for later restoring
+	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+
+	// Set the display flags for fullscreen
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	// Get display modes count
+	int32_t displayModesCount = al_get_num_display_modes();
+
+	// Pop the input
+	int32_t displayHeight = cb->popValue().getInt();
+	int32_t displayWidth = cb->popValue().getInt();
+
+	// Where the display modes data is stored
+	ALLEGRO_DISPLAY_MODE *displayData = new ALLEGRO_DISPLAY_MODE;
+	// Initialize the string to be returned
+	string displayModeString;
+
+	for (int currentId = 0; currentId < displayModesCount; currentId++) {
+		// Get the display mode with id
+		al_get_display_mode(currentId, displayData);
+
+		if (displayData != NULL) {
+			if (displayData->width == displayWidth && displayData->height == displayHeight && displayData->refresh_rate >= bestHertz) {
+				if (al_get_pixel_format_bits(displayData->format) >= 32) {
+					no32BitFound = false;
+				}
+				bestHertz = displayData->refresh_rate;
+				bestDisplayId = currentId;
+			}
+		}
+	}
+
+	// If we got something, get that display mode and return it
+	if (bestDisplayId > -1) {
+		al_get_display_mode(bestDisplayId, displayData);
+		// Construct the string
+		displayModeString =	boost::lexical_cast<string>(displayData->width);
+		displayModeString += "," + boost::lexical_cast<string>(displayData->height);
+		displayModeString += "," + boost::lexical_cast<string>(displayData->refresh_rate);
+		if (no32BitFound) {
+			displayModeString += ",16";
+		}
+		else {
+			displayModeString += ",32";
+		}
+	}
+	else {
+		displayModeString = "";
+	}
+
+	// Restore old flags
+	al_set_new_display_flags(oldFlags);
+	// Return the display mode
+	cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
+
 }
 
 void cbePushByte(CBEnchanted *cb) {

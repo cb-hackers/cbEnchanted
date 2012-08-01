@@ -72,7 +72,7 @@ void cbeGetGfxModesCount(CBEnchanted *cb);
 
 void cbeGetGfxMode(CBEnchanted *cb);
 
-string convertInt(int number);
+void cbeGetBestGfxMode(CBEnchanted *cd);
 
 void cbePushByte(CBEnchanted *cb);
 

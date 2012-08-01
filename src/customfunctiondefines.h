@@ -97,6 +97,8 @@
 
 #define CBE_GET_GFX_MODE 33
 
+#define CBE_GET_BEST_GFX_MODE 34
+
 /** @} */
 
 #define CBE_STACK 100

@@ -147,6 +147,10 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeGetGfxMode);
 	func.setFuncId(CBE_GET_GFX_MODE);
 	this->addBody(func);
+
+	func.setFuncPtr(&cbeGetBestGfxMode);
+	func.setFuncId(CBE_GET_BEST_GFX_MODE);
+	this->addBody(func);
 }
 #endif
 
