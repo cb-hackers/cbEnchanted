@@ -12,7 +12,9 @@ CBImage::CBImage() :
 	animLength(0),
 	isMasked(false),
 	maskedBitmap(NULL),
-	unmaskedBitmap(NULL)
+	unmaskedBitmap(NULL),
+	maskData(0),
+	maskIsDirty(false)
 {
 }
 
@@ -22,6 +24,9 @@ CBImage::~CBImage() {
 		al_destroy_bitmap(unmaskedBitmap);
 	}
 	al_destroy_bitmap(maskedBitmap);
+	if (maskData) {
+		delete [] maskData;
+	}
 }
 
 bool CBImage::load(const string &path) {
@@ -30,6 +35,7 @@ bool CBImage::load(const string &path) {
 	}
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	this->maskIsDirty = true;
 	return true;
 }
 
@@ -169,6 +175,7 @@ void CBImage::resize(int32_t w, int32_t h) {
 	this->switchMaskBitmaps(false);
 	hotspotX = 0;
 	hotspotY = 0;
+	this->maskIsDirty = true;
 }
 
 CBImage *CBImage::clone() {
@@ -184,6 +191,7 @@ CBImage *CBImage::clone() {
 	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
 	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
 	newImg->isMasked = this->isMasked;
+	newImg->maskData = this->maskData;
 	return newImg;
 }
 
@@ -229,6 +237,8 @@ void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
 		al_convert_mask_to_alpha(maskedBitmap, maskColor);
 		renderTarget.swapBitmap(maskedBitmap);
 	}
+
+	maskIsDirty = true;
 }
 
 /** Rotates an image with the given angle (in degrees) clockwise. */
@@ -271,6 +281,7 @@ void CBImage::rotate(float angle) {
 	renderTarget.swapBitmap(newMaskedBitmap);
 	maskedBitmap = newMaskedBitmap;
 	unmaskedBitmap = newUnmaskedBitmap;
+	maskIsDirty = true;
 }
 
 /** Checks if an image overlaps another image on their bounding boxes.
@@ -313,6 +324,8 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 		return false;
 	}
 
+	this->cleanDirtyMask();
+	img->cleanDirtyMask();
 
 	int xmax1 = x1 + w1, ymax1 = y1 + h1;
 	int xmax2 = x2 + w2, ymax2 = y2 + h2;
@@ -323,28 +336,63 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 	int xmax = min(xmax1, xmax2);
 	int ymax = min(ymax1, ymax2);
 
-	// Lock images for speed
-	al_lock_bitmap(img1, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
-	al_lock_bitmap(img2, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
-
 	// Collide detection
 	for (int y = ymin; y < ymax; y++) {
 		for (int x = xmin; x < xmax; x++) {
 			int cx1 = x - x1, cy1 = y - y1;
 			int cx2 = x - x2, cy2 = y - y2;
 
-			ALLEGRO_COLOR tcolor1 = al_get_pixel(img1, cx1, cy1);
-			ALLEGRO_COLOR tcolor2 = al_get_pixel(img2, cx2, cy2);
-
-			if (tcolor1.a != 0 && tcolor2.a != 0) {
+			if (!this->maskData[int(cy1*w1+cx1)] && !img->maskData[int(cy2*w2+cx2)]) {
 				return true;
 			}
 		}
 	}
 
-	// Unlock images
-	al_unlock_bitmap(img1);
-	al_unlock_bitmap(img2);
-
 	return false;
 }
+
+
+/** Checks if an images mask is dirty and cleans it.
+ *
+ * @param img Image that has a mask to clean
+ */
+void CBImage::cleanDirtyMask() {
+	if (!this->maskIsDirty) { return; }
+
+	ALLEGRO_BITMAP *image = this->unmaskedBitmap;
+	int32_t pixel;
+	int32_t x,y;
+	int32_t width = al_get_bitmap_width(image);
+	int32_t height = al_get_bitmap_height(image);
+	int32_t mask;
+	unsigned char r,g,b,a;
+	al_unmap_rgba(this->maskColor, &r, &g, &b, &a);
+
+	mask = a << (24 + r << (16 + g << (8 + b)));
+
+
+	al_lock_bitmap(image, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
+
+	// Idea in this data array, is to have 0 to represent the images
+	// unmasked colors, and 1 for the masked ones.
+	this->maskData = new bool[width * height];
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			al_unmap_rgba(al_get_pixel(image,x,y), &r, &g, &b, &a);
+			pixel = a << (24 + r << (16 + g << (8 + b)));
+
+			if (pixel == mask && this->isMasked) {
+				maskData[y*width+x] = true;
+			}
+			else {
+				maskData[y*width+x] = false;
+			}
+		}
+	}
+
+	this->maskIsDirty = false;
+	al_unlock_bitmap(image);
+
+}
+
