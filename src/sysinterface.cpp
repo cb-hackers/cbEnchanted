@@ -236,7 +236,10 @@ void SysInterface::commandSetWindow(void) {
 				action = SW_MAXIMIZE;
 				break;
 		}
-		ShowWindow(win, action); // Poof!
+		// Minimizing window and then returning does not work yet.
+		if (action && action != SW_MINIMIZE) {
+			ShowWindow(win, action);
+		}
 // #elif something something, X11 here? OSX has to be handled separately as well
 #endif
 	}
