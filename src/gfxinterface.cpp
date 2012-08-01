@@ -517,8 +517,44 @@ void GfxInterface::functionScreenDepth(void) {
 	STUB;
 }
 
+/** Returns true if Gfx mode exists
+ * @param width Gfx mode width
+ * @param height Gfx mode height
+ * @param depth Gfx mode color depth
+ * @returns True if Gfx mode exists, otherwise false'
+ */
 void GfxInterface::functionGFXModeExists(void) {
-	STUB;
+	// Function variables
+	bool gfxModeExists = false;
+
+	// Pop input values
+	int32_t depth = cb->popValue().getInt();
+	int32_t height = cb->popValue().getInt();
+	int32_t width = cb->popValue().getInt();
+
+	// Get old display flags for later restoring
+	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+
+	// Set new display flags for fullscreen
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	// Create pointer for display modes
+	ALLEGRO_DISPLAY_MODE *displayMode = new ALLEGRO_DISPLAY_MODE;
+
+	for (int32_t i = 0; i < al_get_num_display_modes(); i++) {
+
+		// Get display mode from id
+		al_get_display_mode(i, displayMode);
+
+		// See if this is what we're looking for
+		if (displayMode->width == width && displayMode->height == height && al_get_pixel_format_bits(displayMode->format) == depth) {
+			gfxModeExists = true; break;
+		}
+	}
+
+	// Restore old display flags and return gfxModeExists value
+	al_set_new_display_flags(oldFlags);
+	cb->pushValue(gfxModeExists);
 }
 #endif
 
