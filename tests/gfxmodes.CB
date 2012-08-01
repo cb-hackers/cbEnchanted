@@ -1,0 +1,40 @@
+SCREEN 640,480
+
+Include "IDE\customfunctions_misth.cb"
+
+modes_count = cbeGetGfxModesCount()
+
+Print "GetGfxMdoesCount(): "+modes_count
+
+For i=0 To modes_count-1
+    Print "  -  " + cbeGetGfxMode(i)
+Next i
+
+Print "GetBestGfxMode(640,480):   "+cbeGetBestGfxMode(640,480)
+Print "GetBestGfxMode(800,600):   "+cbeGetBestGfxMode(800,600)
+Print "GetBestGfxMode(1024,768):  "+cbeGetBestGfxMode(1024,768)
+Print "GetBestGfxMode(1600,1200): "+cbeGetBestGfxMode(1600,1200)
+Print
+If GFXModeExists(640,480,16) Then
+    Print "640*480 (16-bit) AVAILABLE"
+Else
+    Print "640*480 (16-bit) NOT AVAILABLE"
+EndIf
+
+If GFXModeExists(1024,768,32) Then
+    Print "1024*768 (32-bit) AVAILABLE"
+Else
+    Print "1024*768 (32-bit) NOT AVAILABLE"
+EndIf
+
+If GFXModeExists(2000,2000,8) Then
+    Print "2000*2000 (8-bit) AVAILABLE"
+Else
+    Print "2000*2000 (8-bit) NOT AVAILABLE"
+EndIf
+
+Print "Press any key to exit."
+
+WaitKey
+
+End
