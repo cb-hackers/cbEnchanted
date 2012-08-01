@@ -336,12 +336,7 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 			ALLEGRO_COLOR tcolor1 = al_get_pixel(img1, cx1, cy1);
 			ALLEGRO_COLOR tcolor2 = al_get_pixel(img2, cx2, cy2);
 
-			unsigned char alpha1, alpha2, dummy;
-
-			al_unmap_rgba(tcolor1, &dummy, &dummy, &dummy, &alpha1);
-			al_unmap_rgba(tcolor2, &dummy, &dummy, &dummy, &alpha2);
-
-			if (alpha1 != 0 && alpha2 != 0) {
+			if (tcolor1.a != 0 && tcolor2.a != 0) {
 				return true;
 			}
 		}

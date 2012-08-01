@@ -83,13 +83,13 @@ Repeat
     // Enter runs a quick benchmark
     If KeyHit(cbKeyReturn) Then
         startRec = Timer()
-        For i = 1 To 300000
+        For i = 1 To 3000
             b = ImagesOverlap(img1,x1,y1,img2,x2,y2) 
         Next i
         endRec = Timer() - startRec
         benchmark$ = "ImagesOverlap: " + endRec + "ms"
         startRec = Timer()
-        For i = 1 To 300000
+        For i = 1 To 3000
             b = ImagesCollide(img1,x1,y1,0,img2,x2,y2,0)
         Next i
         endRec = Timer() - startRec
