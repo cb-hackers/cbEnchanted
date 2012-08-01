@@ -1,40 +1,110 @@
-FrameLimit 60
+Include "include/customfunctions.cb"
 
-'First make two images 
-img1= MakeImage(50,50)
-img2= MakeImage(100,100)
-DrawToImage img1
+FrameLimit 120
+
+
+// Create two images with mask color alpha
+maskImg1 = MakeImage(50,50)
+maskImg2 = MakeImage(100,100)
+DrawToImage maskImg1
     Color cbred
     Circle 0,0,50
-DrawToImage img2
+DrawToImage maskImg2
     Color cbyellow
     Circle 0,0,100
 DrawToScreen
 
-'Initialize... 
-Color cbwhite
-AddText "Arrows to move..."
+// Create two images with full alpha
+DefaultMask OFF
+cbeClsColor(64, 64, 128, 0)
+noMaskImg1 = MakeImage(50,50)
+noMaskImg2 = MakeImage(100,100)
+DrawToImage noMaskImg1
+    Cls
+    Color cbred
+    Circle 0,0,50
+DrawToImage noMaskImg2
+    Cls
+    Color cbyellow
+    Circle 0,0,100
+DrawToScreen
 
-x1=20
-y1=20
+// Initialize, check against mask color images at first
+img1 = maskImg1
+img2 = maskImg2
+mode = 1
+modeTxt$ = "Red image is MASKED, yellow image is MASKED"
+Color cbwhite
+AddText "Arrows: move, space: mode, enter: benchmark"
+
+benchmark$ = ""
+
+x1=120
+y1=80
 
 x2=200
 y2=150
 
-'The game 
+cbeClsColor(0, 64, 0, 255)
+Cls
+ 
 Repeat
 
-    'Update controls
+    // Update controls
     If LeftKey() Then x1=x1-1
     If RightKey() Then x1=x1+1
     If UpKey() Then y1=y1-1
     If DownKey() Then y1=y1+1
+    
+    // Space key toggles between masked and unmasked images
+    If KeyHit(cbKeySpace) Then
+        mode = mode + 1
+        If mode > 4 Then mode = 1
+        Select mode
+            Case 1
+                img1 = maskImg1
+                img2 = maskImg2
+                modeTxt$ = "Red image is MASKED, yellow image is MASKED"
+            Case 2
+                img1 = noMaskImg1
+                img2 = maskImg2
+                modeTxt$ = "Red image is UNMASKED, yellow image is MASKED"
+            Case 3
+                img1 = maskImg1
+                img2 = noMaskImg2
+                modeTxt$ = "Red image is MASKED, yellow image is UNMASKED"
+            Case 4
+                img1 = noMaskImg1
+                img2 = noMaskImg2
+                modeTxt$ = "Red image is UNMASKED, yellow image is UNMASKED"
+        EndSelect
+    EndIf
+    
+    // Enter runs a quick benchmark
+    If KeyHit(cbKeyReturn) Then
+        startRec = Timer()
+        For i = 1 To 3000
+            b = ImagesOverlap(img1,x1,y1,img2,x2,y2) 
+        Next i
+        endRec = Timer() - startRec
+        benchmark$ = "ImagesOverlap: " + endRec + "ms"
+        startRec = Timer()
+        For i = 1 To 3000
+            b = ImagesCollide(img1,x1,y1,0,img2,x2,y2,0)
+        Next i
+        endRec = Timer() - startRec
+        benchmark$ = benchmark$ + " -- ImagesCollide: " + endRec + "ms"
+    EndIf
+    
+    // Output current mode and benchmark results
+    Text 0, 13, modeTxt$
+    Text 0, 26, benchmark$
 
-    'Draw both images
+    // Draw both images
     DrawImage img1,x1,y1
     DrawImage img2,x2,y2
     
-    'Check for collisions
+    // Check for collisions
     Text 10,280,"Overlap: "+ImagesOverlap(img1,x1,y1,img2,x2,y2) 
     Text 290,280,"Collision: "+ImagesCollide(img1,x1,y1,0,img2,x2,y2,0)
     

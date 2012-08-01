@@ -6,6 +6,7 @@
 #include <time.h>
 #include <iostream>
 #include <boost/crc.hpp>
+#include <allegro5/allegro_memfile.h>
 #ifdef WIN32
 	#include <allegro5/allegro_windows.h>
 	#include "utf8.h"
@@ -55,11 +56,111 @@ void SysInterface::commandFrameLimit(void) {
 }
 
 void SysInterface::commandEncrypt(void) {
-	STUB;
+	const string pass = cb->popValue().toString().getRef();
+	const Any &dest = cb->popValue();
+	const Any &src = cb->popValue();
+	uint32_t srcSize;
+	ALLEGRO_FILE *srcFile;
+	ALLEGRO_FILE *destFile;
+	if (src.type() == Any::Int) { //Memblock
+		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		srcSize = MemInterface::getMEMBlockSize(memBlock);
+		srcFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), srcSize, "r");
+	}
+	else { //File
+		ISString filePath = src.toString();
+		srcFile = al_fopen(filePath.getRef().c_str(), "rb");
+		if (srcFile == 0) {
+			cb->errors->createError("Can't open file","Can't open source file " + filePath.getRef() + " given to Encrypt");
+			return;
+		}
+		ALLEGRO_FS_ENTRY * file = al_create_fs_entry(filePath.getRef().c_str());
+		srcSize = al_get_fs_entry_size(file);
+	}
+
+	if (dest.type() == Any::Int) {
+		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		if (srcSize > MemInterface::getMEMBlockSize(memBlock)) {
+			cb->errors->createError("Memblock is too small", "Memblock given to Encrypt is too small to encrypt whole source data.");
+			al_fclose(srcFile);
+		}
+		destFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), MemInterface::getMEMBlockSize(memBlock), "w");
+	}
+	else {
+		ISString filePath = dest.toString();
+		destFile = al_fopen(filePath.getRef().c_str(), "wb");
+		if (destFile == 0) {
+			cb->errors->createError("Can't write to file","Can't write to destination file " + filePath.getRef() + " given to Encrypt");
+			al_fclose(srcFile);
+			return;
+		}
+	}
+
+	const unsigned char *passPtr = (const unsigned char*)pass.c_str();
+	uint32_t passLength = pass.size();
+	for (uint32_t i = 0; i < srcSize; i++) {
+		uint8_t pc = passPtr[i % passLength];
+		int c = al_fgetc(srcFile);
+		uint8_t d = (unsigned char)c + pc;
+		al_fputc(destFile, d);
+	}
+
+	al_fclose(srcFile);
+	al_fclose(destFile);
 }
 
 void SysInterface::commandDecrypt(void) {
-	STUB;
+	const string pass = cb->popValue().toString().getRef();
+	const Any &dest = cb->popValue();
+	const Any &src = cb->popValue();
+	uint32_t srcSize;
+	ALLEGRO_FILE *srcFile;
+	ALLEGRO_FILE *destFile;
+	if (src.type() == Any::Int) { //Memblock
+		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		srcSize = MemInterface::getMEMBlockSize(memBlock);
+		srcFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), srcSize, "r");
+	}
+	else { //File
+		ISString filePath = src.toString();
+		srcFile = al_fopen(filePath.getRef().c_str(), "rb");
+		if (srcFile == 0) {
+			cb->errors->createError("Can't open file","Can't open source file " + filePath.getRef() + " given to Decrypt");
+			return;
+		}
+		ALLEGRO_FS_ENTRY * file = al_create_fs_entry(filePath.getRef().c_str());
+		srcSize = al_get_fs_entry_size(file);
+	}
+
+	if (dest.type() == Any::Int) {
+		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		if (srcSize > MemInterface::getMEMBlockSize(memBlock)) {
+			cb->errors->createError("Memblock is too small", "Memblock given to Decrypt is too small to decrypt whole source data.");
+			al_fclose(srcFile);
+		}
+		destFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), MemInterface::getMEMBlockSize(memBlock), "w");
+	}
+	else {
+		ISString filePath = dest.toString();
+		destFile = al_fopen(filePath.getRef().c_str(), "wb");
+		if (destFile == 0) {
+			cb->errors->createError("Can't write to file","Can't write to destination file " + filePath.getRef() + " given to Decrypt");
+			al_fclose(srcFile);
+			return;
+		}
+	}
+
+	const unsigned char *passPtr = (const unsigned char*)pass.c_str();
+	uint32_t passLength = pass.size();
+	for (uint32_t i = 0; i < srcSize; i++) {
+		uint8_t pc = passPtr[i % passLength];
+		int c = al_fgetc(srcFile);
+		uint8_t d = (unsigned char)c - pc;
+		al_fputc(destFile, d);
+	}
+
+	al_fclose(srcFile);
+	al_fclose(destFile);
 }
 
 void SysInterface::commandCallDLL(void) {
@@ -77,8 +178,8 @@ void SysInterface::commandCallDLL(void) {
 	}
 	void *memIn = 0;
 	void *memOut = 0;
-	int32_t memInSize = 0;
-	int32_t memOutSize = 0;
+	uint32_t memInSize = 0;
+	uint32_t memOutSize = 0;
 	if (memblockOutId) {
 		uint8_t *memblockOut = cb->getMemblock(memblockOutId);
 		memOut = MemInterface::getMEMBlockData(memblockOut);
@@ -119,6 +220,29 @@ void SysInterface::commandSetWindow(void) {
 	// Oh dear Linux, why do you so kindly accept UTF-8 <3
 	al_set_window_title(cb->getWindow(), windowTitle.c_str());
 #endif
+
+	if (mode != 0) {
+		// Window mode changes!
+#ifdef _WIN32
+		int action = 0;
+		switch (mode) {
+			case 1:
+				action = SW_RESTORE;
+				break;
+			case 2:
+				action = SW_MINIMIZE;
+				break;
+			case 3:
+				action = SW_MAXIMIZE;
+				break;
+		}
+		// Minimizing window and then returning does not work yet.
+		if (action && action != SW_MINIMIZE) {
+			ShowWindow(win, action);
+		}
+// #elif something something, X11 here? OSX has to be handled separately as well
+#endif
+	}
 }
 
 void SysInterface::commandEnd(void) {
