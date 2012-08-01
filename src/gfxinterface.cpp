@@ -361,8 +361,20 @@ void GfxInterface::commandCopyBox(void) {
 	int32_t width = cb->popValue().toInt();
 	int32_t sourceY = cb->popValue().toInt();
 	int32_t sourceX = cb->popValue().toInt();
-	RenderTarget *dest = getBuffer(destId);
-	RenderTarget *source = getBuffer(srcId);
+	RenderTarget *dest;
+	RenderTarget *source;
+	if (destId == 0) {
+		dest = currentRenderTarget;
+	}
+	else {
+		dest = getBuffer(destId);
+	}
+	if (srcId == 0) {
+		src = currentRenderTarget;
+	}
+	else {
+		src = getBuffer(srcId);
+	}
 	dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
 }
 
