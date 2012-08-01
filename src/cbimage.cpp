@@ -294,12 +294,17 @@ bool CBImage::overlaps(CBImage *img, float x1, float y1, float x2, float y2) {
  * @param img Image to check overlapping against
  * @param x1,y1 Top left coordinates of this image
  * @param x2,y2 Top left coordinates of the given image
+ * @returns True, if images collided
  */
 bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
-	float w1 = al_get_bitmap_width(this->maskedBitmap);
-	float h1 = al_get_bitmap_height(this->maskedBitmap);
-	float w2 = al_get_bitmap_width(img->maskedBitmap);
-	float h2 = al_get_bitmap_height(img->maskedBitmap);
+	// TODO: Check different frames
+	ALLEGRO_BITMAP *img1 = this->maskedBitmap;
+	ALLEGRO_BITMAP *img2 = img->maskedBitmap;
+
+	float w1 = al_get_bitmap_width(img1);
+	float h1 = al_get_bitmap_height(img1);
+	float w2 = al_get_bitmap_width(img2);
+	float h2 = al_get_bitmap_height(img2);
 
 	// First check for a simple rectangle collision. If there's no rectangle overlapping,
 	// there can't be any pixel-precise overlapping either.
@@ -308,34 +313,6 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 		return false;
 	}
 
-	ALLEGRO_BITMAP *img1, *img2;
-	int mask1, mask2;
-	int format1, format2;
-	unsigned char a,r,g,b;
-
-	// Image1
-	if (this->isMasked) {
-		img1 = this->maskedBitmap;
-		format1 = ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA;
-	}
-	else {
-		img1 = this->unmaskedBitmap;
-		format1 = ALLEGRO_PIXEL_FORMAT_ANY_NO_ALPHA;
-	}
-	al_unmap_rgba(this->maskColor, &r, &g, &b, &a);
-	mask1 = (((a << 24 + r) << 16 + g) << 8) + b;
-
-	// Image2
-	if (img->isMasked) {
-		img2 = img->maskedBitmap;
-		format2 = ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA;
-	}
-	else {
-		img2 = img->unmaskedBitmap;
-		format2 = ALLEGRO_PIXEL_FORMAT_ANY_NO_ALPHA;
-	}
-	al_unmap_rgba(img->maskColor, &r, &g, &b, &a);
-	mask2 = (((a << 24 + r) << 16 + g) << 8) + b;
 
 	int xmax1 = x1 + w1, ymax1 = y1 + h1;
 	int xmax2 = x2 + w2, ymax2 = y2 + h2;
@@ -346,12 +323,9 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 	int xmax = min(xmax1, xmax2);
 	int ymax = min(ymax1, ymax2);
 
-
-
 	// Lock images for speed
-	ALLEGRO_LOCKED_REGION *lock1 = al_lock_bitmap(img1, format1, ALLEGRO_LOCK_READONLY);
-	ALLEGRO_LOCKED_REGION *lock2 = al_lock_bitmap(img2, format2, ALLEGRO_LOCK_READONLY);
-
+	al_lock_bitmap(img1, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
+	al_lock_bitmap(img2, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
 
 	// Collide detection
 	for (int y = ymin; y < ymax; y++) {
@@ -362,20 +336,20 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 			ALLEGRO_COLOR tcolor1 = al_get_pixel(img1, cx1, cy1);
 			ALLEGRO_COLOR tcolor2 = al_get_pixel(img2, cx2, cy2);
 
-			al_unmap_rgba(tcolor1, &r, &g, &b, &a);
-			int color1 = (a << 24) + (r << 16) + (g << 8) + b;
+			unsigned char alpha1, alpha2, dummy;
 
-			al_unmap_rgba(tcolor2, &r, &g, &b, &a);
-			int color2 = (a << 24) + (r << 16) + (g << 8) + b;
+			al_unmap_rgba(tcolor1, &dummy, &dummy, &dummy, &alpha1);
+			al_unmap_rgba(tcolor2, &dummy, &dummy, &dummy, &alpha2);
 
-			if (color1 != mask1 && color2 != mask2) {
+			if (alpha1 != 0 && alpha2 != 0) {
 				return true;
 			}
-
 		}
 	}
 
-
+	// Unlock images
+	al_unlock_bitmap(img1);
+	al_unlock_bitmap(img2);
 
 	return false;
 }

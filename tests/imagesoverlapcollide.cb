@@ -1,6 +1,6 @@
 Include "include/customfunctions.cb"
 
-FrameLimit 60
+FrameLimit 120
 
 
 // Create two images with mask color alpha
@@ -36,8 +36,8 @@ checkUnmasked = False
 Color cbwhite
 AddText "Arrows to move..."
 
-x1=20
-y1=20
+x1=120
+y1=80
 
 x2=200
 y2=150
