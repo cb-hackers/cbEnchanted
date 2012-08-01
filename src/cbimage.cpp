@@ -311,6 +311,7 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 	ALLEGRO_BITMAP *img1, *img2;
 	int mask1, mask2;
 	int format1, format2;
+	unsigned char a,r,g,b;
 
 	// Image1
 	if (this->isMasked) {
@@ -321,7 +322,8 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 		img1 = this->unmaskedBitmap;
 		format1 = ALLEGRO_PIXEL_FORMAT_ANY_NO_ALPHA;
 	}
-	mask1 = int(this->maskColor.a) << 24 + int(this->maskColor.r) << 16 + int(this->maskColor.g) << 8 + int(this->maskColor.b);
+	al_unmap_rgba(this->maskColor, &r, &g, &b, &a);
+	mask1 = (((a << 24 + r) << 16 + g) << 8) + b;
 
 	// Image2
 	if (img->isMasked) {
@@ -332,7 +334,8 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 		img2 = img->unmaskedBitmap;
 		format2 = ALLEGRO_PIXEL_FORMAT_ANY_NO_ALPHA;
 	}
-	mask2 = int(img->maskColor.a) << 24 + int(img->maskColor.r) << 16 + int(img->maskColor.g) << 8 + int(img->maskColor.b);
+	al_unmap_rgba(img->maskColor, &r, &g, &b, &a);
+	mask2 = (((a << 24 + r) << 16 + g) << 8) + b;
 
 	int xmax1 = x1 + w1, ymax1 = y1 + h1;
 	int xmax2 = x2 + w2, ymax2 = y2 + h2;
@@ -358,18 +361,11 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 
 			ALLEGRO_COLOR tcolor1 = al_get_pixel(img1, cx1, cy1);
 			ALLEGRO_COLOR tcolor2 = al_get_pixel(img2, cx2, cy2);
-			int a,r,g,b;
 
-			a = int(tcolor1.a);
-			r = int(tcolor1.r);
-			g = int(tcolor1.g);
-			b = int(tcolor1.b);
+			al_unmap_rgba(tcolor1, &r, &g, &b, &a);
 			int color1 = (a << 24) + (r << 16) + (g << 8) + b;
 
-			a = int(tcolor2.a);
-			r = int(tcolor2.r);
-			g = int(tcolor2.g);
-			b = int(tcolor2.b);
+			al_unmap_rgba(tcolor2, &r, &g, &b, &a);
 			int color2 = (a << 24) + (r << 16) + (g << 8) + b;
 
 			if (color1 != mask1 && color2 != mask2) {

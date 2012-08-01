@@ -1,17 +1,38 @@
+Include "include/customfunctions.cb"
+
 FrameLimit 60
 
-'First make two images 
-img1= MakeImage(50,50)
-img2= MakeImage(100,100)
-DrawToImage img1
+
+// Create two images with mask color alpha
+maskImg1 = MakeImage(50,50)
+maskImg2 = MakeImage(100,100)
+DrawToImage maskImg1
     Color cbred
     Circle 0,0,50
-DrawToImage img2
+DrawToImage maskImg2
     Color cbyellow
     Circle 0,0,100
 DrawToScreen
 
-'Initialize... 
+// Create two images with full alpha
+DefaultMask OFF
+cbeClsColor(0, 0, 0, 0)
+noMaskImg1 = MakeImage(50,50)
+noMaskImg2 = MakeImage(100,100)
+DrawToImage noMaskImg1
+    Cls
+    Color cbred
+    Circle 0,0,50
+DrawToImage noMaskImg2
+    Cls
+    Color cbyellow
+    Circle 0,0,100
+DrawToScreen
+
+// Initialize, check against mask color images at first
+img1 = maskImg1
+img2 = maskImg2
+checkUnmasked = False
 Color cbwhite
 AddText "Arrows to move..."
 
@@ -21,20 +42,41 @@ y1=20
 x2=200
 y2=150
 
-'The game 
+cbeClsColor(0, 64, 0, 255)
+Cls
+ 
 Repeat
 
-    'Update controls
+    // Update controls
     If LeftKey() Then x1=x1-1
     If RightKey() Then x1=x1+1
     If UpKey() Then y1=y1-1
     If DownKey() Then y1=y1+1
+    
+    // Space key toggles between masked and unmasked images
+    If KeyHit(cbKeySpace) Then
+        checkUnmasked = Not checkUnmasked
+        If checkUnmasked Then
+            img1 = noMaskImg1
+            img2 = noMaskImg2
+        Else
+            img1 = maskImg1
+            img2 = maskImg2
+        EndIf
+    EndIf
+    
+    // Output current mode
+    If checkUnmasked Then
+        Text 0, 13, "Using UNMASKED images"
+    Else
+        Text 0, 13, "Using MASKED images"
+    EndIf
 
-    'Draw both images
+    // Draw both images
     DrawImage img1,x1,y1
     DrawImage img2,x2,y2
     
-    'Check for collisions
+    // Check for collisions
     Text 10,280,"Overlap: "+ImagesOverlap(img1,x1,y1,img2,x2,y2) 
     Text 290,280,"Collision: "+ImagesCollide(img1,x1,y1,0,img2,x2,y2,0)
     
