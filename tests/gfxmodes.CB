@@ -15,6 +15,8 @@ Print "GetBestGfxMode(800,600):   "+cbeGetBestGfxMode(800,600)
 Print "GetBestGfxMode(1024,768):  "+cbeGetBestGfxMode(1024,768)
 Print "GetBestGfxMode(1600,1200): "+cbeGetBestGfxMode(1600,1200)
 Print
+
+' Example for GFXModeExists from CB manual
 If GFXModeExists(640,480,16) Then
     Print "640*480 (16-bit) AVAILABLE"
 Else
@@ -33,6 +35,7 @@ Else
     Print "2000*2000 (8-bit) NOT AVAILABLE"
 EndIf
 
+print
 Print "Press any key to exit."
 
 WaitKey
