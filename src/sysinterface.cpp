@@ -178,8 +178,8 @@ void SysInterface::commandCallDLL(void) {
 	}
 	void *memIn = 0;
 	void *memOut = 0;
-	int32_t memInSize = 0;
-	int32_t memOutSize = 0;
+	uint32_t memInSize = 0;
+	uint32_t memOutSize = 0;
 	if (memblockOutId) {
 		uint8_t *memblockOut = cb->getMemblock(memblockOutId);
 		memOut = MemInterface::getMEMBlockData(memblockOut);

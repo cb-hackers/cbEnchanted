@@ -24,7 +24,7 @@ class MemInterface {
 		void functionPeekInt(void);
 		void functionPeekFloat(void);
 #endif
-		static int32_t getMEMBlockSize(uint8_t *mem) { return *(int32_t*)mem; }
+		static uint32_t getMEMBlockSize(uint8_t *mem) { return *(uint32_t*)mem; }
 		static uint8_t *getMEMBlockData(uint8_t *mem) { return mem + 4; }
 
 		uint8_t* getMemblock(int32_t id);
