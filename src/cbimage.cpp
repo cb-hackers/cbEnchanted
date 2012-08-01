@@ -35,7 +35,7 @@ bool CBImage::load(const string &path) {
 	}
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
-	this->maskIsDirty = true;
+	maskIsDirty = true;
 	return true;
 }
 
@@ -191,7 +191,7 @@ CBImage *CBImage::clone() {
 	newImg->maskedBitmap = newImg->renderTarget.getBitmap();
 	newImg->unmaskedBitmap = al_clone_bitmap(this->unmaskedBitmap);
 	newImg->isMasked = this->isMasked;
-	newImg->maskData = this->maskData;
+	newImg->maskIsDirty = true;
 	return newImg;
 }
 
@@ -200,6 +200,7 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	renderTarget.clear(al_map_rgb(0, 0, 0));
 	maskedBitmap = renderTarget.getBitmap();
 	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	maskIsDirty = true;
 }
 
 /** Sets image hotspot to the given coordinates or to the center, if either one is < 0 */
@@ -342,7 +343,7 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 			int cx1 = x - x1, cy1 = y - y1;
 			int cx2 = x - x2, cy2 = y - y2;
 
-			if (!this->maskData[int(cy1*w1+cx1)] && !img->maskData[int(cy2*w2+cx2)]) {
+			if (!this->maskData[int(cy1 * w1 + cx1)] && !img->maskData[int(cy2 * w2 + cx2)]) {
 				return true;
 			}
 		}
@@ -357,16 +358,16 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
  * @param img Image that has a mask to clean
  */
 void CBImage::cleanDirtyMask() {
-	if (!this->maskIsDirty) { return; }
+	if (!maskIsDirty) { return; }
 
-	ALLEGRO_BITMAP *image = this->unmaskedBitmap;
+	ALLEGRO_BITMAP *image = unmaskedBitmap;
 	int32_t pixel;
 	int32_t x,y;
 	int32_t width = al_get_bitmap_width(image);
 	int32_t height = al_get_bitmap_height(image);
 	int32_t mask;
 	unsigned char r,g,b,a;
-	al_unmap_rgba(this->maskColor, &r, &g, &b, &a);
+	al_unmap_rgba(maskColor, &r, &g, &b, &a);
 
 	mask = a << (24 + r << (16 + g << (8 + b)));
 
@@ -375,23 +376,23 @@ void CBImage::cleanDirtyMask() {
 
 	// Idea in this data array, is to have 0 to represent the images
 	// unmasked colors, and 1 for the masked ones.
-	this->maskData = new bool[width * height];
+	maskData = new bool[width * height];
 
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
-			al_unmap_rgba(al_get_pixel(image,x,y), &r, &g, &b, &a);
+			al_unmap_rgba(al_get_pixel(image, x, y), &r, &g, &b, &a);
 			pixel = a << (24 + r << (16 + g << (8 + b)));
 
-			if (pixel == mask && this->isMasked) {
-				maskData[y*width+x] = true;
+			if (pixel == mask && isMasked) {
+				maskData[y * width + x] = true;
 			}
 			else {
-				maskData[y*width+x] = false;
+				maskData[y * width + x] = false;
 			}
 		}
 	}
 
-	this->maskIsDirty = false;
+	maskIsDirty = false;
 	al_unlock_bitmap(image);
 
 }
