@@ -33,7 +33,7 @@ class ImageInterface {
 		void functionImagesCollide(void);
 #endif
 
-		CBImage *getImage(int32_t id) { CBImage *img = cbImages[id];assert(img);return img; }
+		CBImage *getImage(int32_t id);
 
 		bool isDefaultMaskToggled() const { return defaultMaskToggled; }
 	private:

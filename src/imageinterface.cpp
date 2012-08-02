@@ -36,7 +36,7 @@ void ImageInterface::commandDrawImage(void) {
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	img->draw(*cb->getCurrentRenderTarget(), x, y, frame, useMask);
 }
 
@@ -56,7 +56,7 @@ void ImageInterface::commandDrawGhostImage(void) {
 		alpha = 1.0f;
 	}
 
-	CBImage *img = cbImages[id];
+	CBImage *img = getImage(id);
 	img->drawAlphaBlended(*cb->getCurrentRenderTarget(), x, y, frame, alpha);
 }
 
@@ -70,7 +70,7 @@ void ImageInterface::commandDrawImageBox(void) {
 	float sx = cb->popValue().toFloat();
 	float ty = cb->popValue().toFloat();
 	float tx = cb->popValue().toFloat();
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	img->drawBox(*cb->getCurrentRenderTarget(), sx, sy, sw, sh, tx, ty, frame, useMask);
 }
 
@@ -78,7 +78,7 @@ void ImageInterface::commandMaskImage(void) {
 	int32_t b = cb->popValue().getInt();
 	int32_t g = cb->popValue().getInt();
 	int32_t r = cb->popValue().getInt();
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	img->maskImage(al_map_rgba(r, g, b, 255));
 }
 
@@ -96,13 +96,13 @@ void ImageInterface::commandDefaultMask(void) {
 void ImageInterface::commandResizeImage(void) {
 	int32_t h = cb->popValue().toInt();
 	int32_t w = cb->popValue().toInt();
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	img->resize(w, h);
 }
 
 void ImageInterface::commandRotateImage(void) {
 	float angle = cb->popValue().toFloat();
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	img->rotate(angle);
 }
 
@@ -142,7 +142,7 @@ void ImageInterface::commandHotSpot(void) {
 
 void ImageInterface::commandDeleteImage(void) {
 	int32_t id = cb->popValue().getInt();
-	delete cbImages[id];
+	delete getImage(id);
 	cbImages.erase(id);
 }
 
@@ -219,7 +219,7 @@ void ImageInterface::functionMakeImage(void) {
 }
 
 void ImageInterface::functionCloneImage(void) {
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	CBImage *newImg = img->clone();
 	int32_t id = nextId();
 	cbImages[id] = newImg;
@@ -227,12 +227,12 @@ void ImageInterface::functionCloneImage(void) {
 }
 
 void ImageInterface::functionImageWidth(void) {
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	cb->pushValue(img->width());
 }
 
 void ImageInterface::functionImageHeight(void) {
-	CBImage *img = cbImages[cb->popValue().getInt()];
+	CBImage *img = getImage(cb->popValue().getInt());
 	cb->pushValue(img->height());
 }
 
@@ -244,8 +244,9 @@ void ImageInterface::functionImagesOverlap(void) {
 	float x1 = cb->popValue().toFloat();
 	int32_t id1 = cb->popValue().getInt();
 
-	CBImage *img1 = cbImages[id1];
-	CBImage *img2 = cbImages[id2];
+	CBImage *img1 = getImage(id1);
+	CBImage *img2 = getImage(id2);
+
 
 	if (img1->overlaps(img2, x1, y1, x2, y2)) {
 		cb->pushValue(1);
@@ -265,8 +266,8 @@ void ImageInterface::functionImagesCollide(void) {
 	float x1 = cb->popValue().toFloat();
 	int32_t id1 = cb->popValue().getInt();
 
-	CBImage *img1 = cbImages[id1];
-	CBImage *img2 = cbImages[id2];
+	CBImage *img1 = getImage(id1);
+	CBImage *img2 = getImage(id2);
 
 	if (img1->collides(img2, x1, y1, x2, y2)) {
 		cb->pushValue(1);
@@ -274,5 +275,16 @@ void ImageInterface::functionImagesCollide(void) {
 	else {
 		cb->pushValue(0);
 	}
+}
+
+CBImage *ImageInterface::getImage(int32_t id)
+{
+	map<int32_t, CBImage*>::iterator imgI = cbImages.find(id);
+	if (imgI == cbImages.end()) {
+		cb->errors->createError("Image Access Violation", "Could not find image with ID " + boost::lexical_cast<string>(id));
+		return 0;
+	}
+	return imgI->second;
+
 }
 #endif
