@@ -374,6 +374,10 @@ void CBImage::cleanDirtyMask() {
 
 	al_lock_bitmap(image, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
 
+	if (maskData) {
+		delete [] maskData;
+	}
+
 	// Idea in this data array, is to have 0 to represent the images
 	// unmasked colors, and 1 for the masked ones.
 	maskData = new bool[width * height];
