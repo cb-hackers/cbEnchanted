@@ -1,6 +1,6 @@
 SCREEN 640,480
 
-Include "IDE\customfunctions_misth.cb"
+Include "include/customfunctions.cb"
 
 modes_count = cbeGetGfxModesCount()
 
