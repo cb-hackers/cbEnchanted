@@ -630,7 +630,7 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 			displayId = 0;
 		}
 		else {
-			cb->pushValue("");
+			cb->pushValue(ISString(""));
 			return;
 		}
 	}
@@ -659,7 +659,7 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 	}
 	else {
 		INFO("Something funny happened in cbeGetGfxMode(), you got an empty display mode...")
-		cb->pushValue("");
+		cb->pushValue(ISString(""));
 	}
 
 	// Free memory
