@@ -623,11 +623,15 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 	if (displayId < 0 || displayId >= displayModesCount) {
 		string id = boost::lexical_cast<string>(displayId);
 		string count = boost::lexical_cast<string>(displayModesCount);
-		bool ignore = cb->errors->createError("Trying to get gfx mode with ID " + id + " out of " + count, "When ignored, the first display mode available in the list is returned.");
+		bool ignore = cb->errors->createError("cbeGetGfxMode() failed!", "Trying to get gfx mode with ID " + id + " out of " + count + " modes\nWhen ignored, the first display mode available in the list is returned.");
 
-		// If ignored, displayId is 0
+		// If ignored, displayId is 0. Otherwise push empty string and return.
 		if (ignore) {
 			displayId = 0;
+		}
+		else {
+			cb->pushValue("");
+			return;
 		}
 	}
 
@@ -654,9 +658,12 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 		cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
 	}
 	else {
-		INFO("As something funny happened, you got an empty display mode...")
+		INFO("Something funny happened in cbeGetGfxMode(), you got an empty display mode...")
 		cb->pushValue("");
 	}
+
+	// Free memory
+	delete displayData;
 }
 
 void cbeGetBestGfxMode(CBEnchanted *cb) {
