@@ -370,10 +370,10 @@ void GfxInterface::commandCopyBox(void) {
 		dest = getBuffer(destId);
 	}
 	if (srcId == 0) {
-		src = currentRenderTarget;
+		source = currentRenderTarget;
 	}
 	else {
-		src = getBuffer(srcId);
+		source = getBuffer(srcId);
 	}
 	dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
 }
