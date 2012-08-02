@@ -387,3 +387,35 @@ Function cbeLinkCustomFunctions()
     group = CBE_CUSTOM_FUNCTION_GROUP
     funcId = 30
 EndFunction
+
+// ----------------------------------------------------------------------------
+// cbeGetGfxModesCount()
+// ---
+// Returns the amount of possible fullscreen modes
+// ----------------------------------------------------------------------------
+Function cbeGetGfxModesCount()
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 32
+EndFunction
+
+// ----------------------------------------------------------------------------
+// cbeGetGfxMode( id )
+// ---
+// Returns the fullscreen mode in a string from ID
+// ----------------------------------------------------------------------------
+Function cbeGetGfxMode(id As integer)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 33
+EndFunction
+
+// ----------------------------------------------------------------------------
+// cbeGetBestGfxMode()
+// ---
+// Returns the best fullscreen mode for width*height as a string
+// See cbeGetGfxMode()
+// ----------------------------------------------------------------------------
+Function cbeGetBestGfxMode(width%, height%)
+    group = CBE_CUSTOM_FUNCTION_GROUP
+    funcId = 34
+EndFunction
+

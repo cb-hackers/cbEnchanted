@@ -45,6 +45,7 @@ class CBImage
 		inline int32_t getHotSpotY() {return hotspotY;}
 
 		bool masked() { return isMasked; }
+		void cleanDirtyMask();
 	private:
 
 		int32_t hotspotX,hotspotY;
@@ -61,6 +62,8 @@ class CBImage
 		ALLEGRO_BITMAP* maskedBitmap;
 		/** Is this image masked or not */
 		bool isMasked;
+		bool maskIsDirty;
+		bool *maskData;
 };
 
 #endif // CBIMAGE_H
