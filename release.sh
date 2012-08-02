@@ -29,7 +29,7 @@ set -e
 
 # Find out the name of the file and directory
 NAME="cbenchanted_x"
-NAME+=`getconf LONG_BIT`
+NAME+="`getconf LONG_BIT`"
 NAME+="-"
 NAME+=`cat VERSION | head -n1`
 echo "Release to be created:" $NAME
