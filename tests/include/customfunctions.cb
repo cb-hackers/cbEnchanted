@@ -373,8 +373,8 @@ EndFunction
 // haven't been linked WILL crash the program.
 // ----------------------------------------------------------------------------
 Function cbeLoadLibrary(cbePath$, cbeResolveSymbols = 1)
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 31
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 31
 EndFunction
 
 // ----------------------------------------------------------------------------
@@ -384,8 +384,8 @@ EndFunction
 // Use this if you don't link functions in cbeLoadLibrary(). 
 // ----------------------------------------------------------------------------
 Function cbeLinkCustomFunctions()
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 30
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 30
 EndFunction
 
 // ----------------------------------------------------------------------------
@@ -394,8 +394,8 @@ EndFunction
 // Returns the amount of possible fullscreen modes
 // ----------------------------------------------------------------------------
 Function cbeGetGfxModesCount()
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 32
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 32
 EndFunction
 
 // ----------------------------------------------------------------------------
@@ -403,9 +403,9 @@ EndFunction
 // ---
 // Returns the fullscreen mode in a string from ID
 // ----------------------------------------------------------------------------
-Function cbeGetGfxMode(id As integer)
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 33
+Function cbeGetGfxMode(cbeId)
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 33
 EndFunction
 
 // ----------------------------------------------------------------------------
@@ -414,8 +414,8 @@ EndFunction
 // Returns the best fullscreen mode for width*height as a string
 // See cbeGetGfxMode()
 // ----------------------------------------------------------------------------
-Function cbeGetBestGfxMode(width%, height%)
-    group = CBE_CUSTOM_FUNCTION_GROUP
-    funcId = 34
+Function cbeGetBestGfxMode(cbeWidth, cbeHeight)
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 34
 EndFunction
 
