@@ -180,9 +180,14 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	}
 
 	// Skip useless data and go to beginning of the bytecode
-	input.seekg(32, ios::cur);
-	startPos = input.tellg();
+	input.seekg(31, ios::cur);
+	char pushIntCheck;
+	input.read(&pushIntCheck, 1);
+	if (pushIntCheck == 73) {//PushInt
+		input.seekg(-1, ios_base::cur);
+	}
 
+	startPos = input.tellg();
 	// Read code to memory and close the file
 	size = endPos - startPos;
 	code = new char [size];
@@ -198,10 +203,15 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	// 			Handle functions and types
 	uint32_t ncmd = 0;
 	uint32_t i = 0;
+	HCDEBUG("Bytecode:");
+	if (*(int32_t *)(code + i) == 0) {
+		i += 4;
+	}
 	while (i < size) {
 		offsets[ncmd] = i;
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
+		HCDEBUG("[%i] %i", i, (int)cmd);
 		ncmd++;
 		i++;
 		switch (cmd) {
@@ -219,12 +229,15 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 			case 90: i += 4; break;
 			case 68:
 			case 79: i ++; break;
-			default: FIXME("[%i] Unhandled preparsing1: %i", i, (uint32_t) cmd);
+			default: FIXME("[%i] Unhandled preparsing1: %i", i - 1, (uint32_t) cmd);
 		}
 	}
 	map <int32_t, int32_t> functionMaping;
 	//Goto and if
 	i = 0;
+	if (*(int32_t *)(code + i) == 0) {
+		i += 4;
+	}
 	while (i < size) {
 		//roffsets[i] = ncmd;
 		uint8_t cmd = *(uint8_t *)(code + i);
