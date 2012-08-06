@@ -207,11 +207,12 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
-/** Draws image region with scaling, rotating and tinting. */
+/** Draws image region or frame with scaling, rotating and tinting. */
 void cbeDrawTintedImage(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 
-	// Cropping parameters, source X and Y & width and height
+	// Cropping parameters, source X and Y & width and height.
+	// If sX is > 0, sY is a frame in an animated image.
 	float sH = cb->popValue().toFloat();
 	float sW = cb->popValue().toFloat();
 	float sY = cb->popValue().toFloat();
@@ -234,7 +235,8 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 	CBImage *img = cb->getImage(handle);
 	if (img == NULL) {
 		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
-		cb->errors->createError("Image not found!", err, "Image not found!");
+		cb->errors->createError("cbeDrawTintedImage() failed!", err);
+		cb->pushValue(0);
 		return;
 	}
 	ALLEGRO_BITMAP *bm = 0;
@@ -246,7 +248,42 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 	}
 
 	// If sW and sH are 0, the image shall be drawn without any cropping.
-	if (sW == 0 && sH == 0) {
+	// But if sX >0, draw a single frame of the given image from sY parameter.
+	if (sX != 0) {
+		int32_t frameWidth = img->getFrameWidth();
+		int32_t frameHeight = img->getFrameHeight();
+
+		if (!frameWidth || !frameHeight) {
+			cb->errors->createError("cbeDrawTintedImage() failed!", "Tried to draw a frame out of an image that was not loaded with LoadAnimImage()");
+			cb->pushValue(0);
+			return;
+		}
+
+		int32_t frame = (int)sY;
+		int32_t framesX = img->width() / frameWidth;
+		int32_t framesY = img->height() / frameHeight;
+		int32_t copyX = frame % framesX;
+		int32_t copyY = (frame - copyX) / framesY;
+
+		float frameAreaLeft = (copyX * frameWidth);
+		float frameAreaTop = (copyY * frameWidth);
+		float frameAreaHeight = frameHeight;
+		float frameAreaWidth = frameWidth;
+		cb->getCurrentRenderTarget()->drawBitmapRegion(
+			bm,
+			frameAreaLeft,
+			frameAreaTop,
+			frameAreaWidth,
+			frameAreaHeight,
+			cb->getDrawColor(),
+			centerX,
+			centerY,
+			scaleX,
+			scaleY,
+			angle
+		);
+	}
+	else if (sW == 0 && sH == 0) {
 		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, cb->getDrawColor());
 	}
 	else {
@@ -256,11 +293,12 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
-/** Draws image region with scaling and rotating. */
+/** Draws image region or frame with scaling and rotating. */
 void cbeDrawImage(CBEnchanted *cb) {
 	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
 
-	// Cropping parameters, source X and Y & width and height
+	// Cropping parameters, source X and Y & width and height.
+	// If sX is > 0, sY is a frame in an animated image.
 	float sH = cb->popValue().toFloat();
 	float sW = cb->popValue().toFloat();
 	float sY = cb->popValue().toFloat();
@@ -283,7 +321,8 @@ void cbeDrawImage(CBEnchanted *cb) {
 	CBImage *img = cb->getImage(handle);
 	if (img == NULL) {
 		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
-		cb->errors->createError("Image not found!", err, "Image not found!");
+		cb->errors->createError("cbeDrawImage() failed!", err);
+		cb->pushValue(0);
 		return;
 	}
 	ALLEGRO_BITMAP *bm = 0;
@@ -295,7 +334,41 @@ void cbeDrawImage(CBEnchanted *cb) {
 	}
 
 	// If sW and sH are 0, the image shall be drawn without any cropping.
-	if (sW == 0 && sH == 0) {
+	// But if sX >0, draw a single frame of the given image from sY parameter.
+	if (sX > 0) {
+		int32_t frameWidth = img->getFrameWidth();
+		int32_t frameHeight = img->getFrameHeight();
+
+		if (!frameWidth || !frameHeight) {
+			cb->errors->createError("cbeDrawImage() failed!", "Tried to draw a frame out of an image that was not loaded with LoadAnimImage()");
+			cb->pushValue(0);
+			return;
+		}
+
+		int32_t frame = (int)sY;
+		int32_t framesX = img->width() / frameWidth;
+		int32_t framesY = img->height() / frameHeight;
+		int32_t copyX = frame % framesX;
+		int32_t copyY = (frame - copyX) / framesY;
+
+		float frameAreaLeft = (copyX * frameWidth);
+		float frameAreaTop = (copyY * frameWidth);
+		float frameAreaHeight = frameHeight;
+		float frameAreaWidth = frameWidth;
+		cb->getCurrentRenderTarget()->drawBitmapRegion(
+			bm,
+			frameAreaLeft,
+			frameAreaTop,
+			frameAreaWidth,
+			frameAreaHeight,
+			centerX,
+			centerY,
+			scaleX,
+			scaleY,
+			angle
+		);
+	}
+	else if (sW == 0 && sH == 0) {
 		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, al_map_rgba_f(1, 1, 1, 1));
 	}
 	else {

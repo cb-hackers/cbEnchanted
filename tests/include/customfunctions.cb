@@ -109,6 +109,10 @@ EndFunction
 //  * sW, sH .............. Width and height of the image region to draw.
 //                          NOTE: If these are both 0, no cropping will be done
 //                          and the whole image will be drawn.
+// ---
+// Addendum: You can also set sX to 1 and then sY to a frame of an image loaded
+// with LoadAnimImage(). Be aware that you must yourself make sure that you are
+// not drawing a frame that is not in the image.
 // ----------------------------------------------------------------------------
 Function cbeDrawTintedImage(cbeImg, cbeCenterX#, cbeCenterY#, cbeAngle# = 0.0, cbeScaleX# = 1.0, cbeScaleY# = 1.0, cbeSX# = 0.0, cbeSY# = 0.0, cbeSW# = 0.0, cbeSH# = 0.0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
@@ -130,6 +134,10 @@ EndFunction
 //  * sW, sH .............. Width and height of the image region to draw.
 //                          NOTE: If these are both 0, no cropping will be done
 //                          and the whole image will be drawn.
+// ---
+// Addendum: You can also set sX to 1 and then sY to a frame of an image loaded
+// with LoadAnimImage(). Be aware that you must yourself make sure that you are
+// not drawing a frame that is not in the image.
 // ----------------------------------------------------------------------------
 Function cbeDrawImage(cbeImg, cbeCenterX#, cbeCenterY#, cbeAngle# = 0.0, cbeScaleX# = 1.0, cbeScaleY# = 1.0, cbeSX# = 0.0, cbeSY# = 0.0, cbeSW# = 0.0, cbeSH# = 0.0)
     cbeGroup = CBE_CUSTOM_FUNCTION_GROUP

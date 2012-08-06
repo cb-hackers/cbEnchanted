@@ -2,12 +2,22 @@ Include "include/customfunctions.cb"
 FrameLimit 40
 img = LoadImage("Media\map.bmp")
 
+animImg = LoadAnimImage("Media\bang.bmp", 32, 32, 0, 8)
+
+curFrame# = 0.0
 Repeat 
 
     cbeColor(255, 255, 255, 127)
     ang# = WrapAngle(ang#+0.5)
     cbeDrawTintedImage(img, 200, 150, ang#, 0.5, 1.0)
     cbeDrawImage(img, 50, 38, ang#, 0.25, 0.25)
+    
+    curFrame# = curFrame# + 0.25
+    If curFrame > 7 Then curFrame = 0
+    
+    cbeColor(255 / curFrame#, 255, 255, 255)
+    cbeDrawTintedImage(animImg, 340, 250, ang#, 2.0, 1.5, True, curFrame#)
+    cbeDrawImage(animImg, 300, 250, ang#, 0.5, 2.0, True, curFrame#)
 
     Text 0, 0, FPS()
 DrawScreen
