@@ -1,0 +1,7 @@
+Repeat
+
+    Text 10,10,"Your desktop colour depth is "+ScreenDepth()+"-bit."
+
+    DrawScreen
+
+Until EscapeKey()
