@@ -526,44 +526,7 @@ void GfxInterface::functionScreenHeight(void) {
 }
 
 void GfxInterface::functionScreenDepth(void) {
-	ALLEGRO_PIXEL_FORMAT pf;
-	pf = al_get_display_format(cb->getWindow());
-	int val = 0;
-	switch (pf) {
-		case ALLEGRO_PIXEL_FORMAT_BGR_555: // 15 bit
-		case ALLEGRO_PIXEL_FORMAT_RGB_555: // 15 bit
-			val = 15;
-			break;
-
-		case ALLEGRO_PIXEL_FORMAT_ARGB_1555: // 16 bit
-		case ALLEGRO_PIXEL_FORMAT_ARGB_4444: // 16 bit
-		case ALLEGRO_PIXEL_FORMAT_BGR_565: // 16 bit
-		case ALLEGRO_PIXEL_FORMAT_RGB_565: // 16 bit
-		case ALLEGRO_PIXEL_FORMAT_RGBA_5551: // 16 bit
-			val = 16;
-			break;
-
-		case ALLEGRO_PIXEL_FORMAT_BGR_888: // 24 bit
-		case ALLEGRO_PIXEL_FORMAT_RGB_888: // 24 bit
-			val = 24;
-			break;
-
-		case ALLEGRO_PIXEL_FORMAT_ABGR_8888: // 32 bit
-		case ALLEGRO_PIXEL_FORMAT_ARGB_8888: // 32 bit
-		case ALLEGRO_PIXEL_FORMAT_RGBA_8888: // 32 bit
-		case ALLEGRO_PIXEL_FORMAT_RGBX_8888: // 32 bit
-		case ALLEGRO_PIXEL_FORMAT_XBGR_8888: // 32 bit
-		case ALLEGRO_PIXEL_FORMAT_XRGB_8888: // 32 bit
-			val = 32;
-			break;
-
-		case ALLEGRO_PIXEL_FORMAT_ABGR_F32: // 128 bit
-			val = 128;
-			break;
-		default:
-			val = 0; // Unknown
-	}
-	cb->pushValue(val);
+	STUB;
 }
 
 /** Returns true if Gfx mode exists
