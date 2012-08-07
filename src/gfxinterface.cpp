@@ -526,7 +526,7 @@ void GfxInterface::functionScreenHeight(void) {
 }
 
 void GfxInterface::functionScreenDepth(void) {
-	STUB;
+	cb->pushValue(al_get_pixel_format_bits(al_get_display_format(cb->getWindow())));
 }
 
 /** Returns true if Gfx mode exists
