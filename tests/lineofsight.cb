@@ -10,7 +10,7 @@ Const SCRW = 1280
 Const SCRH = 1024
 Const SCRW_H = 640 ' Puolet leveydestä
 Const SCRH_H = 512 ' Puolet korkeudesta
-SCREEN SCRW, SCRH, 0, cbFullscreen
+SCREEN SCRW, SCRH, 0, 1
 
 kartta = LoadMap("Media\cdm2.til","Media\tileset.bmp")
 PlayObject kartta,0,0,1

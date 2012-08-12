@@ -7,6 +7,7 @@
 class CBEnchanted;
 class CBImage;
 
+typedef void (*VoidFuncPtrType) (void);
 
 class GfxInterface {
 	public:
@@ -73,6 +74,12 @@ class GfxInterface {
 		float getLineWidth() const { return lineWidth; }
 		void setLineWidth(float w) { lineWidth = w; }
 
+		/** Adds function pointer which will be called after DrawScreen. */
+		void addDrawScreenCallback(int32_t group, VoidFuncPtrType ptr) {drawScreenCallbacks[group] = ptr;}
+		/** Adds function pointer which will be called after DrawGame. */
+		void addDrawGameCallback(int32_t group, VoidFuncPtrType ptr) {drawGameCallbacks[group] = ptr;}
+		/** Adds function pointer which will be called after UpdateGame. */
+		void addUpdateGameCallback(int32_t group, VoidFuncPtrType ptr) {updateGameCallbacks[group] = ptr;}
 	private:
 		void registerWindow();
 		void unregisterWindow();
@@ -105,6 +112,16 @@ class GfxInterface {
 
 		/** Buffer's returned by SCREEN() and Image() */
 		std::map<int32_t,RenderTarget*> bufferMap;
+
+		/** Callbacks*/
+		map<int32_t, VoidFuncPtrType> drawScreenCallbacks;
+		map<int32_t, VoidFuncPtrType> updateGameCallbacks;
+		map<int32_t, VoidFuncPtrType> drawGameCallbacks;
+
+		void callDrawScreenCallbacks();
+		void callDrawGameCallbacks();
+		void callUpdateGameCallbacks();
+
 
 		/** Holds the image DrawToImage() was called with. */
 		CBImage* imageToDrawTo;

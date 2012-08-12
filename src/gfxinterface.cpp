@@ -228,9 +228,17 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 	lastFrameTime = mtimer();
 
-	if (!gameUpdated) cb->updateObjects();
-	if (cb->isCamFollowing()) cb->updateCamFollow();
-	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
+	if (!gameUpdated) {
+		callUpdateGameCallbacks();
+		cb->updateObjects();
+	}
+	if (cb->isCamFollowing()) {
+		cb->updateCamFollow();
+	}
+	if (!gameDrawn) {
+		callDrawGameCallbacks();
+		cb->drawObjects(*windowRenderTarget);
+	}
 
 	gameUpdated = false;
 	gameDrawn = false;
@@ -268,6 +276,9 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
+
+	callDrawScreenCallbacks();
+
 	cb->renderAddTexts(*windowRenderTarget);
 	cb->renderInput(*windowRenderTarget);
 	cb->renderCursor(*windowRenderTarget);
@@ -459,12 +470,17 @@ void GfxInterface::commandScreenShot(void) {
 }
 
 void GfxInterface::commandUpdateGame(void) {
+	callUpdateGameCallbacks();
 	cb->updateObjects();
 	gameUpdated = true;
 }
 
 void GfxInterface::commandDrawGame(void) {
-	if (!gameUpdated) cb->updateObjects();
+	if (!gameUpdated) {
+		callUpdateGameCallbacks();
+		cb->updateObjects();
+	}
+	callDrawGameCallbacks();
 	cb->drawObjects(*currentRenderTarget);
 	gameDrawn = true;
 	gameUpdated = true;
@@ -585,5 +601,23 @@ void GfxInterface::unregisterWindow() {
 void GfxInterface::resizeTempBitmap(int32_t w, int32_t h) {
 	al_destroy_bitmap(drawscreenTempBitmap);
 	drawscreenTempBitmap = al_create_bitmap(w, h);
+}
+
+void GfxInterface::callDrawScreenCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = drawScreenCallbacks.begin(); i != drawScreenCallbacks.end(); i++) {
+		(i->second)();
+	}
+}
+
+void GfxInterface::callDrawGameCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = drawGameCallbacks.begin(); i != drawGameCallbacks.end(); i++) {
+		(i->second)();
+	}
+}
+
+void GfxInterface::callUpdateGameCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = updateGameCallbacks.begin(); i != updateGameCallbacks.end(); i++) {
+		(i->second)();
+	}
 }
 
