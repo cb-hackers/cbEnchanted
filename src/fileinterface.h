@@ -53,7 +53,7 @@ class FileInterface {
 	private:
 		CBEnchanted *cb;
 
-		int32_t rcount;
+		int32_t findFileCount;
 		int32_t idC;
 		map <int32_t, FILE*> filestrs;
 
