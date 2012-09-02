@@ -276,6 +276,7 @@ void ImageInterface::functionImagesCollide(void) {
 		cb->pushValue(0);
 	}
 }
+#endif
 
 CBImage *ImageInterface::getImage(int32_t id)
 {
@@ -287,4 +288,4 @@ CBImage *ImageInterface::getImage(int32_t id)
 	return imgI->second;
 
 }
-#endif
+
