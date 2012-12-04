@@ -211,10 +211,32 @@ void GfxInterface::commandCircle(void) {
 
 void GfxInterface::commandLine(void){
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
-	float y2 = cb->popValue().toFloat()+0.5f;
-	float x2 = cb->popValue().toFloat()+0.5f;
-	float y1 = cb->popValue().toFloat()+0.5f;
-	float x1 = cb->popValue().toFloat()+0.5f;
+	float y2 = cb->popValue().toFloat();
+	float x2 = cb->popValue().toFloat();
+	float y1 = cb->popValue().toFloat();
+	float x1 = cb->popValue().toFloat();
+	if (cb->isSmooth2D() || currentRenderTarget->isDrawToWorldViewOn()) {
+		x1 += 0.5f;
+		y1 += 0.5f;
+		x2 += 0.5f;
+		y2 += 0.5f;
+	}
+	else {
+		if (x1 == x2) {
+			x1 += 0.5f;
+			x2 += 0.5f;
+			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
+		}
+		else if (y1 == y2) {
+			y1 += 0.5;
+			y2 += 0.5;
+			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+		}
+		else {
+			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
+			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+		}
+	}
 
 	currentRenderTarget->drawLine(x1,y1,x2,y2,drawColor);
 }
