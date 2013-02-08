@@ -8,4 +8,16 @@ void VariableStack::resize(uint32_t newStackSize) {
 	stackArray = newStack;
 	stackSize = newStackSize;
 	INFO("Stack resized to %i", stackSize);
+#ifdef CBE_STACKDUMP
+	dump();
+#endif
+}
+
+void VariableStack::dump() {
+	printf("\nSTACKDUMP\n------------------------------------\n");
+	for (int i = 0; i < stackLevel; ++i) {
+		printf("Stack[%i] ", i);
+		stackArray[i].dump();
+	}
+	printf("------------------------------------\n");
 }

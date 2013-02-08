@@ -199,8 +199,23 @@ void *Any::toTypePtr() const{
 	return 0;
 }
 
+/** Prints debug information to stdout.
+ */
+void Any::dump() const {
+	switch (typeId) {
+		case Int:
+			printf("Integer %i\n", this->getInt()); return;
+		case Float:
+			printf("Float %f\n",this->getFloat()); return;
+		case String:
+			printf("String %s\n", this->getString().getRef().c_str()); return;
+		case TypePtr:
+			printf("TypePointer %X\n", (intptr_t)this->getTypePtr()); return;
+		case Empty:
+			printf("Invalid Any\n"); return;
 
-
+	}
+}
 
 
 

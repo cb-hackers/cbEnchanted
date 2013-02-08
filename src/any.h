@@ -131,6 +131,12 @@ class Any {
 		  */
 		bool toBool() const;
 
+
+		/** Prints debug information to stdout.
+		 */
+		void dump() const;
+
+
 		/** Negation operator */
 		int32_t operator ! ()const;
 		/** Unary plus operator */

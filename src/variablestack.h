@@ -39,6 +39,8 @@ class VariableStack {
 
 		void resize(uint32_t newStackSize);
 
+		void dump();
+
 	private:
 		Any *stackArray;
 		uint32_t stackLevel;
