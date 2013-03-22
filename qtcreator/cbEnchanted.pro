@@ -123,9 +123,9 @@ contains(CBE_CONFIG,debug_hc) {
 
 
 
-HEADERS += ../src/*.h
+HEADERS += $$files(../src/*.h)
 
-SOURCES += ../src/*.cpp
+SOURCES += $$files(../src/*.cpp)
 
 
 PRECOMPILED_HEADER = ../src/precomp.h
