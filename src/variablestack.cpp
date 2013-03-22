@@ -15,8 +15,8 @@ void VariableStack::resize(uint32_t newStackSize) {
 
 void VariableStack::dump() {
 	printf("\nSTACKDUMP\n------------------------------------\n");
-	for (int i = 0; i < stackLevel; ++i) {
-		printf("Stack[%i] ", i);
+	for (unsigned int i = 0; i < stackLevel; ++i) {
+		printf("Stack[%u] ", i);
 		stackArray[i].dump();
 	}
 	printf("------------------------------------\n");
