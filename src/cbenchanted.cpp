@@ -461,12 +461,20 @@ void CBEnchanted::commandFunction(void) {
 }
 
 void CBEnchanted::commandSelect(void) {
+#ifdef LOG_LEVEL_HCDEBUG
+	HCDEBUG("commandSelect stack dump:");
+	internalStack.dump();
+#endif
 	selectValue = popValue();
 	++code;
 	code = codeBase + *(int32_t *)(code);
 }
 
 void CBEnchanted::commandCase(void) {
+#ifdef LOG_LEVEL_HCDEBUG
+	HCDEBUG("commandCase stack dump:");
+	internalStack.dump();
+#endif
 	++code;
 	int32_t testCount = *(int32_t *)(code);
 	code += 5;
@@ -502,7 +510,7 @@ void CBEnchanted::commandCase(void) {
 			}
 		}
 		if (matched) {
-			code += 4;
+			code += (testCount - i - 1) * 5 + 4;
 			return;
 		}
 	}
