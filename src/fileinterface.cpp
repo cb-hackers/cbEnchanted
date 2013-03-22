@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 #include "errorsystem.h"
+#include "util.h"
 #ifndef CBE_LIB
 FileInterface::FileInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -32,7 +33,7 @@ void FileInterface::commandSeekFile(void) {
 }
 
 void FileInterface::commandStartSearch(void) {
-	string dir_str = string(al_get_current_directory()) + ".";
+	string dir_str = string(al_get_current_directory());
 	cur_dir = al_create_fs_entry(dir_str.c_str());
 	if(!al_open_directory(cur_dir))
 		cb->errors->createError("StartSearch failed! Path: \"" + dir_str + "\"");
@@ -46,13 +47,13 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	string path_s = cb->popValue().toString().getRef();
+	string path_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_change_directory(path_s.c_str()))
 		cb->errors->createError("ChDir failed! Path: \"" + path_s + "\"");
 }
 
 void FileInterface::commandMakeDir(void) {
-	string dir_s = cb->popValue().toString().getRef();
+	string dir_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_make_directory(dir_s.c_str()))
 		cb->errors->createError("MakeDir failed! Directory: \"" + dir_s + "\"");
 }
@@ -105,7 +106,7 @@ void FileInterface::commandCopyFile(void) {
 }
 
 void FileInterface::commandDeleteFile(void) {
-	string file_s = cb->popValue().toString().getRef();
+	string file_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_remove_filename(file_s.c_str()))
 		cb->errors->createError("DeleteFile failed! File: \"" + file_s + "\"");
 }
@@ -302,15 +303,19 @@ void FileInterface::functionFindFile(void) {
 	}
 
 	string file_s;
-	ALLEGRO_PATH * path = al_create_path(al_get_fs_entry_name(file));
+
+	ALLEGRO_PATH * path = NULL;
 
 	if(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR) {
+		path = al_create_path_for_directory(al_get_fs_entry_name(file));
 		file_s = string(al_get_path_tail(path));
 	}
 	else {
+		path = al_create_path(al_get_fs_entry_name(file));
 		file_s = string(al_get_path_filename(path));
 	}
-	cb->pushValue(file_s);
+
+	cb->pushValue(utf8toCP1252(file_s));
 
 	al_destroy_path(path);
 	al_destroy_fs_entry(file);
@@ -323,17 +328,17 @@ void FileInterface::functionCurrentDir(void) {
 	string dir_s = string(dir) + "\\";
 	al_free(dir);
 
-	cb->pushValue(dir_s);
+	cb->pushValue(utf8toCP1252(dir_s));
 }
 
 void FileInterface::functionFileExists(void) {
-	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getUtf8Encoded().c_str());
 	cb->pushValue(al_filename_exists(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP)));
 	al_destroy_path(filePath);
 }
 
 void FileInterface::functionIsDirectory(void) {
-	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getUtf8Encoded().c_str());
 	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP));
 	cb->pushValue(bool(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR));
 	al_destroy_fs_entry(file);
@@ -341,7 +346,7 @@ void FileInterface::functionIsDirectory(void) {
 }
 
 void FileInterface::functionFileSize(void) {
-	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getUtf8Encoded().c_str());
 	cb->pushValue(int32_t(al_get_fs_entry_size(file)));
 	al_destroy_fs_entry(file);
 }
