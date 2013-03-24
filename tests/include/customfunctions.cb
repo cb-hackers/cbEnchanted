@@ -427,3 +427,24 @@ Function cbeGetBestGfxMode(cbeWidth, cbeHeight)
     cbeFuncId = 34
 EndFunction
 
+// ----------------------------------------------------------------------------
+// cbeMessageBox()
+// ---
+// Shows the native messagebox window. You can use this function to create a
+// messagebox that is cross-platform and uses the internals of users
+// operating system.
+// ---
+// Use the constants below with this function. You can combine those constants
+// with the custom binary functions. For more info, see
+// http://liballeg.org/a5docs/5.0.9/native_dialog.html#al_show_native_message_box
+// ----------------------------------------------------------------------------
+Const CBE_MESSAGEBOX_WARN = 1
+Const CBE_MESSAGEBOX_ERROR = 2
+Const CBE_MESSAGEBOX_OK_CANCEL = 4
+Const CBE_MESSAGEBOX_YES_NO = 8
+Const CBE_MESSAGEBOX_QUESTION = 16
+
+Function cbeMessageBox(cbeTitle As String, cbeHeading As String, cbeTxt As String, cbeButtons As String = "", cbeFlags As Integer = 0)
+    cbeGroup = CBE_CUSTOM_FUNCTION_GROUP
+    cbeFuncId = 35
+EndFunction

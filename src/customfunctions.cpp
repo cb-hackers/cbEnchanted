@@ -804,6 +804,24 @@ void cbeGetBestGfxMode(CBEnchanted *cb) {
 
 }
 
+void cbeMessageBox(CBEnchanted *cb) {
+	int32_t flags = cb->popValue().getInt();
+	string buttons = cb->popValue().getString().getRef();
+	string txt = cb->popValue().getString().getUtf8Encoded();
+	string heading = cb->popValue().getString().getUtf8Encoded();
+	string title = cb->popValue().getString().getUtf8Encoded();
+
+	const char * buttons_cstr;
+
+	if (buttons == "") {
+		buttons_cstr = NULL;
+	} else {
+		buttons_cstr = buttons.c_str();
+	}
+
+	cb->pushValue(al_show_native_message_box(cb->getWindow(), title.c_str(), heading.c_str(), txt.c_str(), buttons_cstr, flags));
+}
+
 void cbePushByte(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
