@@ -31,10 +31,13 @@
 	#define HCDEBUG(str, ...)
 #endif
 
+#define FATAL_ERROR(str, ... ) printf((string("ERROR: ") + string(str) + string("\n")).c_str(), ##__VA_ARGS__);fatalError();
+
 void hcdebug_breakpoint_place();
 void stub_breakpoint_place();
 void fixme_breakpoint_place();
 void info_breakpoint_place();
 void debug_breakpoint_place();
+void fatalError();
 
 #endif // DEBUG_H

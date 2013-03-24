@@ -1346,11 +1346,16 @@ template<class T> FORCEINLINE uint32_t CBEnchanted::popArrayDimensions(Array<T> 
 	uint32_t pos(0);
 #ifdef CBE_ARRAY_BOUNDS_CHECK
 	uint32_t index[5] = {0, 0, 0, 0, 0};
+	bool outOfBounds = false;
 	for (int32_t i = n - 1; i >= 0; --i) {
 		index[i] = popValue().getInt();
+		if (index[i] >= a.getDimensionSizes()[i] || index[i] < 0) {
+			outOfBounds = true;
+			break;
+		}
 		pos +=  index[i] * a.getDimensionMultiplier(i);
 	}
-	if (pos >= a.getSize()) {
+	if (outOfBounds) {
 		string arrayStr;
 		string accessStr;
 		for (int i = 0; i < n; i++) {
