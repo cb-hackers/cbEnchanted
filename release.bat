@@ -1,9 +1,5 @@
 ::Usage: release.bat <qmake_path> <upx_path>
 @echo off
-set ALLEGRO_INCLUDE=D:\Programming\Libs\allegro-5.0.9\include
-set ALLEGRO_LIB=D:\Programming\Libs\allegro-5.0.9\lib
-set BOOST_LIB=D:\Programming\Libs\boost_1_53_0_msvc10\stage\lib
-set BOOST_INCLUDE=D:\Programming\Libs\boost_1_53_0_msvc10\
 
 echo QMake: %1
 echo UPX: %2
