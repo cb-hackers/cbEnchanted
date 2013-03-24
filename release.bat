@@ -41,8 +41,8 @@ xcopy release\cbEnchanted_test.exe ..\%base_dir%\debug /Y
 nmake clean
 cd ..
 echo Compressing release executable
-%upx_path% ..\%base_dir%\release\cbEnchanted.exe --best --ultra-brute
-%upx_path% ..\%base_dir%\release\cbEnchanted_test.exe --best --ultra-brute
+%upx_path% %base_dir%\release\cbEnchanted.exe --best --ultra-brute
+%upx_path% %base_dir%\release\cbEnchanted_test.exe --best --ultra-brute
 
 xcopy tests\include\customfunctions.cb %base_dir% /Y
 xcopy README-release.txt %base_dir% /Y
