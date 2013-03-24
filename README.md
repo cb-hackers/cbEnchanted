@@ -47,7 +47,7 @@ We use IRC to keep in touch with each other. Drop by **#cbe** @ **IRCNet** to sa
 
 
   [coolbasic]: http://www.coolbasic.com
-  [downloads]: https://github.com/VesQ/cbEnchanted/downloads
+  [downloads]: http://latexi95.kapsi.fi/cbEnchanted/
   [coolbasic forums]: http://www.coolbasic.com/phpBB3/viewtopic.php?f=11&t=2702
                       "Topic of cbEnchanted on CoolBasic Forums"
   [documentation]: http://vesq.viuhka.fi/cbe/doc/
