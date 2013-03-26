@@ -1351,7 +1351,6 @@ template<class T> FORCEINLINE uint32_t CBEnchanted::popArrayDimensions(Array<T> 
 		index[i] = popValue().getInt();
 		if (index[i] >= a.getDimensionSizes()[i] || index[i] < 0) {
 			outOfBounds = true;
-			break;
 		}
 		pos +=  index[i] * a.getDimensionMultiplier(i);
 	}

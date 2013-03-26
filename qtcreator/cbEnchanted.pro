@@ -114,13 +114,13 @@ contains(CBE_CONFIG, release_debug) {
 	DEFINES += CBE_ARRAY_BOUNDS_CHECK
 	DEFINES += LOG_LEVEL_DEBUG LOG_LEVEL_INFO LOG_LEVEL_FIXME LOG_LEVEL_STUB
 	contains(CBE_CONFIG, no_testing) {
-		TARGET = CBCompiler
+		TARGET = CBCompiler_runtime
 	}
 } else {
 	contains (CBE_CONFIG, release) {
 		DEFINES += VC_USE_FORCEINLINE
 		contains(CBE_CONFIG, no_testing) {
-			TARGET = CBCompiler
+			TARGET = CBCompiler_runtime
 		}
 	}
 }

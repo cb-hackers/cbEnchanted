@@ -20,6 +20,19 @@ int main(int argc, char **argv) {
 	ifstream input1(s1.c_str(), ios::binary); // Compiler
 	ifstream input2(s2.c_str(), ios::binary); // Runtime
 	ofstream output(s3.c_str(), ios::binary); // Output
+	
+	if (!input1.is_open()) {
+		cerr << "Can't open the old compiler\n";
+		return 1;
+	}
+	if (!input2.is_open()) {
+		cerr << "Can't open the runtime file\n";
+		return 1;
+	}
+	if (!output.is_open()) {
+		cerr << "Can't open output file\n";
+		return 1;
+	}
 
 	cout << "Finding runtime location and size" << endl;
 
@@ -53,4 +66,5 @@ int main(int argc, char **argv) {
 	output.close();
 	input1.close();
 	input2.close();
+	return 0;
 }
