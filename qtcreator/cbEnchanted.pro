@@ -17,12 +17,12 @@ win32 {
 	staticlib {
 		# Disable security warnings
 		DEFINES += _CRT_SECURE_NO_WARNINGS
-		QMAKE_CXXFLAGS_DEBUG += -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MDd -Zi
-		QMAKE_CXXFLAGS_RELEASE += -Zc:wchar_t -Zc:forScope -MP -W3 -MD -EHsc -GL -Ox
+		QMAKE_CXXFLAGS_DEBUG += -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
+		QMAKE_CXXFLAGS_RELEASE += -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
 
 		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MDd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MD -Zc:wchar_t -Ox
+		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
+		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
 
 		contains(CBE_CONFIG,optimized_debug) {
 			#DEFINES += VC_USE_FORCEINLINE
@@ -66,12 +66,12 @@ win32 {
 		# Release only:
 		#  - Enable whole program optimization
 		#  - Use maximum optimization (/Ob2gity /Gs)
-		QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MDd -Zi
-		QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MD -EHsc -GL -Ox
+		QMAKE_CXXFLAGS_DEBUG = -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc -MTd -Zi
+		QMAKE_CXXFLAGS_RELEASE = -Zc:wchar_t -Zc:forScope -MP -W3 -MT -EHsc -GL -Ox
 
 		# Add some flags to CFLAGS too
-		QMAKE_CFLAGS_DEBUG += -MDd -Zc:wchar_t -Zi
-		QMAKE_CFLAGS_RELEASE += -MD -Zc:wchar_t -Ox
+		QMAKE_CFLAGS_DEBUG += -MTd -Zc:wchar_t -Zi
+		QMAKE_CFLAGS_RELEASE += -MT -Zc:wchar_t -Ox
 
 		# Disable security warnings
 		DEFINES += _CRT_SECURE_NO_WARNINGS
@@ -94,13 +94,13 @@ win32 {
 	# Support only Win2K and above
 	DEFINES += _WIN32_WINNT=0x0500
 	CONFIG(release, debug|release){ #release build
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-static -lallegro_ttf-5.0.9-static -lallegro_primitives-5.0.9-static -lallegro_image-5.0.9-static -lallegro_memfile-5.0.9-static -lallegro_font-5.0.9-static -lallegro_dialog-5.0.9-static -lallegro_audio-5.0.9-static -lallegro_acodec-5.0.9-static
-		LIBS += -llibvorbisfile_static-1.3.3 -lOpenAL32_static-1.1.5.1 -lzlib_static-1.2.7 -llibogg_static-1.3.0 -llibFLAC_static-1.2.1 -lfreetype_static-2.4.11 -ldumb_static-0.9.3 -llibvorbis_static-1.3.3
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-static-mt -lallegro_ttf-5.0.9-static-mt -lallegro_primitives-5.0.9-static-mt -lallegro_image-5.0.9-static-mt -lallegro_memfile-5.0.9-static-mt -lallegro_font-5.0.9-static-mt -lallegro_dialog-5.0.9-static-mt -lallegro_audio-5.0.9-static-mt -lallegro_acodec-5.0.9-static-mt
+		LIBS += -llibvorbisfile_static-1.3.3-mt -lOpenAL32_static-1.1.5.1-mt -lzlib_static-1.2.7-mt -llibogg_static-1.3.0-mt -llibFLAC_static-1.2.1-mt -lfreetype_static-2.4.11-mt -ldumb_static-0.9.3-mt -llibvorbis_static-1.3.3-mt
 		DEFINES += NDEBUG
 	}
 	else {
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-debug-static -lallegro_ttf-5.0.9-debug-static -lallegro_primitives-5.0.9-debug-static -lallegro_image-5.0.9-debug-static -lallegro_memfile-5.0.9-debug-static -lallegro_font-5.0.9-debug-static -lallegro_dialog-5.0.9-debug-static -lallegro_audio-5.0.9-debug-static -lallegro_acodec-5.0.9-debug-static
-		LIBS += -llibvorbisfile_static-1.3.3-debug -lOpenAL32_static-1.1.5.1-debug -lzlib_static-1.2.7-debug -llibogg_static-1.3.0-debug -llibFLAC_static-1.2.1-debug -lfreetype_static-2.4.11-debug -ldumb_static-0.9.3-debug -llibvorbis_static-1.3.3-debug
+		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-debug-static-mt -lallegro_ttf-5.0.9-debug-static-mt -lallegro_primitives-5.0.9-debug-static-mt -lallegro_image-5.0.9-debug-static-mt -lallegro_memfile-5.0.9-debug-static-mt -lallegro_font-5.0.9-debug-static-mt -lallegro_dialog-5.0.9-debug-static-mt -lallegro_audio-5.0.9-debug-static-mt -lallegro_acodec-5.0.9-debug-static-mt
+		LIBS += -llibvorbisfile_static-1.3.3-debug-mt -lOpenAL32_static-1.1.5.1-debug-mt -lzlib_static-1.2.7-debug-mt -llibogg_static-1.3.0-debug-mt -llibFLAC_static-1.2.1-debug-mt -lfreetype_static-2.4.11-debug-mt -ldumb_static-0.9.3-debug-mt -llibvorbis_static-1.3.3-debug-mt
 		DEFINES += CBE_MEMBLOCK_BOUNDS_CHECK CBE_ARRAY_BOUNDS_CHECK
 	}
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
