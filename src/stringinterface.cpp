@@ -88,7 +88,7 @@ void StringInterface::functionReplace(void) {
 	while ((p = s.find(s2, p))!=string::npos)
 	{
 		s.replace(p, s2.size(), s3);
-		++p;
+		p = p + s3.size();
 	}
 
 	cb->pushValue(s);
