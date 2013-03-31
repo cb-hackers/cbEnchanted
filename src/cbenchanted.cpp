@@ -1258,6 +1258,7 @@ void CBEnchanted::commandReDim(void) {
 }
 
 FORCEINLINE void CBEnchanted::commandReturn(void) {
+	if (pos.empty()) return;
 	code = pos.back();
 	pos.pop_back();
 
