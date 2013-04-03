@@ -193,7 +193,16 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 	int32_t a, b, c;
 	al_get_blender(&a, &b, &c);
 	al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-	al_draw_bitmap_region(src->getBitmap(), sx, sy, w, h, tx, ty, 0);
+
+	if(src->getBitmap() == this->getBitmap()) {
+		ALLEGRO_BITMAP *src_clone = al_clone_bitmap(src->getBitmap());
+		al_draw_bitmap_region(src_clone, sx, sy, w, h, tx, ty, 0);
+		al_destroy_bitmap(src_clone);
+	}
+	else {
+		al_draw_bitmap_region(src->getBitmap(), sx, sy, w, h, tx, ty, 0);
+	}
+
 	al_set_blender(a, b, c);
 }
 
