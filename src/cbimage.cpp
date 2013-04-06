@@ -225,10 +225,6 @@ void CBImage::setHotspot(int32_t x, int32_t y) {
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
 void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
-	// If we don't have masking on, we don't need to do anything.
-	if (!isMasked) {
-		return;
-	}
 	if (switchToUnmasked) {
 		renderTarget.changeBitmap(unmaskedBitmap);
 		maskedBitmap = NULL;
