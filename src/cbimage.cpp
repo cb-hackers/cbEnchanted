@@ -16,6 +16,7 @@ CBImage::CBImage() :
 	maskData(0),
 	maskIsDirty(false)
 {
+	renderTarget.cbImg = this;
 }
 
 CBImage::~CBImage() {

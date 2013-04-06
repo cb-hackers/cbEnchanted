@@ -408,7 +408,14 @@ void GfxInterface::commandCopyBox(void) {
 	else {
 		source = getBuffer(srcId);
 	}
-	dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+	if (dest->cbImg != NULL) {
+		dest->cbImg->switchMaskBitmaps(true);
+		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+		dest->cbImg->unmaskedBitmap = dest->getBitmap();
+		dest->cbImg->switchMaskBitmaps(false);
+	} else {
+		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+	}
 }
 
 void GfxInterface::commandCls(void) {

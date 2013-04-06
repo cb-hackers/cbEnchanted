@@ -56,7 +56,8 @@ void RenderTarget::drawParticles(CBImage *tex, const vector<Particle> &particles
 
 RenderTarget::RenderTarget():
 	bitmap(0),
-	worldCoordsEnabled(false)
+	worldCoordsEnabled(false),
+	cbImg(NULL)
 {
 	id = ++renderTargetIdCounter;
 }

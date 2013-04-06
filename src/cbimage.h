@@ -7,6 +7,7 @@ class CBImage
 {
 	public:
 		friend class RenderTarget;
+		friend class GfxInterface;
 		CBImage();
 		~CBImage();
 		bool load(const string &path);
