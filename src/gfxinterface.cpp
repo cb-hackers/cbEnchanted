@@ -123,6 +123,7 @@ void GfxInterface::commandScreen(void) {
 		break;
 		case 2: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
+		break;
 		case 3: //cbeSizable, aspect ratio will be always the same.
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
 			newWidth = defaultWidth;
