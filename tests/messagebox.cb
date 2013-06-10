@@ -1,0 +1,9 @@
+Include "include/customfunctions.cb"
+
+TITLE$ = "cbeMessageBox"
+
+If(cbeMessageBox(TITLE, "", "Haluatko varmasti kokeilla esimerkkiä?", "", CBE_MESSAGEBOX_YES_NO) <> 1) Then End
+If(cbeMessageBox(TITLE, "", "Ei olisi kannattanut...", "", CBE_MESSAGEBOX_WARN) <> 1) Then End
+If(cbeMessageBox(TITLE, "", "Nyt on myöhäistä katua!", "", CBE_MESSAGEBOX_ERROR) <> 1) Then End
+If(Not(cbeMessageBox(TITLE, "", "Haluatko kuitenkin jatkaa?", "", cbeBOr(CBE_MESSAGEBOX_QUESTION, CBE_MESSAGEBOX_YES_NO)) = 1)) Then End
+cbeMessageBox(TITLE, "Jaaha...", "Lopetetaan kuitenkin...")

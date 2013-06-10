@@ -2,6 +2,7 @@
 #include "cbenchanted.h"
 #include "fileinterface.h"
 #include "errorsystem.h"
+#include "util.h"
 #ifndef CBE_LIB
 FileInterface::FileInterface() {
 	cb = static_cast <CBEnchanted *> (this);
@@ -23,20 +24,21 @@ void FileInterface::commandCloseFile(void) {
 	{
 		cb->errors->createError("CloseFile failed.");
 	}
+	filestrs.erase(ID);
 }
 
 void FileInterface::commandSeekFile(void) {
 	int32_t pos = cb->popValue().getInt();
-	fseek(filestrs[cb->popValue().getInt()], pos, SEEK_SET);
+	fseek(getFile(cb->popValue().getInt()), pos, SEEK_SET);
 }
 
 void FileInterface::commandStartSearch(void) {
-	string dir_str = string(al_get_current_directory()) + ".";
+	string dir_str = string(al_get_current_directory());
 	cur_dir = al_create_fs_entry(dir_str.c_str());
 	if(!al_open_directory(cur_dir))
 		cb->errors->createError("StartSearch failed! Path: \"" + dir_str + "\"");
 
-	rcount = 0;
+	findFileCount = 0;
 }
 
 void FileInterface::commandEndSearch(void) {
@@ -45,13 +47,13 @@ void FileInterface::commandEndSearch(void) {
 }
 
 void FileInterface::commandChDir(void) {
-	string path_s = cb->popValue().toString().getRef();
+	string path_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_change_directory(path_s.c_str()))
 		cb->errors->createError("ChDir failed! Path: \"" + path_s + "\"");
 }
 
 void FileInterface::commandMakeDir(void) {
-	string dir_s = cb->popValue().toString().getRef();
+	string dir_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_make_directory(dir_s.c_str()))
 		cb->errors->createError("MakeDir failed! Directory: \"" + dir_s + "\"");
 }
@@ -104,7 +106,7 @@ void FileInterface::commandCopyFile(void) {
 }
 
 void FileInterface::commandDeleteFile(void) {
-	string file_s = cb->popValue().toString().getRef();
+	string file_s = cb->popValue().toString().getUtf8Encoded();
 	if(!al_remove_filename(file_s.c_str()))
 		cb->errors->createError("DeleteFile failed! File: \"" + file_s + "\"");
 }
@@ -124,29 +126,29 @@ void FileInterface::commandExecute(void) {
 
 void FileInterface::commandWriteByte(void) {
 	uint8_t byte = cb->popValue().toByte();
-	fputc((int) byte, filestrs[cb->popValue().toInt()]);
+	fputc((int) byte, getFile(cb->popValue().getInt()));
 }
 
 void FileInterface::commandWriteShort(void) {
 	uint16_t sh = cb->popValue().toShort();
-	fwrite(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
+	fwrite(&sh, sizeof(uint16_t), 1, getFile(cb->popValue().getInt()));
 
 }
 
 void FileInterface::commandWriteInt(void) {
 	int32_t i = cb->popValue().toInt();
-	fwrite(&i, sizeof(int32_t), 1, filestrs[cb->popValue().toInt()]);
+	fwrite(&i, sizeof(int32_t), 1, getFile(cb->popValue().getInt()));
 }
 
 void FileInterface::commandWriteFloat(void) {
 	float fl = cb->popValue().toFloat();
-	fwrite(&fl, sizeof(float), 1, filestrs[cb->popValue().toInt()]);
+	fwrite(&fl, sizeof(float), 1, getFile(cb->popValue().getInt()));
 }
 
 void FileInterface::commandWriteString(void) {
 	string sstring = cb->popValue().toString().getRef();
 
-	FILE *file = filestrs[cb->popValue().toInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	int l = int(sstring.length());
 
@@ -157,7 +159,7 @@ void FileInterface::commandWriteString(void) {
 
 void FileInterface::commandWriteLine(void) {
 	string line = cb->popValue().toString().getRef();
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	#ifdef WIN32
 		line += "\r\n";
@@ -169,27 +171,27 @@ void FileInterface::commandWriteLine(void) {
 }
 
 void FileInterface::commandReadByte(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 	fseek(file, ftell(file) + 1, SEEK_SET);
 }
 
 void FileInterface::commandReadShort(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 	fseek(file, ftell(file) + 2, SEEK_SET);
 }
 
 void FileInterface::commandReadInt(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 	fseek(file, ftell(file) + 4, SEEK_SET);
 }
 
 void FileInterface::commandReadFloat(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 	fseek(file, ftell(file) + 4, SEEK_SET);
 }
 
 void FileInterface::commandReadString(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	int32_t i;
 	fread(&i, sizeof(int32_t), 1, file);
@@ -198,11 +200,16 @@ void FileInterface::commandReadString(void) {
 }
 
 void FileInterface::commandReadLine(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	while(1) {
 		int c = fgetc(file);
-		if (c == '\n' || c == EOF) {
+		if (c != '\r' && c != EOF) {
+			if (c != '\n') {
+
+			}
+		}
+		else {
 			break;
 		}
 	}
@@ -255,13 +262,13 @@ void FileInterface::functionOpenToEdit(void) {
 }
 
 void FileInterface::functionFileOffset(void) {
-	cb->pushValue(int32_t(ftell(filestrs[cb->popValue().getInt()])));
+	cb->pushValue(int32_t(ftell(getFile(cb->popValue().getInt()))));
 }
 
 void FileInterface::functionFindFile(void) {
 
-	++rcount;
-	if (rcount == 1) {
+	++findFileCount;
+	if (findFileCount == 1) {
 		ALLEGRO_PATH * path;
 		path = al_create_path(al_get_fs_entry_name(cur_dir));
 		if(al_get_path_num_components(path) >= 2) {
@@ -274,7 +281,7 @@ void FileInterface::functionFindFile(void) {
 			functionFindFile();
 		}
 	}
-	else if (rcount == 2) {
+	else if (findFileCount == 2) {
 		ALLEGRO_PATH * path;
 		path = al_create_path(al_get_fs_entry_name(cur_dir));
 		if(al_get_path_num_components(path) >= 2) {
@@ -296,15 +303,19 @@ void FileInterface::functionFindFile(void) {
 	}
 
 	string file_s;
-	ALLEGRO_PATH * path = al_create_path(al_get_fs_entry_name(file));
+
+	ALLEGRO_PATH * path = NULL;
 
 	if(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR) {
+		path = al_create_path_for_directory(al_get_fs_entry_name(file));
 		file_s = string(al_get_path_tail(path));
 	}
 	else {
+		path = al_create_path(al_get_fs_entry_name(file));
 		file_s = string(al_get_path_filename(path));
 	}
-	cb->pushValue(file_s);
+
+	cb->pushValue(utf8toCP1252(file_s));
 
 	al_destroy_path(path);
 	al_destroy_fs_entry(file);
@@ -317,17 +328,17 @@ void FileInterface::functionCurrentDir(void) {
 	string dir_s = string(dir) + "\\";
 	al_free(dir);
 
-	cb->pushValue(dir_s);
+	cb->pushValue(utf8toCP1252(dir_s));
 }
 
 void FileInterface::functionFileExists(void) {
-	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getUtf8Encoded().c_str());
 	cb->pushValue(al_filename_exists(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP)));
 	al_destroy_path(filePath);
 }
 
 void FileInterface::functionIsDirectory(void) {
-	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_PATH *filePath = al_create_path(cb->popValue().toString().getUtf8Encoded().c_str());
 	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(al_path_cstr(filePath, ALLEGRO_NATIVE_PATH_SEP));
 	cb->pushValue(bool(al_get_fs_entry_mode(file) & ALLEGRO_FILEMODE_ISDIR));
 	al_destroy_fs_entry(file);
@@ -335,26 +346,26 @@ void FileInterface::functionIsDirectory(void) {
 }
 
 void FileInterface::functionFileSize(void) {
-	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getRef().c_str());
+	ALLEGRO_FS_ENTRY * file = al_create_fs_entry(cb->popValue().toString().getUtf8Encoded().c_str());
 	cb->pushValue(int32_t(al_get_fs_entry_size(file)));
 	al_destroy_fs_entry(file);
 }
 
 void FileInterface::functionEOF(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 	fgetc(file);
 	cb->pushValue(feof(file) != 0);
 	fseek(file, -1, SEEK_CUR);
 }
 
 void FileInterface::functionReadByte(void) {
-	cb->pushValue(uint8_t(fgetc(filestrs[cb->popValue().getInt()])));
+	cb->pushValue(uint8_t(fgetc(getFile(cb->popValue().getInt()))));
 }
 
 void FileInterface::functionReadShort(void) {
 	uint16_t sh;
 
-	fread(&sh, sizeof(uint16_t), 1, filestrs[cb->popValue().getInt()]);
+	fread(&sh, sizeof(uint16_t), 1, getFile(cb->popValue().getInt()));
 
 	cb->pushValue(sh);
 }
@@ -362,7 +373,7 @@ void FileInterface::functionReadShort(void) {
 void FileInterface::functionReadInt(void) {
 	int32_t i;
 
-	fread(&i, sizeof(int32_t), 1, filestrs[cb->popValue().getInt()]);
+	fread(&i, sizeof(int32_t), 1, getFile(cb->popValue().getInt()));
 
 	cb->pushValue(i);
 }
@@ -370,13 +381,13 @@ void FileInterface::functionReadInt(void) {
 void FileInterface::functionReadFloat(void) {
 	float fl = 0.0f;
 
-	fread(&fl, sizeof(float), 1, filestrs[cb->popValue().getInt()]);
+	fread(&fl, sizeof(float), 1, getFile(cb->popValue().getInt()));
 
 	cb->pushValue(fl);
 }
 
 void FileInterface::functionReadString(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	int32_t l;
 	fread(&l, sizeof(int32_t), 1, file);
@@ -395,7 +406,7 @@ void FileInterface::functionReadString(void) {
 }
 
 void FileInterface::functionReadLine(void) {
-	FILE *file = filestrs[cb->popValue().getInt()];
+	FILE *file = getFile(cb->popValue().getInt());
 
 	string line = "";
 	while(1) {

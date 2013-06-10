@@ -461,12 +461,20 @@ void CBEnchanted::commandFunction(void) {
 }
 
 void CBEnchanted::commandSelect(void) {
+#ifdef LOG_LEVEL_HCDEBUG
+	HCDEBUG("commandSelect stack dump:");
+	internalStack.dump();
+#endif
 	selectValue = popValue();
 	++code;
 	code = codeBase + *(int32_t *)(code);
 }
 
 void CBEnchanted::commandCase(void) {
+#ifdef LOG_LEVEL_HCDEBUG
+	HCDEBUG("commandCase stack dump:");
+	internalStack.dump();
+#endif
 	++code;
 	int32_t testCount = *(int32_t *)(code);
 	code += 5;
@@ -502,7 +510,7 @@ void CBEnchanted::commandCase(void) {
 			}
 		}
 		if (matched) {
-			code += 4;
+			code += (testCount - i - 1) * 5 + 4;
 			return;
 		}
 	}
@@ -1250,6 +1258,7 @@ void CBEnchanted::commandReDim(void) {
 }
 
 FORCEINLINE void CBEnchanted::commandReturn(void) {
+	if (pos.empty()) return;
 	code = pos.back();
 	pos.pop_back();
 
@@ -1338,11 +1347,15 @@ template<class T> FORCEINLINE uint32_t CBEnchanted::popArrayDimensions(Array<T> 
 	uint32_t pos(0);
 #ifdef CBE_ARRAY_BOUNDS_CHECK
 	uint32_t index[5] = {0, 0, 0, 0, 0};
+	bool outOfBounds = false;
 	for (int32_t i = n - 1; i >= 0; --i) {
 		index[i] = popValue().getInt();
+		if (index[i] >= a.getDimensionSizes()[i] || index[i] < 0) {
+			outOfBounds = true;
+		}
 		pos +=  index[i] * a.getDimensionMultiplier(i);
 	}
-	if (pos >= a.getSize()) {
+	if (outOfBounds) {
 		string arrayStr;
 		string accessStr;
 		for (int i = 0; i < n; i++) {

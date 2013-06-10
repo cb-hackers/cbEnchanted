@@ -72,7 +72,9 @@ void cbeGetGfxModesCount(CBEnchanted *cb);
 
 void cbeGetGfxMode(CBEnchanted *cb);
 
-void cbeGetBestGfxMode(CBEnchanted *cd);
+void cbeGetBestGfxMode(CBEnchanted *cb);
+
+void cbeMessageBox(CBEnchanted *cb);
 
 void cbePushByte(CBEnchanted *cb);
 

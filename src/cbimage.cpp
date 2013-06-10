@@ -16,6 +16,7 @@ CBImage::CBImage() :
 	maskData(0),
 	maskIsDirty(false)
 {
+	renderTarget.cbImg = this;
 }
 
 CBImage::~CBImage() {
@@ -225,10 +226,6 @@ void CBImage::setHotspot(int32_t x, int32_t y) {
 
 /** Set this CBImage ready for drawing operations or set it back for drawing. */
 void CBImage::switchMaskBitmaps(bool switchToUnmasked) {
-	// If we don't have masking on, we don't need to do anything.
-	if (!isMasked) {
-		return;
-	}
 	if (switchToUnmasked) {
 		renderTarget.changeBitmap(unmaskedBitmap);
 		maskedBitmap = NULL;
@@ -338,12 +335,14 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
 	int ymax = min(ymax1, ymax2);
 
 	// Collide detection
+	int w1i = (int)w1;
+	int w2i = (int)w2;
 	for (int y = ymin; y < ymax; y++) {
 		for (int x = xmin; x < xmax; x++) {
 			int cx1 = x - x1, cy1 = y - y1;
 			int cx2 = x - x2, cy2 = y - y2;
 
-			if (!this->maskData[int(cy1 * w1 + cx1)] && !img->maskData[int(cy2 * w2 + cx2)]) {
+			if (!this->maskData[cy1 * w1i + cx1] && !img->maskData[cy2 * w2i + cx2]) {
 				return true;
 			}
 		}
@@ -361,18 +360,19 @@ void CBImage::cleanDirtyMask() {
 	if (!maskIsDirty) { return; }
 
 	ALLEGRO_BITMAP *image = unmaskedBitmap;
-	int32_t pixel;
+	uint32_t pixel;
 	int32_t x,y;
 	int32_t width = al_get_bitmap_width(image);
 	int32_t height = al_get_bitmap_height(image);
-	int32_t mask;
-	unsigned char r,g,b,a;
-	al_unmap_rgba(maskColor, &r, &g, &b, &a);
+	uint32_t mask;
+	al_unmap_rgba(maskColor, ((unsigned char*)&mask), ((unsigned char*)&mask) + 1, ((unsigned char*)&mask) + 2, ((unsigned char*)&mask) + 3);
 
-	mask = a << (24 + r << (16 + g << (8 + b)));
+	bool alreadyLocked = true;
+	if (!al_is_bitmap_locked(image)) {
+		al_lock_bitmap(image, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
+		alreadyLocked = false;
+	}
 
-
-	al_lock_bitmap(image, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
 
 	if (maskData) {
 		delete [] maskData;
@@ -381,23 +381,21 @@ void CBImage::cleanDirtyMask() {
 	// Idea in this data array, is to have 0 to represent the images
 	// unmasked colors, and 1 for the masked ones.
 	maskData = new bool[width * height];
-
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
-			al_unmap_rgba(al_get_pixel(image, x, y), &r, &g, &b, &a);
-			pixel = a << (24 + r << (16 + g << (8 + b)));
-
-			if (pixel == mask && isMasked) {
-				maskData[y * width + x] = true;
-			}
-			else {
-				maskData[y * width + x] = false;
+	if (!isMasked) {
+		memset(maskData, 0, sizeof(bool) * width * height);
+	}
+	else {
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++) {
+				al_unmap_rgba(al_get_pixel(image, x, y), ((unsigned char*)&pixel), ((unsigned char*)&pixel) + 1, ((unsigned char*)&pixel) + 2, ((unsigned char*)&pixel) + 3);
+				maskData[y * width + x] = pixel == mask;
 			}
 		}
 	}
 
 	maskIsDirty = false;
-	al_unlock_bitmap(image);
-
+	if (!alreadyLocked) {
+		al_unlock_bitmap(image);
+	}
 }
 

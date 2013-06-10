@@ -12,7 +12,7 @@ owned by Jukka Lavonen.
 All hail CoolBasic! http://www.coolbasic.com
 
 
-Copyright (c) 2012 the cbEnchanted team:
+Copyright (c) 2013 the cbEnchanted team:
 Jasse Lahdenperä
 Lassi Hämäläinen
 Vesa Laakso

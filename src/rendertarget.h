@@ -63,6 +63,8 @@ class RenderTarget
 
 		/** Changes to a new bitmap and destroys the current one */
 		void changeBitmap(ALLEGRO_BITMAP *bm);
+
+		CBImage *cbImg;
 	private:
 		void convertCoords(float &x,float &y);
 

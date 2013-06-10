@@ -225,10 +225,32 @@ void GfxInterface::commandCircle(void) {
 
 void GfxInterface::commandLine(void){
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
-	float y2 = cb->popValue().toFloat()+0.5f;
-	float x2 = cb->popValue().toFloat()+0.5f;
-	float y1 = cb->popValue().toFloat()+0.5f;
-	float x1 = cb->popValue().toFloat()+0.5f;
+	float y2 = cb->popValue().toFloat();
+	float x2 = cb->popValue().toFloat();
+	float y1 = cb->popValue().toFloat();
+	float x1 = cb->popValue().toFloat();
+	if (cb->isSmooth2D() || currentRenderTarget->isDrawToWorldViewOn()) {
+		x1 += 0.5f;
+		y1 += 0.5f;
+		x2 += 0.5f;
+		y2 += 0.5f;
+	}
+	else {
+		if (x1 == x2) {
+			x1 += 0.5f;
+			x2 += 0.5f;
+			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
+		}
+		else if (y1 == y2) {
+			y1 += 0.5;
+			y2 += 0.5;
+			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+		}
+		else {
+			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
+			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+		}
+	}
 
 	currentRenderTarget->drawLine(x1,y1,x2,y2,drawColor);
 }
@@ -242,9 +264,17 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 	lastFrameTime = mtimer();
 
-	if (!gameUpdated) cb->updateObjects();
-	if (cb->isCamFollowing()) cb->updateCamFollow();
-	if (!gameDrawn) cb->drawObjects(*windowRenderTarget);
+	if (!gameUpdated) {
+		callUpdateGameCallbacks();
+		cb->updateObjects();
+	}
+	if (cb->isCamFollowing()) {
+		cb->updateCamFollow();
+	}
+	if (!gameDrawn) {
+		callDrawGameCallbacks();
+		cb->drawObjects(*windowRenderTarget);
+	}
 
 	gameUpdated = false;
 	gameDrawn = false;
@@ -315,6 +345,9 @@ void GfxInterface::commandDrawScreen(void) {
 		fpsCounter = 0;
 		lastSecTimer = clock();
 	}
+
+	callDrawScreenCallbacks();
+
 	cb->renderAddTexts(*windowRenderTarget);
 	cb->renderInput(*windowRenderTarget);
 	cb->renderCursor(*windowRenderTarget);
@@ -442,7 +475,14 @@ void GfxInterface::commandCopyBox(void) {
 	else {
 		source = getBuffer(srcId);
 	}
-	dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+	if (dest->cbImg != NULL) {
+		dest->cbImg->switchMaskBitmaps(true);
+		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+		dest->cbImg->unmaskedBitmap = dest->getBitmap();
+		dest->cbImg->switchMaskBitmaps(false);
+	} else {
+		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+	}
 }
 
 void GfxInterface::commandCls(void) {
@@ -526,12 +566,17 @@ void GfxInterface::commandScreenShot(void) {
 }
 
 void GfxInterface::commandUpdateGame(void) {
+	callUpdateGameCallbacks();
 	cb->updateObjects();
 	gameUpdated = true;
 }
 
 void GfxInterface::commandDrawGame(void) {
-	if (!gameUpdated) cb->updateObjects();
+	if (!gameUpdated) {
+		callUpdateGameCallbacks();
+		cb->updateObjects();
+	}
+	callDrawGameCallbacks();
 	cb->drawObjects(*currentRenderTarget);
 	gameDrawn = true;
 	gameUpdated = true;
@@ -652,5 +697,23 @@ void GfxInterface::unregisterWindow() {
 void GfxInterface::resizeTempBitmap(int32_t w, int32_t h) {
 	al_destroy_bitmap(drawscreenTempBitmap);
 	drawscreenTempBitmap = al_create_bitmap(w, h);
+}
+
+void GfxInterface::callDrawScreenCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = drawScreenCallbacks.begin(); i != drawScreenCallbacks.end(); i++) {
+		(i->second)();
+	}
+}
+
+void GfxInterface::callDrawGameCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = drawGameCallbacks.begin(); i != drawGameCallbacks.end(); i++) {
+		(i->second)();
+	}
+}
+
+void GfxInterface::callUpdateGameCallbacks() {
+	for (map<int32_t, VoidFuncPtrType>::iterator i = updateGameCallbacks.begin(); i != updateGameCallbacks.end(); i++) {
+		(i->second)();
+	}
 }
 

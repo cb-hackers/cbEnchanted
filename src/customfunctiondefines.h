@@ -99,6 +99,8 @@
 
 #define CBE_GET_BEST_GFX_MODE 34
 
+#define CBE_MESSAGEBOX 35
+
 /** @} */
 
 #define CBE_STACK 100

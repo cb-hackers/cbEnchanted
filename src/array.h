@@ -11,7 +11,7 @@ class Array {
 		void init(uint32_t *dims, uint32_t dimCount);
 		void resize(uint32_t *dims, uint32_t dimCount, bool copy);
 		T &get(uint32_t index)const { return data[index]; }
-		void set(uint32_t index, const T &t){ assert(index < size); data[index] = t;}
+		void set(uint32_t index, const T &t){ data[index] = t;}
 		uint32_t getDimensionMultiplier(uint32_t dim) const { return this->dimensions[dim]; }
 		uint32_t getSize() const {return size;}
 		uint32_t *getDimensionSizes() { return dimensionSizes;}
