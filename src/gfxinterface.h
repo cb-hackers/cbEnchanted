@@ -62,9 +62,12 @@ class GfxInterface {
 		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
 		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
 
+
 		inline int32_t screenWidth() {return windowRenderTarget->width();}
 		inline int32_t screenHeight() {return windowRenderTarget->height();}
 
+		inline int32_t getDefaultWidth() {return defaultWidth;}
+		inline int32_t getDefaultHeight() {return defaultHeight;}
 		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
 		void setCurrentRenderTarget(RenderTarget *t);
 		bool drawingOnImage() const { return imageToDrawTo != 0; }
@@ -87,11 +90,20 @@ class GfxInterface {
 		int32_t fpsCounter;
 		int32_t currentFPS;
 		clock_t lastSecTimer;
+		uint32_t state;
 		int64_t lastFrameTime;
 		RenderTarget *currentRenderTarget;
 
+		int32_t defaultWidth;
+		int32_t defaultHeight;
+		int32_t newWidth;
+		int32_t newHeight;
+
 		RenderTarget *windowRenderTarget;
 		ALLEGRO_BITMAP *drawscreenTempBitmap;
+
+		float defaultAspectRatio;
+
 		float windowGammaR;
 		float windowGammaG;
 		float windowGammaB;

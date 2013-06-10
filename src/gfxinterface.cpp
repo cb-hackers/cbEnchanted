@@ -61,6 +61,13 @@ bool GfxInterface::initializeGfx() {
 	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP,1,ALLEGRO_REQUIRE);
 	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY,1,ALLEGRO_REQUIRE);
 	window = al_create_display(400,300);
+	state = 1;
+	defaultWidth = 400;
+	defaultHeight = 300;
+	newWidth = defaultWidth;
+	newHeight = defaultHeight;
+	defaultAspectRatio = (float)defaultWidth/(float)defaultHeight;
+
 	if (!window) {
 		cb->errors->createFatalError("Can't create window","Can't create default window.");
 		return false;
@@ -99,10 +106,12 @@ bool GfxInterface::initializeGfx() {
 void GfxInterface::commandScreen(void) {
 
 	//TODO use al_resize_window
-	uint32_t state = cb->popValue().toInt();
+	state = cb->popValue().toInt();
 	uint32_t depth = cb->popValue().toInt();
 	uint32_t height = cb->popValue().toInt();
 	uint32_t width = cb->popValue().toInt();
+	defaultWidth = width;
+	defaultHeight = height;
 	uint32_t flags;
 	if (depth == 0) depth = 32;
 	switch (state) {
@@ -114,6 +123,11 @@ void GfxInterface::commandScreen(void) {
 		break;
 		case 2: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
+		case 3: //cbeSizable, aspect ratio will be always the same.
+			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
+			newWidth = defaultWidth;
+			newHeight = defaultHeight;
+			defaultAspectRatio = (float)width/(float)height;
 		break;
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
@@ -156,7 +170,7 @@ void GfxInterface::commandScreen(void) {
 			return;
 		}
 		resizeTempBitmap(width, height);
-		if (state == 2) {
+		if (state == 2 || state == 3) {
 			windowRenderTarget->swapBitmap( drawscreenTempBitmap);
 			resizableWindow = true;
 		}
@@ -247,15 +261,48 @@ void GfxInterface::commandDrawScreen(void) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->askForExit()) {
 					cb->stop();
-				}
-				break;
-			case ALLEGRO_EVENT_DISPLAY_RESIZE:
+			}
+			break;
+			case ALLEGRO_EVENT_DISPLAY_RESIZE: {
 				windowResized = true;
-				break;
+			}
+			break;
 		}
 	}
 	if (windowResized) al_acknowledge_resize(window);
 	cb->postEventLoopUpdate();
+
+	int dispWidth, dispHeight;
+	dispWidth = al_get_display_width(window);
+	dispHeight = al_get_display_height(window);
+
+	if (state == 3 && windowResized == true) {
+
+		float newRatio = (float)dispWidth / (float)dispHeight;
+
+		float editedRatio;
+		INFO("display's new ratio is: %f", newRatio)
+		if (newRatio < defaultAspectRatio) {
+
+			newWidth = dispWidth;
+			newHeight = (int)((1.0f/defaultAspectRatio)*(float)dispWidth);
+
+			editedRatio = newWidth/newHeight;
+			INFO("Width: %i ,\n Height: %i \n", newWidth, newHeight)
+			INFO("New Ratio: %f ", editedRatio)
+
+		}
+		else {
+
+			newHeight = dispHeight;
+			newWidth = (int)(defaultAspectRatio*(float)dispHeight);
+
+			editedRatio = newWidth/newHeight;
+			INFO("Width: %i, \n Height: %i \n", newWidth, newHeight)
+			INFO("New Ratio: %f ", editedRatio)
+		}
+
+	}
 
 	if (vSync) {
 		al_wait_for_vsync();
@@ -272,12 +319,32 @@ void GfxInterface::commandDrawScreen(void) {
 	cb->renderInput(*windowRenderTarget);
 	cb->renderCursor(*windowRenderTarget);
 	cb->updateAudio();
-	if (resizableWindow) {
+
+	if (state == 2) {
 		al_set_target_backbuffer(window);
 		al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),
 							  0, 0, windowRenderTarget->width(), windowRenderTarget->height(),
 							  0, 0, al_get_display_width(window), al_get_display_height(window),
 							  0);
+		al_flip_display();
+		currentRenderTarget->setAsCurrent(true);
+		if (cls) {
+			windowRenderTarget->clear(al_map_rgba_f(0, 0, 0, 1.0f));
+		}
+	}
+	else if (state == 3) {
+		al_set_target_backbuffer(window);
+		al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),
+							0,
+							0,
+							defaultWidth,
+							defaultHeight,
+							al_get_display_width(window) / 2 - newWidth /2,
+							al_get_display_height(window) /2 - newHeight /2,
+							newWidth,
+							newHeight,
+							0
+				      );
 		al_flip_display();
 		currentRenderTarget->setAsCurrent(true);
 		if (cls) {

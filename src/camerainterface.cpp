@@ -193,7 +193,7 @@ ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 		al_translate_transform(&worldTransform, -cameraX, cameraY);
 		al_rotate_transform(&worldTransform, cameraRadAngle);
 		al_scale_transform(&worldTransform, cameraZoom, cameraZoom);
-		al_translate_transform(&worldTransform, al_get_display_width(cb->getWindow()) / 2, al_get_display_height(cb->getWindow()) / 2);
+		al_translate_transform(&worldTransform, cb->getDefaultWidth() / 2, cb->getDefaultHeight() / 2);
 
 		worldTransformDirty = false;
 	}
