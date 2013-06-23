@@ -1,6 +1,6 @@
 #ifndef MEMINTERFACE_H
 #define MEMINTERFACE_H
-#include "precomp.h"
+//#include "precomp.h"
 class CBEnchanted;
 
 class MemInterface {

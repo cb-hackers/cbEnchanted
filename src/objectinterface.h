@@ -1,11 +1,12 @@
 #ifndef OBJECTINTERFACE_H
 #define OBJECTINTERFACE_H
 #include "precomp.h"
-#include "cbobject.h"
+//#include "cbobject.h"
 #include "rendertarget.h"
-#include "cbmap.h"
 class CBEnchanted;
 class CollisionCheck;
+class CBMap;
+class CBObject;
 
 class ObjectInterface {
 	public:

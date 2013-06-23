@@ -3,6 +3,14 @@
 #include "errorsystem.h"
 #include "precomp.h"
 #include "util.h"
+#include "gfxinterface.h"
+#include "imageinterface.h"
+#include "cbimage.h"
+#include "camerainterface.h"
+#include "fileinterface.h"
+#include "objectinterface.h"
+#include "inputinterface.h"
+
 #ifdef _WIN32
 	#include <Windows.h>
 #endif
@@ -14,7 +22,7 @@
 #ifndef CBE_LIB
 /** VesQ's awesome triangle drawing function */
 void cbeTriangle(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawDrawCommandToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawDrawCommandToWorld() && !cb->gfxInterface->drawingOnImage());
 	bool fill = cb->popValue().toInt();
 	float y3 = cb->popValue().toFloat();
 	float x3 = cb->popValue().toFloat();
@@ -22,7 +30,7 @@ void cbeTriangle(CBEnchanted *cb) {
 	float x2 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
-	cb->getCurrentRenderTarget()->drawTriangle(
+	cb->gfxInterface->getCurrentRenderTarget()->drawTriangle(
 		x1,
 		y1,
 		x2,
@@ -30,7 +38,7 @@ void cbeTriangle(CBEnchanted *cb) {
 		x3,
 		y3,
 		fill,
-		cb->getDrawColor()
+		cb->gfxInterface->getDrawColor()
 	);
 	cb->pushValue(0);
 }
@@ -52,7 +60,7 @@ void cbeColor(CBEnchanted *cb) {
 	if (a < 0) a = 0;
 	if (a > 255) a = 255;
 
-	cb->setDrawColor(al_map_rgba(r,g,b,a));
+	cb->gfxInterface->setDrawColor(al_map_rgba(r,g,b,a));
 	cb->pushValue(0);
 }
 
@@ -73,7 +81,7 @@ void cbeClsColor(CBEnchanted *cb) {
 	if (a < 0) a = 0;
 	if (a > 255) a = 255;
 
-	cb->setClearColor(al_map_rgba(r, g, b, a));
+	cb->gfxInterface->setClearColor(al_map_rgba(r, g, b, a));
 	cb->pushValue(0);
 }
 
@@ -209,7 +217,7 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb) {
 
 /** Draws image region or frame with scaling, rotating and tinting. */
 void cbeDrawTintedImage(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
 
 	// Cropping parameters, source X and Y & width and height.
 	// If sX is > 0, sY is a frame in an animated image.
@@ -232,7 +240,7 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 
 	// Image ID
 	int32_t handle = cb->popValue().toInt();
-	CBImage *img = cb->getImage(handle);
+	CBImage *img = cb->imageInterface->getImage(handle);
 	if (img == NULL) {
 		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
 		cb->errors->createError("cbeDrawTintedImage() failed!", err);
@@ -269,13 +277,13 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 		float frameAreaTop = (copyY * frameWidth);
 		float frameAreaHeight = frameHeight;
 		float frameAreaWidth = frameWidth;
-		cb->getCurrentRenderTarget()->drawBitmapRegion(
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmapRegion(
 			bm,
 			frameAreaLeft,
 			frameAreaTop,
 			frameAreaWidth,
 			frameAreaHeight,
-			cb->getDrawColor(),
+			cb->gfxInterface->getDrawColor(),
 			centerX,
 			centerY,
 			scaleX,
@@ -284,10 +292,10 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 		);
 	}
 	else if (sW == 0 && sH == 0) {
-		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, cb->getDrawColor());
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, cb->gfxInterface->getDrawColor());
 	}
 	else {
-		cb->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, cb->getDrawColor(), centerX, centerY, scaleX, scaleY, angle);
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, cb->gfxInterface->getDrawColor(), centerX, centerY, scaleX, scaleY, angle);
 	}
 
 	cb->pushValue(0);
@@ -295,7 +303,7 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 
 /** Draws image region or frame with scaling and rotating. */
 void cbeDrawImage(CBEnchanted *cb) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
 
 	// Cropping parameters, source X and Y & width and height.
 	// If sX is > 0, sY is a frame in an animated image.
@@ -318,7 +326,7 @@ void cbeDrawImage(CBEnchanted *cb) {
 
 	// Image ID
 	int32_t handle = cb->popValue().toInt();
-	CBImage *img = cb->getImage(handle);
+	CBImage *img = cb->imageInterface->getImage(handle);
 	if (img == NULL) {
 		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
 		cb->errors->createError("cbeDrawImage() failed!", err);
@@ -355,7 +363,7 @@ void cbeDrawImage(CBEnchanted *cb) {
 		float frameAreaTop = (copyY * frameWidth);
 		float frameAreaHeight = frameHeight;
 		float frameAreaWidth = frameWidth;
-		cb->getCurrentRenderTarget()->drawBitmapRegion(
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmapRegion(
 			bm,
 			frameAreaLeft,
 			frameAreaTop,
@@ -369,10 +377,10 @@ void cbeDrawImage(CBEnchanted *cb) {
 		);
 	}
 	else if (sW == 0 && sH == 0) {
-		cb->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, al_map_rgba_f(1, 1, 1, 1));
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmap(bm, centerX, centerY, angle, scaleX, scaleY, al_map_rgba_f(1, 1, 1, 1));
 	}
 	else {
-		cb->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, centerX, centerY, scaleX, scaleY, angle);
+		cb->gfxInterface->getCurrentRenderTarget()->drawBitmapRegion(bm, sX, sY, sW, sH, centerX, centerY, scaleX, scaleY, angle);
 	}
 
 	cb->pushValue(0);
@@ -405,7 +413,7 @@ void cbeBNot(CBEnchanted *cb) {
 /** Reads an UTF-8 encoded line and converts all possible characters to Windows-1252. */
 void cbeReadLineUTF8(CBEnchanted *cb) {
 	int32_t fileId = cb->popValue().getInt();
-	FILE* file = cb->getFile(fileId);
+	FILE* file = cb->fileInterface->getFile(fileId);
 	if (file == 0) {
 		FIXME("Invalid file pointer given to cbeReadLineUTF8()")
 		cb->pushValue(ISString(""));
@@ -442,28 +450,28 @@ void cbeShowConsole(CBEnchanted *cb) {
 void cbeSetSystemCursor(CBEnchanted *cb) {
 	int32_t t = cb->popValue().toInt();
 	bool success = false;
-	cb->setCustomCursor(0);
-	cb->setCursorVisible(true);
+	cb->inputInterface->setCustomCursor(0);
+	cb->inputInterface->setCursorVisible(true);
 	switch (t) {
-		case 2: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ARROW); break;
-		case 3: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_BUSY); break;
-		case 4: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_QUESTION); break;
-		case 5: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_EDIT); break;
-		case 6: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_MOVE); break;
-		case 7: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_N); break;
-		case 8: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_W); break;
-		case 9: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_S); break;
-		case 10: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_E); break;
-		case 11: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NW); break;
-		case 12: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SW); break;
-		case 13: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SE); break;
-		case 14: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NE); break;
-		case 15: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PROGRESS); break;
-		case 16: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PRECISION); break;
-		case 17: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_LINK); break;
-		case 18: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ALT_SELECT); break;
-		case 19: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_UNAVAILABLE); break;
-		default: success = al_set_system_mouse_cursor(cb->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT); break;
+		case 2: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ARROW); break;
+		case 3: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_BUSY); break;
+		case 4: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_QUESTION); break;
+		case 5: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_EDIT); break;
+		case 6: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_MOVE); break;
+		case 7: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_N); break;
+		case 8: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_W); break;
+		case 9: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_S); break;
+		case 10: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_E); break;
+		case 11: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NW); break;
+		case 12: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SW); break;
+		case 13: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_SE); break;
+		case 14: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_RESIZE_NE); break;
+		case 15: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PROGRESS); break;
+		case 16: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_PRECISION); break;
+		case 17: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_LINK); break;
+		case 18: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_ALT_SELECT); break;
+		case 19: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_UNAVAILABLE); break;
+		default: success = al_set_system_mouse_cursor(cb->gfxInterface->getWindow(), ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT); break;
 	}
 	cb->pushValue((int32_t)success);
 }
@@ -528,17 +536,17 @@ void cbeTransformReset(CBEnchanted *cb) {
 
 /** Returns camera's zoom value */
 void cbeCameraZoom(CBEnchanted *cb) {
-	cb->pushValue(cb->getCameraZoom());
+	cb->pushValue(cb->cameraInterface->getCameraZoom());
 }
 
 /** Returns camera's real angle */
 void cbeCameraAngle(CBEnchanted *cb) {
-	cb->pushValue(cb->getCameraRealAngle());
+	cb->pushValue(cb->cameraInterface->getCameraRealAngle());
 }
 
 /** Sets line width for the commandLine and the outlines of the shapes.*/
 void cbeSetLineWidth(CBEnchanted *cb) {
-	cb->setLineWidth(cb->popValue().toFloat());
+	cb->gfxInterface->setLineWidth(cb->popValue().toFloat());
 	cb->pushValue(0);
 }
 
@@ -561,7 +569,7 @@ void cbeFileDialog(CBEnchanted * cb) {
 		cb->pushValue(0);
 		return;
 	}
-	bool retVal = al_show_native_file_dialog(cb->getWindow(), fC);
+	bool retVal = al_show_native_file_dialog(cb->gfxInterface->getWindow(), fC);
 
 	if(retVal) {
 		string filePaths = "";
@@ -580,7 +588,7 @@ void cbeFileDialog(CBEnchanted * cb) {
 void cbeWToSX(CBEnchanted *cb) {
 	float x = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
-	cb->worldCoordToScreen(x, y);
+	cb->cameraInterface->worldCoordToScreen(x, y);
 	cb->pushValue(x);
 }
 
@@ -588,7 +596,7 @@ void cbeWToSX(CBEnchanted *cb) {
 void cbeWToSY(CBEnchanted *cb) {
 	float x = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
-	cb->worldCoordToScreen(x, y);
+	cb->cameraInterface->worldCoordToScreen(x, y);
 	cb->pushValue(y);
 }
 
@@ -596,7 +604,7 @@ void cbeWToSY(CBEnchanted *cb) {
 void cbeSToWX(CBEnchanted *cb) {
 	float x = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
-	cb->screenCoordToWorld(x, y);
+	cb->cameraInterface->screenCoordToWorld(x, y);
 	cb->pushValue(x);
 }
 
@@ -604,27 +612,27 @@ void cbeSToWX(CBEnchanted *cb) {
 void cbeSToWY(CBEnchanted *cb) {
 	float x = cb->popValue().toFloat();
 	float y = cb->popValue().toFloat();
-	cb->screenCoordToWorld(x, y);
+	cb->cameraInterface->screenCoordToWorld(x, y);
 	cb->pushValue(y);
 }
 
 /** Returns the object's position in the screen coordinates */
 void cbeObjectSX(CBEnchanted *cb) {
 	int32_t id = cb->popValue().toInt();
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = cb->objectInterface->getObject(id);
 	float x = obj->getX();
 	float y = obj->getY();
-	cb->worldCoordToScreen(x, y);
+	cb->cameraInterface->worldCoordToScreen(x, y);
 	cb->pushValue(x);
 }
 
 /** Returns the object's position in the screen coordinates */
 void cbeObjectSY(CBEnchanted *cb) {
 	int32_t id = cb->popValue().toInt();
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = cb->objectInterface->getObject(id);
 	float x = obj->getX();
 	float y = obj->getY();
-	cb->worldCoordToScreen(x, y);
+	cb->cameraInterface->worldCoordToScreen(x, y);
 	cb->pushValue(y);
 }
 
@@ -660,7 +668,7 @@ void cbeLoadLibrary(CBEnchanted *cb) {
  */
 void cbeGetGfxModesCount(CBEnchanted *cb) {
 	// Store the old flags for later restoring
-	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+	int32_t oldFlags = al_get_display_flags(cb->gfxInterface->getWindow());
 
 	// Set the display flags for fullscreen
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
@@ -681,7 +689,7 @@ void cbeGetGfxModesCount(CBEnchanted *cb) {
  */
 void cbeGetGfxMode(CBEnchanted *cb) {
 	// Store the old flags for later restoring
-	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+	int32_t oldFlags = al_get_display_flags(cb->gfxInterface->getWindow());
 
 	// Set the display flags for fullscreen
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
@@ -747,7 +755,7 @@ void cbeGetBestGfxMode(CBEnchanted *cb) {
 	bool no32BitFound = true;
 
 	// Store the old flags for later restoring
-	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+	int32_t oldFlags = al_get_display_flags(cb->gfxInterface->getWindow());
 
 	// Set the display flags for fullscreen
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
@@ -819,7 +827,7 @@ void cbeMessageBox(CBEnchanted *cb) {
 		buttons_cstr = buttons.c_str();
 	}
 
-	cb->pushValue(al_show_native_message_box(cb->getWindow(), title.c_str(), heading.c_str(), txt.c_str(), buttons_cstr, flags));
+	cb->pushValue(al_show_native_message_box(cb->gfxInterface->getWindow(), title.c_str(), heading.c_str(), txt.c_str(), buttons_cstr, flags));
 }
 
 void cbePushByte(CBEnchanted *cb) {

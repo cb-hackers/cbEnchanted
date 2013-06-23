@@ -3,6 +3,7 @@
 #include "gfxinterface.h"
 #include "sysinterface.h"
 #include "errorsystem.h"
+#include "meminterface.h"
 #include <time.h>
 #include <iostream>
 #include <boost/crc.hpp>
@@ -19,7 +20,7 @@
 
 #ifndef CBE_LIB
 SysInterface::SysInterface() : windowTitle(""), confirmationStr("") {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 }
 
 SysInterface::~SysInterface() {
@@ -63,7 +64,7 @@ void SysInterface::commandEncrypt(void) {
 	ALLEGRO_FILE *srcFile;
 	ALLEGRO_FILE *destFile;
 	if (src.type() == Any::Int) { //Memblock
-		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		uint8_t *memBlock = cb->memInterface->getMemblock(src.getInt());
 		srcSize = MemInterface::getMEMBlockSize(memBlock);
 		srcFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), srcSize, "r");
 	}
@@ -79,7 +80,7 @@ void SysInterface::commandEncrypt(void) {
 	}
 
 	if (dest.type() == Any::Int) {
-		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		uint8_t *memBlock = cb->memInterface->getMemblock(src.getInt());
 		if (srcSize > MemInterface::getMEMBlockSize(memBlock)) {
 			cb->errors->createError("Memblock is too small", "Memblock given to Encrypt is too small to encrypt whole source data.");
 			al_fclose(srcFile);
@@ -117,7 +118,7 @@ void SysInterface::commandDecrypt(void) {
 	ALLEGRO_FILE *srcFile;
 	ALLEGRO_FILE *destFile;
 	if (src.type() == Any::Int) { //Memblock
-		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		uint8_t *memBlock = cb->memInterface->getMemblock(src.getInt());
 		srcSize = MemInterface::getMEMBlockSize(memBlock);
 		srcFile = al_open_memfile(MemInterface::getMEMBlockData(memBlock), srcSize, "r");
 	}
@@ -133,7 +134,7 @@ void SysInterface::commandDecrypt(void) {
 	}
 
 	if (dest.type() == Any::Int) {
-		uint8_t *memBlock = cb->getMemblock(src.getInt());
+		uint8_t *memBlock = cb->memInterface->getMemblock(src.getInt());
 		if (srcSize > MemInterface::getMEMBlockSize(memBlock)) {
 			cb->errors->createError("Memblock is too small", "Memblock given to Decrypt is too small to decrypt whole source data.");
 			al_fclose(srcFile);
@@ -181,12 +182,12 @@ void SysInterface::commandCallDLL(void) {
 	uint32_t memInSize = 0;
 	uint32_t memOutSize = 0;
 	if (memblockOutId) {
-		uint8_t *memblockOut = cb->getMemblock(memblockOutId);
+		uint8_t *memblockOut = cb->memInterface->getMemblock(memblockOutId);
 		memOut = MemInterface::getMEMBlockData(memblockOut);
 		memOutSize = MemInterface::getMEMBlockSize(memblockOut);
 	}
 	if (memblockInId) {
-		uint8_t *memblockIn = cb->getMemblock(memblockInId);
+		uint8_t *memblockIn = cb->memInterface->getMemblock(memblockInId);
 		memIn = MemInterface::getMEMBlockData(memblockIn);
 		memInSize = MemInterface::getMEMBlockSize(memblockIn);
 	}
@@ -204,12 +205,12 @@ void SysInterface::commandSetWindow(void) {
 	windowTitle = cb->popValue().toString().getUtf8Encoded();
 
 	if (windowTitle.empty()) {
-		al_set_window_title(cb->getWindow(), "");
+		al_set_window_title(cb->gfxInterface->getWindow(), "");
 		return;
 	}
 #ifdef _WIN32
 	// Windows is fucked up and doesn't use UTF-8
-	HWND win = al_get_win_window_handle(cb->getWindow());
+	HWND win = al_get_win_window_handle(cb->gfxInterface->getWindow());
 	wstring widestr = utf8ToUtf16(windowTitle);
 
 	if (!SetWindowTextW(win, &widestr[0])) {
@@ -218,7 +219,7 @@ void SysInterface::commandSetWindow(void) {
 
 #else
 	// Oh dear Linux, why do you so kindly accept UTF-8 <3
-	al_set_window_title(cb->getWindow(), windowTitle.c_str());
+	al_set_window_title(cb->gfxInterface->getWindow(), windowTitle.c_str());
 #endif
 
 	if (mode != 0) {
@@ -288,7 +289,7 @@ void SysInterface::functionGetEXEName(void) {
 }
 
 void SysInterface::functionFPS(void) {
-	cb->pushValue(cb->getFPS());
+	cb->pushValue(cb->gfxInterface->getFPS());
 }
 
 void SysInterface::functionCrc32(void) {
@@ -306,7 +307,7 @@ void SysInterface::functionCrc32(void) {
 		al_fclose(file);
 	}
 	else if (any.type() == Any::Int) {
-		uint8_t *memblock = cb->getMemblock(any.getInt());
+		uint8_t *memblock = cb->memInterface->getMemblock(any.getInt());
 		result.process_bytes(MemInterface::getMEMBlockData(memblock), MemInterface::getMEMBlockSize(memblock));
 	}
 	cb->pushValue((int32_t)result.checksum());
@@ -326,7 +327,7 @@ bool SysInterface::askForExit() {
 	wstring wideMsg = utf8ToUtf16(confirmationStr);
 	wstring wideTitle = utf8ToUtf16(windowTitle);
 
-	int ret = MessageBoxW(al_get_win_window_handle(cb->getWindow()), &wideMsg[0], &wideTitle[0], MB_OKCANCEL | MB_ICONWARNING);
+	int ret = MessageBoxW(al_get_win_window_handle(cb->gfxInterface->getWindow()), &wideMsg[0], &wideTitle[0], MB_OKCANCEL | MB_ICONWARNING);
 
 	if (ret == IDCANCEL) {
 		return false;
@@ -334,7 +335,7 @@ bool SysInterface::askForExit() {
 
 #else
 
-	int pressed = al_show_native_message_box(cb->getWindow(), windowTitle.c_str(), confirmationStr.c_str(), "", NULL, ALLEGRO_MESSAGEBOX_OK_CANCEL);
+	int pressed = al_show_native_message_box(cb->gfxInterface->getWindow(), windowTitle.c_str(), confirmationStr.c_str(), "", NULL, ALLEGRO_MESSAGEBOX_OK_CANCEL);
 	if (pressed == 2 || pressed == 0) {
 		// Pressed "Cancel" or closed the messagebox
 		return false;

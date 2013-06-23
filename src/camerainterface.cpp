@@ -3,7 +3,11 @@
 #include "mathinterface.h"
 #include "cbenchanted.h"
 #include "cbobject.h"
+#include "objectinterface.h"
+#include "gfxinterface.h"
+
 #define MIN_CAMERA_ZOOM 0.00001f
+
 #ifndef CBE_LIB
 CameraInterface::CameraInterface():
 	cameraX(0),
@@ -19,7 +23,8 @@ CameraInterface::CameraInterface():
 	cameraRadAngle(0),
 	cameraZoom(1.0f)
 {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
+	//cb = static_cast <CBEnchanted *> (this);
 }
 
 CameraInterface::~CameraInterface() {
@@ -29,7 +34,7 @@ CameraInterface::~CameraInterface() {
 void CameraInterface::commandCloneCameraPosition(void) {
 	int32_t id = cb->popValue().getInt();
 	isFollowing = false;
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = cb->objectInterface->getObject(id);
 	cameraX = obj->getX();
 	cameraY = obj->getY();
 	cameraMoved();
@@ -37,7 +42,7 @@ void CameraInterface::commandCloneCameraPosition(void) {
 
 void CameraInterface::commandCloneCameraOrientation(void) {
 	int32_t id = cb->popValue().getInt();
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = cb->objectInterface->getObject(id);
 	cameraAngle = obj->getAngle();
 }
 
@@ -45,19 +50,19 @@ void CameraInterface::commandCameraFollow(void) {
 	isFollowing = true;
 	followSetting = cb->popValue().toFloat();
 	followStyle = cb->popValue().toInt();
-	followTarget = cb->getObject(cb->popValue().toInt());
+	followTarget = cb->objectInterface->getObject(cb->popValue().toInt());
 }
 
 void CameraInterface::commandCameraPick(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	screenCoordToWorld(x, y);
-	cb->pickObject(x, y);
+	cb->objectInterface->pickObject(x, y);
 }
 
 void CameraInterface::commandPointCamera(void) {
 	int32_t id = cb->popValue().toInt();
-	CBObject *obj = cb->getObject(id);
+	CBObject *obj = cb->objectInterface->getObject(id);
 	cameraAngle = (M_PI - atan2f(cameraY - obj->getY(), cameraX - obj->getY())) / M_PI * 180.0;
 }
 
@@ -144,17 +149,17 @@ void CameraInterface::updateCamFollow() {
 		break;
 		case 2: {
 
-			if (followTarget->getX() < cameraX - cb->screenWidth()/2 + followSetting) {
-				cameraX = cameraX + (followTarget->getX() - (cameraX - cb->screenWidth()/2 + followSetting));
+			if (followTarget->getX() < cameraX - cb->gfxInterface->screenWidth() / 2 + followSetting) {
+				cameraX = cameraX + (followTarget->getX() - (cameraX - cb->gfxInterface->screenWidth() / 2 + followSetting));
 			}
-			if (followTarget->getX() > cameraX + cb->screenWidth()/2 - followSetting) {
-				cameraX = cameraX + (followTarget->getX() - (cameraX + cb->screenWidth()/2 - followSetting));
+			if (followTarget->getX() > cameraX + cb->gfxInterface->screenWidth() / 2 - followSetting) {
+				cameraX = cameraX + (followTarget->getX() - (cameraX + cb->gfxInterface->screenWidth() / 2 - followSetting));
 			}
-			if (followTarget->getY() < cameraY - cb->screenHeight()/2 + followSetting) {
-				cameraY = cameraY + (followTarget->getY() - (cameraY - cb->screenHeight()/2 + followSetting));
+			if (followTarget->getY() < cameraY - cb->gfxInterface->screenHeight() / 2 + followSetting) {
+				cameraY = cameraY + (followTarget->getY() - (cameraY - cb->gfxInterface->screenHeight() / 2 + followSetting));
 			}
-			if (followTarget->getY() > cameraY + cb->screenHeight()/2 - followSetting) {
-				cameraY = cameraY + (followTarget->getY() - (cameraY + cb->screenHeight()/2 - followSetting));
+			if (followTarget->getY() > cameraY + cb->gfxInterface->screenHeight() / 2 - followSetting) {
+				cameraY = cameraY + (followTarget->getY() - (cameraY + cb->gfxInterface->screenHeight() / 2 - followSetting));
 			}
 		}
 		break;
@@ -174,16 +179,16 @@ void CameraInterface::updateCamFollow() {
 /** Returns the width of the drawing area after all transformations are applied */
 float CameraInterface::getDrawAreaWidth() {
 	return (
-		fabs(cos(cameraRadAngle) * cb->screenWidth()) +
-		fabs(sin(cameraRadAngle) * cb->screenHeight())
+		fabs(cos(cameraRadAngle) * cb->gfxInterface->screenWidth()) +
+		fabs(sin(cameraRadAngle) * cb->gfxInterface->screenHeight())
 	) * (1 / cameraZoom);
 }
 
 /** Returns the height of the drawing area after all transformations are applied */
 float CameraInterface::getDrawAreaHeight() {
 	return (
-		fabs(cos(cameraRadAngle) * cb->screenHeight()) +
-		fabs(sin(cameraRadAngle) * cb->screenWidth())
+		fabs(cos(cameraRadAngle) * cb->gfxInterface->screenHeight()) +
+		fabs(sin(cameraRadAngle) * cb->gfxInterface->screenWidth())
 	) * (1 / cameraZoom);
 }
 
@@ -193,7 +198,7 @@ ALLEGRO_TRANSFORM *CameraInterface::getWorldTransform() {
 		al_translate_transform(&worldTransform, -cameraX, cameraY);
 		al_rotate_transform(&worldTransform, cameraRadAngle);
 		al_scale_transform(&worldTransform, cameraZoom, cameraZoom);
-		al_translate_transform(&worldTransform, cb->getDefaultWidth() / 2, cb->getDefaultHeight() / 2);
+		al_translate_transform(&worldTransform, cb->gfxInterface->getDefaultWidth() / 2, cb->gfxInterface->getDefaultHeight() / 2);
 
 		worldTransformDirty = false;
 	}

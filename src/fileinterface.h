@@ -3,6 +3,8 @@
 
 #include "precomp.h"
 
+class CBEnchanted;
+
 class FileInterface {
 	public:
 #ifndef CBE_LIB

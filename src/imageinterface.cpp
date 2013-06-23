@@ -3,11 +3,12 @@
 #include "cbenchanted.h"
 #include "cbimage.h"
 #include "errorsystem.h"
+#include "gfxinterface.h"
 
 #ifndef CBE_LIB
 
 ImageInterface::ImageInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 	defaultMaskToggled = true;
 	defaultHotspotToggled = false;
 	defaultHotspotX = -1;
@@ -31,18 +32,18 @@ void ImageInterface::commandSaveImage(void) {
 }
 
 void ImageInterface::commandDrawImage(void) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
 	bool useMask = cb->popValue().toInt();
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 	CBImage *img = getImage(cb->popValue().getInt());
-	img->draw(*cb->getCurrentRenderTarget(), x, y, frame, useMask);
+	img->draw(*cb->gfxInterface->getCurrentRenderTarget(), x, y, frame, useMask);
 }
 
 void ImageInterface::commandDrawGhostImage(void) {
 	// TODO: Draw with frames
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
 	float alpha = cb->popValue().toFloat() / 100.0f;
 	int32_t frame = cb->popValue().toInt();
 	float y = cb->popValue().toFloat();
@@ -57,11 +58,11 @@ void ImageInterface::commandDrawGhostImage(void) {
 	}
 
 	CBImage *img = getImage(id);
-	img->drawAlphaBlended(*cb->getCurrentRenderTarget(), x, y, frame, alpha);
+	img->drawAlphaBlended(*cb->gfxInterface->getCurrentRenderTarget(), x, y, frame, alpha);
 }
 
 void ImageInterface::commandDrawImageBox(void) {
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawImageToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
 	bool useMask = cb->popValue().toBool();
 	int32_t frame = cb->popValue().toInt();
 	float sh = cb->popValue().toFloat();
@@ -71,7 +72,7 @@ void ImageInterface::commandDrawImageBox(void) {
 	float ty = cb->popValue().toFloat();
 	float tx = cb->popValue().toFloat();
 	CBImage *img = getImage(cb->popValue().getInt());
-	img->drawBox(*cb->getCurrentRenderTarget(), sx, sy, sw, sh, tx, ty, frame, useMask);
+	img->drawBox(*cb->gfxInterface->getCurrentRenderTarget(), sx, sy, sw, sh, tx, ty, frame, useMask);
 }
 
 void ImageInterface::commandMaskImage(void) {
@@ -111,7 +112,7 @@ void ImageInterface::commandPickImageColor(void) {
 	int32_t x = cb->popValue().toInt();
 	int32_t imgId = cb->popValue().toInt();
 	CBImage *image = getImage(imgId);
-	cb->setDrawColor(image->getRenderTarget()->getPixel(x, y));
+	cb->gfxInterface->setDrawColor(image->getRenderTarget()->getPixel(x, y));
 }
 
 void ImageInterface::commandPickImageColor2(void) {
@@ -119,7 +120,7 @@ void ImageInterface::commandPickImageColor2(void) {
 	int32_t x = cb->popValue().toInt();
 	int32_t imgId = cb->popValue().toInt();
 	CBImage *image = getImage(imgId);
-	cb->setDrawColor(image->getRenderTarget()->getPixel(x, y));
+	cb->gfxInterface->setDrawColor(image->getRenderTarget()->getPixel(x, y));
 }
 
 void ImageInterface::commandHotSpot(void) {

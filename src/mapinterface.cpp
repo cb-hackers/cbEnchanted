@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "debug.h"
 #include "mapinterface.h"
+#include "objectinterface.h"
 #include "cbobject.h"
 #include "debug.h"
 #include "cbenchanted.h"
@@ -8,7 +9,7 @@
 
 #ifndef CBE_LIB
 MapInterface::MapInterface() {
-	cb = static_cast<CBEnchanted*>(this);
+	cb = CBEnchanted::instance();//static_cast<CBEnchanted*>(this);
 	tileMap = 0;
 }
 
@@ -44,7 +45,7 @@ void MapInterface::functionLoadMap(void) {
 	const char *cmappath = al_path_cstr(mappath, ALLEGRO_NATIVE_PATH_SEP);
 
 	if (tileMap) {
-		cb->removeFromDrawOrder(tileMap);
+		cb->objectInterface->removeFromDrawOrder(tileMap);
 		delete tileMap;
 	}
 	tileMap = new CBMap();
@@ -55,7 +56,7 @@ void MapInterface::functionLoadMap(void) {
 		return;
 	}
 	al_destroy_path(mappath);
-	cb->addToDrawOrder(tileMap);
+	cb->objectInterface->addToDrawOrder(tileMap);
 	if(!tileMap->loadTileset(ctilesetpath)) {
 		cb->errors->createError("LoadMap() failed!", "Failed to load tileset \"" + string(ctilesetpath) + "\"");
 		cb->pushValue(0);
@@ -64,23 +65,23 @@ void MapInterface::functionLoadMap(void) {
 	}
 	al_destroy_path(tilesetpath);
 
-	int32_t id = cb->addMap(tileMap);
+	int32_t id = cb->objectInterface->addMap(tileMap);
 	cb->pushValue(id);
 }
 
 void MapInterface::functionMakeMap(void) {
 	if (tileMap) {
-		cb->removeFromDrawOrder(tileMap);
+		cb->objectInterface->removeFromDrawOrder(tileMap);
 		delete tileMap;
 	}
 	tileMap = new CBMap();
-	cb->addToDrawOrder(tileMap);
+	cb->objectInterface->addToDrawOrder(tileMap);
 	uint16_t tileH = cb->popValue().toInt();
 	uint16_t tileW = cb->popValue().toInt();
 	uint32_t mapH = cb->popValue().toInt();
 	uint32_t mapW = cb->popValue().toInt();
 	tileMap->create(mapW, mapH, tileW, tileH);
-	int32_t id = cb->addMap(tileMap);
+	int32_t id = cb->objectInterface->addMap(tileMap);
 	cb->pushValue(id);
 }
 

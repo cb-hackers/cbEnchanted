@@ -4,6 +4,7 @@
 #include <math.h>
 #include "cbenchanted.h"
 #include "collisioncheck.h"
+#include "camerainterface.h"
 
 static bool defaultVisible = true;
 
@@ -346,11 +347,11 @@ void CBObject::render(RenderTarget &target) {
 	if (visible && painted) {
 		if (isFloor) { //Drawing floor objects
 			CBEnchanted *cb = CBEnchanted::instance();
-			float camX = cb->getCameraX();
-			float camY = cb->getCameraY();
+			float camX = cb->cameraInterface->getCameraX();
+			float camY = cb->cameraInterface->getCameraY();
 
-			float scrW = cb->getDrawAreaWidth();
-			float scrH = cb->getDrawAreaHeight();
+			float scrW = cb->cameraInterface->getDrawAreaWidth();
+			float scrH = cb->cameraInterface->getDrawAreaHeight();
 
 			// Calculate the coordinates of visible area
 			float areaTop = camY + 0.5f * scrH;

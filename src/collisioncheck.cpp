@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "cbenchanted.h"
 #include "rendertarget.h"
+#include "gfxinterface.h"
 
 /** An empty constructor */
 CollisionCheck::CollisionCheck() : mObject1(0), mObject2(0) {
@@ -699,7 +700,7 @@ void CollisionCheck::DrawCollisionBoundaries() {
 	//return;
 
 	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+	RenderTarget *rendertarget = cb->gfxInterface->getCurrentRenderTarget();
 
 	rendertarget->useWorldCoords(true);
 

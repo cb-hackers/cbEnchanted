@@ -6,6 +6,12 @@
 #include "errorsystem.h"
 #include "utf8.h"
 #include "util.h"
+#include "sysinterface.h"
+#include "gfxinterface.h"
+#include "textinterface.h"
+#include "imageinterface.h"
+#include "camerainterface.h"
+
 #ifndef CBE_LIB
 InputInterface::InputInterface() :
 	lastMouseX(0),
@@ -20,7 +26,7 @@ InputInterface::InputInterface() :
 	clearMouse(false),
 	cursorVisible(true)
 {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 
 	memset(keyStates, 0, ALLEGRO_KEY_MAX);
 	memset(mouseButtonStates, 0, MAX_MOUSE_BUTTONS);
@@ -160,7 +166,7 @@ void InputInterface::commandWaitKey(void) {
 				updateKeyState(&e.keyboard);
 				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -183,7 +189,7 @@ void InputInterface::commandPositionMouse(void) {
 	int32_t mY = cb->popValue().toInt();
 	int32_t mX = cb->popValue().toInt();
 
-	al_set_mouse_xy(cb->getWindow(),mX,mY);
+	al_set_mouse_xy(cb->gfxInterface->getWindow(),mX,mY);
 	mouseX = mX;
 	mouseY = mY;
 	lastMouseX = mX;
@@ -202,7 +208,7 @@ void InputInterface::commandWaitMouse(void) {
 			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -220,7 +226,7 @@ void InputInterface::commandShowMouse(void) {
 
 	if (id == 0) { // OFF
 		if (cursorVisible) {
-			al_hide_mouse_cursor(cb->getWindow());
+			al_hide_mouse_cursor(cb->gfxInterface->getWindow());
 			cursorVisible = false;
 		}
 		cursor = 0;
@@ -230,17 +236,17 @@ void InputInterface::commandShowMouse(void) {
 			cursor = 0;
 		}
 		if (!cursorVisible) {
-			al_show_mouse_cursor(cb->getWindow());
+			al_show_mouse_cursor(cb->gfxInterface->getWindow());
 			cursorVisible = true;
 		}
 	}
 	else { // Image
 		if (cursorVisible) {
-			al_hide_mouse_cursor(cb->getWindow());
+			al_hide_mouse_cursor(cb->gfxInterface->getWindow());
 			cursorVisible = false;
 		}
 
-		CBImage* img = cb->getImage(id);
+		CBImage* img = cb->imageInterface->getImage(id);
 		if (img == 0) {
 			cb->errors->createError("ShowMouse failed!", "Could not find an image with ID " + boost::lexical_cast<string>(id));
 			return;
@@ -265,14 +271,14 @@ void InputInterface::functionInput(void) {
 		string pwString = cb->popValue().getString().getRef();
 		string prompt = cb->popValue().getString().getRef();
 		input = new CBInput(prompt, pwString);
-		input->setLocation(cb->getLocationX(), cb->getLocationY());
+		input->setLocation(cb->textInterface->getLocationX(), cb->textInterface->getLocationY());
 	}
 	else {
 		// Just pop out the unnecessary parameters.
 		cb->popValue();
 		cb->popValue();
 	}
-	input->setColor(cb->getDrawColor());
+	input->setColor(cb->gfxInterface->getDrawColor());
 	cb->pushValue(input->getContent());
 }
 
@@ -332,7 +338,7 @@ void InputInterface::functionGetKey(void) {
 				break;
 			}
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -366,7 +372,7 @@ void InputInterface::functionWaitKey(void) {
 				return;
 			}
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					cb->pushValue(0);
 					return;
@@ -408,7 +414,7 @@ void InputInterface::functionGetMouse(void) {
 				cb->pushValue((int32_t)e.mouse.button);
 				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -431,7 +437,7 @@ void InputInterface::functionWaitMouse(void) {
 				cb->pushValue((int32_t)e.mouse.button);
 				return;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -451,14 +457,14 @@ void InputInterface::functionMouseY(void) {
 void InputInterface::functionMouseWX(void) {
 	float x = mouseX;
 	float y = mouseY;
-	cb->screenCoordToWorld(x, y);
+	cb->cameraInterface->screenCoordToWorld(x, y);
 	cb->pushValue(x);
 }
 
 void InputInterface::functionMouseWY(void) {
 	float x = mouseX;
 	float y = mouseY;
-	cb->screenCoordToWorld(x, y);
+	cb->cameraInterface->screenCoordToWorld(x, y);
 	cb->pushValue(y);
 }
 
@@ -529,7 +535,7 @@ void InputInterface::preEventLoopUpdate() {
 	for (list<ALLEGRO_EVENT>::iterator i = eventQueue.begin(); i != eventQueue.end(); i++) {
 		switch (i->type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 					return;
 				}
@@ -547,7 +553,7 @@ void InputInterface::preEventLoopUpdate() {
 	eventQueue.clear();
 	mouseEventQueue.clear();
 	charEventQueue.clear();
-	if (windowResized) al_acknowledge_resize(cb->getWindow());
+	if (windowResized) al_acknowledge_resize(cb->gfxInterface->getWindow());
 }
 
 bool InputInterface::handleKeyboardEvent(ALLEGRO_EVENT *e, bool addToQueue) {
@@ -619,7 +625,7 @@ void InputInterface::renderInput(RenderTarget &r) const {
 
 	r.setAsCurrent();
 	r.useWorldCoords(false);
-	r.drawText(cb->getCurrentFont(), str, input->getLocationX(), input->getLocationY(), input->getColor());
+	r.drawText(cb->textInterface->getCurrentFont(), str, input->getLocationX(), input->getLocationY(), input->getColor());
 }
 
 void InputInterface::postEventLoopUpdate() {
@@ -660,9 +666,9 @@ void InputInterface::renderCursor(RenderTarget &r) const {
 void InputInterface::setCursorVisible(bool t) {
 	cursorVisible = t;
 	if (t) {
-		al_show_mouse_cursor(cb->getWindow());
+		al_show_mouse_cursor(cb->gfxInterface->getWindow());
 	}
 	else {
-		al_hide_mouse_cursor(cb->getWindow());
+		al_hide_mouse_cursor(cb->gfxInterface->getWindow());
 	}
 }

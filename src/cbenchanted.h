@@ -2,7 +2,7 @@
 #define CBENCHANTED_H
 
 #include "cbvariableholder.h"
-#include "mathinterface.h"
+/*#include "mathinterface.h"
 #include "stringinterface.h"
 #include "textinterface.h"
 #include "fileinterface.h"
@@ -16,20 +16,33 @@
 #include "objectinterface.h"
 #include "camerainterface.h"
 #include "mapinterface.h"
-#include "effectinterface.h"
-#include "debug.h"
+#include "effectinterface.h"*/
+//#include "debug.h"
 #include <vector>
 #include <map>
 #include "customfunctionhandler.h"
 
 using std::vector;
 
+class MathInterface;
 class GfxInterface;
+class StringInterface;
+class TextInterface;
+class InputInterface;
+class SysInterface;
+class ObjectInterface;
+class MemInterface;
+class FileInterface;
+class MapInterface;
+class CameraInterface;
+class ImageInterface;
+class EffectInterface;
+class AnimInterface;
+class SoundInterface;
 class ErrorSystem;
 
-
 class CBEnchanted :
-		public CBVariableHolder,
+		public CBVariableHolder/*,
 		public MathInterface,
 		public GfxInterface,
 		public StringInterface,
@@ -44,7 +57,7 @@ class CBEnchanted :
 		public ImageInterface,
 		public EffectInterface,
 		public AnimInterface,
-		public SoundInterface
+		public SoundInterface*/
 
 {
 	public:
@@ -71,6 +84,22 @@ class CBEnchanted :
 		ErrorSystem *errors;
 		/** Returns commandline arguments in a single string. */
 		std::string getCommandLine() { return cmdLine; }
+		
+		MathInterface *mathInterface;
+		GfxInterface *gfxInterface;
+		StringInterface *stringInterface;
+		TextInterface *textInterface;
+		InputInterface *inputInterface;
+		SysInterface *sysInterface;
+		ObjectInterface *objectInterface;
+		MemInterface *memInterface;
+		FileInterface *fileInterface;
+		MapInterface *mapInterface;
+		CameraInterface *cameraInterface;
+		ImageInterface *imageInterface;
+		EffectInterface *effectInterface;
+		AnimInterface *animInterface;
+		SoundInterface *soundInterface;
 	private:
 
 		char *code;

@@ -7,7 +7,7 @@
 
 #ifndef CBE_LIB
 MathInterface::MathInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 }
 
 void MathInterface::commandRandomize(void) {

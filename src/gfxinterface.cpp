@@ -2,6 +2,13 @@
 #include "cbenchanted.h"
 #include "gfxinterface.h"
 #include "objectinterface.h"
+#include "camerainterface.h"
+#include "textinterface.h"
+#include "inputinterface.h"
+#include "soundinterface.h"
+#include "sysinterface.h"
+#include "imageinterface.h"
+#include "sysinterface.h"
 #include "cbimage.h"
 #include <allegro5/allegro_image.h>
 #include "util.h"
@@ -40,7 +47,7 @@ GfxInterface::GfxInterface() :
 	lineWidth(1.0f),
 	imageToDrawTo(NULL)
 {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();//static_cast <CBEnchanted *> (this);
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -267,30 +274,30 @@ void GfxInterface::commandDrawScreen(void) {
 
 	if (!gameUpdated) {
 		callUpdateGameCallbacks();
-		cb->updateObjects();
+		cb->objectInterface->updateObjects();
 	}
-	if (cb->isCamFollowing()) {
-		cb->updateCamFollow();
+	if (cb->cameraInterface->isCamFollowing()) {
+		cb->cameraInterface->updateCamFollow();
 	}
 	if (!gameDrawn) {
 		callDrawGameCallbacks();
-		cb->drawObjects(*windowRenderTarget);
+		cb->objectInterface->drawObjects(*windowRenderTarget);
 	}
 
 	gameUpdated = false;
 	gameDrawn = false;
 
-	cb->preEventLoopUpdate();
+	cb->inputInterface->preEventLoopUpdate();
 	ALLEGRO_EVENT e;
 	bool windowResized = false;
 	while (al_get_next_event(cb->getEventQueue(), &e)) {
-		if (cb->handleKeyboardEvent(&e)) {
+		if (cb->inputInterface->handleKeyboardEvent(&e)) {
 			return;
 		}
-		cb->handleMouseEvent(&e);
+		cb->inputInterface->handleMouseEvent(&e);
 		switch (e.type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				if (cb->askForExit()) {
+				if (cb->sysInterface->askForExit()) {
 					cb->stop();
 			}
 			break;
@@ -301,7 +308,7 @@ void GfxInterface::commandDrawScreen(void) {
 		}
 	}
 	if (windowResized) al_acknowledge_resize(window);
-	cb->postEventLoopUpdate();
+	cb->inputInterface->postEventLoopUpdate();
 
 	int dispWidth, dispHeight;
 	dispWidth = al_get_display_width(window);
@@ -349,10 +356,10 @@ void GfxInterface::commandDrawScreen(void) {
 
 	callDrawScreenCallbacks();
 
-	cb->renderAddTexts(*windowRenderTarget);
-	cb->renderInput(*windowRenderTarget);
-	cb->renderCursor(*windowRenderTarget);
-	cb->updateAudio();
+	cb->textInterface->renderAddTexts(*windowRenderTarget);
+	cb->inputInterface->renderInput(*windowRenderTarget);
+	cb->inputInterface->renderCursor(*windowRenderTarget);
+	cb->soundInterface->updateAudio();
 
 	if (state == 2) {
 		al_set_target_backbuffer(window);
@@ -520,7 +527,7 @@ void GfxInterface::commandEllipse(void) {
 void GfxInterface::commandPickColor(void) {
 	int y = cb->popValue().toInt();
 	int x = cb->popValue().toInt();
-	cb->setDrawColor(windowRenderTarget->getPixel(x, y));
+	cb->gfxInterface->setDrawColor(windowRenderTarget->getPixel(x, y));
 }
 
 void GfxInterface::commandScreenGamma(void) {
@@ -537,7 +544,7 @@ void GfxInterface::commandDrawToImage(void) {
 	if (imageToDrawTo != NULL) {
 		imageToDrawTo->switchMaskBitmaps(false);
 	}
-	imageToDrawTo = cb->getImage(id);
+	imageToDrawTo = cb->imageInterface->getImage(id);
 	imageToDrawTo->switchMaskBitmaps(true);
 	setCurrentRenderTarget(imageToDrawTo->getRenderTarget());
 }
@@ -568,17 +575,17 @@ void GfxInterface::commandScreenShot(void) {
 
 void GfxInterface::commandUpdateGame(void) {
 	callUpdateGameCallbacks();
-	cb->updateObjects();
+	cb->objectInterface->updateObjects();
 	gameUpdated = true;
 }
 
 void GfxInterface::commandDrawGame(void) {
 	if (!gameUpdated) {
 		callUpdateGameCallbacks();
-		cb->updateObjects();
+		cb->objectInterface->updateObjects();
 	}
 	callDrawGameCallbacks();
-	cb->drawObjects(*currentRenderTarget);
+	cb->objectInterface->drawObjects(*currentRenderTarget);
 	gameDrawn = true;
 	gameUpdated = true;
 }
@@ -590,7 +597,7 @@ void GfxInterface::functionSCREEN(void) {
 void GfxInterface::functionImage(void) {
 	cb->popValue(); //???
 	int32_t id = cb->popValue().getInt();
-	CBImage *img = cb->getImage(id);
+	CBImage *img = cb->imageInterface->getImage(id);
 	RenderTarget *rt = img->getRenderTarget();
 
 	bufferMap[rt->getId()] = rt;
@@ -639,7 +646,7 @@ void GfxInterface::functionScreenHeight(void) {
 }
 
 void GfxInterface::functionScreenDepth(void) {
-	cb->pushValue(al_get_pixel_format_bits(al_get_display_format(cb->getWindow())));
+	cb->pushValue(al_get_pixel_format_bits(al_get_display_format(cb->gfxInterface->getWindow())));
 }
 
 /** Returns true if Gfx mode exists
@@ -658,7 +665,7 @@ void GfxInterface::functionGFXModeExists(void) {
 	int32_t width = cb->popValue().getInt();
 
 	// Get old display flags for later restoring
-	int32_t oldFlags = al_get_display_flags(cb->getWindow());
+	int32_t oldFlags = al_get_display_flags(cb->gfxInterface->getWindow());
 
 	// Set new display flags for fullscreen
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN);

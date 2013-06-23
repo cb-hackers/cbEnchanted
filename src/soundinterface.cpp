@@ -5,7 +5,7 @@
 #include "errorsystem.h"
 #ifndef CBE_LIB
 SoundInterface::SoundInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 }
 
 SoundInterface::~SoundInterface() {

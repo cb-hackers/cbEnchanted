@@ -1,6 +1,7 @@
 #include "cbmap.h"
 #include "cbenchanted.h"
-
+#include "camerainterface.h"
+#include "gfxinterface.h"
 
 /** Constructs a new CBMap and calls the constructor for CBObject */
 CBMap::CBMap() :
@@ -263,11 +264,11 @@ void CBMap::drawLayer(uint8_t level, RenderTarget &target) {
 		}
 
 		CBEnchanted *cb = CBEnchanted::instance();
-		float camX = cb->getCameraX();
-		float camY = cb->getCameraY();
+		float camX = cb->cameraInterface->getCameraX();
+		float camY = cb->cameraInterface->getCameraY();
 
-		float scrW = cb->getDrawAreaWidth();
-		float scrH = cb->getDrawAreaHeight();
+		float scrW = cb->cameraInterface->getDrawAreaWidth();
+		float scrH = cb->cameraInterface->getDrawAreaHeight();
 
 		// Calculate the coordinates of visible area
 		float areaTop = camY + 0.5f * scrH;
@@ -674,7 +675,7 @@ void CBMap::mapCoordinatesToWorldCoordinates(float &x, float &y) {
 /** Draws debug box for raycasting */
 void CBMap::drawRayCastDebugBox(float tileX, float tileY) {
 	CBEnchanted *cb = CBEnchanted::instance();
-	RenderTarget *rendertarget = cb->getCurrentRenderTarget();
+	RenderTarget *rendertarget = cb->gfxInterface->getCurrentRenderTarget();
 
 	// Translate coords
 	float x = tileX * tileWidth;

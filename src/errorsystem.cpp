@@ -1,6 +1,7 @@
 #include "errorsystem.h"
 #include "cbenchanted.h"
 #include "debug.h"
+#include "gfxinterface.h"
 #include <allegro5/allegro_native_dialog.h>
 #include <iostream>
 #ifdef _WIN32
@@ -161,7 +162,7 @@ bool ErrorSystem::execLastError() {
 
 	if (lastError.fatal) {
 		al_show_native_message_box(
-					cb->getWindow(),
+					cb->gfxInterface->getWindow(),
 					lastError.title.c_str(),
 					lastError.heading.c_str(),
 					lastError.message.c_str(),
@@ -173,7 +174,7 @@ bool ErrorSystem::execLastError() {
 	}
 #ifndef _WIN32 // Allegro doesn't support custom messagebox buttons with Windows
 	int ret = al_show_native_message_box(
-				cb->getWindow(),
+				cb->gfxInterface->getWindow(),
 				lastError.title.c_str(),
 				lastError.heading.c_str(),
 				lastError.message.c_str(),

@@ -3,6 +3,7 @@
 #include "textinterface.h"
 #include "util.h"
 #include "errorsystem.h"
+#include "gfxinterface.h"
 #include <string>
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
@@ -13,7 +14,7 @@
 
 #ifndef CBE_LIB
 TextInterface::TextInterface() : locationX(0), locationY(0) {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
 }
 
 TextInterface::~TextInterface() {
@@ -73,8 +74,8 @@ void TextInterface::commandText(void) {
 	float y = cb->popValue().toFloat();
 	float x = cb->popValue().toFloat();
 
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
-	cb->getCurrentRenderTarget()->drawText(currentFont, txt, x, y, cb->getDrawColor());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawTextToWorld() && !cb->gfxInterface->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->drawText(currentFont, txt, x, y, cb->gfxInterface->getDrawColor());
 }
 
 void TextInterface::commandCenterText(void) {
@@ -82,16 +83,16 @@ void TextInterface::commandCenterText(void) {
 	const ISString &str = cb->popValue().toString();
 	int32_t y = cb->popValue().toInt();
 	int32_t x = cb->popValue().toInt();
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawTextToWorld() && !cb->gfxInterface->drawingOnImage());
 	switch (style) {
 		case 0:
-			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::HCenter);
+			cb->gfxInterface->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->gfxInterface->getDrawColor(), RenderTarget::HCenter);
 			break;
 		case 1:
-			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::VCenter);
+			cb->gfxInterface->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->gfxInterface->getDrawColor(), RenderTarget::VCenter);
 			break;
 		case 2:
-			cb->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->getDrawColor(), RenderTarget::Center);
+			cb->gfxInterface->getCurrentRenderTarget()->drawText(currentFont, str, x, y, cb->gfxInterface->getDrawColor(), RenderTarget::Center);
 			break;
 	}
 }
@@ -100,7 +101,7 @@ void TextInterface::commandVerticalText(void) {
 	const ISString &str = cb->popValue().toString();
 	int32_t x = cb->popValue().toInt();
 	int32_t y = cb->popValue().toInt();
-	cb->getCurrentRenderTarget()->useWorldCoords(cb->getDrawTextToWorld() && !cb->drawingOnImage());
+	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawTextToWorld() && !cb->gfxInterface->drawingOnImage());
 	uint16_t textLen = str.length();
 	uint16_t textHeight = al_get_font_line_height(currentFont);
 	string Str = str.getStdString();
@@ -108,7 +109,7 @@ void TextInterface::commandVerticalText(void) {
 	for(uint16_t i = 0; i < textLen; i++) {
 		string charac;
 		charac = Str[i];
-		cb->getCurrentRenderTarget()->drawText(currentFont, ISString(charac), x, y, cb->getDrawColor());
+		cb->gfxInterface->getCurrentRenderTarget()->drawText(currentFont, ISString(charac), x, y, cb->gfxInterface->getDrawColor());
 		y += textHeight;
 	}
 
@@ -141,7 +142,7 @@ void TextInterface::commandAddText(void) {
 	newtxt->txt = cb->popValue().toString();
 	newtxt->txtX = locationX;
 	newtxt->txtY = locationY;
-	newtxt->col = cb->getDrawColor();
+	newtxt->col = cb->gfxInterface->getDrawColor();
 	texts.push_back(newtxt);
 	locationY += al_get_font_line_height(currentFont);
 }

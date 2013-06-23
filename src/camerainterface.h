@@ -1,8 +1,9 @@
 #ifndef CAMERAINTERFACE_H
 #define CAMERAINTERFACE_H
-class CBEnchanted;
+
 #include "precomp.h"
 
+class CBEnchanted;
 class CBObject;
 
 class CameraInterface {

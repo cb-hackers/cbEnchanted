@@ -1,6 +1,8 @@
+#include "gfxinterface.h"
 #include "rendertarget.h"
 #include "cbenchanted.h"
 #include "cbimage.h"
+#include "camerainterface.h"
 
 int32_t renderTargetIdCounter = 0;
 RenderTarget *bindRenderTarget = 0;
@@ -112,7 +114,7 @@ void RenderTarget::useWorldCoords(bool t) {
 	if (t != worldCoordsEnabled || pixelPreciseWorldCoordsEnabled) {
 		setAsCurrent();
 		if (t) {
-			al_use_transform(CBEnchanted::instance()->getWorldTransform());
+			al_use_transform(CBEnchanted::instance()->cameraInterface->getWorldTransform());
 		}
 		else {
 			ALLEGRO_TRANSFORM t;
@@ -127,7 +129,7 @@ void RenderTarget::useWorldCoords(bool t) {
 void RenderTarget::usePixelPreciseWorldCoords() {
 	if (!pixelPreciseWorldCoordsEnabled) {
 		setAsCurrent();
-		al_use_transform(CBEnchanted::instance()->getPixelPreciseWorldTransform());
+		al_use_transform(CBEnchanted::instance()->cameraInterface->getPixelPreciseWorldTransform());
 		pixelPreciseWorldCoordsEnabled = true;
 	}
 }
@@ -139,7 +141,7 @@ void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const A
 		al_draw_filled_rectangle(x, y, x+w, y+h, color);
 	}
 	else {
-		al_draw_rectangle(x, y, x+w, y+h, color, CBEnchanted::instance()->getLineWidth());
+		al_draw_rectangle(x, y, x+w, y+h, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 
@@ -153,7 +155,7 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLE
 		al_draw_filled_circle(cx, cy, r, color);
 	}
 	else {
-		al_draw_circle(cx, cy, r, color, CBEnchanted::instance()->getLineWidth());
+		al_draw_circle(cx, cy, r, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 
@@ -167,7 +169,7 @@ void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,con
 		al_draw_filled_ellipse(x, y, w*0.5f, h*0.5f, color);
 	}
 	else {
-		al_draw_ellipse(x, y, w*0.5f, h*0.5f, color, CBEnchanted::instance()->getLineWidth());
+		al_draw_ellipse(x, y, w*0.5f, h*0.5f, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 
@@ -181,7 +183,7 @@ void RenderTarget::drawLine(float x1, float y1, float x2, float y2, const ALLEGR
 	setAsCurrent();
 	convertCoords(x1, y1);
 	convertCoords(x2, y2);
-	al_draw_line(x1, y1, x2, y2, color, CBEnchanted::instance()->getLineWidth());
+	al_draw_line(x1, y1, x2, y2, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 }
 
 void RenderTarget::putPixel(int32_t x, int32_t y, const ALLEGRO_COLOR &color) {
@@ -396,7 +398,7 @@ void RenderTarget::drawTriangle(float x1, float y1, float x2, float y2, float x3
 		al_draw_filled_triangle(x1, y1, x2, y2, x3, y3, color);
 	}
 	else {
-		al_draw_triangle(x1, y1, x2, y2, x3, y3, color, CBEnchanted::instance()->getLineWidth());
+		al_draw_triangle(x1, y1, x2, y2, x3, y3, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 

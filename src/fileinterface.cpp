@@ -3,9 +3,11 @@
 #include "fileinterface.h"
 #include "errorsystem.h"
 #include "util.h"
+
 #ifndef CBE_LIB
 FileInterface::FileInterface() {
-	cb = static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
+	//cb = static_cast <CBEnchanted *> (this);
 }
 
 FileInterface::~FileInterface() {

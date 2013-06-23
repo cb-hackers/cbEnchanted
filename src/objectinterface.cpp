@@ -8,6 +8,9 @@
 #include "util.h"
 #include "collisioncheck.h"
 #include "errorsystem.h"
+#include "effectinterface.h"
+#include "imageinterface.h"
+#include "camerainterface.h"
 
 #ifndef CBE_LIB
 ObjectInterface::ObjectInterface():
@@ -21,7 +24,7 @@ ObjectInterface::ObjectInterface():
 	lastPickedY(0.0),
 	lastPickedAngle(0.0)
 {
-	cb = static_cast<CBEnchanted *>(this);
+	cb = CBEnchanted::instance(); //static_cast<CBEnchanted *>(this);
 }
 
 ObjectInterface::~ObjectInterface() {
@@ -33,7 +36,7 @@ void ObjectInterface::commandDeleteObject(void) {
 	CBObject *object = getObject(id);
 	if (object->type() == CBObject::ParticleEmitter) {
 		objectMap.erase(id);
-		cb->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
+		cb->effectInterface->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
 		return;
 	}
 	// Remove possible collision checks
@@ -45,7 +48,7 @@ void ObjectInterface::commandDeleteObject(void) {
 	}
 	else if (object->type() == CBObject::Map) {
 		removeFromDrawOrder(object);
-		cb->deleteTileMap();
+		cb->mapInterface->deleteTileMap();
 	}
 	objectMap.erase(id);
 }
@@ -56,7 +59,7 @@ void ObjectInterface::commandClearObjects(void) {
 			delete i->second;
 		}
 	}
-	cb->deleteTileMap();
+	cb->mapInterface->deleteTileMap();
 	objectMap.clear();
 	lastObject = firstObject = 0;
 	firstFloorObject = lastFloorObject = 0;
@@ -94,7 +97,7 @@ void ObjectInterface::commandScreenPositionObject(void) {
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	cb->screenCoordToWorld(x, y);
+	cb->cameraInterface->screenCoordToWorld(x, y);
 	object->positionObject(x, y);
 }
 
@@ -253,7 +256,7 @@ void ObjectInterface::commandPaintObject(void) {
 
 	if (object->isMap() || object->isFloorObject()) {
 		// Maps and floor objects can only be painted with an image
-		CBImage *img = cb->getImage(p);
+		CBImage *img = cb->imageInterface->getImage(p);
 		object->paintObject(*img->getRenderTarget());
 	}
 	else {
@@ -263,7 +266,7 @@ void ObjectInterface::commandPaintObject(void) {
 			object->paintObject(*object2);
 		}
 		else { //Image
-			CBImage *img = cb->getImage(-p);
+			CBImage *img = cb->imageInterface->getImage(-p);
 			object->paintObject(*img->getRenderTarget());
 		}
 	}
@@ -751,7 +754,7 @@ void ObjectInterface::functionObjectSight(void) {
 	CBObject *obj1 = getObject(objId1);
 	CBObject *obj2 = getObject(objId2);
 
-	CBMap* tileMap = cb->getTileMap();
+	CBMap* tileMap = cb->mapInterface->getTileMap();
 
 	float x1 = obj1->getX();
 	float y1 = obj1->getY();
@@ -849,7 +852,7 @@ CBObject* ObjectInterface::getObject(int32_t key) {
 }
 
 void ObjectInterface::drawObjects(RenderTarget &target) {
-	if (cb->getTileMap() == 0 && firstFloorObject == 0 && firstObject == 0) {
+	if (cb->mapInterface->getTileMap() == 0 && firstFloorObject == 0 && firstObject == 0) {
 		// No objects to be drawn
 		return;
 	}
@@ -874,8 +877,8 @@ void ObjectInterface::drawObjects(RenderTarget &target) {
 	}
 
 	// Draw map over layer
-	if (cb->getTileMap()) {
-		cb->getTileMap()->drawLayer(1, target);
+	if (cb->mapInterface->getTileMap()) {
+		cb->mapInterface->getTileMap()->drawLayer(1, target);
 	}
 
 	//al_hold_bitmap_drawing(false);
@@ -974,7 +977,7 @@ void ObjectInterface::updateObjects(){
 			++i;
 		}
 	}
-	cb->updateRogueParticles();
+	cb->effectInterface->updateRogueParticles();
 
 	// Iterate over every collision check that is set and run testCollision() on them
 	std::vector<CollisionCheck*>::iterator cChkI;
