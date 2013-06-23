@@ -18,91 +18,106 @@ FORCEINLINE int32_t cbpow(int32_t a, int32_t b) {
 
 FORCEINLINE void Any::addition(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Int) {
-		if (a.typeId == Int) {
-			a.dInt = a.dInt + b.dInt;
-			return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (b.typeId) {
+		case Int: {
+			switch (a.typeId) {
+				case Int: {
+					a.dInt = a.dInt + b.dInt;
+					return;
+				}
+				case Float: {
+					a.dFloat = a.dFloat + b.dInt;
+					return;
+				}
+				case String: {
+					ISString s = a.getString();
+					ISString res(s.getRef() + boost::lexical_cast<string>(b.dInt));
+					res.requireEncoding(s.isEncodingRequired());
+					a = res;
+					return;
+				}
+			}
+			break;
 		}
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat + b.dInt;
-			return;
+		case Float: {
+			switch (a.typeId) {
+				case Float: {
+					a.dFloat = a.dFloat + b.dFloat;
+					return;
+				}
+				case Int: {
+					a.dFloat = a.dInt + b.dFloat;
+					a.typeId = Float;
+					return;
+				}
+				case String: {
+					ISString s = a.getString();
+					ISString res(s.getRef() + boost::lexical_cast<string>(b.dFloat));
+					res.requireEncoding(s.isEncodingRequired());
+					a = res;
+					return;
+				}
+			}
+			break;
 		}
-		if (a.typeId == String) {
-			ISString s = a.getString();
-			ISString res(s.getRef() + boost::lexical_cast<string>(b.dInt));
-			res.requireEncoding(s.isEncodingRequired());
-			a = res;
-			return;
-		}
-	}
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat + b.dFloat;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dFloat = a.dInt + b.dFloat;
-			a.typeId = Float;
-			return;
-		}
-		if (a.typeId == String) {
-			ISString s = a.getString();
-			ISString res(s.getRef() + boost::lexical_cast<string>(b.dFloat));
-			res.requireEncoding(s.isEncodingRequired());
-			a = res;
-			return;
-		}
-	}
-	if (b.typeId == String) {
-		if (a.typeId == Float) {
-			ISString s = b.getString();
-			ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
-			res.requireEncoding(s.isEncodingRequired());
-			a = res;
-			return;
-		}
-		if (a.typeId == Int) {
-			ISString s = b.getString();
-			ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
-			res.requireEncoding(s.isEncodingRequired());
-			a = res;
-			return;
-		}
-		if (a.typeId == String) {
-			ISString as = a.getString();
-			ISString bs = b.getString();
-			ISString res(as + bs);
-			res.requireEncoding(as.isEncodingRequired() || bs.isEncodingRequired());
-			a = res;
-			return;
-		}
+		case String: {
+			switch (a.typeId) {		
+				case Float: {
+					ISString s = b.getString();
+					ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
+					res.requireEncoding(s.isEncodingRequired());
+					a = res;
+					return;
+				}
+				case Int: {
+					ISString s = b.getString();
+					ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
+					res.requireEncoding(s.isEncodingRequired());
+					a = res;
+					return;
+				}
+				case String: {
+					ISString as = a.getString();
+					ISString bs = b.getString();
+					ISString res(as + bs);
+					res.requireEncoding(as.isEncodingRequired() || bs.isEncodingRequired());
+					a = res;
+					return;
+				}
+			}
+			break;
+		}	
 	}
 	FIXME("Unsupported operation %s + %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::multiplication(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat * b.dFloat;
-			return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (b.typeId) {
+		case Float: {
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat * b.dFloat;
+					return;
+				case Int:
+					a.dFloat = a.dInt * b.dFloat;
+					a.typeId = Float;
+					return;
+			}
+			break;
 		}
-		if (a.typeId == Int) {
-			a.dFloat = a.dInt * b.dFloat;
-			a.typeId = Float;
-			return;
-		}
-	}
-	if (b.typeId == Int) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat * b.dInt;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dInt = a.dInt * b.dInt;
-			return;
+		case Int: {
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat * b.dInt;
+					return;
+				case Int:
+					a.dInt = a.dInt * b.dInt;
+					return;
+			}
+			break;
 		}
 	}
 	FIXME("Unsupported operation %s * %s", a.typeInfo().name(), b.typeInfo().name());
@@ -111,108 +126,115 @@ FORCEINLINE void Any::multiplication(VariableStack *s) {
 FORCEINLINE void Any::subtraction(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat - b.dFloat;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dFloat = a.dInt - b.dFloat;
-			a.typeId = Float;
-			return;
-		}
+	switch (b.typeId) {
+		case Float:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat - b.dFloat;
+					return;
+				case Int:
+					a.dFloat = a.dInt - b.dFloat;
+					a.typeId = Float;
+					return;
+			}
+			break;
+		case Int:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat - b.dInt;
+					return;
+				case Int:
+					a.dInt = a.dInt - b.dInt;
+					return;
+			}
+			break;
 	}
-	if (b.typeId == Int) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat - b.dInt;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dInt = a.dInt - b.dInt;
-			return;
-		}
-	}
-	FIXME("Unsupported operation %s * %s", a.typeInfo().name(), b.typeInfo().name());
+
+	FIXME("Unsupported operation %s - %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::division(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat / b.dFloat;
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dFloat = (float)a.dInt / b.dFloat;
-			a.typeId = Float;
-			return;
-		}
-	}
-	if (b.typeId == Int) {
-		if (a.typeId == Float) {
-			a.dFloat = a.dFloat / (float)b.dInt;
-			return;
-		}
-		if (a.typeId == Int) {
-			if (b.dInt == 0) {
-				CBEnchanted::instance()->errors->createError("Integer divided by zero",
-															 "",
-															 "Integer pwned by Zero");
-				a.dInt = 0;
-				return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (b.typeId) {
+		case Float:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat / b.dFloat;
+					return;
+				case Int:
+					a.dFloat = (float)a.dInt / b.dFloat;
+					a.typeId = Float;
+					return;
 			}
-			a.dInt = a.dInt / b.dInt;
-			return;
-		}
+			break;
+		case Int:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = a.dFloat / (float)b.dInt;
+					return;
+				case Int:
+					if (b.dInt == 0) {
+						CBEnchanted::instance()->errors->createError("Integer divided by zero",
+																	 "",
+																	 "Integer pwned by Zero");
+						a.dInt = 0;
+						return;
+					}
+					a.dInt = a.dInt / b.dInt;
+					return;
+			}
+			break;
 	}
-	FIXME("Unsupported operation %s * %s", a.typeInfo().name(), b.typeInfo().name());
+	FIXME("Unsupported operation %s / %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::modulo(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = fmod(a.dFloat, b.dFloat);
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dFloat = fmod((double)a.dInt, (double)b.dFloat);
-			a.typeId = Float;
-			return;
-		}
-	}
-	if (b.typeId == Int) {
-		if (a.typeId == Float) {
-			a.dFloat = fmod((double)a.dFloat, (double)b.dInt);
-			return;
-		}
-		if (a.typeId == Int) {
-			if (b.dInt == 0) {
-				CBEnchanted::instance()->errors->createError("Integer divided by zero",
-															 "This happened when using the Mod operator",
-															 "Integer pwned by Zero");
-				a.dInt = 0;
-				return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (b.typeId) {
+		case Float:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = fmod(a.dFloat, b.dFloat);
+					return;
+				case Int:
+					a.dFloat = fmod((double)a.dInt, (double)b.dFloat);
+					a.typeId = Float;
+					return;
 			}
-			a.dInt = a.dInt % b.dInt;
-			return;
-		}
+			break;
+		case Int:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = fmod((double)a.dFloat, (double)b.dInt);
+					return;
+				case Int:
+					if (b.dInt == 0) {
+						CBEnchanted::instance()->errors->createError("Integer divided by zero",
+																	 "This happened when using the Mod operator",
+																	 "Integer pwned by Zero");
+						a.dInt = 0;
+						return;
+					}
+					a.dInt = a.dInt % b.dInt;
+					return;
+			}
+			break;		
 	}
 	FIXME("Unsupported operation %s %% %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::shl(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = a.toInt() << b.toInt();
 	a.typeId = Int;
 }
 
 FORCEINLINE void Any::sar(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = a.toInt() >> b.toInt();
 	a.typeId = Int;
 }
@@ -225,7 +247,7 @@ FORCEINLINE void Any::shr(VariableStack *s) {
 	LogicalShiftHelper ah;
 	LogicalShiftHelper bh;
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	ah.i = a.toInt();
 	bh.i = b.toInt();
 	*reinterpret_cast<uint32_t*>(&a.dInt) = ah.u >> bh.u;
@@ -234,405 +256,399 @@ FORCEINLINE void Any::shr(VariableStack *s) {
 
 FORCEINLINE void Any::power(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (b.typeId == Float) {
-		if (a.typeId == Float) {
-			a.dFloat = powf(a.dFloat, b.dFloat);
-			return;
-		}
-		if (a.typeId == Int) {
-			a.dFloat = pow((double)a.dInt, (double)b.dFloat);
-			a.typeId = Float;
-			return;
-		}
-	}
-	if (b.typeId == Int) {
-		if (a.typeId == Int) {
-			a.dInt = cbpow(a.dInt, b.dInt);
-			return;
-		}
-		if (a.typeId == Float) {
-			a.dFloat = pow((double)a.dFloat, (double)b.dInt);
-			return;
-		}
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (b.typeId) {
+		case Float:
+			switch (a.typeId) {
+				case Float:
+					a.dFloat = powf(a.dFloat, b.dFloat);
+					return;
+				case Int:
+					a.dFloat = pow((double)a.dInt, (double)b.dFloat);
+					a.typeId = Float;
+					return;
+			}
+			break;
+		case Int:
+			switch (a.typeId) {
+				case Int:
+					a.dInt = cbpow(a.dInt, b.dInt);
+					return;
+				case Float:
+					a.dFloat = pow((double)a.dFloat, (double)b.dInt);
+					return;
+			}
+			break;
 	}
 }
 
 FORCEINLINE void Any::equal(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt == b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt == b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() == b.getString();
-			return;
-		}
-	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat == b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat == b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() == b.getString();
-			return;
-		}
-	}
-	if (a.typeId == TypePtr && b.typeId == TypePtr) {
-		a.typeId = Int;
-		a.dInt = a.dPtr == b.dPtr;
-		return;
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() == b.getString();
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt == b.dInt;
+					return;	
+				case Float:
+					a.dInt = a.dInt == b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() == b.getString();
+					return;
+			}
+		case Float:
 			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() == b.toString();
+			switch (b.typeId) {
+				case Float:
+					a.dInt = a.dFloat == b.dFloat;
+					return;
+				case Int:
+					a.dInt = a.dFloat == b.dInt;
+					return;
+				case String:
+					a.dInt = a.toString() == b.getString();
+					return;
+			}
+		case TypePtr:
+			if (b.typeId == TypePtr) {
+				a.typeId = Int;
+				a.dInt = a.dPtr == b.dPtr;
+				return;
+			}
+			break;
+		case String:
 			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() == b.toString();
-			a.typeId = Int;
-			return;
-		}
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() == b.getString();
+					return;
+				case Int:
+				case Float:
+					a.dInt = a.getString() == b.toString();
+					return;
+			}
 	}
 	FIXME("Unsupported operation %s == %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::notEqual(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt != b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt != b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() != b.getString();
-			return;
-		}
-	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat != b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat != b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() != b.getString();
-			return;
-		}
-	}
-	if (a.typeId == TypePtr && b.typeId == TypePtr) {
-		a.typeId = Int;
-		a.dInt = a.dPtr != b.dPtr;
-		return;
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() != b.getString();
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt != b.dInt;
+					return;
+				case Float:
+					a.dInt = a.dInt != b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() != b.getString();
+					return;
+			}
+			break;
+		case Float:
 			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() != b.toString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() != b.toString();
-			a.typeId = Int;
-			return;
-		}
+			switch (b.typeId) {
+				case Float:
+					a.dInt = a.dFloat != b.dFloat;
+					return;
+				case Int:
+					a.dInt = a.dFloat != b.dInt;
+					return;
+				case String:
+					a.dInt = a.toString() != b.getString();
+					return;
+			}
+			break;
+		case TypePtr:
+			if (b.typeId == TypePtr) {
+				a.typeId = Int;
+				a.dInt = a.dPtr != b.dPtr;
+				return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() != b.getString();
+					a.typeId = Int;
+					return;
+				case Int:
+					a.dInt = a.getString() != b.toString();
+					a.typeId = Int;
+					return;
+				case Float:
+					a.dInt = a.getString() != b.toString();
+					a.typeId = Int;
+					return;
+			}
+			break;
 	}
+
 	FIXME("Unsupported operation %s != %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::AND(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = a.toBool() && b.toBool();
 	a.typeId = Int;
 }
 
 FORCEINLINE void Any::OR(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = a.toBool() || b.toBool();
 	a.typeId = Int;
 }
 
 FORCEINLINE void Any::XOR(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = a.toBool() ^ b.toBool();
 	a.typeId = Int;
 }
 
 FORCEINLINE void Any::NOT(VariableStack *s) {
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	a.dInt = !a.toBool();
 	a.typeId = Int;
 }
 
-
-
 FORCEINLINE void Any::greaterThan(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt > b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt > b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() > b.getString();
-			return;
-		}
-	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat > b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat > b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() > b.getString();
-			return;
-		}
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() > b.getString();
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt > b.dInt;
+					return;
+				case Float:
+					a.dInt = a.dInt > b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() > b.getString();
+					return;
+			}
+			break;
+		case Float:
 			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() > b.toString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() > b.toString();
-			a.typeId = Int;
-			return;
-		}
+			switch (b.typeId) {
+				case Float:
+					a.dInt = a.dFloat > b.dFloat;
+					return;
+				case Int:
+					a.dInt = a.dFloat > b.dInt;
+					return;
+				case String:
+					a.dInt = a.toString() > b.getString();
+					return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() > b.getString();
+					a.typeId = Int;
+					return;
+				case Int:
+					a.dInt = a.getString() > b.toString();
+					a.typeId = Int;
+					return;
+				case Float:
+					a.dInt = a.getString() > b.toString();
+					a.typeId = Int;
+					return;
+			}
+			break;
 	}
 	FIXME("Unsupported operation %s > %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::greaterThanOrEqual(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt >= b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt >= b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() >= b.getString();
-			return;
-		}
-	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat >= b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat >= b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() >= b.getString();
-			return;
-		}
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() >= b.getString();
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt >= b.dInt;
+					return;
+				case Float:
+					a.dInt = a.dInt >= b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() >= b.getString();
+					return;
+			}
+			break;
+		case Float:
 			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() >= b.toString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() >= b.toString();
-			a.typeId = Int;
-			return;
-		}
+			switch (b.typeId) {
+				case Float:
+					a.dInt = a.dFloat >= b.dFloat;
+					return;
+				case Int:
+					a.dInt = a.dFloat >= b.dInt;
+					return;
+				case String:
+					a.dInt = a.toString() >= b.getString();
+					return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() >= b.getString();
+					a.typeId = Int;
+					return;
+				case Int:
+					a.dInt = a.getString() >= b.toString();
+					a.typeId = Int;
+					return;
+				case Float:
+					a.dInt = a.getString() >= b.toString();
+					a.typeId = Int;
+					return;
+			}
+			break;
 	}
 	FIXME("Unsupported operation %s >= %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::lessThan(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt < b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt < b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() < b.getString();
-			return;
-		}
-	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat < b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat < b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() < b.getString();
-			return;
-		}
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() < b.getString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() < b.toString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() < b.toString();
-			a.typeId = Int;
-			return;
-		}
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt < b.dInt;
+					return;
+				case Float:
+					a.dInt = a.dInt < b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() < b.getString();
+					return;
+			}
+			break;
+		case Float:
+			switch (b.typeId) {
+				case Float:
+					a.typeId = Int;
+					a.dInt = a.dFloat < b.dFloat;
+					return;
+				case Int:
+					a.typeId = Int;
+					a.dInt = a.dFloat < b.dInt;
+					return;
+				case String:
+					a.typeId = Int;
+					a.dInt = a.toString() < b.getString();
+					return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() < b.getString();
+					a.typeId = Int;
+					return;
+				case Int:
+					a.dInt = a.getString() < b.toString();
+					a.typeId = Int;
+					return;
+				case Float:
+					a.dInt = a.getString() < b.toString();
+					a.typeId = Int;
+					return;
+			}
+			break;
 	}
 	FIXME("Unsupported operation %s < %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::lessThanOrEqual(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		if (b.typeId == Int) {
-			a.dInt = a.dInt <= b.dInt;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.dInt <= b.dFloat;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() <= b.getString();
-			return;
-		}
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			switch (b.typeId) {
+				case Int:
+					a.dInt = a.dInt <= b.dInt;
+					return;
+				case Float:
+					a.dInt = a.dInt <= b.dFloat;
+					return;
+				case String:
+					a.dInt = a.toString() <= b.getString();
+					return;
+			}
+			break;
+		case Float:
+			switch (b.typeId) {
+				case Float:
+					a.typeId = Int;
+					a.dInt = a.dFloat <= b.dFloat;
+					return;
+				case Int:
+					a.typeId = Int;
+					a.dInt = a.dFloat <= b.dInt;
+					return;
+				case String:
+					a.typeId = Int;
+					a.dInt = a.toString() <= b.getString();
+					return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
+				case String:
+					a.dInt = a.getString() <= b.getString();
+					a.typeId = Int;
+					return;
+				case Int:
+					a.dInt = a.getString() <= b.toString();
+					a.typeId = Int;
+					return;
+				case Float:
+					a.dInt = a.getString() <= b.toString();
+					a.typeId = Int;
+					return;
+			}
+			break;
 	}
-	if (a.typeId == Float) {
-		a.typeId = Int;
-		if (b.typeId == Float) {
-			a.dInt = a.dFloat <= b.dFloat;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.dFloat <= b.dInt;
-			return;
-		}
-		if (b.typeId == String) {
-			a.dInt = a.toString() <= b.getString();
-			return;
-		}
-	}
-	if (a.typeId == String) {
-		if (b.typeId == String) {
-			a.dInt = a.getString() <= b.getString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Int) {
-			a.dInt = a.getString() <= b.toString();
-			a.typeId = Int;
-			return;
-		}
-		if (b.typeId == Float) {
-			a.dInt = a.getString() <= b.toString();
-			a.typeId = Int;
-			return;
-		}
-	}
-	FIXME("Unsupported operation %s < %s", a.typeInfo().name(), b.typeInfo().name());
+	FIXME("Unsupported operation %s <= %s", a.typeInfo().name(), b.typeInfo().name());
 }
 
 FORCEINLINE void Any::unaryMinus(VariableStack *s) {
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		a.dInt = -a.dInt;
-		return;
-	}
-	if (a.typeId == Float) {
-		a.dFloat = -a.dFloat;
-		return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			a.dInt = -a.dInt;
+			return;
+		case Float:
+			a.dFloat = -a.dFloat;
+			return;
 	}
 	FIXME("Unsupported operation -%s", a.typeInfo().name());
 }
 
 FORCEINLINE void Any::unaryPlus(VariableStack *s) {
-	Any &a = s->stackArray[s->stackLevel-1];
-	if (a.typeId == Int) {
-		a.dInt = abs(a.dInt);
-		return;
+	Any &a = s->stackArray[s->stackLevel - 1];
+	switch (a.typeId) {
+		case Int:
+			a.dInt = abs(a.dInt);
+		case Float:
+			a.dFloat = abs(a.dFloat);
 	}
-	if (a.typeId == Float) {
-		a.dFloat = abs(a.dFloat);
-		return;
-	}
-	FIXME("Unsupported operation -%s", a.typeInfo().name());
+	FIXME("Unsupported operation +%s", a.typeInfo().name());
 }
 
 
