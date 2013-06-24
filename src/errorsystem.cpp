@@ -209,7 +209,7 @@ bool ErrorSystem::execLastError() {
 	wstring wideMsg = utf8ToUtf16(message);
 	wstring wideTitle = utf8ToUtf16(lastError.title);
 
-	int ret = CBTMessageBox(al_get_win_window_handle(cb->getWindow()), &wideMsg[0], &wideTitle[0], MB_ABORTRETRYIGNORE | MB_ICONERROR);
+    int ret = CBTMessageBox(al_get_win_window_handle(cb->gfxInterface->getWindow()), &wideMsg[0], &wideTitle[0], MB_ABORTRETRYIGNORE | MB_ICONERROR);
 	switch (ret) {
 		case 0: // No buttons clicked
 		case IDRETRY: // User clicked continue
