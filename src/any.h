@@ -12,11 +12,11 @@ class Any {
 		/** Enumerated type for CB's data types
 		  */
 		enum Type {
-			Empty = 0,
-			Float = 1,
-			Int = 2,
-			String = 3,
-			TypePtr = 4
+			Empty,
+			Float,
+			Int,
+			String,
+			TypePtr
 		};
 	private:
 		union {
@@ -32,7 +32,7 @@ class Any {
 
 		/** Any::Type of data type saved to Any
 		  */
-		uint8_t typeId;
+		Type typeId;
 	public:
 		/** Constructs empty Any. empty() == true
 		  */
@@ -93,8 +93,7 @@ class Any {
 		/**
 		  * @return Any::Type
 		  */
-		int32_t type() const{ return typeId; }
-
+		Type type() const { return typeId; }
 		const type_info &typeInfo() const;
 
 		/** Converts data to string and returns it
@@ -131,11 +130,9 @@ class Any {
 		  */
 		bool toBool() const;
 
-
 		/** Prints debug information to stdout.
 		 */
 		void dump() const;
-
 
 		/** Negation operator */
 		int32_t operator ! ()const;

@@ -15,8 +15,6 @@ class AnimInterface {
 		void functionAnimationHeight(void);
 		void functionAnimationPlaying(void);
 #endif
-	private:
-
 };
 
 #endif
