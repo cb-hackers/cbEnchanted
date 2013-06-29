@@ -41,7 +41,7 @@ bool CBImage::load(const string &path) {
 }
 
 bool CBImage::save(const string &path) {
-	return al_save_bitmap(path.c_str(),unmaskedBitmap);
+	return al_save_bitmap(path.c_str(), unmaskedBitmap);
 }
 
 void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
@@ -144,7 +144,7 @@ void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, int frame, flo
 		frameAreaTop,
 		frameAreaWidth,
 		frameAreaHeight,
-		al_map_rgba_f(1,1,1,alpha),
+		al_map_rgba_f(1, 1, 1, alpha),
 		x - hotspotX,
 		y - hotspotY,
 		0
@@ -357,11 +357,13 @@ bool CBImage::collides(CBImage *img, float x1, float y1, float x2, float y2) {
  * @param img Image that has a mask to clean
  */
 void CBImage::cleanDirtyMask() {
-	if (!maskIsDirty) { return; }
+	if (!maskIsDirty) {
+		return;
+	}
 
 	ALLEGRO_BITMAP *image = unmaskedBitmap;
 	uint32_t pixel;
-	int32_t x,y;
+	int32_t x, y;
 	int32_t width = al_get_bitmap_width(image);
 	int32_t height = al_get_bitmap_height(image);
 	uint32_t mask;

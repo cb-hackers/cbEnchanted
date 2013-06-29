@@ -22,9 +22,9 @@ const char *screenGammaFragmentShaderCode =
 		"{ \n"
 		"	vec4 color = texture2D(screenBuf, gl_TexCoord[0].xy); \n"
 		"	vec4 nyCol; \n"
-		"	if (windowGamma.r > 0) nyCol.r = color.r + (1.0-color.r)*windowGamma.r; else nyCol.r = color.r + color.r*windowGamma.r; \n"
-		"	if (windowGamma.g > 0) nyCol.g = color.g + (1.0-color.g)*windowGamma.g; else nyCol.g = color.g + color.g*windowGamma.g; \n"
-		"	if (windowGamma.b > 0) nyCol.b = color.b + (1.0-color.b)*windowGamma.b; else nyCol.b = color.b + color.b*windowGamma.b; \n"
+		"	if (windowGamma.r > 0) nyCol.r = color.r + (1.0 - color.r) * windowGamma.r; else nyCol.r = color.r + color.r * windowGamma.r; \n"
+		"	if (windowGamma.g > 0) nyCol.g = color.g + (1.0 - color.g) * windowGamma.g; else nyCol.g = color.g + color.g * windowGamma.g; \n"
+		"	if (windowGamma.b > 0) nyCol.b = color.b + (1.0 - color.b) * windowGamma.b; else nyCol.b = color.b + color.b * windowGamma.b; \n"
 		"	if (nyCol.r > 1.0)  nyCol.r = 1.0; \n"
 		"	if (nyCol.r < 0.0)  nyCol.r = 0.0; \n"
 		"	if (nyCol.g > 1.0)  nyCol.g = 1.0; \n"
@@ -47,7 +47,7 @@ GfxInterface::GfxInterface() :
 	lineWidth(1.0f),
 	imageToDrawTo(NULL)
 {
-	cb = CBEnchanted::instance();//static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 	fpsCounter = 0;
 	currentFPS = 0;
 	lastSecTimer = clock();
@@ -58,22 +58,21 @@ GfxInterface::~GfxInterface() {
 }
 
 bool GfxInterface::initializeGfx() {
-	// Initialize colors
 	drawColor = al_map_rgb(255, 255, 255);
 	clearColor = al_map_rgb(0, 0, 0);
 
 	al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
-	al_set_new_display_option(ALLEGRO_DEPTH_SIZE,0,ALLEGRO_SUGGEST);
-	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP,1,ALLEGRO_SUGGEST);
-	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP,1,ALLEGRO_REQUIRE);
-	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY,1,ALLEGRO_REQUIRE);
-	window = al_create_display(400,300);
+	al_set_new_display_option(ALLEGRO_DEPTH_SIZE, 0, ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_SUPPORT_NPOT_BITMAP, 1, ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP, 1, ALLEGRO_REQUIRE);
+	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY, 1, ALLEGRO_REQUIRE);
+	window = al_create_display(400, 300);
 	state = 1;
 	defaultWidth = 400;
 	defaultHeight = 300;
 	newWidth = defaultWidth;
 	newHeight = defaultHeight;
-	defaultAspectRatio = (float)defaultWidth/(float)defaultHeight;
+	defaultAspectRatio = (float)defaultWidth / (float)defaultHeight;
 
 	if (!window) {
 		cb->errors->createFatalError("Can't create window","Can't create default window.");
@@ -82,7 +81,7 @@ bool GfxInterface::initializeGfx() {
 
 	//Register event source
 	registerWindow();
-	al_set_window_title(window,"");
+	al_set_window_title(window, "");
 
 	//Screen is not resizable
 	resizableWindow = false;
@@ -97,7 +96,7 @@ bool GfxInterface::initializeGfx() {
 	windowRenderTarget->clear(clearColor);
 	bufferMap[windowRenderTarget->getId()] = windowRenderTarget;
 
-	drawscreenTempBitmap = al_create_bitmap(400,300);
+	drawscreenTempBitmap = al_create_bitmap(400, 300);
 
 	al_init_image_addon();
 	al_init_primitives_addon();
@@ -120,22 +119,25 @@ void GfxInterface::commandScreen(void) {
 	defaultWidth = width;
 	defaultHeight = height;
 	uint32_t flags;
-	if (depth == 0) depth = 32;
+	if (depth == 0) {
+		depth = 32;
+	}
+	
 	switch (state) {
 		case 0: //cbFullscreen
 			flags = ALLEGRO_OPENGL | ALLEGRO_FULLSCREEN;
-		break;
+			break;
 		case 1: // default
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED;
-		break;
+			break;
 		case 2: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
-		break;
+			break;
 		case 3: //cbeSizable, aspect ratio will be always the same.
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
 			newWidth = defaultWidth;
 			newHeight = defaultHeight;
-			defaultAspectRatio = (float)width/(float)height;
+			defaultAspectRatio = (float)width / (float)height;
 		break;
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
@@ -225,10 +227,10 @@ void GfxInterface::commandCircle(void) {
 	bool dw = drawDrawCommandToWorld && !drawingOnImage();
 	currentRenderTarget->useWorldCoords(dw);
 	bool fill = cb->popValue().toInt();
-	float r = cb->popValue().toFloat()*0.5;
-	float cy = cb->popValue().toFloat() + (dw ? -r :r);
+	float r = cb->popValue().toFloat() * 0.5;
+	float cy = cb->popValue().toFloat() + (dw ? -r : r);
 	float cx = cb->popValue().toFloat() + r;
-	currentRenderTarget->drawCircle(cx,cy,r,fill,drawColor);
+	currentRenderTarget->drawCircle(cx, cy, r, fill, drawColor);
 }
 
 void GfxInterface::commandLine(void){
@@ -247,20 +249,40 @@ void GfxInterface::commandLine(void){
 		if (x1 == x2) {
 			x1 += 0.5f;
 			x2 += 0.5f;
-			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
+			if (y1 < y2) {
+				y2 += 1.0f;
+			}
+			else {
+				y1 += 1.0f;
+			}
 		}
 		else if (y1 == y2) {
 			y1 += 0.5;
 			y2 += 0.5;
-			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+			if (x1 < x2) {
+				x2 += 1.0f;
+			}
+			else {
+				x1 += 1.0f;
+			}
 		}
 		else {
-			if (y1 < y2) y2 += 1.0f; else y1 += 1.0f;
-			if (x1 < x2) x2 += 1.0f; else x1 += 1.0f;
+			if (y1 < y2) {
+				y2 += 1.0f;
+			}
+			else {
+				y1 += 1.0f;
+			}
+			if (x1 < x2) {
+				x2 += 1.0f;
+			}
+			else {
+				x1 += 1.0f;
+			}
 		}
 	}
 
-	currentRenderTarget->drawLine(x1,y1,x2,y2,drawColor);
+	currentRenderTarget->drawLine(x1, y1, x2, y2, drawColor);
 }
 
 void GfxInterface::commandDrawScreen(void) {
@@ -315,27 +337,24 @@ void GfxInterface::commandDrawScreen(void) {
 	dispHeight = al_get_display_height(window);
 
 	if (state == 3 && windowResized == true) {
-
 		float newRatio = (float)dispWidth / (float)dispHeight;
 
 		float editedRatio;
 		INFO("display's new ratio is: %f", newRatio)
 		if (newRatio < defaultAspectRatio) {
-
 			newWidth = dispWidth;
-			newHeight = (int)((1.0f/defaultAspectRatio)*(float)dispWidth);
+			newHeight = (int)((1.0f / defaultAspectRatio) * (float)dispWidth);
 
-			editedRatio = newWidth/newHeight;
+			editedRatio = newWidth / newHeight;
 			INFO("Width: %i ,\n Height: %i \n", newWidth, newHeight)
 			INFO("New Ratio: %f ", editedRatio)
 
 		}
 		else {
-
 			newHeight = dispHeight;
-			newWidth = (int)(defaultAspectRatio*(float)dispHeight);
+			newWidth = (int)(defaultAspectRatio * (float)dispHeight);
 
-			editedRatio = newWidth/newHeight;
+			editedRatio = newWidth / newHeight;
 			INFO("Width: %i, \n Height: %i \n", newWidth, newHeight)
 			INFO("New Ratio: %f ", editedRatio)
 		}
@@ -347,8 +366,7 @@ void GfxInterface::commandDrawScreen(void) {
 	}
 
 	fpsCounter++;
-	if ((clock()-lastSecTimer) >= CLOCKS_PER_SEC)
-	{
+	if ((clock() - lastSecTimer) >= CLOCKS_PER_SEC) {
 		currentFPS = fpsCounter;
 		fpsCounter = 0;
 		lastSecTimer = clock();
@@ -380,8 +398,8 @@ void GfxInterface::commandDrawScreen(void) {
 							0,
 							defaultWidth,
 							defaultHeight,
-							al_get_display_width(window) / 2 - newWidth /2,
-							al_get_display_height(window) /2 - newHeight /2,
+							al_get_display_width(window) / 2 - newWidth / 2,
+							al_get_display_height(window) / 2 - newHeight / 2,
 							newWidth,
 							newHeight,
 							0
@@ -401,18 +419,18 @@ void GfxInterface::commandDrawScreen(void) {
 			//Setting target to temporary bitmap
 			al_set_target_bitmap(drawscreenTempBitmap);
 			//Saving blender state
-			int32_t a,b,c, aa, bb, cc;
-			al_get_separate_blender(&a,&b,&c, &aa, &bb, &cc);
+			int32_t a, b, c, aa, bb, cc;
+			al_get_separate_blender(&a, &b, &c, &aa, &bb, &cc);
 			//Setting blender state to replace
 			al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
 			//Drawing backbuffer to temporary bitmap
-			al_draw_bitmap(windowRenderTarget->getBitmap(),0,0,0);
+			al_draw_bitmap(windowRenderTarget->getBitmap(), 0, 0, 0);
 			//Swaping window buffers
 			al_flip_display();
 			windowRenderTarget->setAsCurrent(true);
 			windowRenderTarget->useWorldCoords(false);
 			//Drawing temporary bitmap on backbuffer.
-			al_draw_bitmap(drawscreenTempBitmap,0,0,0);
+			al_draw_bitmap(drawscreenTempBitmap, 0, 0, 0);
 			//Restoring blender state
 			al_set_separate_blender(a, b, c, aa, bb, cc);
 		}
@@ -485,11 +503,12 @@ void GfxInterface::commandCopyBox(void) {
 	}
 	if (dest->cbImg != NULL) {
 		dest->cbImg->switchMaskBitmaps(true);
-		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+		dest->copyBox(source, sourceX, sourceY, width, height, destX, destY);
 		dest->cbImg->unmaskedBitmap = dest->getBitmap();
 		dest->cbImg->switchMaskBitmaps(false);
-	} else {
-		dest->copyBox(source,sourceX,sourceY,width,height,destX,destY);
+	}
+	else {
+		dest->copyBox(source, sourceX, sourceY, width, height, destX, destY);
 	}
 }
 
@@ -499,9 +518,9 @@ void GfxInterface::commandCls(void) {
 
 void GfxInterface::commandDot(void) {
 	currentRenderTarget->useWorldCoords(drawDrawCommandToWorld && !drawingOnImage());
-	float y = cb->popValue().toFloat()+0.5f;
-	float x = cb->popValue().toFloat()+0.5f;
-	currentRenderTarget->drawDot(x,y,drawColor);
+	float y = cb->popValue().toFloat() + 0.5f;
+	float x = cb->popValue().toFloat() + 0.5f;
+	currentRenderTarget->drawDot(x, y, drawColor);
 }
 
 void GfxInterface::commandBox(void) {
@@ -511,7 +530,7 @@ void GfxInterface::commandBox(void) {
 	float w = cb->popValue().toFloat() - 1.0f * (!fill);
 	float y = cb->popValue().toFloat() + 0.5f * (!fill);
 	float x = cb->popValue().toFloat() + 0.5f * (!fill);
-	currentRenderTarget->drawBox(x,y,w,h,fill,drawColor);
+	currentRenderTarget->drawBox(x, y, w, h, fill, drawColor);
 }
 
 void GfxInterface::commandEllipse(void) {
@@ -519,9 +538,9 @@ void GfxInterface::commandEllipse(void) {
 	bool fill = cb->popValue().toBool();
 	float h = cb->popValue().toFloat();
 	float w = cb->popValue().toFloat();
-	float y = cb->popValue().toFloat()+0.5f;
-	float x = cb->popValue().toFloat()+0.5f;
-	currentRenderTarget->drawEllipse(x,y,w,h,fill,drawColor);
+	float y = cb->popValue().toFloat() + 0.5f;
+	float x = cb->popValue().toFloat() + 0.5f;
+	currentRenderTarget->drawEllipse(x, y, w, h, fill, drawColor);
 }
 
 void GfxInterface::commandPickColor(void) {
@@ -534,9 +553,9 @@ void GfxInterface::commandScreenGamma(void) {
 	float blue = cb->popValue().toInt();
 	float green = cb->popValue().toInt();
 	float red = cb->popValue().toInt();
-	windowGammaR = red/255;
-	windowGammaG = green/255;
-	windowGammaB = blue/255;
+	windowGammaR = red / 255;
+	windowGammaG = green / 255;
+	windowGammaB = blue / 255;
 }
 
 void GfxInterface::commandDrawToImage(void) {
@@ -595,7 +614,7 @@ void GfxInterface::functionSCREEN(void) {
 }
 
 void GfxInterface::functionImage(void) {
-	cb->popValue(); //???
+	cb->popValue(); // Mystery integer, apparently does nothing
 	int32_t id = cb->popValue().getInt();
 	CBImage *img = cb->imageInterface->getImage(id);
 	RenderTarget *rt = img->getRenderTarget();
@@ -610,14 +629,14 @@ void GfxInterface::functionGetPixel(void) {
 	int32_t x = cb->popValue().toInt();
 	ALLEGRO_COLOR color;
 	if (id == 0) {
-		color = currentRenderTarget->getPixel(x,y);
+		color = currentRenderTarget->getPixel(x, y);
 	}
 	else {
-		color = bufferMap[id]->getPixel(x,y);
+		color = bufferMap[id]->getPixel(x, y);
 	}
 
 	int32_t pixel;
-	al_unmap_rgba(color,((unsigned char*)&pixel)+2,((unsigned char*)&pixel)+1,((unsigned char*)&pixel),((unsigned char*)&pixel)+3);
+	al_unmap_rgba(color, ((unsigned char*)&pixel) + 2, ((unsigned char*)&pixel) + 1, ((unsigned char*)&pixel), ((unsigned char*)&pixel) + 3);
 	cb->pushValue(pixel);
 }
 
@@ -626,7 +645,7 @@ void GfxInterface::functionGetPixel2(void) {
 }
 
 void GfxInterface::functionGetRGB(void) {
-	uint8_t r,g,b,a;
+	uint8_t r, g, b, a;
 	al_unmap_rgba(drawColor, &r, &g, &b, &a);
 	switch (cb->popValue().getInt()) {
 		case 1: cb->pushValue((int32_t)r); break;
@@ -674,13 +693,13 @@ void GfxInterface::functionGFXModeExists(void) {
 	ALLEGRO_DISPLAY_MODE *displayMode = new ALLEGRO_DISPLAY_MODE;
 
 	for (int32_t i = 0; i < al_get_num_display_modes(); i++) {
-
 		// Get display mode from id
 		al_get_display_mode(i, displayMode);
 
 		// See if this is what we're looking for
 		if (displayMode->width == width && displayMode->height == height && al_get_pixel_format_bits(displayMode->format) == depth) {
-			gfxModeExists = true; break;
+			gfxModeExists = true;
+			break;
 		}
 	}
 
@@ -695,11 +714,11 @@ void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
 }
 
 void GfxInterface::registerWindow() {
-	al_register_event_source(cb->getEventQueue(),al_get_display_event_source(window));
+	al_register_event_source(cb->getEventQueue(), al_get_display_event_source(window));
 }
 
 void GfxInterface::unregisterWindow() {
-	al_unregister_event_source(cb->getEventQueue(),al_get_display_event_source(window));
+	al_unregister_event_source(cb->getEventQueue(), al_get_display_event_source(window));
 }
 
 void GfxInterface::resizeTempBitmap(int32_t w, int32_t h) {

@@ -59,7 +59,7 @@ void Array<T>::resize(uint32_t *dims, uint32_t dimCount, bool copy) {
 					}
 				}
 				else {
-					memcpy(newData,data,sizeof(T) * copySize[0]);
+					memcpy(newData, data, sizeof(T) * copySize[0]);
 				}
 				break;
 			case 2:

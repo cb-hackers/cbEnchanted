@@ -17,7 +17,7 @@ class VariableCollection {
 				return;
 			}
 			this->variables = new T[size];
-			memcpy(this->variables,vc.variables,this->size*sizeof(T));
+			memcpy(this->variables, vc.variables, this->size * sizeof(T));
 		}
 
 		VariableCollection &operator =(const VariableCollection<T> &o) {
@@ -36,11 +36,16 @@ class VariableCollection {
 		}
 
 		void init(uint32_t s) {
-			if (variables) {delete [] variables; variables = 0;}
+			if (variables) {
+				delete [] variables;
+				variables = 0;
+			}
 			size = s;
-			if (size == 0) return;
+			if (size == 0) {
+				return;
+			}
 			variables = new T[size];
-			memset(variables,0,sizeof(T)*size);
+			memset(variables, 0, sizeof(T) * size);
 		}
 
 		T &get(uint32_t id) {

@@ -204,7 +204,7 @@ void Any::dump() const {
 		case Int:
 			printf("Integer %i\n", this->getInt()); return;
 		case Float:
-			printf("Float %f\n",this->getFloat()); return;
+			printf("Float %f\n", this->getFloat()); return;
 		case String:
 			printf("String %s\n", this->getString().getRef().c_str()); return;
 		case TypePtr:

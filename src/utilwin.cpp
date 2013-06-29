@@ -27,8 +27,8 @@ int32_t rand(int32_t max) {
 
 // Returns an unordered_map with keys as lowercase font names
 // and their values as font file name.
-const unordered_map<string,string> getMapOfNormalFonts() {
-	unordered_map<string,string> fonts;
+const unordered_map<string, string> getMapOfNormalFonts() {
+	unordered_map<string, string> fonts;
 	fonts.rehash(ceil(61 / fonts.max_load_factor()));
 
 	fonts["andalus"] = "andlso.ttf";
@@ -98,8 +98,8 @@ const unordered_map<string,string> getMapOfNormalFonts() {
 
 // Returns an unordered_map with keys as lowercase font names
 // and their values as font file name.
-const unordered_map<string,string> getMapOfBoldFonts() {
-	unordered_map<string,string> fonts;
+const unordered_map<string, string> getMapOfBoldFonts() {
+	unordered_map<string, string> fonts;
 	fonts.rehash(ceil(28 / fonts.max_load_factor()));
 
 	fonts["aharoni"] = "ahronbd.ttf";
@@ -136,8 +136,8 @@ const unordered_map<string,string> getMapOfBoldFonts() {
 
 // Returns an unordered_map with keys as lowercase font names
 // and their values as font file name.
-const unordered_map<string,string> getMapOfItalicFonts() {
-	unordered_map<string,string> fonts;
+const unordered_map<string, string> getMapOfItalicFonts() {
+	unordered_map<string, string> fonts;
 	fonts.rehash(ceil(21 / fonts.max_load_factor()));
 
 	fonts["angsana new"] = "angsai.ttf";
@@ -164,10 +164,11 @@ const unordered_map<string,string> getMapOfItalicFonts() {
 
 	return fonts;
 }
+
 // Returns an unordered_map with keys as lowercase font names
 // and their values as font file name.
-const unordered_map<string,string> getMapOfBoldItalicFonts() {
-	unordered_map<string,string> fonts;
+const unordered_map<string, string> getMapOfBoldItalicFonts() {
+	unordered_map<string, string> fonts;
 	fonts.rehash(ceil(20 / fonts.max_load_factor()));
 
 	fonts["angsana new"] = "angsaz.ttf";
@@ -194,12 +195,12 @@ const unordered_map<string,string> getMapOfBoldItalicFonts() {
 	return fonts;
 }
 
-string findfont(const char* font, bool isBold, bool isItalic) {
+string findfont(const char *font, bool isBold, bool isItalic) {
 	static string fontdir = getenv("WINDIR") + string("\\Fonts\\");
-	static unordered_map<string,string> normalfonts = getMapOfNormalFonts();
-	static unordered_map<string,string> boldfonts = getMapOfBoldFonts();
-	static unordered_map<string,string> italicfonts = getMapOfItalicFonts();
-	static unordered_map<string,string> bolditalicfonts = getMapOfBoldItalicFonts();
+	static unordered_map<string, string> normalfonts = getMapOfNormalFonts();
+	static unordered_map<string, string> boldfonts = getMapOfBoldFonts();
+	static unordered_map<string, string> italicfonts = getMapOfItalicFonts();
+	static unordered_map<string, string> bolditalicfonts = getMapOfBoldItalicFonts();
 
 	// Lowercase the wanted font
 	string fontname = font;
@@ -244,14 +245,17 @@ string findfont(const char* font, bool isBold, bool isItalic) {
 
 /** Converts UTF-8 to Windows-1252, returns the converted string. */
 std::string utf8toCP1252(std::string str) {
-	if (str.empty()) return str;
+	if (str.empty()) {
+		return str;
+	}
+	
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
 	std::wstring tmpWstr( size_needed, 0 );
-	MultiByteToWideChar                  (CP_UTF8, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
+	MultiByteToWideChar (CP_UTF8, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
 
 	size_needed = WideCharToMultiByte(1252, WC_COMPOSITECHECK | WC_DISCARDNS, &tmpWstr[0], (int)tmpWstr.size(), NULL, 0, NULL, NULL);
-	std::string retStr( size_needed, 0 );
-	WideCharToMultiByte              (1252, WC_COMPOSITECHECK | WC_DISCARDNS, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
+	std::string retStr(size_needed, 0);
+	WideCharToMultiByte(1252, WC_COMPOSITECHECK | WC_DISCARDNS, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
 
 	return retStr;
 }
@@ -259,12 +263,12 @@ std::string utf8toCP1252(std::string str) {
 /** Converts Windows-1252 to UTF-8, returns the converted string. */
 std::string CP1252toUtf8(std::string str) {
 	int size_needed = MultiByteToWideChar(1252, 0, &str[0], (int)str.size(), NULL, 0);
-	std::wstring tmpWstr( size_needed, 0 );
-	MultiByteToWideChar                  (1252, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
+	std::wstring tmpWstr(size_needed, 0);
+	MultiByteToWideChar(1252, 0, &str[0], (int)str.size(), &tmpWstr[0], size_needed);
 
 	size_needed = WideCharToMultiByte(CP_UTF8, 0, &tmpWstr[0], (int)tmpWstr.size(), NULL, 0, NULL, NULL);
-	std::string retStr( size_needed, 0 );
-	WideCharToMultiByte              (CP_UTF8, 0, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
+	std::string retStr(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &tmpWstr[0], (int)tmpWstr.size(), &retStr[0], size_needed, NULL, NULL);
 
 	return retStr;
 }
@@ -278,8 +282,7 @@ std::wstring utf8ToUtf16(std::string str) {
 
 	wstring widestr;
 	widestr.resize(utf16.size());
-	size_t i = 0;
-	for (; i < utf16.size(); i++) {
+	for (size_t i = 0; i < utf16.size(); i++) {
 		widestr[i] = utf16[i];
 	}
 
@@ -296,8 +299,8 @@ void *loadDLL(const ISString &f) {
 
 	wstring widestr;
 	widestr.resize(utf16.size());
-	size_t i = 0;
-	for (; i < utf16.size(); i++) {
+	
+	for (size_t i = 0; i < utf16.size(); i++) {
 		widestr[i] = utf16[i];
 	}
 	return LoadLibraryW(widestr.c_str());

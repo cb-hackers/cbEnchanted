@@ -71,7 +71,7 @@ void CBEnchanted::run() {
 			case 79: handleMathOperation(); break;
 			case 80: handleIncVar(); break;
 			case 81: handleIncGlobalVar(); break;
-			case 84: handlePushTypeMemberVariable();break;
+			case 84: handlePushTypeMemberVariable(); break;
 			case 85: handlePushFuncptr(); break;
 			case 86: handlePushVariable(); break;
 			case 90: handleFunction(); break;

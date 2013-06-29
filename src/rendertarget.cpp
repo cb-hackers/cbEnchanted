@@ -76,7 +76,7 @@ void RenderTarget::create(int32_t w, int32_t h) {
 	if (bitmap) {
 		al_destroy_bitmap(bitmap);
 	}
-	bitmap = al_create_bitmap(w,h);
+	bitmap = al_create_bitmap(w, h);
 }
 
 void RenderTarget::create(ALLEGRO_BITMAP *bm) {
@@ -134,14 +134,14 @@ void RenderTarget::usePixelPreciseWorldCoords() {
 	}
 }
 
-void RenderTarget::drawBox(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
+void RenderTarget::drawBox(float x, float y, float w, float h, bool fill, const ALLEGRO_COLOR &color) {
 	setAsCurrent();
 	convertCoords(x, y);
 	if (fill) {
-		al_draw_filled_rectangle(x, y, x+w, y+h, color);
+		al_draw_filled_rectangle(x, y, x + w, y + h, color);
 	}
 	else {
-		al_draw_rectangle(x, y, x+w, y+h, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
+		al_draw_rectangle(x, y, x + w, y + h, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 
@@ -159,17 +159,17 @@ void RenderTarget::drawCircle(float cx, float cy, float r, bool fill, const ALLE
 	}
 }
 
-void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill,const ALLEGRO_COLOR &color) {
-	convertCoords(x,y);
+void RenderTarget::drawEllipse(float x, float y, float w, float h, bool fill, const ALLEGRO_COLOR &color) {
+	convertCoords(x, y);
 	if (w < 0 || h < 0) {
 		return;
 	}
 	setAsCurrent();
 	if (fill) {
-		al_draw_filled_ellipse(x, y, w*0.5f, h*0.5f, color);
+		al_draw_filled_ellipse(x, y, w * 0.5f, h * 0.5f, color);
 	}
 	else {
-		al_draw_ellipse(x, y, w*0.5f, h*0.5f, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
+		al_draw_ellipse(x, y, w * 0.5f, h * 0.5f, color, CBEnchanted::instance()->gfxInterface->getLineWidth());
 	}
 }
 
@@ -210,7 +210,7 @@ void RenderTarget::copyBox(RenderTarget *src, int32_t sx, int32_t sy, int32_t w,
 }
 
 void RenderTarget::resize(int32_t w, int32_t h) {
-	ALLEGRO_BITMAP *newBitmap = al_create_bitmap(w,h);
+	ALLEGRO_BITMAP *newBitmap = al_create_bitmap(w, h);
 
 	// Check if we have changed Smooth2D in between creating this rendertarget
 	// and calling this function. If so, we need to clone this bitmap, because
@@ -273,7 +273,7 @@ void RenderTarget::convertCoords(float &x, float &y) {
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y) {
 	setAsCurrent();
-	convertCoords(x,y);
+	convertCoords(x, y);
 	al_draw_bitmap(r, x, y, 0);
 }
 
@@ -322,7 +322,7 @@ void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
 	setAsCurrent();
-	convertCoords(x,y);
+	convertCoords(x, y);
 	al_draw_tinted_rotated_bitmap(
 		r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0
 	);
@@ -330,7 +330,7 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, co
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, float xscale, float yscale, const ALLEGRO_COLOR &tint) {
 	setAsCurrent();
-	convertCoords(x,y);
+	convertCoords(x, y);
 	al_draw_tinted_scaled_rotated_bitmap(r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, xscale, yscale, rot, 0);
 }
 
@@ -340,7 +340,7 @@ void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, const ALLEGRO
 	al_draw_tinted_bitmap(r, tint, x, y, 0);
 }
 
-void RenderTarget::drawBitmapMirrored(ALLEGRO_BITMAP *r,int flags) {
+void RenderTarget::drawBitmapMirrored(ALLEGRO_BITMAP *r, int flags) {
 	setAsCurrent();
 	al_draw_bitmap(r, 0, 0, flags);
 }

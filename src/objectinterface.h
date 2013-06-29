@@ -1,7 +1,6 @@
 #ifndef OBJECTINTERFACE_H
 #define OBJECTINTERFACE_H
 #include "precomp.h"
-//#include "cbobject.h"
 #include "rendertarget.h"
 class CBEnchanted;
 class CollisionCheck;
@@ -84,7 +83,7 @@ class ObjectInterface {
 
 		void drawObjects(RenderTarget &target);
 		CBObject *getObject(int32_t key);
-		inline int32_t addObject(CBObject *o){int32_t id = nextObjectId();objectMap[id] = o;return id;}
+		inline int32_t addObject(CBObject *o) { int32_t id = nextObjectId(); objectMap[id] = o; return id; }
 		void addToDrawOrder(CBObject *o);
 		void addToFloorDrawOrder(CBObject *o);
 		void removeFromDrawOrder(CBObject *o);
@@ -101,11 +100,11 @@ class ObjectInterface {
 		CBObject *firstFloorObject;
 		int64_t lastUpdate;
 		CBEnchanted *cb;
-		std::map<int32_t,CBObject*> objectMap;
+		std::map<int32_t, CBObject*> objectMap;
 		std::map<int32_t, CBObject*>::iterator iter;
 
 		//Returns new id for objectMap
-		int32_t nextObjectId() {static int32_t idCounter = 0; return ++idCounter;}
+		int32_t nextObjectId() { static int32_t idCounter = 0; return ++idCounter; }
 
 		/** Collision checks are stored in this vector */
 		std::vector<CollisionCheck*> collisionChecks;

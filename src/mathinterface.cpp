@@ -104,27 +104,33 @@ void MathInterface::functionLog10(void) {
 void MathInterface::functionRnd(void) {
 	float high = cb->popValue().toFloat();
 	float low = cb->popValue().toFloat();
-	if (high < low) {cb->pushValue(randf()*low);return;}
+	if (high < low) {
+		cb->pushValue(randf() * low);
+		return;
+	}
 	cb->pushValue(low + (randf() * (high - low)));
 }
 
 void MathInterface::functionRand(void) {
 	int32_t high = cb->popValue().toInt();
 	int32_t low = cb->popValue().toInt();
-	if (high < low) {cb->pushValue(rand(low)); return;}
+	if (high < low) {
+		cb->pushValue(rand(low));
+		return;
+	}
 	cb->pushValue(low + rand(high - low));
 }
 
 void MathInterface::functionMin(void) {
 	Any b = cb->popValue();
 	Any a = cb->popValue();
-	cb->pushValue( (a < b) ? a : b);
+	cb->pushValue((a < b) ? a : b);
 }
 
 void MathInterface::functionMax(void) {
 	Any b = cb->popValue();
 	Any a = cb->popValue();
-	cb->pushValue( (a > b) ? a : b);
+	cb->pushValue((a > b) ? a : b);
 }
 
 void MathInterface::functionCurveValue(void) {
@@ -166,7 +172,7 @@ void MathInterface::functionDistance(void) {
 	float x2 = cb->popValue().toFloat();
 	float y1 = cb->popValue().toFloat();
 	float x1 = cb->popValue().toFloat();
-	cb->pushValue((float)sqrt(square(x2-x1)+square(y2-y1)));
+	cb->pushValue((float)sqrt(square(x2 - x1) + square(y2 - y1)));
 }
 
 void MathInterface::functionBoxOverlap(void) {

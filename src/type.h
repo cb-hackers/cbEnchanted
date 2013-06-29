@@ -27,42 +27,46 @@ class Type {
 		inline static uint16_t getShortField(const void *m, int32_t place) {
 			return *(uint16_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4));
 		}
-		inline static void setField(void *m,int32_t place, int32_t value) {
+		inline static void setField(void *m, int32_t place, int32_t value) {
 			*(int32_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
-		inline static void setField(void *m,int32_t place, float value) {
+		inline static void setField(void *m, int32_t place, float value) {
 			*(float*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
-		inline static void setField(void *m,int32_t place, const ISString &value) {
+		inline static void setField(void *m, int32_t place, const ISString &value) {
 			*(ISString*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
-		inline static void setField(void *m,int32_t place, uint8_t value) {
+		inline static void setField(void *m, int32_t place, uint8_t value) {
 			*(uint8_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
-		inline static void setField(void *m,int32_t place, uint16_t value) {
+		inline static void setField(void *m, int32_t place, uint16_t value) {
 			*(uint16_t*)((char*)((void**)m + 3) + place * (sizeof(void*) / 4)) = value;
 		}
 		inline static void *getBefore(void *m) {
-			if (m == 0) return 0;
+			if (m == 0) {
+				return 0;
+			}
 			return ((void**)m)[0];
 		}
 		inline static void *getAfter(void *m) {
-			if (m == 0) return 0;
+			if (m == 0) {
+				return 0;
+			}
 			return ((void**)m)[1];
 		}
-		inline void setBefore(void *m,void *v) {
+		inline void setBefore(void *m, void *v) {
 			((void**)m)[0] = v;
 		}
-		inline void setAfter(void *m,void *v) {
+		inline void setAfter(void *m, void *v) {
 			((void**)m)[1] = v;
 		}
 
-		void *getFirst(){return firstMember;}
-		void *getLast(){return lastMember;}
+		void *getFirst() { return firstMember; }
+		void *getLast() { return lastMember; }
 
 		void insert(void *m, void *insertionPoint);
 	private:
-		inline static void setType(void *m,Type *t) {
+		inline static void setType(void *m, Type *t) {
 			((Type**)m)[2] = t;
 		}
 

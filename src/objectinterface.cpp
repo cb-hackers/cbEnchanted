@@ -54,7 +54,7 @@ void ObjectInterface::commandDeleteObject(void) {
 }
 
 void ObjectInterface::commandClearObjects(void) {
-	for (std::map<int32_t,CBObject*>::iterator i = objectMap.begin();i != objectMap.end();i++) {
+	for (std::map<int32_t, CBObject*>::iterator i = objectMap.begin(); i != objectMap.end(); i++) {
 		if (!i->second->isMap()) {
 			delete i->second;
 		}
@@ -71,7 +71,7 @@ void ObjectInterface::commandMoveObject(void) {
 	float fwrd = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->moveObject(fwrd,side);
+	object->moveObject(fwrd, side);
 }
 
 void ObjectInterface::commandTranslateObject(void) {
@@ -80,7 +80,7 @@ void ObjectInterface::commandTranslateObject(void) {
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->translateObject(x,y,z);
+	object->translateObject(x, y, z);
 }
 
 void ObjectInterface::commandPositionObject(void) {
@@ -89,7 +89,7 @@ void ObjectInterface::commandPositionObject(void) {
 	float x = cb->popValue().toFloat();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->positionObject(x,y);
+	object->positionObject(x, y);
 }
 
 void ObjectInterface::commandScreenPositionObject(void) {
@@ -135,7 +135,7 @@ void ObjectInterface::commandCloneObjectPosition(void) {
 	CBObject *object2 = getObject(id2);
 	int32_t id1 = cb->popValue().getInt();
 	CBObject *object1 = getObject(id1);
-	object1->positionObject(object2->getX(),object2->getY());
+	object1->positionObject(object2->getX(), object2->getY());
 }
 
 void ObjectInterface::commandCloneObjectOrientation(void) {
@@ -234,7 +234,7 @@ void ObjectInterface::commandMaskObject(void) {
 	uint8_t r = cb->popValue().toByte();
 	int32_t id = cb->popValue().getInt();
 	CBObject *object = getObject(id);
-	object->maskObject(r,g,b);
+	object->maskObject(r, g, b);
 }
 
 void ObjectInterface::commandShowObject(void) {
@@ -963,10 +963,10 @@ int32_t ObjectInterface::addMap(CBMap *mapObj){
 
 void ObjectInterface::updateObjects(){
 	int64_t currentTime = mtimer();
-	float updateTime = (float)(currentTime-lastUpdate)/1000.0f;
+	float updateTime = (float)(currentTime - lastUpdate) / 1000.0f;
 	lastUpdate = currentTime;
-	std::map<int32_t,CBObject*>::iterator i;
-	for (i = objectMap.begin(); i != objectMap.end();) {
+	std::map<int32_t, CBObject*>::iterator i;
+	for (i = objectMap.begin(); i != objectMap.end(); ) {
 		CBObject *obj = (*i).second;
 		if(obj->updateObject(updateTime)){ //updateObject returns true if object should be deleted
 			removeFromDrawOrder(obj);

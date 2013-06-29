@@ -7,9 +7,9 @@ struct Particle {
 	/** How many frames does the particle remain undeleted */
 	int32_t lifeTime;
 	/** Coordinates in world coordinates */
-	float x,y;
+	float x, y;
 	/** Velocity */
-	float velX,velY;
+	float velX, velY;
 };
 
 #endif // PARTICLE_H
