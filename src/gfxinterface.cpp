@@ -67,7 +67,7 @@ bool GfxInterface::initializeGfx() {
 	al_set_new_display_option(ALLEGRO_CAN_DRAW_INTO_BITMAP, 1, ALLEGRO_REQUIRE);
 	al_set_new_display_option(ALLEGRO_COMPATIBLE_DISPLAY, 1, ALLEGRO_REQUIRE);
 	window = al_create_display(400, 300);
-	state = 1;
+	windowMode = WindowMode::Windowed;
 	defaultWidth = 400;
 	defaultHeight = 300;
 	newWidth = defaultWidth;
@@ -112,36 +112,44 @@ bool GfxInterface::initializeGfx() {
 void GfxInterface::commandScreen(void) {
 
 	//TODO use al_resize_window
-	state = cb->popValue().toInt();
+	int mode = cb->popValue().toInt();
 	uint32_t depth = cb->popValue().toInt();
 	uint32_t height = cb->popValue().toInt();
 	uint32_t width = cb->popValue().toInt();
 	defaultWidth = width;
 	defaultHeight = height;
 	uint32_t flags;
+	
 	if (depth == 0) {
 		depth = 32;
 	}
 	
-	switch (state) {
-		case 0: //cbFullscreen
+	switch (mode) {
+		case 0: windowMode = WindowMode::FullScreen; break;
+		case 1: windowMode = WindowMode::Windowed; break;
+		case 2: windowMode = WindowMode::Resizeable; break;
+		case 3: windowMode = WindowMode::LockedAspect; break;
+	}
+	
+	switch (windowMode) {
+		case WindowMode::FullScreen: //cbFullscreen
 			flags = ALLEGRO_OPENGL | ALLEGRO_FULLSCREEN;
 			break;
-		case 1: // default
+		case WindowMode::Windowed: // default
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED;
 			break;
-		case 2: //cbSizable
+		case WindowMode::Resizeable: //cbSizable
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
 			break;
-		case 3: //cbeSizable, aspect ratio will be always the same.
+		case WindowMode::LockedAspect: //cbeSizable, aspect ratio will be always the same.
 			flags = ALLEGRO_OPENGL | ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE;
 			newWidth = defaultWidth;
 			newHeight = defaultHeight;
 			defaultAspectRatio = (float)width / (float)height;
-		break;
+			break;
 	}
 	if ((al_get_display_flags(window) & flags) == flags) {
-		if (state != 2) {
+		if (windowMode == WindowMode::Resizeable) {
 			al_resize_display(window, width, height);
 		}
 		resizeTempBitmap(width, height);
@@ -152,7 +160,8 @@ void GfxInterface::commandScreen(void) {
 		int windowW = al_get_display_width(window);
 		int windowH = al_get_display_height(window);
 		al_destroy_display(window);
-		if (state == 2) {
+
+		if (windowMode == WindowMode::Resizeable) {
 			window = al_create_display(windowW, windowH);
 		}
 		else {
@@ -160,39 +169,39 @@ void GfxInterface::commandScreen(void) {
 		}
 		if (window == 0) {
 			if (cb->isSmooth2D()) {
-				cb->errors->createError("Can't create window","Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
+				cb->errors->createError("Can't create window", "Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
 				cb->setSmooth2D(false);
-				if (state == 2) {
+				if (windowMode == WindowMode::Resizeable) {
 					window = al_create_display(al_get_display_width(window), al_get_display_height(window));
 				}
 				else {
 					window = al_create_display(width, height);
 				}
 				if (window == 0) {
-					cb->errors->createFatalError("Can't create window","Creating window failed in command Screen, even when Smooth2D was unset.");
+					cb->errors->createFatalError("Can't create window", "Creating window failed in command Screen, even when Smooth2D was unset.");
 					return;
 				}
 			}
 			else {
-				cb->errors->createFatalError("Can't create window","Creating window failed in command Screen.");
+				cb->errors->createFatalError("Can't create window", "Creating window failed in command Screen.");
 				return;
 			}
 			return;
 		}
 		resizeTempBitmap(width, height);
-		if (state == 2 || state == 3) {
-			windowRenderTarget->swapBitmap( drawscreenTempBitmap);
+		if (windowMode == WindowMode::Resizeable || windowMode == WindowMode::LockedAspect) {
+			windowRenderTarget->swapBitmap(drawscreenTempBitmap);
 			resizableWindow = true;
 		}
 		else {
-			windowRenderTarget->swapBitmap( al_get_backbuffer(window) );
+			windowRenderTarget->swapBitmap(al_get_backbuffer(window));
 			resizableWindow = false;
 		}
 
 		registerWindow();
 	}
 
-	if (state != 0) {
+	if (windowMode != WindowMode::FullScreen) {
 		// Center the window to the first display, if not fullscreen
 		ALLEGRO_MONITOR_INFO displayInfo;
 		if (!al_get_monitor_info(0, &displayInfo)) {
@@ -336,7 +345,7 @@ void GfxInterface::commandDrawScreen(void) {
 	dispWidth = al_get_display_width(window);
 	dispHeight = al_get_display_height(window);
 
-	if (state == 3 && windowResized == true) {
+	if (windowMode == WindowMode::LockedAspect && windowResized == true) {
 		float newRatio = (float)dispWidth / (float)dispHeight;
 
 		float editedRatio;
@@ -379,7 +388,7 @@ void GfxInterface::commandDrawScreen(void) {
 	cb->inputInterface->renderCursor(*windowRenderTarget);
 	cb->soundInterface->updateAudio();
 
-	if (state == 2) {
+	if (windowMode == WindowMode::Resizeable) {
 		al_set_target_backbuffer(window);
 		al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),
 							  0, 0, windowRenderTarget->width(), windowRenderTarget->height(),
@@ -391,7 +400,7 @@ void GfxInterface::commandDrawScreen(void) {
 			windowRenderTarget->clear(al_map_rgba_f(0, 0, 0, 1.0f));
 		}
 	}
-	else if (state == 3) {
+	else if (windowMode == WindowMode::LockedAspect) {
 		al_set_target_backbuffer(window);
 		al_draw_scaled_bitmap(windowRenderTarget->getBitmap(),
 							0,

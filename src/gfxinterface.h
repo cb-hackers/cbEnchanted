@@ -50,46 +50,52 @@ class GfxInterface {
 		void functionScreenDepth(void);
 		void functionGFXModeExists(void);
 #endif
-		int32_t getFPS()const{return currentFPS;}
+		int32_t getFPS() const { return currentFPS; }
 
 		ALLEGRO_DISPLAY *getWindow(void) { return window; }
 
 		const ALLEGRO_COLOR &getDrawColor() const { return drawColor; }
-		void setDrawColor(const ALLEGRO_COLOR &c) {drawColor = c;}
-		const ALLEGRO_COLOR &getClearColor() const {return clearColor; }
-		void setClearColor(const ALLEGRO_COLOR &c) {clearColor = c;}
+		void setDrawColor(const ALLEGRO_COLOR &c) { drawColor = c; }
+		const ALLEGRO_COLOR &getClearColor() const { return clearColor; }
+		void setClearColor(const ALLEGRO_COLOR &c) { clearColor = c; }
 
-		inline bool getDrawDrawCommandToWorld()const{return drawDrawCommandToWorld;}
-		inline bool getDrawImageToWorld()const{return drawImageToWorld;}
-		inline bool getDrawTextToWorld()const{return drawTextToWorld;}
+		inline bool getDrawDrawCommandToWorld() const { return drawDrawCommandToWorld; }
+		inline bool getDrawImageToWorld() const { return drawImageToWorld; }
+		inline bool getDrawTextToWorld() const { return drawTextToWorld; }
 
+		inline int32_t screenWidth() { return windowRenderTarget->width(); }
+		inline int32_t screenHeight() { return windowRenderTarget->height(); }
 
-		inline int32_t screenWidth() {return windowRenderTarget->width();}
-		inline int32_t screenHeight() {return windowRenderTarget->height();}
-
-		inline int32_t getDefaultWidth() {return defaultWidth;}
-		inline int32_t getDefaultHeight() {return defaultHeight;}
-		inline RenderTarget *getCurrentRenderTarget(){return currentRenderTarget;}
+		inline int32_t getDefaultWidth() { return defaultWidth; }
+		inline int32_t getDefaultHeight() { return defaultHeight; }
+		inline RenderTarget *getCurrentRenderTarget() { return currentRenderTarget; }
 		void setCurrentRenderTarget(RenderTarget *t);
 		bool drawingOnImage() const { return imageToDrawTo != 0; }
 		bool initializeGfx();
-		RenderTarget *getBuffer(int32_t id) {return bufferMap[id];}
+		RenderTarget *getBuffer(int32_t id) { return bufferMap[id]; }
 		float getLineWidth() const { return lineWidth; }
 		void setLineWidth(float w) { lineWidth = w; }
 
 		/** Adds function pointer which will be called after DrawScreen. */
-		void addDrawScreenCallback(int32_t group, VoidFuncPtrType ptr) {drawScreenCallbacks[group] = ptr;}
+		void addDrawScreenCallback(int32_t group, VoidFuncPtrType ptr) { drawScreenCallbacks[group] = ptr; }
 		/** Adds function pointer which will be called after DrawGame. */
-		void addDrawGameCallback(int32_t group, VoidFuncPtrType ptr) {drawGameCallbacks[group] = ptr;}
+		void addDrawGameCallback(int32_t group, VoidFuncPtrType ptr) { drawGameCallbacks[group] = ptr; }
 		/** Adds function pointer which will be called after UpdateGame. */
-		void addUpdateGameCallback(int32_t group, VoidFuncPtrType ptr) {updateGameCallbacks[group] = ptr;}
+		void addUpdateGameCallback(int32_t group, VoidFuncPtrType ptr) { updateGameCallbacks[group] = ptr; }
 	private:
+		enum WindowMode {
+			FullScreen,
+			Windowed,
+			Resizeable,
+			LockedAspect
+		};
+		
 		void registerWindow();
 		void unregisterWindow();
 		void resizeTempBitmap(int32_t w, int32_t h);
 
 		CBEnchanted *cb;
-		float windowScaleX,windowScaleY;
+		float windowScaleX, windowScaleY;
 		string windowTitle;
 		ALLEGRO_DISPLAY *window;
 		ALLEGRO_COLOR clearColor;
@@ -97,7 +103,9 @@ class GfxInterface {
 		int32_t fpsCounter;
 		int32_t currentFPS;
 		clock_t lastSecTimer;
-		uint32_t state;
+		
+		WindowMode windowMode;
+		
 		int64_t lastFrameTime;
 		RenderTarget *currentRenderTarget;
 
@@ -133,7 +141,6 @@ class GfxInterface {
 		void callDrawScreenCallbacks();
 		void callDrawGameCallbacks();
 		void callUpdateGameCallbacks();
-
 
 		/** Holds the image DrawToImage() was called with. */
 		CBImage* imageToDrawTo;
