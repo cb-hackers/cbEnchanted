@@ -26,7 +26,7 @@ InputInterface::InputInterface() :
 	clearMouse(false),
 	cursorVisible(true)
 {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 
 	memset(keyStates, 0, ALLEGRO_KEY_MAX);
 	memset(mouseButtonStates, 0, MAX_MOUSE_BUTTONS);

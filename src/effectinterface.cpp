@@ -9,7 +9,7 @@
 
 #ifndef CBE_LIB
 EffectInterface::EffectInterface() {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 }
 
 EffectInterface::~EffectInterface() {

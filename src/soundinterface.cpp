@@ -5,7 +5,7 @@
 #include "errorsystem.h"
 #ifndef CBE_LIB
 SoundInterface::SoundInterface() {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 }
 
 SoundInterface::~SoundInterface() {
@@ -17,7 +17,9 @@ void SoundInterface::functionPlaySound(void) {
 	float balance = cb->popValue().toFloat();
 	float volume = cb->popValue().toFloat();
 	const Any &any = cb->popValue();
-	if (any.type() == Any::Int) {//Loaded sound
+	
+	// If passed parameter is integer, the sound is preloaded. Otherwise load it.
+	if (any.type() == Any::Int) {
 		CBChannel* channel = new CBChannel;
 		int32_t id = any.toInt();
 		channel->setMixer(al_get_default_mixer());
@@ -43,7 +45,9 @@ void SoundInterface::commandPlaySound(void) {
 	float balance = cb->popValue().toFloat();
 	float volume = cb->popValue().toFloat();
 	Any any = cb->popValue();
-	if (any.type() == Any::Int) {//Loaded sound
+	
+	// If passed parameter is integer, the sound is preloaded. Otherwise load it.
+	if (any.type() == Any::Int) {
 		CBChannel* channel = new CBChannel;
 		channel->setMixer(al_get_default_mixer());
 		int32_t id = any.toInt();

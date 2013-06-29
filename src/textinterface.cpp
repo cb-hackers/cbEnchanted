@@ -14,7 +14,7 @@
 
 #ifndef CBE_LIB
 TextInterface::TextInterface() : locationX(0), locationY(0) {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 }
 
 TextInterface::~TextInterface() {

@@ -20,12 +20,10 @@
 
 #ifndef CBE_LIB
 SysInterface::SysInterface() : windowTitle(""), confirmationStr("") {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 }
 
-SysInterface::~SysInterface() {
-	// ...
-}
+SysInterface::~SysInterface() { }
 
 void SysInterface::initializeSysInterface() {
 	srand(mtimer());
@@ -75,7 +73,7 @@ void SysInterface::commandEncrypt(void) {
 			cb->errors->createError("Can't open file","Can't open source file " + filePath.getRef() + " given to Encrypt");
 			return;
 		}
-		ALLEGRO_FS_ENTRY * file = al_create_fs_entry(filePath.getRef().c_str());
+		ALLEGRO_FS_ENTRY *file = al_create_fs_entry(filePath.getRef().c_str());
 		srcSize = al_get_fs_entry_size(file);
 	}
 

@@ -16,7 +16,7 @@
 #endif
 
 MemInterface::MemInterface() {
-	cb = CBEnchanted::instance(); //static_cast<CBEnchanted*>(this);
+	cb = CBEnchanted::instance();
 }
 
 MemInterface::~MemInterface() {
@@ -209,7 +209,6 @@ void MemInterface::functionPeekFloat(void){
 }
 
 #endif
-
 
 uint8_t *MemInterface::getMemblock(int32_t id) {
 	map<int32_t, uint8_t*>::iterator i = memblockMap.find(id);

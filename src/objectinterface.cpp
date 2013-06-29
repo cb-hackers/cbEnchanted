@@ -24,7 +24,7 @@ ObjectInterface::ObjectInterface():
 	lastPickedY(0.0),
 	lastPickedAngle(0.0)
 {
-	cb = CBEnchanted::instance(); //static_cast<CBEnchanted *>(this);
+	cb = CBEnchanted::instance();
 }
 
 ObjectInterface::~ObjectInterface() {

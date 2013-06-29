@@ -9,7 +9,7 @@
 
 #ifndef CBE_LIB
 MapInterface::MapInterface() {
-	cb = CBEnchanted::instance();//static_cast<CBEnchanted*>(this);
+	cb = CBEnchanted::instance();
 	tileMap = 0;
 }
 

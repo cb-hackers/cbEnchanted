@@ -8,7 +8,7 @@
 #ifndef CBE_LIB
 
 ImageInterface::ImageInterface() {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 	defaultMaskToggled = true;
 	defaultHotspotToggled = false;
 	defaultHotspotX = -1;

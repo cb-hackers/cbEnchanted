@@ -5,7 +5,7 @@
 #include "errorsystem.h"
 #ifndef CBE_LIB
 StringInterface::StringInterface() {
-	cb = CBEnchanted::instance(); //static_cast <CBEnchanted *> (this);
+	cb = CBEnchanted::instance();
 }
 
 void StringInterface::functionStr(void) {
