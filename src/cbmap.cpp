@@ -114,7 +114,7 @@ bool CBMap::loadMap(string file) {
 
 		mapStream.read((char*)checkNum, 4);
 
-		//Karttadata alkaa
+		// Mapdata starts
 		if (checkNum[0] != 254 ||
 			checkNum[1] != 45 ||
 			checkNum[2] != 12 ||

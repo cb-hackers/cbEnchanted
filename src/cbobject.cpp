@@ -53,8 +53,7 @@ CBObject::CBObject(bool floor):
  * Destroys the attached textures if this object isn't a copy of another object.
  */
 CBObject::~CBObject() {
-	if (!copied)
-	{
+	if (!copied) {
 		if (renderTarget) {
 			delete renderTarget;
 		}

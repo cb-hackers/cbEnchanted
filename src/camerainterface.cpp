@@ -21,10 +21,8 @@ CameraInterface::CameraInterface():
 	inverseWorldTransformDirty(true),
 	pixelPreciseWorldTransformDirty(true),
 	cameraRadAngle(0),
-	cameraZoom(1.0f)
-{
+	cameraZoom(1.0f) {
 	cb = CBEnchanted::instance();
-	//cb = static_cast <CBEnchanted *> (this);
 }
 
 CameraInterface::~CameraInterface() {

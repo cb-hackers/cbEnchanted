@@ -279,8 +279,7 @@ void ImageInterface::functionImagesCollide(void) {
 }
 #endif
 
-CBImage *ImageInterface::getImage(int32_t id)
-{
+CBImage *ImageInterface::getImage(int32_t id) {
 	map<int32_t, CBImage*>::iterator imgI = cbImages.find(id);
 	if (imgI == cbImages.end()) {
 		cb->errors->createError("Image Access Violation", "Could not find image with ID " + boost::lexical_cast<string>(id));

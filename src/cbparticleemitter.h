@@ -3,8 +3,7 @@
 #include "cbobject.h"
 #include "cbimage.h"
 
-class CBParticleEmitter : public CBObject
-{
+class CBParticleEmitter : public CBObject {
 	public:
 		CBParticleEmitter();
 		~CBParticleEmitter();

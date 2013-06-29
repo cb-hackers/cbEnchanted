@@ -3,8 +3,7 @@
 #include "cbenchanted.h"
 #include "errorsystem.h"
 
-CBDLL::CBDLL()
-{
+CBDLL::CBDLL() {
 }
 
 bool CBDLL::load(const ISString &f) {

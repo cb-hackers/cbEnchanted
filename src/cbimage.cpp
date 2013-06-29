@@ -14,8 +14,7 @@ CBImage::CBImage() :
 	maskedBitmap(NULL),
 	unmaskedBitmap(NULL),
 	maskData(0),
-	maskIsDirty(false)
-{
+	maskIsDirty(false) {
 	renderTarget.cbImg = this;
 }
 
@@ -53,13 +52,12 @@ void CBImage::draw(RenderTarget &r,float x, float y, bool useMask) {
 	}
 }
 
-void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask)
-{
-	if (animLength == 0) { //Not anim image
+void CBImage::draw(RenderTarget &r, float x, float y, int frame, bool useMask) {
+	if (animLength == 0) {
 		draw(r, x, y, useMask);
 		return;
 	}
-	//INFO("%i", frame)
+	
 	int32_t framesX = renderTarget.width() / frameWidth;
 	int32_t framesY = renderTarget.height() / frameHeight;
 	int32_t copyX = frame % framesX;
@@ -103,12 +101,11 @@ void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, f
 }
 
 void CBImage::drawBox(RenderTarget &r, float sx, float sy, float sw, float sh, float tx, float ty, int frame, bool useMask) {
-
-	if (animLength == 0) { //Not anim image
+	if (animLength == 0) {
 		drawBox(r, sx, sy, sw, sh, tx, ty, useMask);
 		return;
 	}
-	//INFO("%i", frame)
+
 	int32_t framesX = renderTarget.width() / frameWidth;
 	int32_t framesY = renderTarget.height() / frameHeight;
 	int32_t copyX = frame % framesX;
@@ -374,7 +371,6 @@ void CBImage::cleanDirtyMask() {
 		al_lock_bitmap(image, ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA, ALLEGRO_LOCK_READONLY);
 		alreadyLocked = false;
 	}
-
 
 	if (maskData) {
 		delete [] maskData;

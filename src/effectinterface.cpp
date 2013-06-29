@@ -53,14 +53,12 @@ void EffectInterface::functionMakeEmitter(void) {
 }
 #endif
 
-void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p)
-{
+void EffectInterface::deleteParticleEmitter(CBParticleEmitter *p) {
 	p->stopEmitting();
 	rogueEmitters.push_back(p);
 }
 
-void EffectInterface::updateRogueParticles(void)
-{
+void EffectInterface::updateRogueParticles(void) {
 	for (vector<CBParticleEmitter*>::iterator i = rogueEmitters.begin(); i != rogueEmitters.end();) {
 		if ((*i)->updateObject(0)) { //updateObject returns true if object should be deleted
 			cb->objectInterface->removeFromDrawOrder(*i);

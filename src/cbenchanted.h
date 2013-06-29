@@ -2,22 +2,6 @@
 #define CBENCHANTED_H
 
 #include "cbvariableholder.h"
-/*#include "mathinterface.h"
-#include "stringinterface.h"
-#include "textinterface.h"
-#include "fileinterface.h"
-#include "meminterface.h"
-#include "inputinterface.h"
-#include "sysinterface.h"
-#include "soundinterface.h"
-#include "animinterface.h"
-#include "imageinterface.h"
-#include "gfxinterface.h"
-#include "objectinterface.h"
-#include "camerainterface.h"
-#include "mapinterface.h"
-#include "effectinterface.h"*/
-//#include "debug.h"
 #include <vector>
 #include <map>
 #include "customfunctionhandler.h"
@@ -41,25 +25,7 @@ class AnimInterface;
 class SoundInterface;
 class ErrorSystem;
 
-class CBEnchanted :
-		public CBVariableHolder/*,
-		public MathInterface,
-		public GfxInterface,
-		public StringInterface,
-		public TextInterface,
-		public InputInterface,
-		public SysInterface,
-		public ObjectInterface,
-		public MemInterface,
-		public FileInterface,
-		public MapInterface,
-		public CameraInterface,
-		public ImageInterface,
-		public EffectInterface,
-		public AnimInterface,
-		public SoundInterface*/
-
-{
+class CBEnchanted : public CBVariableHolder {
 	public:
 #ifndef CBE_LIB
 		CBEnchanted();
@@ -78,7 +44,7 @@ class CBEnchanted :
 		inline void setFrameLimit(float pFrameLimit) { frameLimit = pFrameLimit; }
 		inline float getFrameLimit() const { return frameLimit; }
 		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
-		CustomFunctionHandler *getCustomFunctionHandler() {return &customFunctionHandler;}
+		CustomFunctionHandler *getCustomFunctionHandler() {return &customFunctionHandler; }
 
 		/** Error system for public access */
 		ErrorSystem *errors;
@@ -101,7 +67,6 @@ class CBEnchanted :
 		AnimInterface *animInterface;
 		SoundInterface *soundInterface;
 	private:
-
 		char *code;
 		char *codeBase;
 		vector <char*> pos;
@@ -182,7 +147,5 @@ class CBEnchanted :
 		/** Current datalist readpoint */
 		uint32_t dataPos;
 };
-
-
 
 #endif

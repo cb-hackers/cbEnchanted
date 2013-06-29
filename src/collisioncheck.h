@@ -4,8 +4,7 @@
 #include "cbobject.h"
 
 /** Handles collisions between two objects */
-class CollisionCheck
-{
+class CollisionCheck {
 	public:
 		/** The type of collision set with SetupCollision */
 		enum CollisionType {

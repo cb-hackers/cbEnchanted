@@ -4,8 +4,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_audio.h>
 
-class CBSound
-{
+class CBSound {
 	public:
 		CBSound();
 		~CBSound();
@@ -18,7 +17,6 @@ class CBSound
 		int32_t frequency;
 		string sourceFile;
 		ALLEGRO_SAMPLE* sample;
-
 };
 
 #endif // CBSOUND_H

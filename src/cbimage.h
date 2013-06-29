@@ -2,9 +2,10 @@
 #define CBIMAGE_H
 #include "precomp.h"
 #include "rendertarget.h"
+
 class CBParticleEmitter;
-class CBImage
-{
+
+class CBImage {
 	public:
 		friend class RenderTarget;
 		friend class GfxInterface;

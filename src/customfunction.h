@@ -5,10 +5,7 @@ class CBEnchanted;
 
 /** @defgroup customfunctions Custom functions and commands
   */
-
-
-class CustomFunction
-{
+class CustomFunction {
 	public:
 		typedef void (*CustomFunc) (CBEnchanted *);
 
@@ -29,7 +26,6 @@ class CustomFunction
 		void setGroupId(int32_t g) { groupId = g; }
 		int32_t getFuncId() const {return funcId; }
 		void setFuncId(int32_t f) { funcId = f; }
-
 	private:
 		int32_t groupId;
 		int32_t funcId;

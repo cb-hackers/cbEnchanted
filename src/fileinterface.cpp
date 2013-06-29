@@ -7,26 +7,22 @@
 #ifndef CBE_LIB
 FileInterface::FileInterface() {
 	cb = CBEnchanted::instance();
-	//cb = static_cast <CBEnchanted *> (this);
 }
 
 FileInterface::~FileInterface() {
 }
 
 void FileInterface::commandCloseFile(void) {
-	int32_t ID;
-	ID = cb->popValue().getInt();
-	if (filestrs[ID] == NULL)
-	{
+	int32_t id = cb->popValue().getInt();
+	if (filestrs[id] == NULL) {
 		cb->errors->createFatalError("CloseFile failed.");
 		return;
 	}
 
-	if(fclose(filestrs[ID]) != 0)
-	{
+	if (fclose(filestrs[id]) != 0) {
 		cb->errors->createError("CloseFile failed.");
 	}
-	filestrs.erase(ID);
+	filestrs.erase(id);
 }
 
 void FileInterface::commandSeekFile(void) {
@@ -88,8 +84,7 @@ void FileInterface::commandCopyFile(void) {
 		return;
 	}
 
-	if(fread(buffer, 1, size, file1) != size)
-	{
+	if(fread(buffer, 1, size, file1) != size) {
 		cb->errors->createFatalError("CopyFile failed!");
 		return;
 	}
@@ -249,10 +244,10 @@ void FileInterface::functionOpenToEdit(void) {
 	string file = cb->popValue().toString().getRef();
 	int32_t id = ++idC;
 
-	if(al_filename_exists(file.c_str()))
-	{
+	if(al_filename_exists(file.c_str())) {
 		filestrs[id] = fopen(file.c_str(), "rb+");
-	} else {
+	}
+	else {
 		filestrs[id] = fopen(file.c_str(), "wb+");
 	}
 	if (filestrs[id] == NULL) {
@@ -268,7 +263,6 @@ void FileInterface::functionFileOffset(void) {
 }
 
 void FileInterface::functionFindFile(void) {
-
 	++findFileCount;
 	if (findFileCount == 1) {
 		ALLEGRO_PATH * path;
@@ -381,7 +375,7 @@ void FileInterface::functionReadInt(void) {
 }
 
 void FileInterface::functionReadFloat(void) {
-	float fl = 0.0f;
+	float fl;
 
 	fread(&fl, sizeof(float), 1, getFile(cb->popValue().getInt()));
 
@@ -394,7 +388,7 @@ void FileInterface::functionReadString(void) {
 	int32_t l;
 	fread(&l, sizeof(int32_t), 1, file);
 
-	char * cstr = new char[l + 1];
+	char *cstr = new char[l + 1];
 
 	cstr[l] = '\0';
 

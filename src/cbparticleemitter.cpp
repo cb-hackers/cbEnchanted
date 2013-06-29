@@ -20,8 +20,7 @@ CBParticleEmitter::~CBParticleEmitter() {
 
 }
 
-void CBParticleEmitter::create(CBImage *image, int32_t lifeTime)
-{
+void CBParticleEmitter::create(CBImage *image, int32_t lifeTime) {
 	particleTexture = image;
 	particleLifeTime = lifeTime;
 }
@@ -40,8 +39,7 @@ void CBParticleEmitter::setParticleEmission(float density, int count, float spre
 
 bool CBParticleEmitter::updateObject(float timestep) {
 	particleSpawnCounter += 1.0f;
-	for (vector<Particle>::iterator i = particles.begin(); i != particles.end();)
-	{
+	for (vector<Particle>::iterator i = particles.begin(); i != particles.end();) {
 		i->x += i->velX;
 		i->y += i->velY;
 		i->velX = i->velX * particleAcceleration;
