@@ -34,11 +34,9 @@ void MathInterface::functionRoundDown(void) {
 	cb->pushValue((int32_t)floor(v));
 }
 
-void MathInterface::functionAbs(void)
-{
+void MathInterface::functionAbs(void) {
 	Any v = cb->popValue();
-	if (v.type() == Any::Float)
-	{
+	if (v.type() == Any::Float) {
 		cb->pushValue(abs(v.getFloat()));
 		return;
 	}

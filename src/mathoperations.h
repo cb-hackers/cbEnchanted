@@ -22,14 +22,8 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 	switch (b.typeId) {
 		case Int: {
 			switch (a.typeId) {
-				case Int: {
-					a.dInt = a.dInt + b.dInt;
-					return;
-				}
-				case Float: {
-					a.dFloat = a.dFloat + b.dInt;
-					return;
-				}
+				case Int: a.dInt = a.dInt + b.dInt; return;
+				case Float: a.dFloat = a.dFloat + b.dInt; return;
 				case String: {
 					ISString s = a.getString();
 					ISString res(s.getRef() + boost::lexical_cast<string>(b.dInt));
@@ -42,15 +36,11 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 		}
 		case Float: {
 			switch (a.typeId) {
-				case Float: {
-					a.dFloat = a.dFloat + b.dFloat;
-					return;
-				}
-				case Int: {
+				case Int:
 					a.dFloat = a.dInt + b.dFloat;
 					a.typeId = Float;
 					return;
-				}
+				case Float: a.dFloat = a.dFloat + b.dFloat; return;
 				case String: {
 					ISString s = a.getString();
 					ISString res(s.getRef() + boost::lexical_cast<string>(b.dFloat));
@@ -62,17 +52,17 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			break;
 		}
 		case String: {
-			switch (a.typeId) {		
-				case Float: {
+			switch (a.typeId) {
+				case Int: {
 					ISString s = b.getString();
-					ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
+					ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
 				}
-				case Int: {
+				case Float: {
 					ISString s = b.getString();
-					ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
+					ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
@@ -96,26 +86,24 @@ FORCEINLINE void Any::multiplication(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (b.typeId) {
-		case Float: {
+		case Int: {
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat * b.dFloat;
-					return;
 				case Int:
-					a.dFloat = a.dInt * b.dFloat;
-					a.typeId = Float;
+					a.dInt = a.dInt * b.dInt;
+					return;
+				case Float:
+					a.dFloat = a.dFloat * b.dInt;
 					return;
 			}
 			break;
 		}
-		case Int: {
+		case Float: {
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat * b.dInt;
-					return;
 				case Int:
-					a.dInt = a.dInt * b.dInt;
+					a.dFloat = a.dInt * b.dFloat;
+					a.typeId = Float;
 					return;
+				case Float: a.dFloat = a.dFloat * b.dFloat; return;
 			}
 			break;
 		}
@@ -125,27 +113,21 @@ FORCEINLINE void Any::multiplication(VariableStack *s) {
 
 FORCEINLINE void Any::subtraction(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
-	Any &a = s->stackArray[s->stackLevel-1];
+	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (b.typeId) {
+		case Int:
+			switch (a.typeId) {
+				case Int: a.dInt = a.dInt - b.dInt; return;
+				case Float: a.dFloat = a.dFloat - b.dInt; return;
+			}
+			break;
 		case Float:
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat - b.dFloat;
-					return;
 				case Int:
 					a.dFloat = a.dInt - b.dFloat;
 					a.typeId = Float;
 					return;
-			}
-			break;
-		case Int:
-			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat - b.dInt;
-					return;
-				case Int:
-					a.dInt = a.dInt - b.dInt;
-					return;
+				case Float: a.dFloat = a.dFloat - b.dFloat; return;
 			}
 			break;
 	}
@@ -157,32 +139,26 @@ FORCEINLINE void Any::division(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (b.typeId) {
-		case Float:
-			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat / b.dFloat;
-					return;
-				case Int:
-					a.dFloat = (float)a.dInt / b.dFloat;
-					a.typeId = Float;
-					return;
-			}
-			break;
 		case Int:
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = a.dFloat / (float)b.dInt;
-					return;
 				case Int:
 					if (b.dInt == 0) {
-						CBEnchanted::instance()->errors->createError("Integer divided by zero",
-																	 "",
-																	 "Integer pwned by Zero");
+						CBEnchanted::instance()->errors->createError("Integer divided by zero", "", "Integer pwned by Zero");
 						a.dInt = 0;
 						return;
 					}
 					a.dInt = a.dInt / b.dInt;
 					return;
+				case Float: a.dFloat = a.dFloat / (float)b.dInt; return;
+			}
+			break;
+		case Float:
+			switch (a.typeId) {
+				case Int:
+					a.dFloat = (float)a.dInt / b.dFloat;
+					a.typeId = Float;
+					return;
+				case Float: a.dFloat = a.dFloat / b.dFloat; return;
 			}
 			break;
 	}
@@ -193,34 +169,28 @@ FORCEINLINE void Any::modulo(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (b.typeId) {
-		case Float:
-			switch (a.typeId) {
-				case Float:
-					a.dFloat = fmod(a.dFloat, b.dFloat);
-					return;
-				case Int:
-					a.dFloat = fmod((double)a.dInt, (double)b.dFloat);
-					a.typeId = Float;
-					return;
-			}
-			break;
 		case Int:
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = fmod((double)a.dFloat, (double)b.dInt);
-					return;
 				case Int:
 					if (b.dInt == 0) {
-						CBEnchanted::instance()->errors->createError("Integer divided by zero",
-																	 "This happened when using the Mod operator",
-																	 "Integer pwned by Zero");
+						CBEnchanted::instance()->errors->createError("Integer divided by zero", "This happened when using the Mod operator", "Integer pwned by Zero");
 						a.dInt = 0;
 						return;
 					}
 					a.dInt = a.dInt % b.dInt;
 					return;
+				case Float: a.dFloat = fmod((double)a.dFloat, (double)b.dInt); return;
 			}
-			break;		
+			break;	
+		case Float:
+			switch (a.typeId) {
+				case Int:
+					a.dFloat = fmod((double)a.dInt, (double)b.dFloat);
+					a.typeId = Float;
+					return;
+				case Float: a.dFloat = fmod(a.dFloat, b.dFloat); return;
+			}
+			break;	
 	}
 	FIXME("Unsupported operation %s %% %s", a.typeInfo().name(), b.typeInfo().name());
 }
@@ -258,25 +228,19 @@ FORCEINLINE void Any::power(VariableStack *s) {
 	Any &b = s->stackArray[--s->stackLevel];
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (b.typeId) {
+		case Int:
+			switch (a.typeId) {
+				case Int: a.dInt = cbpow(a.dInt, b.dInt); return;
+				case Float: a.dFloat = pow((double)a.dFloat, (double)b.dInt); return;
+			}
+			break;
 		case Float:
 			switch (a.typeId) {
-				case Float:
-					a.dFloat = powf(a.dFloat, b.dFloat);
-					return;
 				case Int:
 					a.dFloat = pow((double)a.dInt, (double)b.dFloat);
 					a.typeId = Float;
 					return;
-			}
-			break;
-		case Int:
-			switch (a.typeId) {
-				case Int:
-					a.dInt = cbpow(a.dInt, b.dInt);
-					return;
-				case Float:
-					a.dFloat = pow((double)a.dFloat, (double)b.dInt);
-					return;
+				case Float: a.dFloat = powf(a.dFloat, b.dFloat); return;
 			}
 			break;
 	}
@@ -299,18 +263,33 @@ FORCEINLINE void Any::equal(VariableStack *s) {
 					return;
 			}
 		case Float:
-			a.typeId = Int;
 			switch (b.typeId) {
 				case Float:
+					a.typeId = Int;
 					a.dInt = a.dFloat == b.dFloat;
 					return;
 				case Int:
+					a.typeId = Int;
 					a.dInt = a.dFloat == b.dInt;
 					return;
 				case String:
+					a.typeId = Int;
 					a.dInt = a.toString() == b.getString();
 					return;
 			}
+		case String:
+			switch (b.typeId) {
+				case Int:
+				case Float:
+					a.typeId = Int;
+					a.dInt = a.getString() == b.toString();
+					return;
+				case String:
+					a.typeId = Int;
+					a.dInt = a.getString() == b.getString();
+					return;
+			}
+			break;
 		case TypePtr:
 			if (b.typeId == TypePtr) {
 				a.typeId = Int;
@@ -318,17 +297,6 @@ FORCEINLINE void Any::equal(VariableStack *s) {
 				return;
 			}
 			break;
-		case String:
-			a.typeId = Int;
-			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() == b.getString();
-					return;
-				case Int:
-				case Float:
-					a.dInt = a.getString() == b.toString();
-					return;
-			}
 	}
 	FIXME("Unsupported operation %s == %s", a.typeInfo().name(), b.typeInfo().name());
 }
@@ -339,28 +307,31 @@ FORCEINLINE void Any::notEqual(VariableStack *s) {
 	switch (a.typeId) {
 		case Int:
 			switch (b.typeId) {
-				case Int:
-					a.dInt = a.dInt != b.dInt;
-					return;
-				case Float:
-					a.dInt = a.dInt != b.dFloat;
-					return;
-				case String:
-					a.dInt = a.toString() != b.getString();
-					return;
+				case Int: a.dInt = a.dInt != b.dInt; return;
+				case Float: a.dInt = a.dInt != b.dFloat; return;
+				case String: a.dInt = a.toString() != b.getString(); return;
 			}
 			break;
 		case Float:
-			a.typeId = Int;
 			switch (b.typeId) {
-				case Float:
-					a.dInt = a.dFloat != b.dFloat;
-					return;
+				case Int: a.typeId = Int; a.dInt = a.dFloat != b.dInt; return;
+				case Float: a.typeId = Int; a.dInt = a.dFloat != b.dFloat; return;
+				case String: a.typeId = Int; a.dInt = a.toString() != b.getString(); return;
+			}
+			break;
+		case String:
+			switch (b.typeId) {
 				case Int:
-					a.dInt = a.dFloat != b.dInt;
+					a.typeId = Int;
+					a.dInt = a.getString() != b.toString();
+					return;
+				case Float:
+					a.typeId = Int;
+					a.dInt = a.getString() != b.toString();
 					return;
 				case String:
-					a.dInt = a.toString() != b.getString();
+					a.typeId = Int;
+					a.dInt = a.getString() != b.getString();
 					return;
 			}
 			break;
@@ -369,22 +340,6 @@ FORCEINLINE void Any::notEqual(VariableStack *s) {
 				a.typeId = Int;
 				a.dInt = a.dPtr != b.dPtr;
 				return;
-			}
-			break;
-		case String:
-			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() != b.getString();
-					a.typeId = Int;
-					return;
-				case Int:
-					a.dInt = a.getString() != b.toString();
-					a.typeId = Int;
-					return;
-				case Float:
-					a.dInt = a.getString() != b.toString();
-					a.typeId = Int;
-					return;
 			}
 			break;
 	}
@@ -425,45 +380,23 @@ FORCEINLINE void Any::greaterThan(VariableStack *s) {
 	switch (a.typeId) {
 		case Int:
 			switch (b.typeId) {
-				case Int:
-					a.dInt = a.dInt > b.dInt;
-					return;
-				case Float:
-					a.dInt = a.dInt > b.dFloat;
-					return;
-				case String:
-					a.dInt = a.toString() > b.getString();
-					return;
+				case Int: a.dInt = a.dInt > b.dInt; return;
+				case Float: a.dInt = a.dInt > b.dFloat; return;
+				case String: a.dInt = a.toString() > b.getString(); return;
 			}
 			break;
 		case Float:
-			a.typeId = Int;
 			switch (b.typeId) {
-				case Float:
-					a.dInt = a.dFloat > b.dFloat;
-					return;
-				case Int:
-					a.dInt = a.dFloat > b.dInt;
-					return;
-				case String:
-					a.dInt = a.toString() > b.getString();
-					return;
+				case Int: a.typeId = Int; a.dInt = a.dFloat > b.dInt; return;
+				case Float: a.typeId = Int; a.dInt = a.dFloat > b.dFloat; return;
+				case String: a.typeId = Int; a.dInt = a.toString() > b.getString(); return;
 			}
 			break;
 		case String:
 			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() > b.getString();
-					a.typeId = Int;
-					return;
-				case Int:
-					a.dInt = a.getString() > b.toString();
-					a.typeId = Int;
-					return;
-				case Float:
-					a.dInt = a.getString() > b.toString();
-					a.typeId = Int;
-					return;
+				case Int: a.typeId = Int; a.dInt = a.getString() > b.toString(); return;
+				case Float: a.typeId = Int; a.dInt = a.getString() > b.toString(); return;
+				case String: a.typeId = Int; a.dInt = a.getString() > b.getString(); return;
 			}
 			break;
 	}
@@ -476,45 +409,23 @@ FORCEINLINE void Any::greaterThanOrEqual(VariableStack *s) {
 	switch (a.typeId) {
 		case Int:
 			switch (b.typeId) {
-				case Int:
-					a.dInt = a.dInt >= b.dInt;
-					return;
-				case Float:
-					a.dInt = a.dInt >= b.dFloat;
-					return;
-				case String:
-					a.dInt = a.toString() >= b.getString();
-					return;
+				case Int: a.dInt = a.dInt >= b.dInt; return;
+				case Float: a.dInt = a.dInt >= b.dFloat; return;
+				case String: a.dInt = a.toString() >= b.getString(); return;
 			}
 			break;
 		case Float:
-			a.typeId = Int;
 			switch (b.typeId) {
-				case Float:
-					a.dInt = a.dFloat >= b.dFloat;
-					return;
-				case Int:
-					a.dInt = a.dFloat >= b.dInt;
-					return;
-				case String:
-					a.dInt = a.toString() >= b.getString();
-					return;
+				case Int: a.typeId = Int; a.dInt = a.dFloat >= b.dInt; return;
+				case Float: a.typeId = Int; a.dInt = a.dFloat >= b.dFloat; return;
+				case String: a.typeId = Int; a.dInt = a.toString() >= b.getString(); return;
 			}
 			break;
 		case String:
 			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() >= b.getString();
-					a.typeId = Int;
-					return;
-				case Int:
-					a.dInt = a.getString() >= b.toString();
-					a.typeId = Int;
-					return;
-				case Float:
-					a.dInt = a.getString() >= b.toString();
-					a.typeId = Int;
-					return;
+				case Int: a.typeId = Int; a.dInt = a.getString() >= b.toString(); return;
+				case Float: a.typeId = Int; a.dInt = a.getString() >= b.toString(); return;
+				case String: a.typeId = Int; a.dInt = a.getString() >= b.getString(); return;
 			}
 			break;
 	}
@@ -527,47 +438,23 @@ FORCEINLINE void Any::lessThan(VariableStack *s) {
 	switch (a.typeId) {
 		case Int:
 			switch (b.typeId) {
-				case Int:
-					a.dInt = a.dInt < b.dInt;
-					return;
-				case Float:
-					a.dInt = a.dInt < b.dFloat;
-					return;
-				case String:
-					a.dInt = a.toString() < b.getString();
-					return;
+				case Int: a.dInt = a.dInt < b.dInt; return;
+				case Float: a.dInt = a.dInt < b.dFloat; return;
+				case String: a.dInt = a.toString() < b.getString(); return;
 			}
 			break;
 		case Float:
 			switch (b.typeId) {
-				case Float:
-					a.typeId = Int;
-					a.dInt = a.dFloat < b.dFloat;
-					return;
-				case Int:
-					a.typeId = Int;
-					a.dInt = a.dFloat < b.dInt;
-					return;
-				case String:
-					a.typeId = Int;
-					a.dInt = a.toString() < b.getString();
-					return;
+				case Int: a.typeId = Int; a.dInt = a.dFloat < b.dInt; return;
+				case Float: a.typeId = Int; a.dInt = a.dFloat < b.dFloat; return;
+				case String: a.typeId = Int; a.dInt = a.toString() < b.getString(); return;
 			}
 			break;
 		case String:
 			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() < b.getString();
-					a.typeId = Int;
-					return;
-				case Int:
-					a.dInt = a.getString() < b.toString();
-					a.typeId = Int;
-					return;
-				case Float:
-					a.dInt = a.getString() < b.toString();
-					a.typeId = Int;
-					return;
+				case Int: a.typeId = Int; a.dInt = a.getString() < b.toString(); return;
+				case Float: a.typeId = Int; a.dInt = a.getString() < b.toString(); return;
+				case String: a.typeId = Int; a.dInt = a.getString() < b.getString(); return;
 			}
 			break;
 	}
@@ -580,26 +467,20 @@ FORCEINLINE void Any::lessThanOrEqual(VariableStack *s) {
 	switch (a.typeId) {
 		case Int:
 			switch (b.typeId) {
-				case Int:
-					a.dInt = a.dInt <= b.dInt;
-					return;
-				case Float:
-					a.dInt = a.dInt <= b.dFloat;
-					return;
-				case String:
-					a.dInt = a.toString() <= b.getString();
-					return;
+				case Int: a.dInt = a.dInt <= b.dInt; return;
+				case Float: a.dInt = a.dInt <= b.dFloat; return;
+				case String: a.dInt = a.toString() <= b.getString(); return;
 			}
 			break;
 		case Float:
 			switch (b.typeId) {
-				case Float:
-					a.typeId = Int;
-					a.dInt = a.dFloat <= b.dFloat;
-					return;
 				case Int:
 					a.typeId = Int;
 					a.dInt = a.dFloat <= b.dInt;
+					return;
+				case Float:
+					a.typeId = Int;
+					a.dInt = a.dFloat <= b.dFloat;
 					return;
 				case String:
 					a.typeId = Int;
@@ -609,17 +490,17 @@ FORCEINLINE void Any::lessThanOrEqual(VariableStack *s) {
 			break;
 		case String:
 			switch (b.typeId) {
-				case String:
-					a.dInt = a.getString() <= b.getString();
-					a.typeId = Int;
-					return;
 				case Int:
-					a.dInt = a.getString() <= b.toString();
 					a.typeId = Int;
+					a.dInt = a.getString() <= b.toString();
 					return;
 				case Float:
-					a.dInt = a.getString() <= b.toString();
 					a.typeId = Int;
+					a.dInt = a.getString() <= b.toString();
+					return;
+				case String:
+					a.typeId = Int;
+					a.dInt = a.getString() <= b.getString();
 					return;
 			}
 			break;
@@ -630,12 +511,8 @@ FORCEINLINE void Any::lessThanOrEqual(VariableStack *s) {
 FORCEINLINE void Any::unaryMinus(VariableStack *s) {
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (a.typeId) {
-		case Int:
-			a.dInt = -a.dInt;
-			return;
-		case Float:
-			a.dFloat = -a.dFloat;
-			return;
+		case Int: a.dInt = -a.dInt; return;
+		case Float: a.dFloat = -a.dFloat; return;
 	}
 	FIXME("Unsupported operation -%s", a.typeInfo().name());
 }
@@ -643,13 +520,10 @@ FORCEINLINE void Any::unaryMinus(VariableStack *s) {
 FORCEINLINE void Any::unaryPlus(VariableStack *s) {
 	Any &a = s->stackArray[s->stackLevel - 1];
 	switch (a.typeId) {
-		case Int:
-			a.dInt = abs(a.dInt);
-		case Float:
-			a.dFloat = abs(a.dFloat);
+		case Int: a.dInt = abs(a.dInt); return;
+		case Float: a.dFloat = abs(a.dFloat); return;
 	}
 	FIXME("Unsupported operation +%s", a.typeInfo().name());
 }
-
 
 #endif // MATHOPERATIONS_H
