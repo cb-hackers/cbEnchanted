@@ -67,7 +67,6 @@ enum MathematicOperation {
 	NOT
 };
 
-
 CBEnchanted *CBEnchanted::instance() {
 	return cbInstance;
 }
