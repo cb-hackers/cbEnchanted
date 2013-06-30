@@ -18,8 +18,55 @@
 #include "cbvariableholder.h"
 #include "mathoperations.h"
 #include "errorsystem.h"
+#include <iostream>
 
 static CBEnchanted *cbInstance;
+
+enum OpCode {
+	SetInt = 65,
+	SetFloat,
+	Command,
+	Data,
+	PushInt = 73,
+	PushSomething,
+	Jump = 78,
+	MathOperation,
+	IncVar,
+	IncGlobalVar,
+	PushTypeMemberVariable = 84,
+	PushFuncPtr,
+	PushVariable,
+	Function = 90,
+	Unknown1 = 97,
+	Unknown2,
+	Unknown3,
+	CustomFunctionCall = 100
+};
+
+enum MathematicOperation {
+	UnaryMinus = 1,
+	UnaryPlus,
+	Power,
+	Addition,
+	Subtraction,
+	Multiplication,
+	Division,
+	Modulo,
+	Shl,
+	Shr,
+	Sar,
+	LessThan,
+	GreaterThan,
+	Equal,
+	NotEqual,
+	LessThanOrEqual,
+	GreaterThanOrEqual,
+	AND,
+	OR,
+	XOR,
+	NOT
+};
+
 
 CBEnchanted *CBEnchanted::instance() {
 	return cbInstance;
@@ -52,6 +99,7 @@ CBEnchanted::~CBEnchanted() {
  * CBEnchanted::run - Interpret CoolBasic bytecode
  */
 void CBEnchanted::run() {
+	std::cout << sizeof(OpCode) << std::endl;
 	// Make sure that we are initialized properly to avoid crashing
 	assert(initialized == true);
 	// Run until told to quit
@@ -61,24 +109,24 @@ void CBEnchanted::run() {
 
 		HCDEBUG("[%i]: OpCode: %i", code - codeBase, opCode);
 		switch (opCode) {
-			case 65: handleSetInt(); break;
-			case 66: handleSetFloat(); break;
-			case 67: handleCommand(); break;
-			case 68: handleData(); break;
-			case 73: handlePushInt(); break;
-			case 74: handlePushSomething(); break;
-			case 78: handleJump(); break;
-			case 79: handleMathOperation(); break;
-			case 80: handleIncVar(); break;
-			case 81: handleIncGlobalVar(); break;
-			case 84: handlePushTypeMemberVariable(); break;
-			case 85: handlePushFuncptr(); break;
-			case 86: handlePushVariable(); break;
-			case 90: handleFunction(); break;
-			case 97:
-			case 98:
-			case 99: break;
-			case 100: handleCustomFunctionCall(); break;
+			case OpCode::SetInt: handleSetInt(); break;
+			case OpCode::SetFloat: handleSetFloat(); break;
+			case OpCode::Command: handleCommand(); break;
+			case OpCode::Data: handleData(); break;
+			case OpCode::PushInt: handlePushInt(); break;
+			case OpCode::PushSomething: handlePushSomething(); break;
+			case OpCode::Jump: handleJump(); break;
+			case OpCode::MathOperation: handleMathOperation(); break;
+			case OpCode::IncVar: handleIncVar(); break;
+			case OpCode::IncGlobalVar: handleIncGlobalVar(); break;
+			case OpCode::PushTypeMemberVariable: handlePushTypeMemberVariable(); break;
+			case OpCode::PushFuncPtr: handlePushFuncptr(); break;
+			case OpCode::PushVariable: handlePushVariable(); break;
+			case OpCode::Function: handleFunction(); break;
+			case OpCode::Unknown1:
+			case OpCode::Unknown2:
+			case OpCode::Unknown3: break;
+			case OpCode::CustomFunctionCall: handleCustomFunctionCall(); break;
 			default: FIXME("Unimplemented handler: %i", opCode);
 		}
 	}
@@ -972,7 +1020,6 @@ void CBEnchanted::commandDim(void) {
 		dimensions[i] = popValue().toInt() + 1; // Size of dimension
 	}
 
-
 	switch (type){
 		case 3: {
 			Array<int32_t> a;
@@ -1084,18 +1131,12 @@ FORCEINLINE void CBEnchanted::handlePushSomething(void) {
 			uint32_t pos = popArrayDimensions2(id, dimensions, type);
 
 			switch (type) {
-				case 3:
-					pushValue(getIntegerArray(id).get(pos)); break;
-				case 4:
-					pushValue(getFloatArray(id).get(pos)); break;
-				case 7:
-					pushValue((int32_t)getShortArray(id).get(pos)); break;
-				case 8:
-					pushValue((int32_t)getByteArray(id).get(pos)); break;
-				case 6:
-					pushValue(getStringArray(id).get(pos)); break;
-				default:
-					FIXME("handlePushSomething: Undefined array type %i", type);
+				case 3: pushValue(getIntegerArray(id).get(pos)); break;
+				case 4: pushValue(getFloatArray(id).get(pos)); break;
+				case 7: pushValue((int32_t)getShortArray(id).get(pos)); break;
+				case 8: pushValue((int32_t)getByteArray(id).get(pos)); break;
+				case 6: pushValue(getStringArray(id).get(pos)); break;
+				default: FIXME("handlePushSomething: Undefined array type %i", type);
 			}
 			break;
 		}
@@ -1126,29 +1167,28 @@ FORCEINLINE void CBEnchanted::handleMathOperation(void) {
 	code++;
 	HCDEBUG("Mathoperation: %i", uint32_t(op));
 	switch (op) {
-		case 1: Any::unaryMinus(&internalStack); break;
-		case 2: Any::unaryPlus(&internalStack); break;
-		case 3: Any::power(&internalStack); break;
-		case 4: Any::addition(&internalStack); break;
-		case 5: Any::subtraction(&internalStack); break;
-		case 6: Any::multiplication(&internalStack); break;
-		case 7: Any::division(&internalStack); break;
-		case 8: Any::modulo(&internalStack); break;
-		case 9: Any::shl(&internalStack); break;
-		case 10: Any::shr(&internalStack); break;
-		case 11: Any::sar(&internalStack); break;
-		case 12: Any::lessThan(&internalStack); break;
-		case 13: Any::greaterThan(&internalStack); break;
-		case 14: Any::equal(&internalStack); break;
-		case 15: Any::notEqual(&internalStack); break;
-		case 16: Any::lessThanOrEqual(&internalStack); break;
-		case 17: Any::greaterThanOrEqual(&internalStack); break;
-		case 18: Any::AND(&internalStack); break;
-		case 19: Any::OR(&internalStack); break;
-		case 20: Any::XOR(&internalStack); break;
-		case 21: Any::NOT(&internalStack); break;
-		default:
-			FIXME("Unimplemented mathematical operation: %i", op);
+		case MathematicOperation::UnaryMinus: Any::unaryMinus(&internalStack); break;
+		case MathematicOperation::UnaryPlus: Any::unaryPlus(&internalStack); break;
+		case MathematicOperation::Power: Any::power(&internalStack); break;
+		case MathematicOperation::Addition: Any::addition(&internalStack); break;
+		case MathematicOperation::Subtraction: Any::subtraction(&internalStack); break;
+		case MathematicOperation::Multiplication: Any::multiplication(&internalStack); break;
+		case MathematicOperation::Division: Any::division(&internalStack); break;
+		case MathematicOperation::Modulo: Any::modulo(&internalStack); break;
+		case MathematicOperation::Shl: Any::shl(&internalStack); break;
+		case MathematicOperation::Shr: Any::shr(&internalStack); break;
+		case MathematicOperation::Sar: Any::sar(&internalStack); break;
+		case MathematicOperation::LessThan: Any::lessThan(&internalStack); break;
+		case MathematicOperation::GreaterThan: Any::greaterThan(&internalStack); break;
+		case MathematicOperation::Equal: Any::equal(&internalStack); break;
+		case MathematicOperation::NotEqual: Any::notEqual(&internalStack); break;
+		case MathematicOperation::LessThanOrEqual: Any::lessThanOrEqual(&internalStack); break;
+		case MathematicOperation::GreaterThanOrEqual: Any::greaterThanOrEqual(&internalStack); break;
+		case MathematicOperation::AND: Any::AND(&internalStack); break;
+		case MathematicOperation::OR: Any::OR(&internalStack); break;
+		case MathematicOperation::XOR: Any::XOR(&internalStack); break;
+		case MathematicOperation::NOT: Any::NOT(&internalStack); break;
+		default: FIXME("Unimplemented mathematical operation: %i", op);
 	}
 }
 
@@ -1536,7 +1576,6 @@ void CBEnchanted::commandSetGlobalVariableNumbers(void) {
 void CBEnchanted::commandType(void) {
 	int32_t typeMemberSize = popValue().getInt();
 	addType(typeMemberSize - 4);
-	//cpos += 5;
 }
 
 void CBEnchanted::commandSetTypeMemberField(void) {
@@ -1544,23 +1583,12 @@ void CBEnchanted::commandSetTypeMemberField(void) {
 	void * typePtr = getTypePointerVariable(popValue().getInt());
 	int32_t place = popValue().getInt() - 12;
 	switch (varType) {
-		case 1:
-			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toInt());
-			break;
-		case 2:
-			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toFloat());
-			break;
-		case 3:
-			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toString());
-			break;
-		case 4:
-			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toShort());
-			break;
-		case 5:
-			Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toByte());
-			break;
-		default:
-			FIXME("setTypeMemberField:Unhandled varType %i", varType);
+		case 1: Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toInt()); break;
+		case 2: Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toFloat()); break;
+		case 3: Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toString()); break;
+		case 4: Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toShort()); break;
+		case 5: Type::getMembersType(typePtr)->setField(typePtr, place, popValue().toByte()); break;
+		default: FIXME("setTypeMemberField:Unhandled varType %i", varType);
 	}
 }
 
