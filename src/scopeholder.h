@@ -1,5 +1,6 @@
 #ifndef VARIABLESCOPEHOLDER_H
 #define VARIABLESCOPEHOLDER_H
+
 #include "precomp.h"
 #include "isstring.h"
 

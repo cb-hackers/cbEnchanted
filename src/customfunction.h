@@ -1,6 +1,8 @@
 #ifndef CBCUSTOMFUNCTION_H
 #define CBCUSTOMFUNCTION_H
+
 #include "precomp.h"
+
 class CBEnchanted;
 
 /** @defgroup customfunctions Custom functions and commands
@@ -9,9 +11,8 @@ class CustomFunction {
 	public:
 		typedef void (*CustomFunc) (CBEnchanted *);
 
-		CustomFunction(CustomFunc func,int32_t group,int32_t id) :
-			function(func), groupId(group), funcId(id) { }
-		CustomFunction() : function(0), groupId(0), funcId(0) {}
+		CustomFunction(CustomFunc func,int32_t group,int32_t id) : function(func), groupId(group), funcId(id) { }
+		CustomFunction() : function(0), groupId(0), funcId(0) { }
 		inline void call(CBEnchanted *cb) const { (*function)(cb); }
 		bool isNull() const {return function == 0;}
 		bool operator > (const CustomFunction &o) const;

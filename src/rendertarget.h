@@ -1,14 +1,16 @@
 #ifndef RENDERTARGET_H
 #define RENDERTARGET_H
+
 #include "precomp.h"
 #include "particle.h"
 #include "isstring.h"
+
 class CBImage;
-class RenderTarget
-{
+
+class RenderTarget {
 	public:
 		enum Align {
-			Left = 1 <<0,
+			Left = 1,
 			Right = 1 << 1,
 			HCenter = Left | Right,
 			Top = 1 << 2,

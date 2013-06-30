@@ -2,7 +2,6 @@
 #define ANY_H
 
 #include "debug.h"
-#include <assert.h>
 #include "isstring.h"
 
 class VariableStack;
@@ -12,18 +11,18 @@ class Any {
 		/** Enumerated type for CB's data types
 		  */
 		enum Type {
-			Empty,
-			Float,
 			Int,
+			Float,
 			String,
-			TypePtr
+			TypePtr,
+			Empty
 		};
 	private:
 		union {
-			/** Float data */
-			float dFloat;
 			/** 32bit integer data */
 			int32_t dInt;
+			/** Float data */
+			float dFloat;
 			/** ISString data */
 			ISString::SharedData *dString;
 			/** Type pointer */
@@ -135,11 +134,11 @@ class Any {
 		void dump() const;
 
 		/** Negation operator */
-		int32_t operator ! ()const;
+		int32_t operator ! () const;
 		/** Unary plus operator */
-		Any operator + ()const;
+		Any operator + () const;
 		/** Unary minus operator */
-		Any operator - ()const;
+		Any operator - () const;
 		/** Modulo operator */
 		Any operator % (const Any &r) const;
 		/** Multiplication operator */
@@ -239,7 +238,6 @@ class Any {
 		static void XOR(VariableStack *s);
 };
 
-
 FORCEINLINE bool Any::toBool() const {
 	switch (typeId) {
 		case Int:
@@ -254,7 +252,5 @@ FORCEINLINE bool Any::toBool() const {
 			return false;
 	}
 }
-
-
 
 #endif // ANY_H

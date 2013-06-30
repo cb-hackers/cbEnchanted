@@ -314,7 +314,6 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	customFunctionHandler.link();
 #endif
 
-
 	eventQueue = al_create_event_queue();
 	if (!eventQueue) {
 		errors->createFatalError("Initialization error", "Failed to initialize event queue");
@@ -504,7 +503,7 @@ void CBEnchanted::commandCase(void) {
 	int32_t testCount = *(int32_t *)(code);
 	code += 5;
 	int32_t nextCase = *(int32_t *)(code);
-	for (int i = 0; i < testCount;++i) {
+	for (int i = 0; i < testCount; ++i) {
 		code += 5;
 		bool matched = false;
 		uint8_t nextOpcode = *(uint8_t *)(code+4);

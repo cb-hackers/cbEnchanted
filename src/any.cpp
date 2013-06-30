@@ -71,18 +71,17 @@ ISString Any::toString() const {
 	assert(!empty());
 	try {
 		switch (type()) {
-			case Any::String:
-				return ISString(dString);
-			case Any::Float: {
-				ISString i(boost::lexical_cast<string>(getFloat()));
-				i.requireEncoding(false);
-				return i;
-			}
 			case Any::Int: {
 				ISString i(boost::lexical_cast<string>(getInt()));
 				i.requireEncoding(false);
 				return i;
 			}
+			case Any::Float: {
+				ISString i(boost::lexical_cast<string>(getFloat()));
+				i.requireEncoding(false);
+				return i;
+			}
+			case Any::String: return ISString(dString);
 		}
 	}
 	catch (boost::bad_lexical_cast &) {
@@ -95,10 +94,8 @@ ISString Any::toString() const {
 int32_t Any::toInt() const {
 	assert(!empty());
 	switch (type()) {
-		case Any::Int:
-			return getInt();
-		case Any::Float:
-			return ((int32_t)(getFloat() + 0.5f));
+		case Any::Int: return getInt();
+		case Any::Float: return ((int32_t)(getFloat() + 0.5f));
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
@@ -117,10 +114,8 @@ int32_t Any::toInt() const {
 float Any::toFloat() const {
 	assert(!empty());
 	switch (type()) {
-		case Any::Float:
-			return getFloat();
-		case Any::Int:
-			return ((float)getInt());
+		case Any::Int: return ((float)getInt());
+		case Any::Float: return getFloat();
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
@@ -139,10 +134,8 @@ float Any::toFloat() const {
 uint16_t Any::toShort() const {
 	assert(!empty());
 	switch (type()) {
-		case Any::Float:
-			return ((uint16_t)getFloat());
-		case Any::Int:
-			return ((uint16_t)getInt());
+		case Any::Int: return ((uint16_t)getInt());
+		case Any::Float: return ((uint16_t)getFloat());
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
@@ -159,10 +152,8 @@ uint16_t Any::toShort() const {
 uint8_t Any::toByte() const {
 	assert(!empty());
 	switch (type()) {
-		case Any::Float:
-			return ((uint8_t)getFloat());
-		case Any::Int:
-			return ((uint8_t)getInt());
+		case Any::Int: return ((uint8_t)getInt());
+		case Any::Float: return ((uint8_t)getFloat());
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
@@ -188,9 +179,7 @@ void *Any::toTypePtr() const{
 			return 0;
 		}
 		else {
-			CBEnchanted::instance()->errors->createError(
-						"Can't convert integer '"+boost::lexical_cast<string>(dInt)+"' to typepointer",
-						"Only integer 0 can be converted to typepointer (NULL)");
+			CBEnchanted::instance()->errors->createError("Can't convert integer '"+boost::lexical_cast<string>(dInt)+"' to typepointer", "Only integer 0 can be converted to typepointer (NULL)");
 		}
 	}
 	FIXME("Unsupported cast %s => type pointer", typeInfo().name());
@@ -201,28 +190,19 @@ void *Any::toTypePtr() const{
  */
 void Any::dump() const {
 	switch (typeId) {
-		case Int:
-			printf("Integer %i\n", this->getInt()); return;
-		case Float:
-			printf("Float %f\n", this->getFloat()); return;
-		case String:
-			printf("String %s\n", this->getString().getRef().c_str()); return;
-		case TypePtr:
-			printf("TypePointer %X\n", (intptr_t)this->getTypePtr()); return;
-		case Empty:
-			printf("Invalid Any\n"); return;
-
+		case Int: printf("Integer %i\n", this->getInt()); return;
+		case Float: printf("Float %f\n", this->getFloat()); return;
+		case String: printf("String %s\n", this->getString().getRef().c_str()); return;
+		case TypePtr: printf("TypePointer %X\n", (intptr_t)this->getTypePtr()); return;
+		case Empty: printf("Invalid Any\n"); return;
 	}
 }
 
 int32_t Any::operator ! () const {
 	switch (this->type()) {
-		case Any::Float:
-			return !this->getFloat();
-		case Any::Int:
-			return !this->getInt();
-		case Any::TypePtr:
-			return !this->getTypePtr();
+		case Any::Int: return !this->getInt();
+		case Any::Float: return !this->getFloat();
+		case Any::TypePtr: return !this->getTypePtr();
 	}
 	FIXME("Unsupported operation !%s", this->typeInfo().name());
 	return 0;
@@ -230,10 +210,8 @@ int32_t Any::operator ! () const {
 
 Any Any::operator + () const {
 	switch (this->type()) {
-		case Any::Float:
-			return abs(this->getFloat());
-		case Any::Int:
-			return abs(this->getInt());
+		case Any::Int: return abs(this->getInt());
+		case Any::Float: return abs(this->getFloat());	
 	}
 	FIXME("Unsupported operation +%s", this->typeInfo().name());
 	return 0;
@@ -241,10 +219,8 @@ Any Any::operator + () const {
 
 Any Any::operator - () const {
 	switch (this->type()) {
-		case Any::Float:
-			return -this->getFloat();
-		case Any::Int:
-			return -this->getInt();
+		case Any::Int: return -this->getInt();
+		case Any::Float: return -this->getFloat();
 	}
 	FIXME("Unsupported operation -%s", this->typeInfo().name());
 	return 0;
@@ -252,20 +228,16 @@ Any Any::operator - () const {
 
 Any Any::operator % (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return (float)fmod(this->getFloat(), r.getFloat());
-				case Any::Int:
-					return (float)fmod((double)this->getFloat(), (double)r.getInt());
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return (float)fmod((double)this->getInt(), (double)r.getFloat());
-				case Any::Int:
-					return this->getInt() % r.getInt();
+				case Any::Int: return this->getInt() % r.getInt();
+				case Any::Float: return (float)fmod((double)this->getInt(), (double)r.getFloat());
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return (float)fmod((double)this->getFloat(), (double)r.getInt());
+				case Any::Float: return (float)fmod(this->getFloat(), r.getFloat());
 			}
 			break;
 	}
@@ -275,20 +247,16 @@ Any Any::operator % (const Any &r) const {
 
 Any Any::operator * (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() * r.getFloat();
-				case Any::Int:
-					return this->getFloat() * r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() * r.getFloat();
-				case Any::Int:
-					return this->getInt() * r.getInt();
+				case Any::Int: return this->getInt() * r.getInt();
+				case Any::Float: return this->getInt() * r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() * r.getInt();
+				case Any::Float: return this->getFloat() * r.getFloat();
 			}
 			break;
 	}
@@ -298,34 +266,25 @@ Any Any::operator * (const Any &r) const {
 
 Any Any::operator + (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() + r.getFloat();
-				case Any::Int:
-					return this->getFloat() + r.getInt();
-				case Any::String:
-					return boost::lexical_cast<string>(this->getFloat()) + r.getString();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() + r.getFloat();
-				case Any::Int:
-					return this->getInt() + r.getInt();
-				case Any::String:
-					return boost::lexical_cast<string>(this->getInt()) + r.getString();
+				case Any::Int: return this->getInt() + r.getInt();
+				case Any::Float: return this->getInt() + r.getFloat();
+				case Any::String: return boost::lexical_cast<string>(this->getInt()) + r.getString();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() + r.getInt();
+				case Any::Float: return this->getFloat() + r.getFloat();
+				case Any::String: return boost::lexical_cast<string>(this->getFloat()) + r.getString();
 			}
 			break;
 		case Any::String:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getString() + boost::lexical_cast<string>(r.getFloat());
-				case Any::Int:
-					return this->getString() + boost::lexical_cast<string>(r.getInt());
-				case Any::String:
-					return this->getString() + r.getString();
+				case Any::Int: return this->getString() + boost::lexical_cast<string>(r.getInt());
+				case Any::Float: return this->getString() + boost::lexical_cast<string>(r.getFloat());
+				case Any::String: return this->getString() + r.getString();
 			}
 			break;
 	}
@@ -335,20 +294,16 @@ Any Any::operator + (const Any &r) const {
 
 Any Any::operator - (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() - r.getFloat();
-				case Any::Int:
-					return this->getFloat() - r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() - r.getFloat();
-				case Any::Int:
-					return this->getInt() - r.getInt();
+				case Any::Int: return this->getInt() - r.getInt();
+				case Any::Float: return this->getInt() - r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() - r.getInt();
+				case Any::Float: return this->getFloat() - r.getFloat();
 			}
 			break;
 	}
@@ -358,20 +313,16 @@ Any Any::operator - (const Any &r) const {
 
 Any Any::operator / (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() / r.getFloat();
-				case Any::Int:
-					return this->getFloat() / r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() / r.getFloat();
-				case Any::Int:
-					return this->getInt() / r.getInt();
+				case Any::Int: return this->getInt() / r.getInt();
+				case Any::Float: return this->getInt() / r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() / r.getInt();
+				case Any::Float: return this->getFloat() / r.getFloat();
 			}
 			break;
 	}
@@ -380,13 +331,11 @@ Any Any::operator / (const Any &r) const {
 }
 
 Any Any::operator << (const Any &r) const {
-	if (this->type() == Any::Int) {
-		if (r.type() == Any::Int) {
-			int32_t a = this->getInt();
-			int32_t b = r.getInt();
-			uint32_t ret = *reinterpret_cast<uint32_t*>( &a ) << *reinterpret_cast<uint32_t*>( &b );
-			return *reinterpret_cast<int32_t*>( &ret );
-		}
+	if (this->type() == Any::Int && r.type() == Any::Int) {
+		int32_t a = this->getInt();
+		int32_t b = r.getInt();
+		uint32_t ret = *reinterpret_cast<uint32_t*>( &a ) << *reinterpret_cast<uint32_t*>( &b );
+		return *reinterpret_cast<int32_t*>( &ret );
 	}
 	FIXME("Unsupported operation %s << %s", this->typeInfo().name(), r.typeInfo().name());
 	return 0;
@@ -409,20 +358,16 @@ int32_t Any::shr (const Any &l, const Any &r) {
 
 Any Any::operator ^ (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return (float)pow(this->getFloat(), r.getFloat());
-				case Any::Int:
-					return (float)pow(this->getFloat(), r.getInt());
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return (int)pow((double)this->getInt(), (double)r.getFloat());
-				case Any::Int:
-					return (int)pow((double)this->getInt(), r.getInt());
+				case Any::Int: return (int)pow((double)this->getInt(), r.getInt());
+				case Any::Float: return (int)pow((double)this->getInt(), (double)r.getFloat());
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return (float)pow(this->getFloat(), r.getInt());
+				case Any::Float: return (float)pow(this->getFloat(), r.getFloat());
 			}
 			break;
 	}
@@ -432,20 +377,16 @@ Any Any::operator ^ (const Any &r) const {
 
 int32_t Any::operator != (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() != r.getFloat();
-				case Any::Int:
-					return this->getFloat() != r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() != r.getFloat();
-				case Any::Int:
-					return this->getInt() != r.getInt();
+				case Any::Int: return this->getInt() != r.getInt();
+				case Any::Float: return this->getInt() != r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() != r.getInt();
+				case Any::Float: return this->getFloat() != r.getFloat();
 			}
 			break;
 		case Any::String:
@@ -465,20 +406,16 @@ int32_t Any::operator != (const Any &r) const {
 
 int32_t Any::operator && (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() && r.getFloat();
-				case Any::Int:
-					return this->getFloat() && r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() && r.getFloat();
-				case Any::Int:
-					return this->getInt() && r.getInt();
+				case Any::Int: return this->getInt() && r.getInt();
+				case Any::Float: return this->getInt() && r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() && r.getInt();
+				case Any::Float: return this->getFloat() && r.getFloat();
 			}
 			break;
 		case Any::TypePtr:
@@ -493,20 +430,16 @@ int32_t Any::operator && (const Any &r) const {
 
 int32_t Any::operator <= (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() <= r.getFloat();
-				case Any::Int:
-					return this->getFloat() <= r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() <= r.getFloat();
-				case Any::Int:
-					return this->getInt() <= r.getInt();
+				case Any::Int: return this->getInt() <= r.getInt();
+				case Any::Float: return this->getInt() <= r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() <= r.getInt();
+				case Any::Float: return this->getFloat() <= r.getFloat();
 			}
 			break;
 	}
@@ -516,27 +449,10 @@ int32_t Any::operator <= (const Any &r) const {
 
 int32_t Any::operator == (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() == r.getFloat();
-				case Any::Int:
-					return this->getFloat() == r.getInt();
-				case Any::String:
-					try {
-						return this->getFloat() == boost::lexical_cast<float>(r.getString().getRef());
-					}
-					catch( boost::bad_lexical_cast &) {
-						return 0;
-					}
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() == r.getFloat();
-				case Any::Int:
-					return this->getInt() == r.getInt();
+				case Any::Int: return this->getInt() == r.getInt();
+				case Any::Float: return this->getInt() == r.getFloat();
 				case Any::String:
 					try {
 						return this->getInt() == boost::lexical_cast<int32_t>(r.getString().getRef());
@@ -546,10 +462,21 @@ int32_t Any::operator == (const Any &r) const {
 					}
 			}
 			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() == r.getInt();
+				case Any::Float: return this->getFloat() == r.getFloat();
+				case Any::String:
+					try {
+						return this->getFloat() == boost::lexical_cast<float>(r.getString().getRef());
+					}
+					catch( boost::bad_lexical_cast &) {
+						return 0;
+					}
+			}
+			break;
 		case Any::String:
 			switch (r.type()) {
-				case Any::String:
-					return this->getString() == r.getString();
 				case Any::Int:
 					try {
 						return boost::lexical_cast<int32_t>(this->getString().getRef()) == r.getInt();
@@ -564,6 +491,8 @@ int32_t Any::operator == (const Any &r) const {
 					catch( boost::bad_lexical_cast &) {
 						return 0;
 					}
+				
+				case Any::String: return this->getString() == r.getString();
 			}
 			break;
 		case Any::TypePtr:
@@ -578,20 +507,16 @@ int32_t Any::operator == (const Any &r) const {
 
 int32_t Any::operator >= (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() >= r.getFloat();
-				case Any::Int:
-					return this->getFloat() >= r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() >= r.getFloat();
-				case Any::Int:
-					return this->getInt() >= r.getInt();
+				case Any::Int: return this->getInt() >= r.getInt();
+				case Any::Float: return this->getInt() >= r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() >= r.getInt();
+				case Any::Float: return this->getFloat() >= r.getFloat();
 			}
 			break;
 	}
@@ -601,20 +526,16 @@ int32_t Any::operator >= (const Any &r) const {
 
 int32_t Any::operator || (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() || r.getFloat();
-				case Any::Int:
-					return this->getFloat() || r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() || r.getFloat();
-				case Any::Int:
-					return this->getInt() || r.getInt();
+				case Any::Int: return this->getInt() || r.getInt();
+				case Any::Float: return this->getInt() || r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() || r.getInt();
+				case Any::Float: return this->getFloat() || r.getFloat();
 			}
 			break;
 		case Any::TypePtr:
@@ -629,20 +550,16 @@ int32_t Any::operator || (const Any &r) const {
 
 int32_t Any::operator > (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() > r.getFloat();
-				case Any::Int:
-					return this->getFloat() > r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() > r.getFloat();
-				case Any::Int:
-					return this->getInt() > r.getInt();
+				case Any::Int: return this->getInt() > r.getInt();
+				case Any::Float: return this->getInt() > r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() > r.getInt();
+				case Any::Float: return this->getFloat() > r.getFloat();
 			}
 			break;
 	}
@@ -652,20 +569,16 @@ int32_t Any::operator > (const Any &r) const {
 
 int32_t Any::operator < (const Any &r) const {
 	switch (this->type()) {
-		case Any::Float:
-			switch (r.type()) {
-				case Any::Float:
-					return this->getFloat() < r.getFloat();
-				case Any::Int:
-					return this->getFloat() < r.getInt();
-			}
-			break;
 		case Any::Int:
 			switch (r.type()) {
-				case Any::Float:
-					return this->getInt() < r.getFloat();
-				case Any::Int:
-					return this->getInt() < r.getInt();
+				case Any::Int: return this->getInt() < r.getInt();
+				case Any::Float: return this->getInt() < r.getFloat();
+			}
+			break;
+		case Any::Float:
+			switch (r.type()) {
+				case Any::Int: return this->getFloat() < r.getInt();
+				case Any::Float: return this->getFloat() < r.getFloat();
 			}
 			break;
 	}

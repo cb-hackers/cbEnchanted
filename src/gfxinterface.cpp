@@ -330,8 +330,8 @@ void GfxInterface::commandDrawScreen(void) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				if (cb->sysInterface->askForExit()) {
 					cb->stop();
-			}
-			break;
+				}
+				break;
 			case ALLEGRO_EVENT_DISPLAY_RESIZE: {
 				windowResized = true;
 			}

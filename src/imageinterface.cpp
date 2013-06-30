@@ -286,6 +286,4 @@ CBImage *ImageInterface::getImage(int32_t id) {
 		return 0;
 	}
 	return imgI->second;
-
 }
-

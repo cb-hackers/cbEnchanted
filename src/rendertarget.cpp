@@ -291,9 +291,7 @@ void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP*r, float sx, float sy, float 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot) {
 	setAsCurrent();
 	convertCoords(x, y);
-	al_draw_rotated_bitmap(
-		r, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0
-	);
+	al_draw_rotated_bitmap(r, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0);
 }
 
 void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float rx, float ry, float rw, float rh, float x, float y) {
@@ -323,9 +321,7 @@ void RenderTarget::drawBitmapRegion(ALLEGRO_BITMAP *r, float sx, float sy, float
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, const ALLEGRO_COLOR &tint) {
 	setAsCurrent();
 	convertCoords(x, y);
-	al_draw_tinted_rotated_bitmap(
-		r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0
-	);
+	al_draw_tinted_rotated_bitmap(r, tint, al_get_bitmap_width(r) * 0.5f, al_get_bitmap_height(r) * 0.5f, x, y, rot, 0);
 }
 
 void RenderTarget::drawBitmap(ALLEGRO_BITMAP *r, float x, float y, float rot, float xscale, float yscale, const ALLEGRO_COLOR &tint) {
