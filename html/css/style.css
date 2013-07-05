@@ -1,0 +1,10 @@
+#logo {
+	width: auto;
+	max-width: 30%;
+	height: auto;
+	max-height: 500px;
+	display: block;
+	position: absolute;
+	right: 0;
+	z-index: -1;
+}
