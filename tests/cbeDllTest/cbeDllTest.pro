@@ -14,14 +14,14 @@ win32 {
 	# Support only Win2K and above
 	DEFINES += _WIN32_WINNT=0x0500
 	CONFIG(release, debug|release){
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-static -lallegro_ttf-5.0.9-static -lallegro_primitives-5.0.9-static -lallegro_image-5.0.9-static -lallegro_memfile-5.0.9-static -lallegro_font-5.0.9-static -lallegro_dialog-5.0.9-static -lallegro_audio-5.0.9-static -lallegro_acodec-5.0.9-static
-		LIBS += -llibvorbisfile_static-1.3.3 -lOpenAL32_static-1.1.5.1 -lzlib_static-1.2.7 -llibogg_static-1.3.0 -llibFLAC_static-1.2.1 -lfreetype_static-2.4.11 -ldumb_static-0.9.3 -llibvorbis_static-1.3.3
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-md -lallegro_ttf-5.0.10-static-md -lallegro_primitives-5.0.10-static-md -lallegro_image-5.0.10-static-md -lallegro_memfile-5.0.10-static-md -lallegro_font-5.0.10-static-md -lallegro_dialog-5.0.10-static-md -lallegro_audio-5.0.10-static-md -lallegro_acodec-5.0.10-static-md
+			LIBS += -llibvorbisfile-1.3.2-static-md -lopenal-1.14-static-md -lzlib-1.2.5-static-md -llibogg-1.2.1-static-md -llibFLAC-1.2.1-static-md -lfreetype-2.4.8-static-md -ldumb-0.9.3-static-md -llibvorbis-1.3.2-static-md
 		LIBS += -L"../../cbEnchanted-libbuild-release/release" -lcbEnchanted
 		DEFINES += NDEBUG
 	}
 	else {
-		LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-debug-static -lallegro_ttf-5.0.9-debug-static -lallegro_primitives-5.0.9-debug-static -lallegro_image-5.0.9-debug-static -lallegro_memfile-5.0.9-debug-static -lallegro_font-5.0.9-debug-static -lallegro_dialog-5.0.9-debug-static -lallegro_audio-5.0.9-debug-static -lallegro_acodec-5.0.9-debug-static
-		LIBS += -llibvorbisfile_static-1.3.3-debug -lOpenAL32_static-1.1.5.1-debug -lzlib_static-1.2.7-debug -llibogg_static-1.3.0-debug -llibFLAC_static-1.2.1-debug -lfreetype_static-2.4.11-debug -ldumb_static-0.9.3-debug -llibvorbis_static-1.3.3-debug
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-md-debug -lallegro_ttf-5.0.10-static-md-debug -lallegro_primitives-5.0.10-static-md-debug -lallegro_image-5.0.10-static-md-debug -lallegro_memfile-5.0.10-static-md-debug -lallegro_font-5.0.10-static-md-debug -lallegro_dialog-5.0.10-static-md-debug -lallegro_audio-5.0.10-static-md-debug -lallegro_acodec-5.0.10-static-md-debug
+			LIBS += -llibvorbisfile-1.3.2-static-md-debug -lopenal-1.14-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
 		LIBS += -L"../../cbEnchanted-libbuild-debug/debug" -lcbEnchanted
 	}
 	LIBS += -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lopengl32 -lPsapi -lWinmm -lShlwapi -lgdiplus
