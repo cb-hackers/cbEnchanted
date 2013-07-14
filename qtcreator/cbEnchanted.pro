@@ -105,24 +105,24 @@ win32 {
 
 	contains(CBE_CONFIG,static_crt) {
 		CONFIG(release, debug|release){ #release build
-			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-static-mt -lallegro_ttf-5.0.9-static-mt -lallegro_primitives-5.0.9-static-mt -lallegro_image-5.0.9-static-mt -lallegro_memfile-5.0.9-static-mt -lallegro_font-5.0.9-static-mt -lallegro_dialog-5.0.9-static-mt -lallegro_audio-5.0.9-static-mt -lallegro_acodec-5.0.9-static-mt
-			LIBS += -llibvorbisfile_static-1.3.3-mt -lOpenAL32_static-1.1.5.1-mt -lzlib_static-1.2.7-mt -llibogg_static-1.3.0-mt -llibFLAC_static-1.2.1-mt -lfreetype_static-2.4.11-mt -ldumb_static-0.9.3-mt -llibvorbis_static-1.3.3-mt
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-mt -lallegro_ttf-5.0.10-static-mt -lallegro_primitives-5.0.10-static-mt -lallegro_image-5.0.10-static-mt -lallegro_memfile-5.0.10-static-mt -lallegro_font-5.0.10-static-mt -lallegro_dialog-5.0.10-static-mt -lallegro_audio-5.0.10-static-mt -lallegro_acodec-5.0.10-static-mt
+			LIBS += -llibvorbisfile-1.3.2-static-mt -lopenal-1.14-static-mt -lzlib-1.2.5-static-mt -llibogg-1.2.1-static-mt -llibFLAC-1.2.1-static-mt -lfreetype-2.4.8-static-mt -ldumb-0.9.3-static-mt -llibvorbis-1.3.2-static-mt
 			DEFINES += NDEBUG
 		}
 		else {
-			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-debug-static-mt -lallegro_ttf-5.0.9-debug-static-mt -lallegro_primitives-5.0.9-debug-static-mt -lallegro_image-5.0.9-debug-static-mt -lallegro_memfile-5.0.9-debug-static-mt -lallegro_font-5.0.9-debug-static-mt -lallegro_dialog-5.0.9-debug-static-mt -lallegro_audio-5.0.9-debug-static-mt -lallegro_acodec-5.0.9-debug-static-mt
-			LIBS += -llibvorbisfile_static-1.3.3-debug-mt -lOpenAL32_static-1.1.5.1-debug-mt -lzlib_static-1.2.7-debug-mt -llibogg_static-1.3.0-debug-mt -llibFLAC_static-1.2.1-debug-mt -lfreetype_static-2.4.11-debug-mt -ldumb_static-0.9.3-debug-mt -llibvorbis_static-1.3.3-debug-mt
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-mt-debug -lallegro_ttf-5.0.10-static-mt-debug -lallegro_primitives-5.0.10-static-mt-debug -lallegro_image-5.0.10-static-mt-debug -lallegro_memfile-5.0.10-static-mt-debug -lallegro_font-5.0.10-static-mt-debug -lallegro_dialog-5.0.10-static-mt-debug -lallegro_audio-5.0.10-static-mt-debug -lallegro_acodec-5.0.10-static-mt-debug
+			LIBS += -llibvorbisfile-1.3.2-static-mt-debug -lopenal-1.14-static-mt-debug -lzlib-1.2.5-static-mt-debug -llibogg-1.2.1-static-mt-debug -llibFLAC-1.2.1-static-mt-debug -lfreetype-2.4.8-static-mt-debug -ldumb-0.9.3-static-mt-debug -llibvorbis-1.3.2-static-mt-debug
 			DEFINES += CBE_MEMBLOCK_BOUNDS_CHECK CBE_ARRAY_BOUNDS_CHECK
 		}
 	} else {
 		CONFIG(release, debug|release){ #release build
-			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-static -lallegro_ttf-5.0.9-static -lallegro_primitives-5.0.9-static -lallegro_image-5.0.9-static -lallegro_memfile-5.0.9-static -lallegro_font-5.0.9-static -lallegro_dialog-5.0.9-static -lallegro_audio-5.0.9-static -lallegro_acodec-5.0.9-static
-			LIBS += -llibvorbisfile_static-1.3.3 -lOpenAL32_static-1.1.5.1 -lzlib_static-1.2.7 -llibogg_static-1.3.0 -llibFLAC_static-1.2.1 -lfreetype_static-2.4.11 -ldumb_static-0.9.3 -llibvorbis_static-1.3.3
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-md -lallegro_ttf-5.0.10-static-md -lallegro_primitives-5.0.10-static-md -lallegro_image-5.0.10-static-md -lallegro_memfile-5.0.10-static-md -lallegro_font-5.0.10-static-md -lallegro_dialog-5.0.10-static-md -lallegro_audio-5.0.10-static-md -lallegro_acodec-5.0.10-static-md
+			LIBS += -llibvorbisfile-1.3.2-static-md -lopenal-1.14-static-md -lzlib-1.2.5-static-md -llibogg-1.2.1-static-md -llibFLAC-1.2.1-static-md -lfreetype-2.4.8-static-md -ldumb-0.9.3-static-md -llibvorbis-1.3.2-static-md
 			DEFINES += NDEBUG
 		}
 		else {
-			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.9-debug-static -lallegro_ttf-5.0.9-debug-static -lallegro_primitives-5.0.9-debug-static -lallegro_image-5.0.9-debug-static -lallegro_memfile-5.0.9-debug-static -lallegro_font-5.0.9-debug-static -lallegro_dialog-5.0.9-debug-static -lallegro_audio-5.0.9-debug-static -lallegro_acodec-5.0.9-debug-static
-			LIBS += -llibvorbisfile_static-1.3.3-debug -lOpenAL32_static-1.1.5.1-debug -lzlib_static-1.2.7-debug -llibogg_static-1.3.0-debug -llibFLAC_static-1.2.1-debug -lfreetype_static-2.4.11-debug -ldumb_static-0.9.3-debug -llibvorbis_static-1.3.3-debug
+			LIBS += -L"$$(ALLEGRO_LIB)" -lallegro-5.0.10-static-md-debug -lallegro_ttf-5.0.10-static-md-debug -lallegro_primitives-5.0.10-static-md-debug -lallegro_image-5.0.10-static-md-debug -lallegro_memfile-5.0.10-static-md-debug -lallegro_font-5.0.10-static-md-debug -lallegro_dialog-5.0.10-static-md-debug -lallegro_audio-5.0.10-static-md-debug -lallegro_acodec-5.0.10-static-md-debug
+			LIBS += -llibvorbisfile-1.3.2-static-md-debug -lopenal-1.14-static-md-debug -lzlib-1.2.5-static-md-debug -llibogg-1.2.1-static-md-debug -llibFLAC-1.2.1-static-md-debug -lfreetype-2.4.8-static-md-debug -ldumb-0.9.3-static-md-debug -llibvorbis-1.3.2-static-md-debug
 			DEFINES += CBE_MEMBLOCK_BOUNDS_CHECK CBE_ARRAY_BOUNDS_CHECK
 		}
 	}
