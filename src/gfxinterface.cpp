@@ -15,6 +15,7 @@
 #include "errorsystem.h"
 #include <iostream>
 
+
 const char *screenGammaFragmentShaderCode =
 		"uniform sampler2D screenBuf; \n"
 		"uniform vec4 windowGamma; \n"
@@ -81,15 +82,17 @@ bool GfxInterface::initializeGfx() {
 
 	//Register event source
 	registerWindow();
-	al_set_window_title(window, "");
+	al_set_new_bitmap_format(ALLEGRO_PIXEL_FORMAT_ANY_32_WITH_ALPHA);
 
 	//Screen is not resizable
 	resizableWindow = false;
 
 	al_set_new_bitmap_flags(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+	al_set_new_bitmap_format(ALLEGRO_PIXEL_FORMAT_ANY_32_WITH_ALPHA);
 	// If you change the blenders below, make sure to change them from the default case
 	// in cbeSetBlendMode() in customfunctions.cpp, too.
 	al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
+
 
 	windowRenderTarget = new RenderTarget;
 	windowRenderTarget->create(al_get_backbuffer(window));
@@ -116,6 +119,7 @@ void GfxInterface::commandScreen(void) {
 	uint32_t depth = cb->popValue().toInt();
 	uint32_t height = cb->popValue().toInt();
 	uint32_t width = cb->popValue().toInt();
+
 	defaultWidth = width;
 	defaultHeight = height;
 	uint32_t flags;
@@ -148,10 +152,12 @@ void GfxInterface::commandScreen(void) {
 			defaultAspectRatio = (float)width / (float)height;
 			break;
 	}
+	
 	if ((al_get_display_flags(window) & flags) == flags) {
-		if (windowMode == WindowMode::Resizeable) {
-			al_resize_display(window, width, height);
-		}
+
+		al_resize_display(window, width, height);
+
+
 		resizeTempBitmap(width, height);
 	}
 	else {
@@ -167,6 +173,7 @@ void GfxInterface::commandScreen(void) {
 		else {
 			window = al_create_display(width, height);
 		}
+		
 		if (window == 0) {
 			if (cb->isSmooth2D()) {
 				cb->errors->createError("Can't create window", "Creating window failed in command Screen.\nIf you try to continue, Smooth2D will be toggled off.");
@@ -188,6 +195,7 @@ void GfxInterface::commandScreen(void) {
 			}
 			return;
 		}
+		
 		resizeTempBitmap(width, height);
 		if (windowMode == WindowMode::Resizeable || windowMode == WindowMode::LockedAspect) {
 			windowRenderTarget->swapBitmap(drawscreenTempBitmap);
