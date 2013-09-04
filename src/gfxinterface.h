@@ -49,6 +49,10 @@ class GfxInterface {
 		void functionScreenHeight(void);
 		void functionScreenDepth(void);
 		void functionGFXModeExists(void);
+
+		void cbeGetPixel();
+		void cbePutPixel();
+
 #endif
 		int32_t getFPS() const { return currentFPS; }
 

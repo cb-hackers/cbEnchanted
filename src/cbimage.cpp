@@ -201,6 +201,14 @@ void CBImage::makeImage(int32_t w, int32_t h) {
 	maskIsDirty = true;
 }
 
+void CBImage::makeImageTransparent(int32_t w, int32_t h) {
+	renderTarget.create(w, h);
+	renderTarget.clear(al_map_rgba(0, 0, 0, 0));
+	maskedBitmap = renderTarget.getBitmap();
+	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
+	maskIsDirty = true;
+}
+
 /** Sets image hotspot to the given coordinates or to the center, if either one is < 0 */
 void CBImage::setHotspot(int32_t x, int32_t y) {
 	if (x < 0 || y < 0) {

@@ -39,6 +39,14 @@ void ObjectInterface::commandDeleteObject(void) {
 		cb->effectInterface->deleteParticleEmitter(static_cast<CBParticleEmitter*>(object));
 		return;
 	}
+
+	for(std::vector<CBObject*>::iterator i = pickableObjects.begin(); i != pickableObjects.end(); i++) {
+		if(*i == object) {
+			i = pickableObjects.erase(i);
+			break;
+		}
+	}
+
 	// Remove possible collision checks
 	removeFromCollisionCheck(object);
 

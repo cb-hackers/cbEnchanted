@@ -101,6 +101,12 @@
 
 #define CBE_MESSAGEBOX 35
 
+#define CBE_MAKE_IMAGE 36
+
+
+#define CBE_GET_PIXEL 37
+
+#define CBE_PUT_PIXEL 38
 /** @} */
 
 #define CBE_STACK 100

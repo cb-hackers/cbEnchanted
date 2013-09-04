@@ -301,6 +301,12 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 	cb->pushValue(0);
 }
 
+/** Creates a new image, with full opacity */
+void cbeMakeImage(CBEnchanted *cb) {
+	cb->imageInterface->cbeMakeImage();
+}
+
+
 /** Draws image region or frame with scaling and rotating. */
 void cbeDrawImage(CBEnchanted *cb) {
 	cb->gfxInterface->getCurrentRenderTarget()->useWorldCoords(cb->gfxInterface->getDrawImageToWorld() && !cb->gfxInterface->drawingOnImage());
@@ -871,5 +877,18 @@ void cbePopString(CBEnchanted *cb) {
 
 }
 
+void cbePutPixel(CBEnchanted *cb) {
+	cb->gfxInterface->cbePutPixel();
+}
+
+void cbeGetPixel(CBEnchanted *cb) {
+	cb->gfxInterface->cbeGetPixel();
+}
 #endif
 /** @} */
+
+
+
+
+
+

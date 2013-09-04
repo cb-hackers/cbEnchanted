@@ -277,6 +277,23 @@ void ImageInterface::functionImagesCollide(void) {
 		cb->pushValue(0);
 	}
 }
+
+void ImageInterface::cbeMakeImage(void) {
+	int32_t h = cb->popValue().toInt();
+	int32_t w = cb->popValue().toInt();
+	CBImage *image = new CBImage;
+	image->makeImageTransparent(w, h);
+	if (defaultMaskToggled) {
+		image->maskImage(defaultMask);
+	}
+	if (defaultHotspotToggled) {
+		image->setHotspot(defaultHotspotX, defaultHotspotY);
+	}
+
+	int32_t id = nextId();
+	cbImages[id] = image;
+	cb->pushValue(id);
+}
 #endif
 
 CBImage *ImageInterface::getImage(int32_t id) {

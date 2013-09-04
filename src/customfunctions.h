@@ -18,6 +18,8 @@ void cbeSetBlendModeAdvanced(CBEnchanted *cb);
 
 void cbeDrawTintedImage(CBEnchanted *cb);
 
+void cbeMakeImage(CBEnchanted *cb);
+
 void cbeDrawImage(CBEnchanted *cb);
 
 void cbeBAnd(CBEnchanted *cb);
@@ -95,6 +97,10 @@ void cbePopInteger(CBEnchanted *cb);
 void cbePopFloat(CBEnchanted *cb);
 
 void cbePopString(CBEnchanted *cb);
+
+void cbePutPixel(CBEnchanted *cb);
+
+void cbeGetPixel(CBEnchanted *cb);
 
 /** @} */
 

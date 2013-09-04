@@ -18,6 +18,7 @@ class CBImage {
 		int32_t width() const { return renderTarget.width(); }
 		int32_t height() const { return renderTarget.height(); }
 		void makeImage(int32_t w, int32_t h);
+		void makeImageTransparent(int32_t w, int32_t h);
 		/** Sets image hotspot to the given coordinates or to the center, if either one is < 0 */
 		void setHotspot(int32_t x, int32_t y);
 		RenderTarget *getRenderTarget() { return &renderTarget; }

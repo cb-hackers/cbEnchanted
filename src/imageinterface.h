@@ -31,7 +31,9 @@ class ImageInterface {
 		void functionImageHeight(void);
 		void functionImagesOverlap(void);
 		void functionImagesCollide(void);
+		void cbeMakeImage(void);
 #endif
+
 
 		CBImage *getImage(int32_t id);
 

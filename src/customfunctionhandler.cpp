@@ -36,6 +36,10 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncId(CBE_CUSTOM_SET_BLEND_MODE_ADVANCED);
 	this->addBody(func);
 
+	func.setFuncPtr(&cbeMakeImage);
+	func.setFuncId(CBE_MAKE_IMAGE);
+	this->addBody(func);
+
 	func.setFuncPtr(&cbeDrawImage);
 	func.setFuncId(CBE_DRAW_IMAGE);
 	this->addBody(func);
@@ -155,6 +159,15 @@ void CustomFunctionHandler::importCustomFunctions() {
 	func.setFuncPtr(&cbeMessageBox);
 	func.setFuncId(CBE_MESSAGEBOX);
 	this->addBody(func);
+
+	func.setFuncPtr(&cbePutPixel);
+	func.setFuncId(CBE_PUT_PIXEL);
+	this->addBody(func);
+
+	func.setFuncPtr(&cbeGetPixel);
+	func.setFuncId(CBE_GET_PIXEL);
+	this->addBody(func);
+
 }
 #endif
 

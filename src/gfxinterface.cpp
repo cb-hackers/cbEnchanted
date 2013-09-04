@@ -723,6 +723,43 @@ void GfxInterface::functionGFXModeExists(void) {
 	al_set_new_display_flags(oldFlags);
 	cb->pushValue(gfxModeExists);
 }
+
+void GfxInterface::cbeGetPixel() {
+	int32_t id = cb->popValue().getInt();
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+
+	ALLEGRO_COLOR color;
+	if (id == 0) {
+		color = currentRenderTarget->getPixel(x, y);
+	}
+	else {
+		color = bufferMap[id]->getPixel(x, y);
+	}
+
+	int32_t pixel;
+							//	R				G				B			A
+	al_unmap_rgba(color, ((unsigned char*)&pixel) + 3, ((unsigned char*)&pixel) + 2, ((unsigned char*)&pixel+1), ((unsigned char*)&pixel));
+	cb->pushValue(pixel);
+}
+
+void GfxInterface::cbePutPixel() {
+	int32_t id = cb->popValue().getInt();
+	int32_t pixel = cb->popValue().getInt();
+	int32_t y = cb->popValue().toInt();
+	int32_t x = cb->popValue().toInt();
+	if (id == 0) {
+		currentRenderTarget->putPixel(
+			x, y, al_map_rgba((pixel >> 24) & 0xFF, (pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF)
+		);
+	}
+	else {
+		bufferMap[id]->putPixel(
+			x, y, al_map_rgba((pixel >> 24) & 0xFF, (pixel >> 16) & 0xFF, (pixel >> 16) & 0xFF, pixel & 0xFF)
+		);
+	}
+	cb->pushValue(0);
+}
 #endif
 
 void GfxInterface::setCurrentRenderTarget(RenderTarget *t) {
