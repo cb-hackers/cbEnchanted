@@ -20,6 +20,10 @@
 #include "errorsystem.h"
 #include <iostream>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
 static CBEnchanted *cbInstance;
 
 enum OpCode {

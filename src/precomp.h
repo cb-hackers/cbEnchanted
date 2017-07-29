@@ -2,7 +2,8 @@
 #define PRECOMP_H
 
 #ifdef WIN32
-	#include <Windows.h>
+	#include <tchar.h>
+	#include <windows.h>
 #endif
 #include <map>
 #include <stdint.h>

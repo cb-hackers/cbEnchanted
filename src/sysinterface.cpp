@@ -10,6 +10,8 @@
 #include <allegro5/allegro_memfile.h>
 #ifdef WIN32
 	#include <allegro5/allegro_windows.h>
+	#include <windows.h>
+	#include <windef.h>
 	#include "utf8.h"
 #else
 	#include <unistd.h>

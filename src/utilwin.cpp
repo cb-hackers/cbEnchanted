@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <math.h>
 #include <unordered_map>
-#include <Windows.h>
+#include <windows.h>
 #include "utf8.h"
 
 using namespace std;
@@ -204,7 +204,12 @@ string findfont(const char *font, bool isBold, bool isItalic) {
 
 	// Lowercase the wanted font
 	string fontname = font;
-	transform(fontname.begin(), fontname.end(), fontname.begin(), tolower);
+	
+    struct make_lower
+    {
+        int operator()(int ch) const { return std::tolower(ch); }
+    };
+	transform(fontname.begin(), fontname.end(), fontname.begin(), make_lower());
 
 	if (isBold && isItalic) {
 		// Search for bold and italic fonts
