@@ -204,12 +204,12 @@ string findfont(const char *font, bool isBold, bool isItalic) {
 
 	// Lowercase the wanted font
 	string fontname = font;
-	
-    struct make_lower
-    {
-        int operator()(int ch) const { return std::tolower(ch); }
-    };
-	transform(fontname.begin(), fontname.end(), fontname.begin(), make_lower());
+
+#ifdef _MSC_VER
+	transform(fontname.begin(), fontname.end(), fontname.begin(), tolower);
+#else
+	transform(fontname.begin(), fontname.end(), fontname.begin(), [](unsigned char ch) { return std::tolower(ch); });
+#endif
 
 	if (isBold && isItalic) {
 		// Search for bold and italic fonts
