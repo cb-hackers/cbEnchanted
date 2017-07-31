@@ -1,9 +1,12 @@
 #ifndef PRECOMP_H
 #define PRECOMP_H
 
+
 #if (defined(WIN32) || defined(_WIN32))
-	#include <Windows.h>
+	#include <tchar.h>
+	#include <windows.h>
 #endif
+
 #include <map>
 #include <stdint.h>
 #include <vector>

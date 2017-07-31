@@ -5,7 +5,8 @@
 #include <allegro5/allegro_native_dialog.h>
 #include <iostream>
 #ifdef _WIN32
-
+#define UNICODE
+#define _UNICODE
 #include "util.h"
 #include <allegro5/allegro_windows.h>
 // *******************************************
@@ -37,13 +38,13 @@ LRESULT CALLBACK CBTProc(INT nCode, WPARAM wParam, LPARAM lParam) {
 
 		// Set buttons
 		if (GetDlgItem(hChildWnd, IDABORT) != NULL) {
-			result = SetDlgItemText(hChildWnd, IDABORT, L"Abort");
+			result = SetDlgItemText(hChildWnd, IDABORT, _T("Abort"));;
 		}
 		if (GetDlgItem(hChildWnd, IDRETRY) != NULL) {
-			result = SetDlgItemText(hChildWnd, IDRETRY, L"Continue");
+			result = SetDlgItemText(hChildWnd, IDRETRY, _T("Continue"));;
 		}
 		if (GetDlgItem(hChildWnd, IDIGNORE) != NULL) {
-			result = SetDlgItemText(hChildWnd, IDIGNORE, L"Ignore");
+			result = SetDlgItemText(hChildWnd, IDIGNORE, _T("Ignore"));;
 		}
 
 		// exit CBT hook
