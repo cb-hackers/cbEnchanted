@@ -219,7 +219,7 @@ file(GLOB SOURCES src/*.cpp)
 file(GLOB HEADERS src/*.h)
 
 add_executable(${EXE_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${EXE_NAME} ${ALLEGRO_LIBS} ${ALLEGRO_LIBS_DEPS} ${OS_DEPS})
+target_link_libraries(${EXE_NAME} ${ALLEGRO_LIBS} ${ALLEGRO_LIBS_DEPS} ${OS_DEPS} ${LIBS})
 
 if(STATIC AND NOT MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
