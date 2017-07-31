@@ -104,6 +104,7 @@ if(NOT CROSS_STATIC_MINGW)
 	list(APPEND LIBS "allegro_image")
 	list(APPEND LIBS "allegro_dialog")
 	list(APPEND LIBS "allegro_memfile")
+	list(APPEND LIBS "allegro_video")
 
 	list(APPEND LIBS "png")
 	list(APPEND LIBS "openal")
@@ -152,6 +153,7 @@ target_link_libraries(${EXE_NAME} ${LIBS})
 
 if(CROSS_STATIC_MINGW)
 	TARGET_LINK_LIBRARIES(${EXE_NAME}
+		allegro_video-static
 		allegro_acodec-static
 		allegro_audio-static
 		allegro_dialog-static
