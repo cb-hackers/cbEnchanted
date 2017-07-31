@@ -1,56 +1,56 @@
 project(cbEnchanted CXX C)
 cmake_minimum_required(VERSION 3.1)
 
-set(EXE_NAME "cbEnchanted")
 set(CMAKE_CXX_STANDARD 11)
 
-if(CROSS_STATIC_MINGW)
+option(STATIC "Build static executable" OFF)
+option(WANT_TEST "Whether creating testable binary or not, boolean value." OFF)
+
+set(EXE_NAME "cbEnchanted")
+
+if(CROSS-MINGW)
 	set(EXE_NAME "cbEnchanted.exe")
 
-	INCLUDE(CMakeForceCompiler)
+	include(CMakeForceCompiler)
 
-	SET(CMAKE_SYSTEM_NAME Windows)
-	SET(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
-	SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
-	SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
-	SET(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
+	set(CMAKE_SYSTEM_NAME Windows)
+	set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
+	set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+	set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+	set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
 
 	set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 	set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 	set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endif()
 	
-	SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
-	
-	add_definitions(-DALLEGRO_STATICLINK)
-	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-	SET(BUILD_SHARED_LIBRARIES OFF)
-	
+if(MINGW OR MSVC)
 	if(DEFINED ENV{ALLEGRO_INCLUDE})
 		include_directories($ENV{ALLEGRO_INCLUDE})
 	else()
-		message(FATAL_ERROR "ENV{ALLEGRO_INCLUDE} is not set.")
+		message(FATAL_ERROR "Environment variable ALLEGRO_INCLUDE is not set.")
 	endif()
 	if(DEFINED ENV{ALLEGRO_LIB})
 		link_directories($ENV{ALLEGRO_LIB})
 	else()
-		message(FATAL_ERROR "ENV{ALLEGRO_LIB} is not set.")
+		message(FATAL_ERROR "Environment variable ALLEGRO_LIB is not set.")
 	endif()
 	if(DEFINED ENV{ALLEGRO_DEPS_LIB})
 		link_directories($ENV{ALLEGRO_DEPS_LIB})
 	else()
-		message(FATAL_ERROR "ENV{ALLEGRO_DEPS_LIB} is not set.")
+		message(FATAL_ERROR "Environment variable ALLEGRO_DEPS_LIB is not set.")
+	endif()
+	if(DEFINED ENV{ALLEGRO_DEPS_INCLUDE})
+		include_directories($ENV{ALLEGRO_DEPS_INCLUDE})
+	else()
+		message(STATUS "Environment variable ALLEGRO_DEPS_INCLUDE is not set.")
 	endif()
 	if(DEFINED ENV{BOOST_INCLUDE})
 		include_directories($ENV{BOOST_INCLUDE})
 	else()
-		message(FATAL_ERROR "ENV{BOOST_INCLUDE} is not set.")
+		message(FATAL_ERROR "Environment variable BOOST_INCLUDE is not set.")
 	endif()
-	if(DEFINED ENV{BOOST_LIB})
-		link_directories($ENV{BOOST_LIB})
-	else()
-		message(FATAL_ERROR "ENV{BOOST_LIB} is not set.")
-	endif()	
-endif(CROSS_STATIC_MINGW)
+endif()
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -68,63 +68,85 @@ endif(NOT CMAKE_BUILD_TYPE)
 if(CMAKE_COMPILER_IS_GNUCXX)
 	message(STATUS "GCC detected, adding compile flags")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wno-int-to-pointer-cast -fpermissive -Ofast -Wno-format-security")
+elseif(MSVC)
+	message(STATUS "MSVC detected, adding compile flags")
+	set(CXX_FLAGS_ALL "/DWIN32 /D_WINDOWS -nologo -Zc:wchar_t -Zc:forScope -MP -W3 -EHsc")
+	set(CMAKE_CXX_FLAGS "${CXX_FLAGS_ALL}")	
+	set(CMAKE_CXX_FLAGS_DEBUG "${CXX_FLAGS_ALL} -Zi")	
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CXX_FLAGS_ALL} -GL -Ox")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CXX_FLAGS_ALL} -GL -Ox")
+	if(STATIC)
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")	
+		set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CXX_FLAGS_ALL} -MTd")
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
+	else()
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MDd")
+		set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CXX_FLAGS_ALL} -MDd")
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MD")		
+	endif()
+	add_definitions(-DVC_USE_FORCEINLINE)
 endif()
 
 add_definitions(-DLOG_LEVEL_STUB -DLOG_LEVEL_FIXME -DLOG_LEVEL_DEBUG -DLOG_LEVEL_INFO)
 
-# If we want to build a testable CBEnchanted binary, we use flag -D TEST:bool=true
-if(TEST)
+# If we want to build a testable CBEnchanted binary, we use flag -D WANT_TEST:bool=true
+if(WANT_TEST)
 	add_definitions(-DTEST)
 	message(STATUS "Added definition TEST")
 else()
-	set(TEST false CACHE STRING "Whether creating testable binary or not, boolean value.")
+	set(WANT_TEST OFF CACHE BOOL "Whether creating testable binary or not, boolean value.")
 endif()
-
-# Include additional CMake scripts
-#include(/usr/share/cmake-2.8/Modules/FindBoost.cmake)
-include(cmake/FindIConv.cmake)
-include(cmake/FindFontConfig.cmake)
 
 # Include path for additional CMake library finding scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-# We want the binaries to be easily accessible
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-
-if(NOT CROSS_STATIC_MINGW)
-	# Libraries
-	#find_package(allegro REQUIRED)
-	include_directories("/usr/include/allegro5")
-	list(APPEND LIBS "allegro")
-	list(APPEND LIBS "allegro_font")
-	list(APPEND LIBS "allegro_ttf")
-	list(APPEND LIBS "allegro_primitives")
-	list(APPEND LIBS "allegro_audio")
-	list(APPEND LIBS "allegro_acodec")
-	list(APPEND LIBS "allegro_image")
-	list(APPEND LIBS "allegro_dialog")
-	list(APPEND LIBS "allegro_memfile")
-	list(APPEND LIBS "allegro_video")
-
-	list(APPEND LIBS "png")
-	list(APPEND LIBS "openal")
-	if(UNIX)
-		list(APPEND LIBS "dl")
-	endif()
-endif(NOT CROSS_STATIC_MINGW)
-
-if(WIN32)
-	set(Boost_USE_STATIC_LIBS   ON)
-endif(WIN32)
-
-if(FONTCONFIG_FOUND)
-	message(STATUS "Font config found at ${FONTCONFIG_INCLUDE_DIR}")
-	include_directories("${FONTCONFIG_INCLUDE_DIR}/fontconfig/")
-	list(APPEND LIBS ${FONTCONFIG_LIBRARIES})
-	add_definitions(-DFONTCONFIG_FOUND)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+	set(ALLEGRO-LIBS-BUILDTYPE-SUFFIX "-debug")
 endif()
 
-if(NOT CROSS_STATIC_MINGW)
+if(STATIC)
+	add_definitions(-DALLEGRO_STATICLINK)
+	
+	set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+	if (NOT MSVC)
+		set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+	else()
+		set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+	endif()
+	set(BUILD_SHARED_LIBRARIES OFF)
+
+	set(ALLEGRO-LIBS-STATIC-SUFFIX "-static")
+endif()
+
+list(APPEND ALLEGRO_LIBS
+	"allegro_video${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_acodec${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_audio${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_dialog${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_font${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_memfile${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_image${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_primitives${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_ttf${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro_main${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	"allegro${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+)
+
+# Libraries
+if(NOT MSVC AND NOT MINGW)
+	# Include additional CMake scripts
+	include(cmake/FindIConv.cmake)
+	include(cmake/FindFontConfig.cmake)
+
+	#find_package(allegro REQUIRED)
+	include_directories("/usr/include/allegro5")
+
+	list(APPEND ALLEGRO_LIBS_DEPS 
+		png
+		openal
+		dl
+	)
+
 	find_package(Boost COMPONENTS locale REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	link_directories(${Boost_LIBRARY_DIRS})
@@ -134,6 +156,13 @@ if(NOT CROSS_STATIC_MINGW)
 	include_directories(${OPENGL_INCLUDE_DIR})
 	list(APPEND LIBS ${OPENGL_LIBRARIES})
 
+	if(FONTCONFIG_FOUND)
+		message(STATUS "Font config found at ${FONTCONFIG_INCLUDE_DIR}")
+		include_directories("${FONTCONFIG_INCLUDE_DIR}/fontconfig/")
+		list(APPEND LIBS ${FONTCONFIG_LIBRARIES})
+		add_definitions(-DFONTCONFIG_FOUND)
+	endif()
+	
 	if(ICONV_FOUND)
 		message(STATUS "Found iconv")
 		include_directories("${ICONV_INCLUDE_DIR}")
@@ -141,30 +170,15 @@ if(NOT CROSS_STATIC_MINGW)
 	else()
 		message(FATAL_ERROR "iconv was not found, please install it or check this cmake script!")
 	endif()
-endif(NOT CROSS_STATIC_MINGW)
+else()
+	if(MSVC)
+		list(APPEND ALLEGRO_LIBS_DEPS "libpng16")
+	else()
+		list(APPEND ALLEGRO_LIBS_DEPS "png16")
+	endif()
 
-# Sources
-
-file(GLOB SOURCES src/*.cpp)
-file(GLOB HEADERS src/*.h)
-
-add_executable(${EXE_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${EXE_NAME} ${LIBS})
-
-if(CROSS_STATIC_MINGW)
-	TARGET_LINK_LIBRARIES(${EXE_NAME}
-		allegro_video-static
-		allegro_acodec-static
-		allegro_audio-static
-		allegro_dialog-static
-		allegro_font-static
-		allegro_memfile-static
-		allegro_image-static
-		allegro_primitives-static
-		allegro_ttf-static
-		allegro-static
+	list(APPEND ALLEGRO_LIBS_DEPS
 		jpeg
-		png16
 		zlib
 		freetype
 		FLAC
@@ -172,10 +186,13 @@ if(CROSS_STATIC_MINGW)
 		vorbisfile
 		vorbis
 		ogg
-		dsound
 		opusfile
 		opus
 		theoradec
+	)
+	
+	list(APPEND OS_DEPS
+		dsound
 		shlwapi
 		ws2_32
 		advapi32
@@ -192,6 +209,20 @@ if(CROSS_STATIC_MINGW)
 		uuid
 		gdiplus
 	)
+endif()
 
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
-endif(CROSS_STATIC_MINGW)
+# We want the binaries to be easily accessible
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+
+# Sources
+file(GLOB SOURCES src/*.cpp)
+file(GLOB HEADERS src/*.h)
+
+add_executable(${EXE_NAME} ${SOURCES} ${HEADERS})
+target_link_libraries(${EXE_NAME} ${ALLEGRO_LIBS} ${ALLEGRO_LIBS_DEPS} ${OS_DEPS})
+
+if(STATIC AND NOT MSVC)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+elseif(MSVC)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcg" )
+endif()
