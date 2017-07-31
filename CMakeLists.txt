@@ -24,7 +24,7 @@ if(CROSS-MINGW)
 	set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 endif()
 	
-if(MINGW OR MSVC)
+if(MINGW OR MSVC OR CROSS-MINGW)
 	if(DEFINED ENV{ALLEGRO_INCLUDE})
 		include_directories($ENV{ALLEGRO_INCLUDE})
 	else()
@@ -133,7 +133,7 @@ list(APPEND ALLEGRO_LIBS
 )
 
 # Libraries
-if(NOT MSVC AND NOT MINGW)
+if(NOT MSVC AND NOT MINGW AND NOT CROSS-MINGW)
 	# Include additional CMake scripts
 	include(cmake/FindIConv.cmake)
 	include(cmake/FindFontConfig.cmake)
