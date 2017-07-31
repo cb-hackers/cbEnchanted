@@ -384,6 +384,10 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 		errors->createFatalError("Initialization error", "Failed to initialize fonts");
 		return false;
 	}
+	if(!animInterface->initializeAnimInterface()) {
+		errors->createFatalError("Initialization error", "Failed to initialize animations!");
+		return false;
+	}
 	imageInterface->initializeImages();
 	sysInterface->initializeSysInterface();
 

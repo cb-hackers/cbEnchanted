@@ -12,6 +12,8 @@ test.exe
 /visual studio/Release
 /visual studio/Debug
 /visual studio/CodeAnalyst
+/vs2017/
+
 
 CMakeLists.txt.user*
 build/

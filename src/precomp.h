@@ -1,7 +1,7 @@
 #ifndef PRECOMP_H
 #define PRECOMP_H
 
-#ifdef WIN32
+#if (defined(WIN32) || defined(_WIN32))
 	#include <Windows.h>
 #endif
 #include <map>

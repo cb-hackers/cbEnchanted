@@ -8,9 +8,11 @@
 #include "soundinterface.h"
 #include "sysinterface.h"
 #include "imageinterface.h"
+#include "animinterface.h"
 #include "sysinterface.h"
 #include "cbimage.h"
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_video.h>
 #include "util.h"
 #include "errorsystem.h"
 #include <iostream>
@@ -342,6 +344,12 @@ void GfxInterface::commandDrawScreen(void) {
 			case ALLEGRO_EVENT_DISPLAY_RESIZE: {
 				windowResized = true;
 			}
+			break;
+			case ALLEGRO_EVENT_VIDEO_FRAME_SHOW:
+				cb->animInterface->acquireNewFrame();
+			break;
+			case ALLEGRO_EVENT_VIDEO_FINISHED:
+				cb->animInterface->commandStopAnimation();
 			break;
 		}
 	}
