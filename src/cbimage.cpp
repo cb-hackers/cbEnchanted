@@ -152,9 +152,8 @@ void CBImage::drawAlphaBlended(RenderTarget &r, float x, float y, int frame, flo
 void CBImage::maskImage(const ALLEGRO_COLOR &color) {
 	isMasked = true;
 	maskColor = color;
+	if (maskedBitmap) al_destroy_bitmap(maskedBitmap);
 	maskedBitmap = al_clone_bitmap(unmaskedBitmap);
-	al_destroy_bitmap(unmaskedBitmap);
-	unmaskedBitmap = al_clone_bitmap(maskedBitmap);
 	al_convert_mask_to_alpha(maskedBitmap, maskColor);
 	renderTarget.changeBitmap(maskedBitmap);
 }
