@@ -1410,7 +1410,7 @@ void CBEnchanted::functionConvertToType(void) {
 	}
 	else {
 		// Not converted before. Invalid ID
-		this->errors->createError("ConvertToType() failed!", "Could not find a converted type with ID " + boost::lexical_cast<string>(typePtr) + ".");
+		this->errors->createError("ConvertToType() failed!", "Could not find a converted type with ID " + std::to_string(typePtr) + ".");
 		pushValue(0);
 	}
 }
@@ -1435,8 +1435,8 @@ template<class T> FORCEINLINE uint32_t CBEnchanted::popArrayDimensions(Array<T> 
 				arrayStr += ", ";
 				accessStr += ", ";
 			}
-			arrayStr += boost::lexical_cast<string>(a.getDimensionSizes()[i] - 1);
-			accessStr += boost::lexical_cast<string>(index[i]);
+			arrayStr += std::to_string(a.getDimensionSizes()[i] - 1);
+			accessStr += std::to_string(index[i]);
 		}
 		errors->createError("Array access out of bounds", "Accessing ("+ accessStr +") array (" + arrayStr + ") ");
 		pos = 0;

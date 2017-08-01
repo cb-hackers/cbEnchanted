@@ -34,13 +34,13 @@ bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq)
 
 	float newGain = volume / 100.0f;
 	if (!al_set_sample_instance_gain(instance, newGain)) {
-		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain) + ".\nSource file: " + sound.getSourceFile());
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance gain to " + std::to_string(newGain) + ".\nSource file: " + sound.getSourceFile());
 		return false;
 	}
 
 	float newPan = pan / 100.0f;
 	if (!al_set_sample_instance_pan(instance, newPan)) {
-		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan) + ".\nSource file: " + sound.getSourceFile());
+		CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance pan to " + std::to_string(newPan) + ".\nSource file: " + sound.getSourceFile());
 		return false;
 	}
 
@@ -48,7 +48,7 @@ bool CBChannel::playSound(CBSound &sound, float volume, float pan, int32_t freq)
 	if (freq > 0) {
 		float newFreq = freq / float(sound.getFrequency());
 		if (!al_set_sample_instance_speed(instance, newFreq)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq) + ".\nSource file: " + sound.getSourceFile());
+			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set sample instance frequency to " + std::to_string(freq) + ".\nSource file: " + sound.getSourceFile());
 			return false;
 		}
 	}
@@ -66,19 +66,19 @@ void CBChannel::setSound(bool loop, float vol, float pan, int32_t freq) {
 		if (freq > 0) {
 			float speed = double(freq) / double(al_get_sample_instance_frequency(instance));
 			if (!al_set_sample_instance_speed(instance, speed)) {
-				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq));
+				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + std::to_string(freq));
 				return;
 			}
 		}
 		float newGain = vol / 100.0f;
 		if (!al_set_sample_instance_gain(instance, newGain)) {
-			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain));
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + std::to_string(newGain));
 			return;
 		}
 
 		float newPan = pan / 100.0f;
 		if (!al_set_sample_instance_pan(instance, newPan)) {
-			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan));
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + std::to_string(newPan));
 			return;
 		}
 		bool success = false;
@@ -97,19 +97,19 @@ void CBChannel::setSound(bool loop, float vol, float pan, int32_t freq) {
 		if (freq > 0) {
 			float speed = double(freq) / double(al_get_sample_instance_frequency(instance));
 			if (!al_set_audio_stream_speed(stream, speed)) {
-				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + boost::lexical_cast<string>(freq));
+				CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance frequency to " + std::to_string(freq));
 				return;
 			}
 		}
 		float newGain = vol / 100.0f;
 		if (!al_set_audio_stream_gain(stream, newGain)) {
-			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + boost::lexical_cast<string>(newGain));
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance gain to " + std::to_string(newGain));
 			return;
 		}
 
 		float newPan = pan / 100.0f;
 		if (!al_set_audio_stream_pan(stream, newPan)) {
-			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + boost::lexical_cast<string>(newPan));
+			CBEnchanted::instance()->errors->createError("SetSound() failed!", "Could not set sample instance pan to " + std::to_string(newPan));
 			return;
 		}
 		bool success = false;
@@ -154,7 +154,7 @@ bool CBChannel::playSound(string file, float volume, float pan, int32_t freq) {
 	if (freq > 0) {
 		float speed = double(freq) / double(oldFreq);
 		if (!al_set_audio_stream_speed(stream, speed)) {
-			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream frequency to " + boost::lexical_cast<string>(freq) + ".\nSource file: " + file);
+			CBEnchanted::instance()->errors->createError("PlaySound() failed!", "Could not set audio stream frequency to " + std::to_string(freq) + ".\nSource file: " + file);
 			return false;
 		}
 	}

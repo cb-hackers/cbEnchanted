@@ -72,19 +72,19 @@ ISString Any::toString() const {
 	try {
 		switch (type()) {
 			case Any::Int: {
-				ISString i(boost::lexical_cast<string>(getInt()));
+				ISString i(std::to_string(getInt()));
 				i.requireEncoding(false);
 				return i;
 			}
 			case Any::Float: {
-				ISString i(boost::lexical_cast<string>(getFloat()));
+				ISString i(std::to_string(getFloat()));
 				i.requireEncoding(false);
 				return i;
 			}
 			case Any::String: return ISString(dString);
 		}
 	}
-	catch (boost::bad_lexical_cast &) {
+	catch (std::exception &) {
 		return ISString();
 	}
 	FIXME("Unsupported cast %s >= %s", typeInfo().name(), typeid(string).name());
@@ -101,9 +101,9 @@ int32_t Any::toInt() const {
 			try {
 				std::string tmp = dString->str;
 				boost::algorithm::trim(tmp);
-				return boost::lexical_cast<int32_t>(tmp);
+				return std::stoi(tmp);
 			}
-			catch (boost::bad_lexical_cast &) {
+			catch (std::exception &) {
 				return 0;
 			}
 	}
@@ -121,9 +121,9 @@ float Any::toFloat() const {
 			try {
 				std::string tmp = dString->str;
 				boost::algorithm::trim(tmp);
-				return boost::lexical_cast<float>(tmp);
+				return std::stof(tmp);
 			}
-			catch (boost::bad_lexical_cast &) {
+			catch (std::exception &) {
 				return 0;
 			}
 	}
@@ -139,9 +139,9 @@ uint16_t Any::toShort() const {
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
-				return boost::lexical_cast<uint16_t>(dString->str);
+				return (uint16_t)std::stoul(dString->str);
 			}
-			catch (boost::bad_lexical_cast &) {
+			catch (std::exception &) {
 				return 0;
 			}
 	}
@@ -157,9 +157,9 @@ uint8_t Any::toByte() const {
 		case Any::String:
 			if (dString == 0) return 0;
 			try {
-				return boost::lexical_cast<uint8_t>(dString->str);
+				return (uint8_t)std::stoul(dString->str);
 			}
-			catch (boost::bad_lexical_cast &) {
+			catch (std::exception &) {
 				return 0;
 			}
 	}
@@ -179,7 +179,7 @@ void *Any::toTypePtr() const{
 			return 0;
 		}
 		else {
-			CBEnchanted::instance()->errors->createError("Can't convert integer '"+boost::lexical_cast<string>(dInt)+"' to typepointer", "Only integer 0 can be converted to typepointer (NULL)");
+			CBEnchanted::instance()->errors->createError("Can't convert integer '"+std::to_string(dInt)+"' to typepointer", "Only integer 0 can be converted to typepointer (NULL)");
 		}
 	}
 	FIXME("Unsupported cast %s => type pointer", typeInfo().name());
@@ -270,20 +270,20 @@ Any Any::operator + (const Any &r) const {
 			switch (r.type()) {
 				case Any::Int: return this->getInt() + r.getInt();
 				case Any::Float: return this->getInt() + r.getFloat();
-				case Any::String: return boost::lexical_cast<string>(this->getInt()) + r.getString();
+				case Any::String: return std::to_string(this->getInt()) + r.getString();
 			}
 			break;
 		case Any::Float:
 			switch (r.type()) {
 				case Any::Int: return this->getFloat() + r.getInt();
 				case Any::Float: return this->getFloat() + r.getFloat();
-				case Any::String: return boost::lexical_cast<string>(this->getFloat()) + r.getString();
+				case Any::String: return std::to_string(this->getFloat()) + r.getString();
 			}
 			break;
 		case Any::String:
 			switch (r.type()) {
-				case Any::Int: return this->getString() + boost::lexical_cast<string>(r.getInt());
-				case Any::Float: return this->getString() + boost::lexical_cast<string>(r.getFloat());
+				case Any::Int: return this->getString() + std::to_string(r.getInt());
+				case Any::Float: return this->getString() + std::to_string(r.getFloat());
 				case Any::String: return this->getString() + r.getString();
 			}
 			break;
@@ -455,9 +455,9 @@ int32_t Any::operator == (const Any &r) const {
 				case Any::Float: return this->getInt() == r.getFloat();
 				case Any::String:
 					try {
-						return this->getInt() == boost::lexical_cast<int32_t>(r.getString().getRef());
+						return this->getInt() == std::stoi(r.getString().getRef());
 					}
-					catch( boost::bad_lexical_cast &) {
+					catch(std::exception &) {
 						return 0;
 					}
 			}
@@ -468,9 +468,9 @@ int32_t Any::operator == (const Any &r) const {
 				case Any::Float: return this->getFloat() == r.getFloat();
 				case Any::String:
 					try {
-						return this->getFloat() == boost::lexical_cast<float>(r.getString().getRef());
+						return this->getFloat() == std::stof(r.getString().getRef());
 					}
-					catch( boost::bad_lexical_cast &) {
+					catch(std::exception &) {
 						return 0;
 					}
 			}
@@ -479,16 +479,16 @@ int32_t Any::operator == (const Any &r) const {
 			switch (r.type()) {
 				case Any::Int:
 					try {
-						return boost::lexical_cast<int32_t>(this->getString().getRef()) == r.getInt();
+						return std::stoi(this->getString().getRef()) == r.getInt();
 					}
-					catch( boost::bad_lexical_cast &) {
+					catch(std::exception &) {
 						return 0;
 					}
 				case Any::Float:
 					try {
-						return boost::lexical_cast<float>(this->getString().getRef()) == r.getFloat();
+						return std::stof(this->getString().getRef()) == r.getFloat();
 					}
-					catch( boost::bad_lexical_cast &) {
+					catch(std::exception &) {
 						return 0;
 					}
 				

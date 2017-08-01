@@ -304,7 +304,7 @@ void ObjectInterface::commandMirrorObject(void) {
 	}
 
 	if (dir < 0 || dir > 2) {
-		cb->errors->createError("MirrorObject failed!", "Valid values for MirrorObject are 0, 1 and 2.\nYour value was " + boost::lexical_cast<string>(dir) + ".");
+		cb->errors->createError("MirrorObject failed!", "Valid values for MirrorObject are 0, 1 and 2.\nYour value was " + std::to_string(dir) + ".");
 	}
 	else if (obj->type() != CBObject::Object) {
 		cb->errors->createError("MirrorObject failed!", "Only regular objects can be mirrored.");
@@ -853,7 +853,7 @@ void ObjectInterface::functionNextObject(void) {
 
 CBObject* ObjectInterface::getObject(int32_t key) {
 	if (objectMap.count(key) == 0) {
-		cb->errors->createError("Object Access Violation", "Could not find object with ID " + boost::lexical_cast<string>(key));
+		cb->errors->createError("Object Access Violation", "Could not find object with ID " + std::to_string(key));
 		return 0;
 	}
 	return objectMap[key];

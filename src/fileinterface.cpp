@@ -423,7 +423,7 @@ void FileInterface::functionReadLine(void) {
 /** Gets a FILE pointer from the given ID. */
 FILE* FileInterface::getFile(int32_t id) {
 	if (filestrs.count(id) == 0) {
-		cb->errors->createFatalError("Could not find open file with ID " + boost::lexical_cast<string>(id) + "!");
+		cb->errors->createFatalError("Could not find open file with ID " + std::to_string(id) + "!");
 		return 0;
 	}
 

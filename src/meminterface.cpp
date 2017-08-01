@@ -9,7 +9,7 @@
 	#define MEMBLOCK_BOUNDS_CHECK(mem, funcName, index, sizeOf) \
 		if (index < 0 || ((index) + (sizeOf)) > *((int32_t*)(mem))) \
 		{ CBEnchanted::instance()->errors->createError((funcName) + string(": Out of bounds"),\
-			"Index: " + boost::lexical_cast<string>(index) + "\nmemblock size: " + boost::lexical_cast<string>(*((int32_t*)(mem))));\
+			"Index: " + std::to_string(index) + "\nmemblock size: " + std::to_string(*((int32_t*)(mem))));\
 			CBEnchanted::instance()->pushValue(0); return; }
 #else
 	#define MEMBLOCK_BOUNDS_CHECK(mem, funcName, index, sizeOf)
@@ -85,9 +85,9 @@ void MemInterface::commandMemCopy(void) {
 	int32_t destMemSize = *(int32_t*)destmem;
 	int32_t srcMemSize = *(int32_t*)srcmem;
 	if ((dest + length > destMemSize) || (src + length > srcMemSize)) {
-		cb->errors->createError("MemCopy out of bounds", "Destination index: " + boost::lexical_cast<string>(dest)
-								+ "\n Source index: " + boost::lexical_cast<string>(src)
-								+ "\n Trying to copy " + boost::lexical_cast<string>(length) + " bytes");
+		cb->errors->createError("MemCopy out of bounds", "Destination index: " + std::to_string(dest)
+								+ "\n Source index: " + std::to_string(src)
+								+ "\n Trying to copy " + std::to_string(length) + " bytes");
 		return;
 	}
 #endif
@@ -213,7 +213,7 @@ void MemInterface::functionPeekFloat(void){
 uint8_t *MemInterface::getMemblock(int32_t id) {
 	map<int32_t, uint8_t*>::iterator i = memblockMap.find(id);
 	if (i == memblockMap.end()) {
-		cb->errors->createError("Memory Access Violation", "Could not find memblock with ID " + boost::lexical_cast<string>(id));
+		cb->errors->createError("Memory Access Violation", "Could not find memblock with ID " + std::to_string(id));
 		return 0;
 	}
 	return i->second;

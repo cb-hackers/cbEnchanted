@@ -299,7 +299,7 @@ void ImageInterface::cbeMakeImage(void) {
 CBImage *ImageInterface::getImage(int32_t id) {
 	map<int32_t, CBImage*>::iterator imgI = cbImages.find(id);
 	if (imgI == cbImages.end()) {
-		cb->errors->createError("Image Access Violation", "Could not find image with ID " + boost::lexical_cast<string>(id));
+		cb->errors->createError("Image Access Violation", "Could not find image with ID " + std::to_string(id));
 		return 0;
 	}
 	return imgI->second;

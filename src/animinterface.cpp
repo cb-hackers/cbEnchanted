@@ -43,12 +43,12 @@ void AnimInterface::functionPlayAnimation(void) {
 
 	std::string path = input.getStdString();
 	mVideo = al_open_video(path.c_str());
-	al_register_event_source(mCBInstance->getEventQueue(), al_get_video_event_source(mVideo));
 	if(mVideo == nullptr) {
 		mCBInstance->pushValue((int)0);
 		return;
 	}
 	
+	al_register_event_source(mCBInstance->getEventQueue(), al_get_video_event_source(mVideo));
 	al_start_video(mVideo, mCBInstance->soundInterface->getMixer());
 }
 

@@ -242,7 +242,7 @@ void cbeDrawTintedImage(CBEnchanted *cb) {
 	int32_t handle = cb->popValue().toInt();
 	CBImage *img = cb->imageInterface->getImage(handle);
 	if (img == NULL) {
-		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
+		string err = "Image with ID " + std::to_string(handle) + " doesn't exist.";
 		cb->errors->createError("cbeDrawTintedImage() failed!", err);
 		cb->pushValue(0);
 		return;
@@ -334,7 +334,7 @@ void cbeDrawImage(CBEnchanted *cb) {
 	int32_t handle = cb->popValue().toInt();
 	CBImage *img = cb->imageInterface->getImage(handle);
 	if (img == NULL) {
-		string err = "Image with ID " + boost::lexical_cast<string>(handle) + " doesn't exist.";
+		string err = "Image with ID " + std::to_string(handle) + " doesn't exist.";
 		cb->errors->createError("cbeDrawImage() failed!", err);
 		cb->pushValue(0);
 		return;
@@ -708,8 +708,8 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 
 	// Check if displayId is valid
 	if (displayId < 0 || displayId >= displayModesCount) {
-		string id = boost::lexical_cast<string>(displayId);
-		string count = boost::lexical_cast<string>(displayModesCount);
+		string id = std::to_string(displayId);
+		string count = std::to_string(displayModesCount);
 		bool ignore = cb->errors->createError("cbeGetGfxMode() failed!", "Trying to get gfx mode with ID " + id + " out of " + count + " modes\nWhen ignored, the first display mode available in the list is returned.");
 
 		// If ignored, displayId is 0. Otherwise push empty string and return.
@@ -736,10 +736,10 @@ void cbeGetGfxMode(CBEnchanted *cb) {
 		string displayModeString;
 
 		// Construct the string
-		displayModeString =	boost::lexical_cast<string>(displayData->width);
-		displayModeString += "," + boost::lexical_cast<string>(displayData->height);
-		displayModeString += "," + boost::lexical_cast<string>(displayData->refresh_rate);
-		displayModeString += "," + boost::lexical_cast<string>(al_get_pixel_format_bits(displayData->format));
+		displayModeString =	std::to_string(displayData->width);
+		displayModeString += "," + std::to_string(displayData->height);
+		displayModeString += "," + std::to_string(displayData->refresh_rate);
+		displayModeString += "," + std::to_string(al_get_pixel_format_bits(displayData->format));
 
 		// Return the display mode
 		cb->pushValue(displayModeString.substr(0 , displayModeString.length() ));
@@ -797,9 +797,9 @@ void cbeGetBestGfxMode(CBEnchanted *cb) {
 	if (bestDisplayId > -1) {
 		al_get_display_mode(bestDisplayId, displayData);
 		// Construct the string
-		displayModeString =	boost::lexical_cast<string>(displayData->width);
-		displayModeString += "," + boost::lexical_cast<string>(displayData->height);
-		displayModeString += "," + boost::lexical_cast<string>(displayData->refresh_rate);
+		displayModeString =	std::to_string(displayData->width);
+		displayModeString += "," + std::to_string(displayData->height);
+		displayModeString += "," + std::to_string(displayData->refresh_rate);
 		if (no32BitFound) {
 			displayModeString += ",16";
 		}

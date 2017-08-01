@@ -163,7 +163,7 @@ void SoundInterface::updateAudio(void) {
 CBSound *SoundInterface::getSound(int32_t id) {
 	map<int32_t, CBSound*>::const_iterator i = sounds.find(id);
 	if (i == sounds.end()) {
-		cb->errors->createError("Sound access violation", "Could not find sound with ID "+boost::lexical_cast<string>(id));
+		cb->errors->createError("Sound access violation", "Could not find sound with ID "+std::to_string(id));
 		return 0;
 	}
 	return i->second;

@@ -248,7 +248,7 @@ void InputInterface::commandShowMouse(void) {
 
 		CBImage* img = cb->imageInterface->getImage(id);
 		if (img == 0) {
-			cb->errors->createError("ShowMouse failed!", "Could not find an image with ID " + boost::lexical_cast<string>(id));
+			cb->errors->createError("ShowMouse failed!", "Could not find an image with ID " + std::to_string(id));
 			return;
 		}
 		cursor = img;

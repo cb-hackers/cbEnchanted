@@ -26,7 +26,7 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 				case Float: a.dFloat = a.dFloat + b.dInt; return;
 				case String: {
 					ISString s = a.getString();
-					ISString res(s.getRef() + boost::lexical_cast<string>(b.dInt));
+					ISString res(s.getRef() + std::to_string(b.dInt));
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
@@ -43,7 +43,7 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 				case Float: a.dFloat = a.dFloat + b.dFloat; return;
 				case String: {
 					ISString s = a.getString();
-					ISString res(s.getRef() + boost::lexical_cast<string>(b.dFloat));
+					ISString res(s.getRef() + std::to_string(b.dFloat));
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
@@ -55,14 +55,14 @@ FORCEINLINE void Any::addition(VariableStack *s) {
 			switch (a.typeId) {
 				case Int: {
 					ISString s = b.getString();
-					ISString res(boost::lexical_cast<string>(a.dInt) + s.getRef());
+					ISString res(std::to_string(a.dInt) + s.getRef());
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
 				}
 				case Float: {
 					ISString s = b.getString();
-					ISString res(boost::lexical_cast<string>(a.dFloat) + s.getRef());
+					ISString res(std::to_string(a.dFloat) + s.getRef());
 					res.requireEncoding(s.isEncodingRequired());
 					a = res;
 					return;
