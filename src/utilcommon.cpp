@@ -46,14 +46,14 @@ std::chrono::milliseconds UpTime() {
 
 //NOTE(everyone): Standard library is a hot mess, so these type aliasses are in good use. :)
 using HighresolutionClock = std::chrono::high_resolution_clock;
-using Timepoint = std::chrono::time_point<std::chrono::steady_clock>;
+using Timepoint = std::chrono::time_point<HighresolutionClock>;
 
 //NOTE(everyone): These static objects will be initialized along with the program. 
 static Timepoint gExecutionStarts(HighresolutionClock::now());
 static std::mt19937 gRandomEngine;
 
 
-#define CastDuration( _DURATION_ ) std::chrono::duration_cast<std::chrono::milliseconds>( _DURATION_ )
+#define CastDuration( __DURATION__ ) std::chrono::duration_cast<std::chrono::milliseconds>( __DURATION__ )
 
 int64_t mtimer() {
 	return (UpTime() + CastDuration(HighresolutionClock::now() - gExecutionStarts)).count();
