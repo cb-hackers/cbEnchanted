@@ -12,7 +12,7 @@ class AnimInterface {
 	ALLEGRO_VIDEO* mVideo = nullptr; 
 	CBEnchanted* mCBInstance = nullptr; 
 	ALLEGRO_BITMAP* mCurrentFrame = nullptr;
-	int mVideoWidth = 0, mVideoHeight = 0;
+	float mVideoWidth = 0, mVideoHeight = 0;
 	float mScaleX = 1.0f, mScaleY = 1.0f; 
 #endif 
 	public:

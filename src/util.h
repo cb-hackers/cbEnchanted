@@ -5,6 +5,11 @@
 #include "isstring.h"
 
 /**
+  * Shuffles the random number generator.
+  */
+void randomize(int32_t seed);
+
+/**
   * Returns system timer in milliseconds
   */
 int64_t mtimer();

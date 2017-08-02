@@ -28,7 +28,7 @@ SysInterface::SysInterface() : windowTitle(""), confirmationStr("") {
 SysInterface::~SysInterface() { }
 
 void SysInterface::initializeSysInterface() {
-	srand(mtimer());
+	randomize(mtimer());
 }
 
 void SysInterface::commandWait(void) {

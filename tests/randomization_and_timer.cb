@@ -1,0 +1,21 @@
+Include "include/customfunctions.cb"
+cbeShowConsole(True)
+
+Generate(Timer())
+Generate(5, "Predictible")
+Generate(Timer())
+Generate(5, "Predictible")
+WaitKey
+
+
+Function Generate(seed As Integer, desc As String = "Random")
+    Print "Seed: "+seed     
+    Randomize seed 
+    
+    Print ""
+    Print ">>> "+desc+" numbers!"
+    For i = 0 To 5
+        Print ">>> Integers: "+Rand(-10, 10) + " floats: "+Rnd(-10.0, 10.0)
+    Next i
+    Print ""
+EndFunction 

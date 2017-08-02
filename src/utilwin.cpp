@@ -13,6 +13,10 @@
 
 using namespace std;
 
+
+#if 0
+
+
 int64_t mtimer() {
 	return clock() * 1000 / CLOCKS_PER_SEC;
 }
@@ -24,6 +28,7 @@ float randf() {
 int32_t rand(int32_t max) {
 	return rand() % (max + 1); //TODO: Better generation (Windows RAND_MAX == 0x7fff)
 }
+#endif 
 
 // Returns an unordered_map with keys as lowercase font names
 // and their values as font file name.

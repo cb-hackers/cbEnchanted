@@ -11,7 +11,7 @@ MathInterface::MathInterface() {
 }
 
 void MathInterface::commandRandomize(void) {
-	srand(cb->popValue().getInt());
+	randomize(cb->popValue().getInt());
 }
 
 void MathInterface::functionInt(void) {

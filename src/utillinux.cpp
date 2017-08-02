@@ -15,6 +15,8 @@
 using namespace std;
 using namespace boost::locale::conv;
 
+#if 0
+
 int64_t mtimer() {
 	struct timeval tv;
 
@@ -24,6 +26,8 @@ int64_t mtimer() {
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
+
+
 float randf() {
 	return (float)rand() / RAND_MAX;
 }
@@ -31,6 +35,7 @@ float randf() {
 int32_t rand(int32_t max) {
 	return rand() % max;
 }
+#endif 
 
 string findfont(const char* font, bool isBold, bool isItalic) {
 #ifdef FONTCONFIG_FOUND
