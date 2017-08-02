@@ -5,7 +5,7 @@
 
 #if (defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64))
 #include <windows.h>
-inline std::chrono::milliseconds UpTime() { return std::chrono::milliseconds(GetTickCount64()); }
+inline std::chrono::milliseconds UpTime() { return std::chrono::milliseconds(GetTickCount()); }
 #elif defined(__linux__)
 #include <sys/sysinfo.h>
 std::chrono::milliseconds UpTime() {
