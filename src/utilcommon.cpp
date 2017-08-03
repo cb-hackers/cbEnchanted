@@ -22,11 +22,11 @@ std::chrono::milliseconds UpTime() {
 
 std::chrono::milliseconds UpTime() {
 	std::chrono::milliseconds uptime(0u);
-	struct timeval ts;
-	std::size_t len = sizeof(boottime);
+	struct timeval tval;
+	size_t len = sizeof(tval);
 	int mib[2] = { CTL_KERN, KERN_BOOTTIME };
-	if (!sysctl(mib, 2, &ts, &len, NULL, 0) == 0) {
-		uptime = std::chrono::milliseconds((uint64_t)(ts.tv_sec) * 1000ULL + (uint64_t)(ts.tv_usec) / 1000ULL);
+	if (!sysctl(mib, 2, &tval, &len, NULL, 0) == 0) {
+		uptime = std::chrono::milliseconds((uint64_t)(tval.tv_sec) * 1000ULL + (uint64_t)(tval.tv_usec) / 1000ULL);
 	}
 	return std::move(uptime);
 }
@@ -49,6 +49,7 @@ using HighresolutionClock = std::chrono::high_resolution_clock;
 using Timepoint = std::chrono::time_point<HighresolutionClock>;
 
 //NOTE(everyone): These static objects will be initialized along with the program. 
+static std::chrono::milliseconds gUptime = UpTime();
 static Timepoint gExecutionStarts(HighresolutionClock::now());
 static std::mt19937 gRandomEngine;
 
@@ -56,8 +57,14 @@ static std::mt19937 gRandomEngine;
 #define CastDuration( __DURATION__ ) std::chrono::duration_cast<std::chrono::milliseconds>( __DURATION__ )
 
 int64_t mtimer() {
-	return (UpTime() + CastDuration(HighresolutionClock::now() - gExecutionStarts)).count();
+	return CastDuration(gUptime + (HighresolutionClock::now() - gExecutionStarts)).count();
 }
+
+/*
+int64_t sinceStart() {
+	return CastDuration(HighresolutionClock::now() - gExecutionStarts).count();
+}
+*/
 
 #undef CastDuration
 
