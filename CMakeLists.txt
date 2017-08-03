@@ -84,7 +84,7 @@ endif()
 # Include path for additional CMake library finding scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(ALLEGRO-LIBS-BUILDTYPE-SUFFIX "-debug")
 endif()
 
@@ -121,15 +121,25 @@ if(NOT MSVC AND NOT MINGW AND NOT CROSS-MINGW)
 	# Include additional CMake scripts
 	include(cmake/FindIConv.cmake)
 	include(cmake/FindFontConfig.cmake)
+	include(cmake/Findallegro5Config.cmake)
 
-	#find_package(allegro REQUIRED)
-	include_directories("/usr/include/allegro5")
-
+	if(ALLEGRO5_FOUND)
+		include_directories(${allegro5_INCLUDE_DIRS})
+		link_directories(${allegro5_LIBRARY_DIRS})
+	else()
+		message(FATAL_ERROR "Allegro 5 was not found, please install it or check this cmake script!")
+	endif()
+	
 	list(APPEND ALLEGRO_LIBS_DEPS 
 		png
-		openal
 		dl
 	)
+	
+	if(NOT CROSS-DARWIN)
+		list(APPEND ALLEGRO_LIBS_DEPS 
+			openal
+		)
+	endif()
 
 	find_package(Boost COMPONENTS locale REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
@@ -175,7 +185,7 @@ else()
 		theoradec
 	)
 	
-	list(APPEND OS_DEPS
+	list(APPEND OS_LIBS_DEPS
 		dsound
 		shlwapi
 		ws2_32
@@ -203,9 +213,9 @@ file(GLOB SOURCES src/*.cpp)
 file(GLOB HEADERS src/*.h)
 
 add_executable(${EXE_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${EXE_NAME} ${ALLEGRO_LIBS} ${ALLEGRO_LIBS_DEPS} ${OS_DEPS} ${LIBS})
+target_link_libraries(${EXE_NAME} ${ALLEGRO_LIBS} ${ALLEGRO_LIBS_DEPS} ${OS_LIBS_DEPS} ${LIBS})
 
-if(STATIC AND NOT MSVC)
+if(STATIC AND NOT MSVC AND NOT CROSS-DARWIN)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 elseif(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcg" )
