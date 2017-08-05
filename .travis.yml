@@ -6,8 +6,14 @@ addons:
     sources:
     - boost-latest
     packages:
-    - allegro5
-    - libboost1.64-all-dev
+    - liballegro5-dev
+    - liballegro-acodec5-dev
+    - liballegro-audio5-dev
+    - liballegro-dialog5-dev
+    - liballegro-image5-dev
+    - liballegro-ttf5-dev
+    - liballegro-video5-dev
+    - libboost1.63-all-dev
 
 
 matrix:
@@ -35,5 +41,6 @@ matrix:
 before_install:
     - eval "${MATRIX_EVAL}"
 install: true
-scripts: cmake -DTEST .
+
+script: cmake -DTEST .
 
