@@ -1,0 +1,39 @@
+language: cpp
+cache:
+  apt: true
+addons:
+  apt:
+    sources:
+    - boost-latest
+    packages:
+    - allegro5
+    - libboost1.64-all-dev
+
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+    # works on Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+install: true
+scripts: cmake -DTEST .
+
