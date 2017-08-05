@@ -1,20 +1,6 @@
 language: cpp
 cache:
   apt: true
-addons:
-  apt:
-    sources:
-    - boost-latest
-    packages:
-    - liballegro5-dev
-    - liballegro-acodec5-dev
-    - liballegro-audio5-dev
-    - liballegro-dialog5-dev
-    - liballegro-image5-dev
-    - liballegro-ttf5-dev
-    - liballegro-video5-dev
-    - libboost1.63-all-dev
-
 
 matrix:
   include:
@@ -23,8 +9,17 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - boost-latest
           packages:
             - g++-5
+            - liballegro5-dev
+            - liballegro-acodec5-dev
+            - liballegro-audio5-dev
+            - liballegro-dialog5-dev
+            - liballegro-image5-dev
+            - liballegro-ttf5-dev
+            - liballegro-video5-dev
+            - libboost1.63-all-dev
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - os: linux
@@ -32,13 +27,23 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-trusty-4.0
+            - boost-latest
           packages:
             - clang-4.0
+            - liballegro5-dev
+            - liballegro-acodec5-dev
+            - liballegro-audio5-dev
+            - liballegro-dialog5-dev
+            - liballegro-image5-dev
+            - liballegro-ttf5-dev
+            - liballegro-video5-dev
+            - libboost1.63-all-dev
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+        
 before_install:
     - eval "${MATRIX_EVAL}"
 install: true
 
-script: mkdir travis-build && cd travis-build && cmake -DTEST=YES .. && make
+script: mkdir travis-build && cd travis-build && cmake -DTEST=YES -DCMAKE_BUILD_TYPE=Release .. && make
 
