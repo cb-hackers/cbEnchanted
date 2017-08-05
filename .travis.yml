@@ -40,5 +40,5 @@ before_install:
     - eval "${MATRIX_EVAL}"
 install: true
 
-script: cmake -DTEST=YES . && make
+script: mkdir travis-build && cd travis-build && cmake -DTEST=YES .. && make
 
