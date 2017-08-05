@@ -10,6 +10,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - boost-latest
+            - sourceline: 'ppa:allegro/5.2'
           packages:
             - g++-5
             - liballegro5-dev
@@ -19,7 +20,7 @@ matrix:
             - liballegro-image5-dev
             - liballegro-ttf5-dev
             - liballegro-video5-dev
-            - libboost1.63-all-dev
+            - libboost1.55-all-dev
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - os: linux
@@ -28,6 +29,7 @@ matrix:
           sources:
             - llvm-toolchain-trusty-4.0
             - boost-latest
+            - sourceline: 'ppa:allegro/5.2'
           packages:
             - clang-4.0
             - liballegro5-dev
@@ -37,7 +39,7 @@ matrix:
             - liballegro-image5-dev
             - liballegro-ttf5-dev
             - liballegro-video5-dev
-            - libboost1.63-all-dev
+            - libboost1.55-all-dev
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
         
