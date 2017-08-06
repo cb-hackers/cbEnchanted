@@ -21,6 +21,12 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+        artifacts:
+          s3_region: "eu-west-1"
+          working_dir: travis-build
+          debug: true
+          paths:
+            - cbEnchanted
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - os: linux
@@ -40,12 +46,22 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+        artifacts:
+          s3_region: "eu-west-1"
+          working_dir: travis-build
+          debug: true
+          paths:
+            - cbEnchanted
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-        
 before_install:
-    - eval "${MATRIX_EVAL}"
+  - eval "${MATRIX_EVAL}"
 install: true
 
 script: mkdir travis-build && cd travis-build && cmake -DWANT_TEST:BOOL=ON -DCMAKE_BUILD_TYPE=Release .. && make
 
+env:
+  global:
+  - "ARTIFACTS_S3_BUCKET=cbe-build.vesalaakso.com"
+  - secure: "c8GGiN8yUZZUQtG9vKvWU8KgobovraZ1Sqg7Y6uhKgPPQZOSoUTlFnWD1OcE0j7KcDuDX1l5uR2tlVrMWkviD7XRKf+AE3BykEyiPWMJfYLTDN0QHOcfG+464wsYIoz8rD7r8qgit0NABMh8jWAvuopCCS16rIvgnbO5DLUjsG4="
+  - secure: "Q7YyA0hd5UoYUGg7EPvnLJtsT8+6J8NUiEgS5lqmk27JwoUS5HwjToLwWmv+xEGBzim2L2MceI1ZHEqBAPgD5z8mcQhBmVUOjkH/JuOKKouW4+/XDZuOTXaZbrrTFtGaZQ3Oi0KDPpcYp5GQfI5KwsFiCMRNT9jgWzXQ8cP4tPI="
