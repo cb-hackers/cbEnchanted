@@ -44,7 +44,7 @@ matrix:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
         
 before_install:
-    - eval "${MATRIX_EVAL}"
+  - eval "${MATRIX_EVAL}"
 install: true
 
 script: mkdir travis-build && cd travis-build && cmake -DWANT_TEST:BOOL=ON -DCMAKE_BUILD_TYPE=Release .. && make
