@@ -11,4 +11,4 @@ build_script:
     
 artifacts:
     - path: build\Release\cbEnchanted.exe
-    - name: cbEnchanted-release-static
+      name: cbEnchanted-release-static
