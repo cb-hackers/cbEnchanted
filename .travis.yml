@@ -2,6 +2,13 @@ language: cpp
 cache:
   apt: true
 
+# Addons applicable for all environments
+addons:
+  artifacts:
+    paths:
+      working_dir: travis-build
+      debug: true
+
 matrix:
   include:
     - os: linux
@@ -42,16 +49,11 @@ matrix:
             - libboost1.55-all-dev
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-before_script:
-  - "gem install travis-artifacts"
 before_install:
   - eval "${MATRIX_EVAL}"
 install: true
 
 script: mkdir travis-build && cd travis-build && cmake -DWANT_TEST:BOOL=ON -DCMAKE_BUILD_TYPE=Release .. && make
-
-after_script:
-  - "travis-artifacts upload --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
 
 env:
   global:
