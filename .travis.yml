@@ -47,5 +47,5 @@ before_install:
     - eval "${MATRIX_EVAL}"
 install: true
 
-script: mkdir travis-build && cd travis-build && cmake -DTEST=YES -DCMAKE_BUILD_TYPE=Release .. && make
+script: mkdir travis-build && cd travis-build && cmake -DWANT_TEST:BOOL=ON -DCMAKE_BUILD_TYPE=Release .. && make
 
