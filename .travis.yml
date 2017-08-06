@@ -24,6 +24,8 @@ matrix:
         artifacts:
           working_dir: travis-build
           debug: true
+          paths:
+            - cbEnchanted
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - os: linux
@@ -46,6 +48,8 @@ matrix:
         artifacts:
           working_dir: travis-build
           debug: true
+          paths:
+            - cbEnchanted
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 before_install:
