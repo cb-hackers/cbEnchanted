@@ -11,4 +11,4 @@ nuget install boost -Version 1.64.0 -ExcludeVersion -OutputDirectory .\packages
 set BOOST_INCLUDE=%cd%\packages\boost\lib\native\include
 :boost_installed
 
-cmake -DWANT_TEST:BOOL=ON -G "Visual Studio 14 2015 Win64" ..
+cd ..
