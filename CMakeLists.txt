@@ -5,35 +5,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 option(STATIC "Build static executable" OFF)
 option(WANT_TEST "Whether creating testable binary or not, boolean value." OFF)
+option(WANT_CBCMAKER "Build cbcmaker" OFF)
 
-set(EXE_NAME "cbEnchanted")
-	
-if(MINGW OR MSVC OR CROSS-MINGW)
-	if(DEFINED ENV{ALLEGRO_INCLUDE})
-		include_directories($ENV{ALLEGRO_INCLUDE})
-	else()
-		message(FATAL_ERROR "Environment variable ALLEGRO_INCLUDE is not set.")
-	endif()
-	if(DEFINED ENV{ALLEGRO_LIB})
-		link_directories($ENV{ALLEGRO_LIB})
-	else()
-		message(FATAL_ERROR "Environment variable ALLEGRO_LIB is not set.")
-	endif()
-	if(DEFINED ENV{ALLEGRO_DEPS_LIB})
-		link_directories($ENV{ALLEGRO_DEPS_LIB})
-	else()
-		message(FATAL_ERROR "Environment variable ALLEGRO_DEPS_LIB is not set.")
-	endif()
-	if(DEFINED ENV{ALLEGRO_DEPS_INCLUDE})
-		include_directories($ENV{ALLEGRO_DEPS_INCLUDE})
-	else()
-		message(STATUS "Environment variable ALLEGRO_DEPS_INCLUDE is not set.")
-	endif()
-	if(DEFINED ENV{BOOST_INCLUDE})
-		include_directories($ENV{BOOST_INCLUDE})
-	else()
-		message(FATAL_ERROR "Environment variable BOOST_INCLUDE is not set.")
-	endif()
+if(NOT EXE_NAME)
+	set(EXE_NAME "cbEnchanted")
 endif()
 
 # Avoid source tree pollution
@@ -99,37 +74,44 @@ if(STATIC)
 	endif()
 	set(BUILD_SHARED_LIBRARIES OFF)
 
-	set(ALLEGRO-LIBS-STATIC-SUFFIX "-static")
+	if(MSVC OR MINGW OR CROSS-MINGW)
+		set(ALLEGRO-LIBS-STATIC-SUFFIX "-static")
+	endif()
 endif()
 
-list(APPEND ALLEGRO_LIBS
-	"allegro_video${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_acodec${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_audio${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_dialog${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_font${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_memfile${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_image${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_primitives${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_ttf${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro_main${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-	"allegro${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
-)
+if(MONOLITH_ALLEGRO)
+	list(APPEND ALLEGRO_LIBS "allegro_monolith${ALLEGRO-LIBS-STATIC-SUFFIX}")
+else()
+	list(APPEND ALLEGRO_LIBS
+		"allegro_video${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_acodec${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_audio${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_dialog${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_font${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_memfile${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_image${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_primitives${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_ttf${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro_main${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+		"allegro${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
+	)
+endif()
+
+include(cmake/Findallegro5Config.cmake)
+
+if(ALLEGRO5_FOUND)
+	include_directories(${ALLEGRO5_INCLUDE_DIR})
+	link_directories(${ALLEGRO5_LIBRARY_DIR})
+else()
+	message(FATAL_ERROR "Allegro 5 was not found, please install it or check this cmake script!")
+endif()
 
 # Libraries
 if(NOT MSVC AND NOT MINGW AND NOT CROSS-MINGW)
 	# Include additional CMake scripts
 	include(cmake/FindIConv.cmake)
 	include(cmake/FindFontConfig.cmake)
-	include(cmake/Findallegro5Config.cmake)
 
-	if(ALLEGRO5_FOUND)
-		include_directories(${allegro5_INCLUDE_DIRS})
-		link_directories(${allegro5_LIBRARY_DIRS})
-	else()
-		message(FATAL_ERROR "Allegro 5 was not found, please install it or check this cmake script!")
-	endif()
-	
 	list(APPEND ALLEGRO_LIBS_DEPS 
 		png
 		dl
@@ -165,6 +147,20 @@ if(NOT MSVC AND NOT MINGW AND NOT CROSS-MINGW)
 		message(FATAL_ERROR "iconv was not found, please install it or check this cmake script!")
 	endif()
 else()
+	include(cmake/Findallegro5depsConfig.cmake)
+
+	if(ALLEGRO5DEPS_FOUND)
+		link_directories(${ALLEGRO5DEPS_LIBRARY_DIR})
+	else()
+		message(FATAL_ERROR "Dependencies for allegro 5 was not found, please install it or check this cmake script!")
+	endif()
+
+	if(DEFINED ENV{BOOST_INCLUDE})
+		include_directories($ENV{BOOST_INCLUDE})
+	else()
+		message(FATAL_ERROR "Environment variable BOOST_INCLUDE is not set.")
+	endif()
+
 	if(MSVC)
 		list(APPEND ALLEGRO_LIBS_DEPS "libpng16")
 	else()
@@ -184,7 +180,7 @@ else()
 		opus
 		theoradec
 	)
-	
+
 	list(APPEND OS_LIBS_DEPS
 		dsound
 		shlwapi
@@ -219,4 +215,8 @@ if(STATIC AND NOT MSVC AND NOT CROSS-DARWIN)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 elseif(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcg" )
+endif()
+
+if(WANT_CBCMAKER)
+	add_subdirectory(tools)
 endif()
