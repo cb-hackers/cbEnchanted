@@ -4,11 +4,17 @@ environment:
 install:
     - nuget_install_deps.bat
     - cd build
-    - cmake -DWANT_TEST:BOOL=ON -DSTATIC:BOOL=ON -DMONOLITH_ALLEGRO:BOOL=ON -G "Visual Studio 14 2015 Win64" ..
 
 build_script:
+    - cmake -DEXE_NAME:STRING="cbEnchanted-release-static" -DWANT_TEST:BOOL=ON -DSTATIC:BOOL=ON -DMONOLITH_ALLEGRO:BOOL=ON -G "Visual Studio 14 2015 Win64" ..
     - cmake --build . --config Release
+    - cmake -DEXE_NAME:STRING="cbRuntime" -DWANT_CBCMAKER:BOOL=ON -DWANT_TEST:BOOL=OFF -DSTATIC:BOOL=ON -DMONOLITH_ALLEGRO:BOOL=ON -G "Visual Studio 14 2015 Win64" ..
+    - cmake --build . --config Release
+    - cd Release
+    - cbcmaker.exe ../../tools/cbcompiler/IDE/CBCompiler.exe ./cbRuntime.exe ./CBCompiler.exe
     
 artifacts:
-    - path: build\Release\cbEnchanted.exe
-      name: cbEnchanted-release-static
+    - path: build\Release\cbEnchanted-release-static.exe
+      name: cbEnchanted release static
+    - path: build\Release\CBCompiler.exe
+      name: CBCompiler release static
