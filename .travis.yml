@@ -2,13 +2,6 @@ language: cpp
 cache:
   apt: true
 
-# Addons applicable for all environments
-addons:
-  artifacts:
-    paths:
-      working_dir: travis-build
-      debug: true
-
 matrix:
   include:
     - os: linux
@@ -28,6 +21,10 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+        artifacts:
+          paths:
+            working_dir: travis-build
+            debug: true
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - os: linux
@@ -47,6 +44,10 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+        artifacts:
+          paths:
+            working_dir: travis-build
+            debug: true
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 before_install:
