@@ -50,7 +50,7 @@ install: true
 
 script: mkdir travis-build && cd travis-build && cmake -DWANT_TEST:BOOL=ON -DCMAKE_BUILD_TYPE=Release .. && make
 
-after_test:
+after_script:
   - "travis-artifacts upload --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
 
 env:
