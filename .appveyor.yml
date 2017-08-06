@@ -1,0 +1,14 @@
+environment:
+    BOOST_INCLUDE: C:\Libraries\boost_1_63_0
+
+install:
+    - nuget_install_deps.bat
+    - cd build
+    - cmake -DWANT_TEST:BOOL=ON -DSTATIC:BOOL=ON -DMONOLITH_ALLEGRO:BOOL=ON -G "Visual Studio 14 2015 Win64" ..
+
+build_script:
+    - cmake --build . --config Release
+    
+artifacts:
+    - path: build\Release\cbEnchanted.exe
+    - name: cbEnchanted-release-static

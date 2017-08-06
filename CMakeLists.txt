@@ -77,7 +77,7 @@ if(STATIC)
 endif()
 
 if(MONOLITH_ALLEGRO)
-	list(APPEND ALLEGRO_LIBS "allegro_monolith-static")
+	list(APPEND ALLEGRO_LIBS "allegro_monolith${ALLEGRO-LIBS-STATIC-SUFFIX}")
 else()
 	list(APPEND ALLEGRO_LIBS
 		"allegro_video${ALLEGRO-LIBS-BUILDTYPE-SUFFIX}${ALLEGRO-LIBS-STATIC-SUFFIX}"
