@@ -153,13 +153,13 @@ else()
 	else()
 		message(FATAL_ERROR "Environment variable BOOST_INCLUDE is not set.")
 	endif()
-	
+
 	if(MSVC)
 		list(APPEND ALLEGRO_LIBS_DEPS "libpng16")
 	else()
 		list(APPEND ALLEGRO_LIBS_DEPS "png16")
 	endif()
-	
+
 	list(APPEND ALLEGRO_LIBS_DEPS
 		jpeg
 		zlib
@@ -173,7 +173,7 @@ else()
 		opus
 		theoradec
 	)
-	
+
 	list(APPEND OS_LIBS_DEPS
 		dsound
 		shlwapi
