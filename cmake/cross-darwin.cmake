@@ -1,5 +1,3 @@
-set(EXE_NAME "cbEnchanted.exe")
-
 include(CMakeForceCompiler)
 
 option(OSX_TOOLCHAIN_PATH "/bin")

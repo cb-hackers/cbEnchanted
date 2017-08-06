@@ -1,4 +1,6 @@
-set(EXE_NAME "cbEnchanted.exe")
+if(NOT EXE_NAME)
+	set(EXE_NAME "cbEnchanted.exe")
+endif()
 
 include(CMakeForceCompiler)
 

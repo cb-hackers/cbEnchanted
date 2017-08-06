@@ -5,8 +5,11 @@ set(CMAKE_CXX_STANDARD 11)
 
 option(STATIC "Build static executable" OFF)
 option(WANT_TEST "Whether creating testable binary or not, boolean value." OFF)
+option(WANT_CBCMAKER "Build cbcmaker" OFF)
 
-set(EXE_NAME "cbEnchanted")
+if(NOT EXE_NAME)
+	set(EXE_NAME "cbEnchanted")
+endif()
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -212,4 +215,8 @@ if(STATIC AND NOT MSVC AND NOT CROSS-DARWIN)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 elseif(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcg" )
+endif()
+
+if(WANT_CBCMAKER)
+	add_subdirectory(tools)
 endif()
