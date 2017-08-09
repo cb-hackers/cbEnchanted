@@ -1,4 +1,5 @@
 # cbEnchanted
+[![Build status](https://ci.appveyor.com/api/projects/status/kju0g1vuoykvywir/branch/master?svg=true)](https://ci.appveyor.com/project/PTapioK/cbenchanted/branch/master)
 
 cbEnchanted is a remake of [CoolBasic][] beta runtime. cbEnchanted is aiming to be harder, better, faster and stronger than current CoolBasic runtime and also one of the main goals is to support Linux, Windows and maybe Mac OS X, too.
 
