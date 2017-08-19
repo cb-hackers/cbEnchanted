@@ -1,0 +1,342 @@
+Const CBE_ENET_FUNCTION_GROUP = 3437
+
+Type ENetAddress
+    Field port As Short
+    Field host As String
+End Type
+
+Function enetInitialize()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 1
+EndFunction
+
+Function enetDeinitialize()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 2
+EndFunction
+
+Function enetLinkedVersion()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 3
+EndFunction
+
+Function enetTimeGet()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 4
+EndFunction
+
+Function enetTimeSet(_time As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 5
+EndFunction
+
+
+Function enetSocketCreate(_socketType As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 6
+EndFunction
+
+Function enetSocketBind(_socket As Integer, _address As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 7
+EndFunction
+
+Function enetSocketGetAddress()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 8
+EndFunction
+
+Function enetSocketGetPort()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 9
+EndFunction
+
+Function enetSocketListen()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 10
+EndFunction
+
+Function enetSocketAccept()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 11
+EndFunction
+
+Function enetSocketConnect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 12
+EndFunction
+
+Function enetSocketSend()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 13
+EndFunction
+
+Function enetSocketReceive()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 14
+EndFunction
+
+Function enetSocketWait()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 15
+EndFunction
+
+Function enetSocketSetOption()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 16
+EndFunction
+
+Function enetSocketGetOption()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 17
+EndFunction
+
+Function enetSocketShutdown()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 18
+EndFunction
+
+Function enetSocketDestroy()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 19
+EndFunction
+
+Function enetSocketsetSelect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 20
+EndFunction
+
+
+Function enetAddressSetHostIp()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 21
+EndFunction
+
+Function enetAddressSetHost()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 22
+EndFunction
+
+Function enetAddressGetHostIp()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 23
+EndFunction
+
+Function enetAddressGetHost()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 24
+EndFunction
+
+Function enetPacketCreate()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 25
+EndFunction
+
+Function enetPacketDestroy()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 26
+EndFunction
+
+Function enetPacketResize ()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 27
+EndFunction
+
+Function enetCrc32()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 28
+EndFunction
+
+
+Function enetHostCreate()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 29
+EndFunction
+
+Function enetHostDestroy()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 30
+EndFunction
+
+Function enetHostConnect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 31
+EndFunction
+
+Function enetHostCheckEvents()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 32
+EndFunction
+
+Function enetHostService()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 33
+EndFunction
+
+Function enetHostFlush()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 34
+EndFunction
+
+Function enetHostBroadcast()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 35
+EndFunction
+
+Function enetHostCompress()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 36
+EndFunction
+
+Function enetHostCompressWithRangeCoder()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 37
+EndFunction
+
+Function enetHostChannelLimit()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 38
+EndFunction
+
+Function enetHostBandwidthLimit()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 39
+EndFunction
+
+Function enetHostBandwidthThrottle()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 40
+EndFunction
+
+Function enetHostRandomSeed()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 41
+EndFunction
+
+
+Function enetPeerSend()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 42
+EndFunction
+
+Function enetPeerReceive()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 43
+EndFunction
+
+Function enetPeerPing()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 44
+EndFunction
+
+Function enetPeerPingInterval()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 45
+EndFunction
+
+Function enetPeerTimeout()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 46
+EndFunction
+
+Function enetPeerReset()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 47
+EndFunction
+
+Function enetPeerDisconnect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 48
+EndFunction
+
+Function enetPeerDisconnectNow()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 49
+EndFunction
+
+Function enetPeerDisconnectLater()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 50
+EndFunction
+
+Function enetPeerThrottleConfigure()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 51
+EndFunction
+
+Function enetPeerThrottle()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 52
+EndFunction
+
+Function enetPeerResetQueues()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 53
+EndFunction
+
+Function enetPeerSetupOutgoingCommand()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 54
+EndFunction
+
+Function enetPeerQueueOutgoingCommand()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 55
+EndFunction
+
+Function enetPeerQueueIncomingCommand()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 56
+EndFunction
+
+Function enetPeerQueueAcknowledgement()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 57
+EndFunction
+
+Function enetPeerDispatchIncomingUnreliableCommands()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 58
+EndFunction
+
+Function enetPeerDispatchIncomingReliableCommands()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 59
+EndFunction
+
+Function enetPeerOnConnect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 60
+EndFunction
+
+Function enetPeerOnDisconnect()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 61
+EndFunction
+
+
+Function enetRangeCoderCreate()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 62
+EndFunction
+
+Function enetRangeCoderDestroy()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 63
+EndFunction
+
+Function enetRangeCoderCompress()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 64
+EndFunction
+
+Function enetRangeCoderDecompress()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 65
+EndFunction
+
+
+Function enetProtocolCommandSize()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 66
+EndFunction

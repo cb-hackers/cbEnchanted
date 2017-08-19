@@ -18,6 +18,7 @@
 #include "cbvariableholder.h"
 #include "mathoperations.h"
 #include "errorsystem.h"
+#include "enetinterface.h"
 #include <iostream>
 
 #ifdef _WIN32
@@ -164,6 +165,9 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	effectInterface = new EffectInterface();
 	animInterface = new AnimInterface();
 	soundInterface = new SoundInterface();
+#ifndef DISABLE_CUSTOMS
+	enetInterface = new EnetInterface();
+#endif
 		
 	INFO("Initializing");
 

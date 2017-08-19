@@ -7,6 +7,7 @@
 
 /** Group ID of custom functions of cbEnchanted itself */
 #define CBE_CUSTOM_FUNCTION_GROUP 1
+#define CBE_ENET_FUNCTION_GROUP 3437
 
 /** ID for custom function cbeTriangle() */
 #define CBE_CUSTOM_DRAWTRIANGLE 1

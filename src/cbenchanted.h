@@ -24,6 +24,7 @@ class EffectInterface;
 class AnimInterface;
 class SoundInterface;
 class ErrorSystem;
+class EnetInterface;
 
 class CBEnchanted : public CBVariableHolder {
 	public:
@@ -66,6 +67,9 @@ class CBEnchanted : public CBVariableHolder {
 		EffectInterface *effectInterface;
 		AnimInterface *animInterface;
 		SoundInterface *soundInterface;
+#ifndef DISABLE_CUSTOMS
+		EnetInterface *enetInterface;
+#endif
 	private:
 		char *code;
 		char *codeBase;

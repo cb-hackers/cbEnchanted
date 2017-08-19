@@ -1,7 +1,7 @@
 #ifndef PRECOMP_H
 #define PRECOMP_H
 
-
+#include <enet/enet.h>
 #if (defined(WIN32) || defined(_WIN32))
 	#include <tchar.h>
 	#include <windows.h>

@@ -106,6 +106,16 @@ else()
 	message(FATAL_ERROR "Allegro 5 was not found, please install it or check this cmake script!")
 endif()
 
+include(cmake/FindEnet.cmake)
+
+if(ENET_FOUND)
+	include_directories(${ENET_INCLUDE_DIR})
+	link_directories(${ENET_LIBRARY_DIR})
+	list(APPEND LIBS enet)
+else()
+	message(FATAL_ERROR "Enet was not found, please install it or check this cmake script!")
+endif()
+
 # Libraries
 if(NOT MSVC AND NOT MINGW AND NOT CROSS-MINGW)
 	# Include additional CMake scripts
