@@ -3,6 +3,8 @@
 
 #include "precomp.h"
 
+#define CBE_ENET_NULL 0
+
 class CBEnchanted;
 
 class EnetInterface {
@@ -19,7 +21,6 @@ class EnetInterface {
 		static void enetSocketCreate(CBEnchanted *cb);
 		static void enetSocketBind(CBEnchanted *cb);
 		static void enetSocketGetAddress(CBEnchanted *cb);
-		static void enetSocketGetPort(CBEnchanted *cb);
 		static void enetSocketListen(CBEnchanted *cb);
 		static void enetSocketAccept(CBEnchanted *cb);
 		static void enetSocketConnect(CBEnchanted *cb);
@@ -30,7 +31,7 @@ class EnetInterface {
 		static void enetSocketGetOption(CBEnchanted *cb);
 		static void enetSocketShutdown(CBEnchanted *cb);
 		static void enetSocketDestroy(CBEnchanted *cb);
-		static void enetSocketsetSelect(CBEnchanted *cb);
+		static void enetSocketSetSelect(CBEnchanted *cb);
 
 		static void enetAddressSetHostIp(CBEnchanted *cb);
 		static void enetAddressSetHost(CBEnchanted *cb);
@@ -83,13 +84,48 @@ class EnetInterface {
 
 		static void enetProtocolCommandSize(CBEnchanted *cb);
 
-		static ENetAddress typeToAddress(int32_t typeId, CBEnchanted *cb);
+		static void ENETSOCKETSETEMPTY(CBEnchanted *cb);
+		static void ENETSOCKETSETADD(CBEnchanted *cb);
+		static void ENETSOCKETSETREMOVE(CBEnchanted *cb);
+		static void ENETSOCKETSETCHECK(CBEnchanted *cb);
 
+		static void createSocketSet(CBEnchanted *cb);
+		static void deleteSocketSet(CBEnchanted *cb);
+
+		static ENetSocket getSocket(int32_t id, CBEnchanted *cb);
+		static ENetSocketSet* getSocketSet(int32_t id);
+		static ENetPacket* getPacket(int32_t id, CBEnchanted *cb);
+		static ENetHost* getHost(int32_t id, CBEnchanted *cb);
+		static ENetPeer* getPeer(int32_t id, CBEnchanted *cb);
 	private:
 		CBEnchanted *cb;
 
 		static int32_t enetSocketCounter;
 		static std::unordered_map<int32_t, ENetSocket> enetSockets;
+
+		static int32_t enetSocketSetCounter;
+		static std::unordered_map<int32_t, ENetSocketSet*> enetSocketSets;
+
+		static int32_t enetPacketCounter;
+		static std::unordered_map<int32_t, ENetPacket*> enetPackets;
+
+		static int32_t enetHostCounter;
+		static std::unordered_map<int32_t, ENetHost*> enetHosts;
+
+		static int32_t enetPeerCounter;
+		static std::unordered_map<int32_t, ENetPeer*> enetPeers;
+
+		static ENetAddress typeToENetAddress(int32_t typeId, CBEnchanted *cb);
+		static void ENetAddressToType(const ENetAddress * address, int32_t typeId, CBEnchanted *cb);
+
+		static ENetBuffer typeToENetBuffer(int32_t typeId, CBEnchanted *cb);
+		static void ENetBufferToType(const ENetBuffer * buffer, int32_t typeId, CBEnchanted *cb);
+
+		static ENetEvent typeToENetEvent(int32_t typeId, CBEnchanted *cb);
+		static void ENetEventToType(const ENetEvent * event, int32_t typeId, CBEnchanted *cb);
+
+		static int32_t findPacketID(const ENetPacket* packet);
+		static int32_t findPeerID(const ENetPeer* peer);
 };
 
 #endif // ENETINTERFACE_H

@@ -1,8 +1,21 @@
 Const CBE_ENET_FUNCTION_GROUP = 3437
 
 Type ENetAddress
-    Field port As Short
-    Field host As String
+    Field _port         As Short
+    Field _host         As String
+End Type
+
+Type ENetBuffer
+    Field _dataLength   As Integer
+    Field _data         As Integer
+End Type
+
+Type ENetEvent
+    Field _type         As Byte
+    Field _peer         As Integer
+    Field _channelID    As Byte
+    Field _data         As Integer
+    Field _packet       As Integer
 End Type
 
 Function enetInitialize()
@@ -41,144 +54,139 @@ Function enetSocketBind(_socket As Integer, _address As Integer)
     cbeFuncId = 7
 EndFunction
 
-Function enetSocketGetAddress()
+Function enetSocketGetAddress(_socket As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 8
 EndFunction
 
-Function enetSocketGetPort()
-    cbeGroup = CBE_ENET_FUNCTION_GROUP
-    cbeFuncId = 9
-EndFunction
-
-Function enetSocketListen()
+Function enetSocketListen(_socket As Integer, _backlog As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 10
 EndFunction
 
-Function enetSocketAccept()
+Function enetSocketAccept(_socket As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 11
 EndFunction
 
-Function enetSocketConnect()
+Function enetSocketConnect(_socket As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 12
 EndFunction
 
-Function enetSocketSend()
+Function enetSocketSend(_socket As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 13
 EndFunction
 
-Function enetSocketReceive()
+Function enetSocketReceive(_socket As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 14
 EndFunction
 
-Function enetSocketWait()
+Function enetSocketWait(_socket As Integer, _condition As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 15
 EndFunction
 
-Function enetSocketSetOption()
+Function enetSocketSetOption(_socket As Integer, _option As Integer, _value As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 16
 EndFunction
 
-Function enetSocketGetOption()
+Function enetSocketGetOption(_socket As Integer, _option As Integer, _value As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 17
 EndFunction
 
-Function enetSocketShutdown()
+Function enetSocketShutdown(_socket As Integer, _shutdown As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 18
 EndFunction
 
-Function enetSocketDestroy()
+Function enetSocketDestroy(_socket As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 19
 EndFunction
 
-Function enetSocketsetSelect()
+Function enetSocketSetSelect(_socket As Integer, _readSet As Integer, _writeSet As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 20
 EndFunction
 
 
-Function enetAddressSetHostIp()
+Function enetAddressSetHostIp(_address As Integer, _hostName As String)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 21
 EndFunction
 
-Function enetAddressSetHost()
+Function enetAddressSetHost(_address As Integer, _hostName As String)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 22
 EndFunction
 
-Function enetAddressGetHostIp()
+Function enetAddressGetHostIp(_address As Integer, _nameLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 23
 EndFunction
 
-Function enetAddressGetHost()
+Function enetAddressGetHost(_address As Integer, _nameLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 24
 EndFunction
 
-Function enetPacketCreate()
+Function enetPacketCreate(_packet As Integer, _data As Integer, _dataLength As Integer, _flags As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 25
 EndFunction
 
-Function enetPacketDestroy()
+Function enetPacketDestroy(_packet As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 26
 EndFunction
 
-Function enetPacketResize ()
+Function enetPacketResize(_packet As Integer, _dataLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 27
 EndFunction
 
-Function enetCrc32()
+Function enetCrc32(_buffer As Integer, _dataLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 28
 EndFunction
 
 
-Function enetHostCreate()
+Function enetHostCreate(_address As Integer, _peerCount As Integer, _channelLimit As Integer, _incomingBandwidth As Integer, _outgoingBandwidth As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 29
 EndFunction
 
-Function enetHostDestroy()
+Function enetHostDestroy(_host As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 30
 EndFunction
 
-Function enetHostConnect()
+Function enetHostConnect(_host As Integer, _address As Integer, _channelCount As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 31
 EndFunction
 
-Function enetHostCheckEvents()
+Function enetHostCheckEvents(_host As Integer, _event As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 32
 EndFunction
 
-Function enetHostService()
+Function enetHostService(_host As Integer, _event As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 33
 EndFunction
 
-Function enetHostFlush()
+Function enetHostFlush(_host As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 34
 EndFunction
 
-Function enetHostBroadcast()
+Function enetHostBroadcast(_host As Integer, _channelID As Byte, _packet As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 35
 EndFunction
@@ -188,22 +196,22 @@ Function enetHostCompress()
     cbeFuncId = 36
 EndFunction
 
-Function enetHostCompressWithRangeCoder()
+Function enetHostCompressWithRangeCoder(_host As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 37
 EndFunction
 
-Function enetHostChannelLimit()
+Function enetHostChannelLimit(_host As Integer, _channelLimit As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 38
 EndFunction
 
-Function enetHostBandwidthLimit()
+Function enetHostBandwidthLimit(_host As Integer, _incomingBandwidth As Integer, _outgoingBandwidth As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 39
 EndFunction
 
-Function enetHostBandwidthThrottle()
+Function enetHostBandwidthThrottle(_host As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 40
 EndFunction
@@ -214,62 +222,62 @@ Function enetHostRandomSeed()
 EndFunction
 
 
-Function enetPeerSend()
+Function enetPeerSend(_peer As Integer, _channelID As Byte, _packet As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 42
 EndFunction
 
-Function enetPeerReceive()
+Function enetPeerReceive(_peer As Integer, _channelID As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 43
 EndFunction
 
-Function enetPeerPing()
+Function enetPeerPing(_peer As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 44
 EndFunction
 
-Function enetPeerPingInterval()
+Function enetPeerPingInterval(_peer As Integer, _interval As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 45
 EndFunction
 
-Function enetPeerTimeout()
+Function enetPeerTimeout(_peer As Integer, _timeoutLimit As Integer, _timeoutMinimum As Integer, _timeoutMaximum As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 46
 EndFunction
 
-Function enetPeerReset()
+Function enetPeerReset(_peer As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 47
 EndFunction
 
-Function enetPeerDisconnect()
+Function enetPeerDisconnect(_peer As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 48
 EndFunction
 
-Function enetPeerDisconnectNow()
+Function enetPeerDisconnectNow(_peer As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 49
 EndFunction
 
-Function enetPeerDisconnectLater()
+Function enetPeerDisconnectLater(_peer As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 50
 EndFunction
 
-Function enetPeerThrottleConfigure()
+Function enetPeerThrottleConfigure(_peer As Integer, _interval As Integer, _acceleration As Integer, _deceleration As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 51
 EndFunction
 
-Function enetPeerThrottle()
+Function enetPeerThrottle(_peer As Integer, _rtt As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 52
 EndFunction
 
-Function enetPeerResetQueues()
+Function enetPeerResetQueues(_peer As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 53
 EndFunction
@@ -304,12 +312,12 @@ Function enetPeerDispatchIncomingReliableCommands()
     cbeFuncId = 59
 EndFunction
 
-Function enetPeerOnConnect()
+Function enetPeerOnConnect(_peer As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 60
 EndFunction
 
-Function enetPeerOnDisconnect()
+Function enetPeerOnDisconnect(_peer As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 61
 EndFunction
@@ -336,7 +344,39 @@ Function enetRangeCoderDecompress()
 EndFunction
 
 
-Function enetProtocolCommandSize()
+Function enetProtocolCommandSize(_commandNumber As Byte)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 66
+EndFunction
+
+
+Function ENETSOCKETSETEMPTY(_socketSet As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 67
+EndFunction
+
+Function ENETSOCKETSETADD(_socketSet As Integer, _socket As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 68
+EndFunction
+
+Function ENETSOCKETSETREMOVE(_socketSet As Integer, _socket As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 69
+EndFunction
+
+Function ENETSOCKETSETCHECK(_socketSet As Integer, _socket As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 70
+EndFunction
+
+
+Function createSocketSet()
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 71
+EndFunction
+
+Function deleteSocketSet(_socketSet As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 72
 EndFunction
