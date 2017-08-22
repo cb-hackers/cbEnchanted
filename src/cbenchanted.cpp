@@ -1400,22 +1400,26 @@ void CBEnchanted::functionConvertToInteger(void) {
 }
 
 void CBEnchanted::functionConvertToType(void) {
-	int32_t typePtr = popValue().getInt();
-	if (typePtr == 0) {
+	int32_t typeId = popValue().getInt();
+	pushValue(this->getTypePtr(typeId));
+}
+
+void *CBEnchanted::getTypePtr(const int32_t typeId)
+{
+	if (typeId == 0) {
 		this->errors->createError("ConvertToType() failed!", "Can't convert to type from 0");
-		pushValue(0);
-		return;
+		return NULL;
 	}
 
-	map<int32_t, void*>::iterator findIt = typeConvertMap.find(typePtr);
+	map<int32_t, void*>::iterator findIt = typeConvertMap.find(typeId);
 	if (findIt != typeConvertMap.end()) {
 		// This has been already converted.
-		pushValue(findIt->second);
+		return findIt->second;
 	}
 	else {
 		// Not converted before. Invalid ID
-		this->errors->createError("ConvertToType() failed!", "Could not find a converted type with ID " + std::to_string(typePtr) + ".");
-		pushValue(0);
+		this->errors->createError("ConvertToType() failed!", "Could not find a converted type with ID " + std::to_string(typeId) + ".");
+		return NULL;
 	}
 }
 

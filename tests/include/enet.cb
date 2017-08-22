@@ -1,5 +1,16 @@
 Const CBE_ENET_FUNCTION_GROUP = 3437
 
+ENET_PACKET_FLAG_RELIABLE               = 1 Shl 0
+ENET_PACKET_FLAG_UNSEQUENCED            = 1 Shl 1
+ENET_PACKET_FLAG_NO_ALLOCATE            = 1 Shl 2
+ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT    = 1 Shl 3
+ENET_PACKET_FLAG_SENT                   = 1 Shl 8
+
+Const ENET_EVENT_TYPE_NONE              = 0
+Const ENET_EVENT_TYPE_CONNECT           = 1
+Const ENET_EVENT_TYPE_DISCONNECT        = 2
+Const ENET_EVENT_TYPE_RECEIVE           = 3
+
 Type ENetAddress
     Field _port         As Short
     Field _host         As String
@@ -135,7 +146,7 @@ Function enetAddressGetHost(_address As Integer, _nameLength As Integer)
     cbeFuncId = 24
 EndFunction
 
-Function enetPacketCreate(_packet As Integer, _data As Integer, _dataLength As Integer, _flags As Integer)
+Function enetPacketCreate(_data As Integer, _dataLength As Integer, _flags As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 25
 EndFunction

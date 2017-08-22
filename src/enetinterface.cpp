@@ -7,6 +7,7 @@
 #include "type.h"
 #include "errorsystem.h"
 #include "meminterface.h"
+#include <iostream>
 
 int32_t EnetInterface::enetSocketCounter = 0;
 std::unordered_map<int32_t, ENetSocket> EnetInterface::enetSockets;
@@ -600,7 +601,9 @@ void EnetInterface::enetHostCreate(CBEnchanted *cb)
 	enet_uint32 incomingBandwidth = static_cast<enet_uint32>(cb->popValue().getInt());
 	size_t channelLimit = static_cast<size_t>(cb->popValue().getInt());
 	size_t peerCount = static_cast<size_t>(cb->popValue().getInt());
-	const ENetAddress* address = &typeToENetAddress(cb->popValue().getInt(), cb);
+	int32_t addressTypeId = cb->popValue().getInt();
+
+	const ENetAddress* address = addressTypeId != 0 ? &typeToENetAddress(addressTypeId, cb) : NULL;
 
 	ENetHost* host = enet_host_create(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
 
@@ -936,11 +939,11 @@ void EnetInterface::deleteSocketSet(CBEnchanted *cb)
 	cb->pushValue(0);
 }
 
-ENetSocket EnetInterface::getSocket(int32_t id, CBEnchanted *cb)
+ENetSocket EnetInterface::getSocket(int32_t id, CBEnchanted *cb, bool errors)
 {
 	if (enetSockets.count(id) == 0) {
-		cb->errors->createFatalError("Could not find socket with ID " + std::to_string(id) + "!");
-		return 0;
+		if (errors) cb->errors->createFatalError("Could not find socket with ID " + std::to_string(id) + "!");
+		return ENET_SOCKET_NULL;
 	}
 	return enetSockets[id];
 }
@@ -953,28 +956,28 @@ ENetSocketSet* EnetInterface::getSocketSet(int32_t id)
 	return enetSocketSets[id];
 }
 
-ENetPacket* EnetInterface::getPacket(int32_t id, CBEnchanted *cb)
+ENetPacket* EnetInterface::getPacket(int32_t id, CBEnchanted *cb, bool errors)
 {
 	if (enetPackets.count(id) == 0) {
-		cb->errors->createFatalError("Could not find packet with ID " + std::to_string(id) + "!");
+		if (errors) cb->errors->createFatalError("Could not find packet with ID " + std::to_string(id) + "!");
 		return NULL;
 	}
 	return enetPackets[id];
 }
 
-ENetHost *EnetInterface::getHost(int32_t id, CBEnchanted *cb)
+ENetHost *EnetInterface::getHost(int32_t id, CBEnchanted *cb, bool errors)
 {
 	if (enetHosts.count(id) == 0) {
-		cb->errors->createFatalError("Could not find host with ID " + std::to_string(id) + "!");
+		if (errors) cb->errors->createFatalError("Could not find host with ID " + std::to_string(id) + "!");
 		return NULL;
 	}
 	return enetHosts[id];
 }
 
-ENetPeer *EnetInterface::getPeer(int32_t id, CBEnchanted *cb)
+ENetPeer *EnetInterface::getPeer(int32_t id, CBEnchanted *cb, bool errors)
 {
 	if (enetPeers.count(id) == 0) {
-		cb->errors->createFatalError("Could not find peer with ID " + std::to_string(id) + "!");
+		if (errors) cb->errors->createFatalError("Could not find peer with ID " + std::to_string(id) + "!");
 		return NULL;
 	}
 	return enetPeers[id];
@@ -982,13 +985,12 @@ ENetPeer *EnetInterface::getPeer(int32_t id, CBEnchanted *cb)
 
 ENetAddress EnetInterface::typeToENetAddress(int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
 	ENetAddress address;
-	address.port = type->getShortField(typePtr, 0);
+	address.port = Type::getMembersType(typePtr)->getShortField(typePtr, 0);
 
-	string IPStr = type->getStringField(typePtr, 2).getStdString();
+	string IPStr = Type::getMembersType(typePtr)->getStringField(typePtr, 2).getStdString();
 	if(enet_address_set_host_ip(&address, IPStr.c_str()) < 0) {
 		cb->errors->createFatalError("Failed to convert string " + IPStr + " to IP address.");
 	}
@@ -998,26 +1000,24 @@ ENetAddress EnetInterface::typeToENetAddress(int32_t typeId, CBEnchanted *cb)
 
 void EnetInterface::ENetAddressToType(const ENetAddress *address, int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
-	type->setField(typePtr, 0, address->port);
-	char IPStr[46];
-	if(enet_address_get_host_ip(address, IPStr, 46) < 0) {
+	Type::getMembersType(typePtr)->setField(typePtr, 0, address->port);
+	std::string IPStr(46, 0);
+	if(enet_address_get_host_ip(address, &IPStr[0], 46) < 0) {
 		cb->errors->createFatalError("Failed to convert address " + std::to_string(address->host) + " to printable form.");
 	}
-	type->setField(typePtr, 2, ISString(IPStr));
+	Type::getMembersType(typePtr)->setField(typePtr, 2, ISString(IPStr));
 }
 
 ENetBuffer EnetInterface::typeToENetBuffer(int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
 	ENetBuffer buffer;
-	buffer.dataLength = type->getIntField(typePtr, 0);
+	buffer.dataLength = Type::getMembersType(typePtr)->getIntField(typePtr, 0);
 
-	uint8_t *memblock = cb->memInterface->getMemblock(type->getIntField(typePtr, 4));
+	uint8_t *memblock = cb->memInterface->getMemblock(Type::getMembersType(typePtr)->getIntField(typePtr, 4));
 	memcpy(buffer.data, memblock + 4, buffer.dataLength);
 
 	return buffer;
@@ -1025,55 +1025,52 @@ ENetBuffer EnetInterface::typeToENetBuffer(int32_t typeId, CBEnchanted *cb)
 
 void EnetInterface::ENetBufferToType(const ENetBuffer *buffer, int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
-	type->setField(typePtr, 0, static_cast<int32_t>(buffer->dataLength));
-	uint8_t *memblock = cb->memInterface->getMemblock(type->getIntField(typePtr, 4));
+	Type::getMembersType(typePtr)->setField(typePtr, 0, static_cast<int32_t>(buffer->dataLength));
+	uint8_t *memblock = cb->memInterface->getMemblock(Type::getMembersType(typePtr)->getIntField(typePtr, 4));
 	memcpy(memblock + 4, buffer->data, buffer->dataLength);
 }
 
 ENetEvent EnetInterface::typeToENetEvent(int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
 	ENetEvent event;
-	event.type = static_cast<ENetEventType>(type->getByteField(typePtr, 0));
-	event.peer = getPeer(type->getIntField(typePtr, 1), cb);
-	event.channelID = static_cast<enet_uint8>(type->getByteField(typePtr, 5));
-	event.data = static_cast<enet_uint32>(type->getIntField(typePtr, 6));
-	event.packet = getPacket(type->getIntField(typePtr, 10), cb);
+	event.type = static_cast<ENetEventType>(Type::getMembersType(typePtr)->getByteField(typePtr, 0));
+	event.peer = getPeer(Type::getMembersType(typePtr)->getIntField(typePtr, 1), cb, false);
+	event.channelID = static_cast<enet_uint8>(Type::getMembersType(typePtr)->getByteField(typePtr, 5));
+	event.data = static_cast<enet_uint32>(Type::getMembersType(typePtr)->getIntField(typePtr, 6));
+	event.packet = getPacket(Type::getMembersType(typePtr)->getIntField(typePtr, 10), cb, false);
 
 	return event;
 }
 
 void EnetInterface::ENetEventToType(const ENetEvent *event, int32_t typeId, CBEnchanted *cb)
 {
-	Type *type = cb->getType(typeId);
-	void * typePtr = cb->getTypePointerVariable(cb->getCustomFunctionHandler()->getLatestHandle());
+	void* typePtr = cb->getTypePtr(typeId);
 
-	type->setField(typePtr, 0, static_cast<int32_t>(event->type));
+	Type::getMembersType(typePtr)->setField(typePtr, 0, static_cast<int32_t>(event->type));
 
 	const int32_t peerID = findPeerID(event->peer);
 	if (peerID != 0) {
-		type->setField(typePtr, 1, peerID);
+		Type::getMembersType(typePtr)->setField(typePtr, 1, peerID);
 	} else {
 		++enetPeerCounter;
 		enetPeers[enetPeerCounter] = event->peer;
-		type->setField(typePtr, 1, enetPeerCounter);
+		Type::getMembersType(typePtr)->setField(typePtr, 1, enetPeerCounter);
 	}
 
-	type->setField(typePtr, 5, static_cast<uint8_t>(event->channelID));
-	type->setField(typePtr, 6, static_cast<int32_t>(event->data));
+	Type::getMembersType(typePtr)->setField(typePtr, 5, static_cast<uint8_t>(event->channelID));
+	Type::getMembersType(typePtr)->setField(typePtr, 6, static_cast<int32_t>(event->data));
 
 	const int32_t packetID = findPacketID(event->packet);
 	if (packetID != 0) {
-		type->setField(typePtr, 10, packetID);
+		Type::getMembersType(typePtr)->setField(typePtr, 10, packetID);
 	} else {
 		++enetPacketCounter;
 		enetPackets[enetPacketCounter] = event->packet;
-		type->setField(typePtr, 10, enetPacketCounter);
+		Type::getMembersType(typePtr)->setField(typePtr, 10, enetPacketCounter);
 	}
 }
 

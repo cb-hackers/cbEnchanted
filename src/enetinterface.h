@@ -92,11 +92,11 @@ class EnetInterface {
 		static void createSocketSet(CBEnchanted *cb);
 		static void deleteSocketSet(CBEnchanted *cb);
 
-		static ENetSocket getSocket(int32_t id, CBEnchanted *cb);
+		static ENetSocket getSocket(int32_t id, CBEnchanted *cb, bool errors = true);
 		static ENetSocketSet* getSocketSet(int32_t id);
-		static ENetPacket* getPacket(int32_t id, CBEnchanted *cb);
-		static ENetHost* getHost(int32_t id, CBEnchanted *cb);
-		static ENetPeer* getPeer(int32_t id, CBEnchanted *cb);
+		static ENetPacket* getPacket(int32_t id, CBEnchanted *cb, bool errors = true);
+		static ENetHost* getHost(int32_t id, CBEnchanted *cb, bool errors = true);
+		static ENetPeer* getPeer(int32_t id, CBEnchanted *cb, bool errors = true);
 	private:
 		CBEnchanted *cb;
 

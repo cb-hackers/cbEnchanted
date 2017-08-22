@@ -17,9 +17,6 @@ class CustomFunctionHandler {
 
 		/** Links definitions and bodies together. */
 		void link();
-
-		/** Returns handle of latest function */
-		int32_t getLatestHandle();
 	private:
 #ifndef CBE_LIB
 		/** Imports the custom functions included in the cbE */
@@ -30,9 +27,6 @@ class CustomFunctionHandler {
 
 		/** Bodies that haven't been linked yet */
 		set<CustomFunction> unlinkedBodies;
-
-		/** Contains a handle for the latest function that was called */
-		int32_t latestHandle;
 };
 
 #endif // CUSTOMFUNCTIONHANDLER_H

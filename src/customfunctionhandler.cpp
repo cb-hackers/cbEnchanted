@@ -175,7 +175,6 @@ void CustomFunctionHandler::importCustomFunctions() {
 void CustomFunctionHandler::call(CBEnchanted *cb, int32_t handle) {
 	assert(0 <= handle && size_t(handle) < functions.size());
 	assert(functions[handle].getFuncPtr() && "Function hasn't been linked");
-	latestHandle = handle;
 	functions[handle].call(cb);
 }
 
@@ -202,11 +201,5 @@ void CustomFunctionHandler::link() {
 			}
 		}
 	}
-}
-
-/** Returns handle of latest function */
-int32_t CustomFunctionHandler::getLatestHandle()
-{
-	return latestHandle;
 }
 
