@@ -41,7 +41,6 @@ If enetHostService(client, ConvertToInteger(event), 5000) > 0 And event\_type = 
     // Extend the packet so and append the string 'foo', so it now
     // contains 'packetfoo'
     _dataMemblock = strToMemblock("packetfoo")
-    enetPacketResize(packet, Len("packetfoo"))
     setEnetPacketData(packet, _dataMemblock)
     DeleteMEMBlock _dataMemblock
     
