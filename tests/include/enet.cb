@@ -1,15 +1,15 @@
 Const CBE_ENET_FUNCTION_GROUP = 3437
 
-ENET_PACKET_FLAG_RELIABLE               = 1 Shl 0
-ENET_PACKET_FLAG_UNSEQUENCED            = 1 Shl 1
-ENET_PACKET_FLAG_NO_ALLOCATE            = 1 Shl 2
-ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT    = 1 Shl 3
-ENET_PACKET_FLAG_SENT                   = 1 Shl 8
+Const ENET_PACKET_FLAG_RELIABLE               = 1
+Const ENET_PACKET_FLAG_UNSEQUENCED            = 2
+Const ENET_PACKET_FLAG_NO_ALLOCATE            = 4
+Const ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT    = 8
+Const ENET_PACKET_FLAG_SENT                   = 256
 
-Const ENET_EVENT_TYPE_NONE              = 0
-Const ENET_EVENT_TYPE_CONNECT           = 1
-Const ENET_EVENT_TYPE_DISCONNECT        = 2
-Const ENET_EVENT_TYPE_RECEIVE           = 3
+Const ENET_EVENT_TYPE_NONE                    = 0
+Const ENET_EVENT_TYPE_CONNECT                 = 1
+Const ENET_EVENT_TYPE_DISCONNECT              = 2
+Const ENET_EVENT_TYPE_RECEIVE                 = 3
 
 Type ENetAddress
     Field _port         As Short
@@ -390,4 +390,41 @@ EndFunction
 Function deleteSocketSet(_socketSet As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 72
+EndFunction
+
+
+Function getEnetPacketFlags(_packet As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 73
+EndFunction
+
+Function getEnetPacketData(_packet As Integer, _data As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 74
+EndFunction
+
+Function setEnetPacketData(_packet As Integer, _data As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 75
+EndFunction
+
+Function getEnetPacketDataLength(_packet As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 76
+EndFunction
+
+
+Function getEnetPeerAddress(_peer As Integer, _address As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 77
+EndFunction
+
+Function setEnetPeerData(_peer As Integer, _data As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 78
+EndFunction
+
+Function getEnetPeerData(_peer As Integer)
+    cbeGroup = CBE_ENET_FUNCTION_GROUP
+    cbeFuncId = 79
 EndFunction

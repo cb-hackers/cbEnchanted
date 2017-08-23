@@ -1,0 +1,77 @@
+// Most of code ported from http://enet.bespin.org/Tutorial.html
+
+Include "include/enet.cb"
+
+If enetInitialize() <> 0 Then
+    MakeError "An error occurred while initializing ENet."
+EndIf
+
+// Bind the server to the default localhost
+// A specific host address can be specified by
+// enetAddressSetHost (ConvertToInteger(address), "x.x.x.x")
+address.ENetAddress = New(ENetAddress)
+address\_host = "0.0.0.0"
+address\_port = 1234
+
+// the address To bind the server host To */ 
+// allow up To 32 clients And/Or outgoing connections */
+// allow up To 2 channels To be used, 0 And 1 */
+// assume any amount of incoming bandwidth */
+// assume any amount of outgoing bandwidth */
+server = enetHostCreate(ConvertToInteger(address), 32, 2, 0, 0) 
+Delete address
+
+If server = 0 Then
+    MakeError "An error occurred while trying to create an ENet server host."
+EndIf
+
+event.ENetEvent = New(ENetEvent)
+
+Repeat
+    // Wait up to 1000 milliseconds for an event
+    While enetHostService(server, ConvertToInteger(event), 1000) > 0    
+        If event\_type = ENET_EVENT_TYPE_CONNECT Then
+            address.ENetAddress = New(ENetAddress)
+            getEnetPeerAddress(event\_peer, ConvertToInteger(address))
+            Print "A new client connected from " + address\_host + ":" + address\_port + "."
+            Delete address
+           
+            // Store any relevant client information here.
+            _dataMemblock = strToMemblock("Client information")    
+            setEnetPeerData(event\_peer, _dataMemblock)
+        ElseIf event\_type = ENET_EVENT_TYPE_RECEIVE Then
+            _len = getEnetPacketDataLength(event\_packet)
+            _packetMemblock = MakeMEMBlock(_len)
+            getEnetPacketData(event\_packet, _packetMemblock)
+            Print "A packet of length " + _len + " containing '" + memblockToStr(_packetMemblock) + "' was received from " + memblockToStr(getEnetPeerData(event\_peer)) + " on channel " + event\_channelID
+
+            // Clean up the packet now that we're done using it.
+            enetPacketDestroy(event\_packet)
+            DeleteMEMBlock(_packetMemblock)
+        ElseIf event\_type = ENET_EVENT_TYPE_DISCONNECT Then
+            Print memblockToStr(getEnetPeerData(event\_peer)) + " disconnected."
+            
+            DeleteMEMBlock(getEnetPeerData(event\_peer))
+        EndIf
+    Wend
+Until EscapeKey()
+
+enetHostDestroy(server)
+enetDeinitialize()
+
+Function memblockToStr(_memblock As Integer)
+    Dim _str As String
+    For _pos = 0 To MEMBlockSize(_memblock) - 1
+        _str = _str + Chr(PeekByte(_memblock, _pos))
+    Next _pos
+    Return _str
+EndFunction
+
+Function strToMemblock(_str As String)
+    Dim _memblock As Integer
+    _memblock = MakeMEMBlock(Len(_str))
+    For _pos = 0 To Len(_str) - 1
+        PokeByte _memblock, _pos, Asc(Mid(_str, _pos + 1, 1))
+    Next _pos
+    Return _memblock
+EndFunction

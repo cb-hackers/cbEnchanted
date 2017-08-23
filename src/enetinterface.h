@@ -92,6 +92,15 @@ class EnetInterface {
 		static void createSocketSet(CBEnchanted *cb);
 		static void deleteSocketSet(CBEnchanted *cb);
 
+		static void getEnetPacketFlags(CBEnchanted *cb);
+		static void getEnetPacketData(CBEnchanted *cb);
+		static void setEnetPacketData(CBEnchanted *cb);
+		static void getEnetPacketDataLength(CBEnchanted *cb);
+
+		static void getEnetPeerAddress(CBEnchanted *cb);
+		static void setEnetPeerData(CBEnchanted *cb);
+		static void getEnetPeerData(CBEnchanted *cb);
+
 		static ENetSocket getSocket(int32_t id, CBEnchanted *cb, bool errors = true);
 		static ENetSocketSet* getSocketSet(int32_t id);
 		static ENetPacket* getPacket(int32_t id, CBEnchanted *cb, bool errors = true);

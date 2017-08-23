@@ -1,0 +1,87 @@
+// Most of code ported from http://enet.bespin.org/Tutorial.html
+
+Include "include/enet.cb"
+
+If enetInitialize() <> 0 Then
+    MakeError "An error occurred while initializing ENet."
+EndIf
+
+// create a client host */
+// only allow 1 outgoing connection */
+// allow up 2 channels To be used, 0 and 1 */
+// 56K modem with 56 Kbps downstream bandwidth */
+// 56K modem with 14 Kbps upstream bandwidth */
+client = enetHostCreate (0, 1, 2, 57600 / 8, 14400 / 8)
+
+If client = 0 Then
+    MakeError "An error occurred while trying to create an ENet client host."
+EndIf
+
+// Connect to localhost:1234. */
+address.ENetAddress = New(ENetAddress)
+enetAddressSetHost(ConvertToInteger(address), "localhost")
+address\_port = 1234
+
+event.ENetEvent = New(ENetEvent)
+
+peer = enetHostConnect(client, ConvertToInteger(address), 2, 0)
+
+If peer = 0 Then
+    MakeError "No available peers for initiating an ENet connection."
+EndIf
+
+If enetHostService(client, ConvertToInteger(event), 5000) > 0 And event\_type = ENET_EVENT_TYPE_CONNECT Then
+    Print "Connection to localhost:1234 succeeded."
+    
+    // Create a reliable packet of size 6 containing 'packet'
+    _dataMemblock = strToMemblock("packet")
+    packet = enetPacketCreate(_dataMemblock, 6, ENET_PACKET_FLAG_RELIABLE)
+    DeleteMEMBlock _dataMemblock
+    
+    // Extend the packet so and append the string 'foo', so it now
+    // contains 'packetfoo'
+    _dataMemblock = strToMemblock("packetfoo")
+    enetPacketResize(packet, Len("packetfoo"))
+    setEnetPacketData(packet, _dataMemblock)
+    DeleteMEMBlock _dataMemblock
+    
+    
+    // Send the packet to the peer over channel id 0.
+    // One could also broadcast the packet by
+    // enetHostBroadcast (client, 0, packet)
+    enetPeerSend(peer, 0, packet)
+
+    // One could just use enet_host_service() instead.
+    enetHostFlush(client)
+    
+    enetPeerDisconnect(peer, 0)
+    
+    // Allow up to 3 seconds for the disconnect to succeed
+    // and drop any packets received packets.
+    While enetHostService(client, ConvertToInteger(event), 3000) > 0
+        If event\_type = ENET_EVENT_TYPE_RECEIVE Then
+            enetPacketDestroy(event\_packet)
+        ElseIf event\_type = ENET_EVENT_TYPE_DISCONNECT Then
+            Print "Disconnection succeeded."
+        EndIf
+    Wend
+    
+    // We've arrived here, so the disconnect attempt didn't
+    // succeed yet.  Force the connection down.
+    enetPeerReset(peer)
+Else
+    enetPeerReset(peer)
+    MakeError "Connection to localhost:1234 failed."
+EndIf
+
+enetHostDestroy(client)
+enetDeinitialize()
+
+Function strToMemblock(_str As String)
+    Dim _memblock As Integer
+    _memblock = MakeMEMBlock(Len(_str))
+    For _pos = 0 To Len(_str) - 1
+        PokeByte _memblock, _pos, Asc(Mid(_str, _pos + 1, 1))
+    Next _pos
+    Return _memblock
+EndFunction
