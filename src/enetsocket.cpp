@@ -24,7 +24,14 @@ void EnetInterface::enetSocketBind(CBEnchanted *cb)
 	int32_t typeId = cb->popValue().getInt();
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 
-	cb->pushValue(enet_socket_bind(socket, &typeToENetAddress(typeId, cb)));
+	ENetAddress* address = NULL;
+	ENetAddress addressFromType;
+	if (typeId != 0) {
+		addressFromType = typeToENetAddress(typeId, cb);
+		address = &addressFromType;
+	}
+
+	cb->pushValue(enet_socket_bind(socket, address));
 }
 
 void EnetInterface::enetSocketGetAddress(CBEnchanted *cb)
@@ -69,7 +76,14 @@ void EnetInterface::enetSocketConnect(CBEnchanted *cb)
 	int32_t typeId = cb->popValue().getInt();
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 
-	cb->pushValue(enet_socket_connect(socket, &typeToENetAddress(typeId, cb)));
+	ENetAddress* address = NULL;
+	ENetAddress addressFromType;
+	if (typeId != 0) {
+		addressFromType = typeToENetAddress(typeId, cb);
+		address = &addressFromType;
+	}
+
+	cb->pushValue(enet_socket_connect(socket, address));
 }
 
 void EnetInterface::enetSocketSend(CBEnchanted *cb)
@@ -79,7 +93,21 @@ void EnetInterface::enetSocketSend(CBEnchanted *cb)
 	int32_t typeId1 = cb->popValue().getInt();
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 
-	cb->pushValue(enet_socket_send(socket, &typeToENetAddress(typeId1, cb), &typeToENetBuffer(typeId2, cb), size));
+	ENetAddress* address = NULL;
+	ENetAddress addressFromType;
+	if (typeId1 != 0) {
+		addressFromType = typeToENetAddress(typeId1, cb);
+		address = &addressFromType;
+	}
+
+	ENetBuffer* buffer = NULL;
+	ENetBuffer bufferFromType;
+	if (typeId2 != 0) {
+		bufferFromType = typeToENetBuffer(typeId2, cb);
+		buffer = &bufferFromType;
+	}
+
+	cb->pushValue(enet_socket_send(socket, address, buffer, size));
 }
 
 void EnetInterface::enetSocketReceive(CBEnchanted *cb)
