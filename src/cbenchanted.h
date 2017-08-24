@@ -46,7 +46,7 @@ class CBEnchanted : public CBVariableHolder {
 		inline float getFrameLimit() const { return frameLimit; }
 		ALLEGRO_EVENT_QUEUE *getEventQueue() { return eventQueue; }
 		CustomFunctionHandler *getCustomFunctionHandler() {return &customFunctionHandler; }
-		inline void *getTypePtr(const int32_t typeId);
+		void* getTypePtr(const int32_t typeId);
 
 		/** Error system for public access */
 		ErrorSystem *errors;
