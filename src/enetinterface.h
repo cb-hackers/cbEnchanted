@@ -3,6 +3,13 @@
 
 #include "precomp.h"
 
+#ifdef DISABLE_CUSTOMS
+	#ifndef DISABLE_ENET
+		#define DISABLE_ENET
+	#endif
+#endif
+
+#ifndef DISABLE_ENET
 #define CBE_ENET_NULL 0
 
 #if ENET_VERSION < 66318
@@ -141,4 +148,5 @@ class EnetInterface {
 		static int32_t findPeerID(const ENetPeer* peer);
 };
 
+#endif // DISABLE_ENET
 #endif // ENETINTERFACE_H

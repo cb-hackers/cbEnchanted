@@ -8,6 +8,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 int32_t EnetInterface::enetSocketCounter = 0;
 std::unordered_map<int32_t, ENetSocket> EnetInterface::enetSockets;
 
@@ -537,3 +538,4 @@ int32_t EnetInterface::findPeerID(const ENetPeer *peer)
 	}
 	return 0;
 }
+#endif // DISABLE_ENET

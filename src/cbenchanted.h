@@ -24,7 +24,9 @@ class EffectInterface;
 class AnimInterface;
 class SoundInterface;
 class ErrorSystem;
-class EnetInterface;
+#ifndef DISABLE_ENET
+	class EnetInterface;
+#endif
 
 class CBEnchanted : public CBVariableHolder {
 	public:
@@ -68,7 +70,7 @@ class CBEnchanted : public CBVariableHolder {
 		EffectInterface *effectInterface;
 		AnimInterface *animInterface;
 		SoundInterface *soundInterface;
-#ifndef DISABLE_CUSTOMS
+#ifndef DISABLE_ENET
 		EnetInterface *enetInterface;
 #endif
 	private:

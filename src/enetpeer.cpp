@@ -5,6 +5,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 void EnetInterface::enetPeerSend(CBEnchanted *cb)
 {
 	ENetPacket* packet = getPacket(cb->popValue().getInt(), cb);
@@ -170,3 +171,4 @@ void EnetInterface::getEnetPeerData(CBEnchanted *cb)
 	ENetPeer* peer = getPeer(cb->popValue().getInt(), cb);
 	cb->pushValue(*(int32_t*)peer->data);
 }
+#endif // DISABLE_ENET

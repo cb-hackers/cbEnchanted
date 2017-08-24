@@ -5,6 +5,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 void EnetInterface::enetAddressSetHostIp(CBEnchanted *cb)
 {
 	string hostName = cb->popValue().toString().getUtf8Encoded();
@@ -136,3 +137,4 @@ void EnetInterface::getEnetPacketDataLength(CBEnchanted *cb)
 	ENetPacket* packet = getPacket(cb->popValue().getInt(), cb);
 	cb->pushValue(static_cast<int32_t>(packet->dataLength));
 }
+#endif // DISABLE_ENET

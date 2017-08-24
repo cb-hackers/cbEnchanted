@@ -5,6 +5,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 void EnetInterface::enetRangeCoderCreate(CBEnchanted *cb)
 {
 	STUB
@@ -24,3 +25,4 @@ void EnetInterface::enetRangeCoderDecompress(CBEnchanted *cb)
 {
 	STUB
 }
+#endif // DISABLE_ENET

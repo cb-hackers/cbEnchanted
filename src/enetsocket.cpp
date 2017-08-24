@@ -5,6 +5,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 void EnetInterface::enetSocketCreate(CBEnchanted *cb)
 {
 	int32_t socketType = cb->popValue().getInt();
@@ -227,3 +228,4 @@ void EnetInterface::deleteSocketSet(CBEnchanted *cb)
 	enetSocketSets.erase(socketSetID);
 	cb->pushValue(0);
 }
+#endif // DISABLE_ENET

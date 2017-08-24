@@ -165,7 +165,7 @@ bool CBEnchanted::init(const char* file, int argc, char** argv) {
 	effectInterface = new EffectInterface();
 	animInterface = new AnimInterface();
 	soundInterface = new SoundInterface();
-#ifndef DISABLE_CUSTOMS
+#ifndef DISABLE_ENET
 	enetInterface = new EnetInterface();
 #endif
 		

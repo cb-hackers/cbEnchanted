@@ -5,6 +5,7 @@
 #include "errorsystem.h"
 #include "meminterface.h"
 
+#ifndef DISABLE_ENET
 void EnetInterface::enetHostCreate(CBEnchanted *cb)
 {
 	enet_uint32 outgoingBandwidth = static_cast<enet_uint32>(cb->popValue().getInt());
@@ -159,3 +160,4 @@ void EnetInterface::enetHostRandomSeed(CBEnchanted *cb)
 {
 	cb->pushValue(static_cast<int32_t>(enet_host_random_seed()));
 }
+#endif // DISABLE_ENET
