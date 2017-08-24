@@ -13,7 +13,12 @@ void EnetInterface::enetHostCreate(CBEnchanted *cb)
 	size_t peerCount = static_cast<size_t>(cb->popValue().getInt());
 	int32_t addressTypeId = cb->popValue().getInt();
 
-	const ENetAddress* address = addressTypeId != 0 ? &typeToENetAddress(addressTypeId, cb) : NULL;
+	ENetAddress* address = NULL;
+	ENetAddress addressFromType;
+	if (addressTypeId != 0) {
+		addressFromType = typeToENetAddress(addressTypeId, cb);
+		address = &addressFromType;
+	}
 
 	ENetHost* host = enet_host_create(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
 
@@ -40,9 +45,16 @@ void EnetInterface::enetHostConnect(CBEnchanted *cb)
 {
 	enet_uint32 data = static_cast<enet_uint32>(cb->popValue().getInt());
 	size_t channelCount = static_cast<size_t>(cb->popValue().getInt());
-	const ENetAddress* address = &typeToENetAddress(cb->popValue().getInt(), cb);
-	ENetHost* host = getHost(cb->popValue().getInt(), cb);
+	int32_t addressTypeId = cb->popValue().getInt();
 
+	ENetAddress* address = NULL;
+	ENetAddress addressFromType;
+	if (addressTypeId != 0) {
+		addressFromType = typeToENetAddress(addressTypeId, cb);
+		address = &addressFromType;
+	}
+
+	ENetHost* host = getHost(cb->popValue().getInt(), cb);
 	ENetPeer* retPeer = enet_host_connect(host, address, channelCount, data);
 
 	if (retPeer == NULL) {
@@ -59,7 +71,13 @@ void EnetInterface::enetHostCheckEvents(CBEnchanted *cb)
 	int32_t eventTypeId = cb->popValue().getInt();
 	ENetHost* host = getHost(cb->popValue().getInt(), cb);
 
-	ENetEvent* event = &typeToENetEvent(eventTypeId, cb);
+	ENetEvent* event = NULL;
+	ENetEvent eventFromType;
+	if (eventTypeId != 0) {
+		eventFromType = typeToENetEvent(eventTypeId, cb);
+		event = &eventFromType;
+	}
+
 	int32_t retVal = enet_host_check_events(host, event);
 	ENetEventToType(event, eventTypeId, cb);
 
@@ -72,7 +90,13 @@ void EnetInterface::enetHostService(CBEnchanted *cb)
 	int32_t eventTypeId = cb->popValue().getInt();
 	ENetHost* host = getHost(cb->popValue().getInt(), cb);
 
-	ENetEvent* event = &typeToENetEvent(eventTypeId, cb);
+	ENetEvent* event = NULL;
+	ENetEvent eventFromType;
+	if (eventTypeId != 0) {
+		eventFromType = typeToENetEvent(eventTypeId, cb);
+		event = &eventFromType;
+	}
+
 	int32_t retVal = enet_host_service(host, event, timeout);
 	ENetEventToType(event, eventTypeId, cb);
 
