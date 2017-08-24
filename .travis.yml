@@ -21,6 +21,7 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+            - libenet-dev
         artifacts:
           s3_region: "eu-west-1"
           working_dir: travis-build
@@ -46,6 +47,7 @@ matrix:
             - liballegro-ttf5-dev
             - liballegro-video5-dev
             - libboost1.55-all-dev
+            - libenet-dev
         artifacts:
           s3_region: "eu-west-1"
           working_dir: travis-build
