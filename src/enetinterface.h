@@ -5,7 +5,7 @@
 
 #define CBE_ENET_NULL 0
 
-#if ENET_VERSION < 66317
+#if ENET_VERSION < 66318
 	#define enet_address_set_host_ip(address, string) enet_address_set_host(address, string)
 #endif
 
