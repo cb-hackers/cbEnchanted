@@ -157,7 +157,7 @@ void EnetInterface::enetSocketSetSelect(CBEnchanted *cb)
 void EnetInterface::ENETSOCKETSETEMPTY(CBEnchanted *cb)
 {
 	ENetSocketSet* socketSet = getSocketSet(cb->popValue().getInt());
-	ENET_SOCKETSET_EMPTY(socketSet);
+	ENET_SOCKETSET_EMPTY(*socketSet);
 	cb->pushValue(0);
 }
 
@@ -165,7 +165,7 @@ void EnetInterface::ENETSOCKETSETADD(CBEnchanted *cb)
 {
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 	ENetSocketSet* socketSet = getSocketSet(cb->popValue().getInt());
-	ENET_SOCKETSET_ADD(socketSet, socket);
+	ENET_SOCKETSET_ADD(*socketSet, socket);
 	cb->pushValue(0);
 }
 
@@ -173,7 +173,7 @@ void EnetInterface::ENETSOCKETSETREMOVE(CBEnchanted *cb)
 {
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 	ENetSocketSet* socketSet = getSocketSet(cb->popValue().getInt());
-	ENET_SOCKETSET_REMOVE(socketSet, socket);
+	ENET_SOCKETSET_REMOVE(*socketSet, socket);
 	cb->pushValue(0);
 }
 
@@ -181,7 +181,7 @@ void EnetInterface::ENETSOCKETSETCHECK(CBEnchanted *cb)
 {
 	ENetSocket socket = getSocket(cb->popValue().getInt(), cb);
 	ENetSocketSet* socketSet = getSocketSet(cb->popValue().getInt());
-	cb->pushValue(ENET_SOCKETSET_CHECK(socketSet, socket));
+	cb->pushValue(ENET_SOCKETSET_CHECK(*socketSet, socket));
 }
 
 void EnetInterface::createSocketSet(CBEnchanted *cb)
