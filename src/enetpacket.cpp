@@ -36,7 +36,7 @@ void EnetInterface::enetAddressGetHostIp(CBEnchanted *cb)
 
 	const ENetAddress address = typeToENetAddress(typeId, cb);
 	std::string IPStr(nameLength, 0);
-	if(enet_address_get_host_ip(&address, &IPStr[0], 46) < 0) {
+	if(enet_address_get_host_ip(&address, &IPStr[0], nameLength) < 0) {
 		cb->pushValue(std::string(""));
 	} else {
 		cb->pushValue(IPStr);
@@ -50,7 +50,7 @@ void EnetInterface::enetAddressGetHost(CBEnchanted *cb)
 
 	const ENetAddress address = typeToENetAddress(typeId, cb);
 	std::string IPStr(nameLength, 0);
-	if(enet_address_get_host(&address, &IPStr[0], 46) < 0) {
+	if(enet_address_get_host(&address, &IPStr[0], nameLength) < 0) {
 		cb->pushValue(std::string(""));
 	} else {
 		cb->pushValue(IPStr);

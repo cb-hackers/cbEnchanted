@@ -1,430 +1,1034 @@
+// ****************************************************************************
+// *                                 ########                                 *
+// *                       CBENCHANTED ENET FUNCTIONS                         *
+// *                                    --                                    *
+// *                 Enet for your cbEnchanted programs                       *
+// *                                 ########                                 *
+// ****************************************************************************
+
+// cbEnchanted custom function group
 Const CBE_ENET_FUNCTION_GROUP = 3437
 
+// Used to determine invalid socket/packet/host handle
+Const CBE_ENET_NULL           = 0
+
+// ENetPacket flags as defined in enet.h
 Const ENET_PACKET_FLAG_RELIABLE               = 1
 Const ENET_PACKET_FLAG_UNSEQUENCED            = 2
 Const ENET_PACKET_FLAG_NO_ALLOCATE            = 4
 Const ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT    = 8
 Const ENET_PACKET_FLAG_SENT                   = 256
 
+// ENetEvent types as defined in enet.h
 Const ENET_EVENT_TYPE_NONE                    = 0
 Const ENET_EVENT_TYPE_CONNECT                 = 1
 Const ENET_EVENT_TYPE_DISCONNECT              = 2
 Const ENET_EVENT_TYPE_RECEIVE                 = 3
 
+// Imitates ENetAddress struct defined in enet.h
 Type ENetAddress
     Field _port         As Short
-    Field _host         As String
+    Field _host         As String // string presentation of ENetAddress.host
 End Type
 
+// Imitates ENetBuffer struct defined in win32.h/unix.h
 Type ENetBuffer
     Field _dataLength   As Integer
-    Field _data         As Integer
+    Field _data         As Integer // MEMBlock handle for MEMBlock that is clone of ENetBuffer->data
 End Type
 
+// Imitates ENetEvent struct defined in enet.h
 Type ENetEvent
     Field _type         As Byte
-    Field _peer         As Integer
+    Field _peer         As Integer // Peer handle used to access ENetPeer
     Field _channelID    As Byte
     Field _data         As Integer
-    Field _packet       As Integer
+    Field _packet       As Integer // Packet handle used to access ENetPacket
 End Type
 
+// ----------------------------------------------------------------------------
+// enetInitialize()
+// ---
+// Calls enet_initialize()
+// Returns value returned by enet_initialize()
+// http://enet.bespin.org/group__global.html
+// ----------------------------------------------------------------------------
 Function enetInitialize()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 1
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetDeinitialize()
+// ---
+// Calls enet_deinitialize()
+// http://enet.bespin.org/group__global.html
+// ----------------------------------------------------------------------------
 Function enetDeinitialize()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 2
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetLinkedVersion()
+// ---
+// Calls enet_linked_version()
+// Returns value returned by enet_linked_version()
+// http://enet.bespin.org/group__global.html
+// ----------------------------------------------------------------------------
 Function enetLinkedVersion()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 3
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetLinkedVersion()
+// ---
+// Calls enet_time_get()
+// Returns value returned by enet_time_get()
+// http://enet.bespin.org/enet_8h.html
+// ----------------------------------------------------------------------------
 Function enetTimeGet()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 4
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetLinkedVersion()
+// ---
+// Calls enet_time_set(_time)
+// http://enet.bespin.org/enet_8h.html
+// ----------------------------------------------------------------------------
 Function enetTimeSet(_time As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 5
 EndFunction
 
-
+// ----------------------------------------------------------------------------
+// enetSocketCreate()
+// ---
+// Calls enet_socket_create(_socketType)
+// Return values:
+// 		handle to created ENetPacket on success
+// 		CBE_ENET_NULL on failure
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
 Function enetSocketCreate(_socketType As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 6
 EndFunction
 
-Function enetSocketBind(_socket As Integer, _address As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketBind()
+// ---
+// Calls enet_socket_bind(socket, &address)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_socket_bind()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketBind(_socketId As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 7
 EndFunction
 
-Function enetSocketGetAddress(_socket As Integer, _address As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketGetAddress()
+// ---
+// Calls enet_socket_bind(socket, address)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_socket_get_address()
+// Returns modified _address type instance
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketGetAddress(_socketId As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 8
 EndFunction
 
-Function enetSocketListen(_socket As Integer, _backlog As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketGetAddress()
+// ---
+// Calls enet_socket_bind(socket, address)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_socket_get_address()
+// Returns modified _address type instance
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketListen(_socketId As Integer, _backlog As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 10
 EndFunction
 
-Function enetSocketAccept(_socket As Integer, _address As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketAccept()
+// ---
+// Calls enet_socket_accept(socket, address)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Return values:
+//		handle to new socket returned by enet_socket_accept() on success
+//		CBE_ENET_NULL on failure
+// Returns modified _address type instance on success
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketAccept(_socketId As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 11
 EndFunction
 
-Function enetSocketConnect(_socket As Integer, _address As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketConnect()
+// ---
+// Calls enet_socket_connect(socket, address)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_socket_connect()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketConnect(_socketId As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 12
 EndFunction
 
-Function enetSocketSend(_socket As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketSend()
+// ---
+// Calls enet_socket_send(socket, address, buffer, _bufferCount)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address and 
+// buffer is ENetBuffer converted from ENetBuffer type instance _buffer
+// Returns value returned by enet_socket_send()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketSend(_socketId As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 13
 EndFunction
 
-Function enetSocketReceive(_socket As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketReceive()
+// ---
+// Calls enet_socket_receive(socket, address, buffer, _bufferCount)
+// where socket is ENetSocket found with _socketId and
+// address is ENetAddress converted from ENetAddress type instance _address and 
+// buffer is ENetBuffer converted from ENetBuffer type instance _buffer
+// Returns value returned by enet_socket_receive()
+// Returns:
+//		modified _address type instance
+//		modified _buffer type instance
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketReceive(_socketId As Integer, _address As Integer, _buffer As Integer, _bufferCount As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 14
 EndFunction
 
-Function enetSocketWait(_socket As Integer, _condition As Integer, _timeout As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketWait()
+// ---
+// Calls enet_socket_wait(socket, condition, _timeout)
+// where socket is ENetSocket found with _socketId and
+// condition is value inside given MEMBlock found with _conditionMem
+// Returns value returned by enet_socket_wait()
+// Returns modified MEMBlock that can be accessed by _condition handle
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketWait(_socketId As Integer, _conditionMem As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 15
 EndFunction
 
-Function enetSocketSetOption(_socket As Integer, _option As Integer, _value As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketSetOption()
+// ---
+// Calls enet_socket_set_option(socket, _option, _value)
+// where socket is ENetSocket found with _socketId
+// Returns value returned by enet_socket_set_option()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketSetOption(_socketId As Integer, _option As Integer, _value As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 16
 EndFunction
 
-Function enetSocketGetOption(_socket As Integer, _option As Integer, _value As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketGetOption()
+// ---
+// Calls enet_socket_get_option(socket, _option, value)
+// where socket is ENetSocket found with _socketId and
+// value is value inside given MEMBlock found with _valueMem handle
+// Returns value returned by enet_socket_get_option()
+// Returns modified MEMBlock that can be accessed by _valueMem handle
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketGetOption(_socketId As Integer, _option As Integer, _valueMem As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 17
 EndFunction
 
-Function enetSocketShutdown(_socket As Integer, _shutdown As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketShutdown()
+// ---
+// Calls enet_socket_shutdown(socket, _shutdown)
+// where socket is ENetSocket found with _socketId
+// Returns value returned by enet_socket_shutdown()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketShutdown(_socketId As Integer, _shutdown As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 18
 EndFunction
 
-Function enetSocketDestroy(_socket As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketDestroy()
+// ---
+// Calls enet_socket_destroy(socket)
+// where socket is ENetSocket found with _socketId
+// _socketId handle becomes invalid after this command
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketDestroy(_socketId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 19
 EndFunction
 
-Function enetSocketSetSelect(_socket As Integer, _readSet As Integer, _writeSet As Integer, _timeout As Integer)
+// ----------------------------------------------------------------------------
+// enetSocketSetSelect()
+// ---
+// Calls enet_socketset_select(socket, readSet, writeSet, _timeout)
+// where socket is ENetSocket found with _socketId and
+// readSet is ENetSocketSet found with _readSet handle and 
+// writeSet is ENetSocketSet found with _writeSet handle and 
+// Returns value returned by enet_socketset_select()
+// http://enet.bespin.org/group__socket.html
+// ----------------------------------------------------------------------------
+Function enetSocketSetSelect(_socketId As Integer, _readSet As Integer, _writeSet As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 20
 EndFunction
 
-
+// ----------------------------------------------------------------------------
+// enetAddressSetHostIp()
+// ---
+// Calls enet_address_get_host_ip(address, _hostName) or
+// enet_address_set_host(address, hostName) if enet_address_get_host_ip()
+// isn't supported by current version of Enet
+// -
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_address_set_host_ip() or enet_address_set_host()
+// Returns modified _address type instance
+// http://enet.bespin.org/group__Address.html
+// ----------------------------------------------------------------------------
 Function enetAddressSetHostIp(_address As Integer, _hostName As String)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 21
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetAddressSetHost()
+// ---
+// Calls enet_address_set_host(address, _hostName)
+// where address is ENetAddress converted from ENetAddress type instance _address
+// Returns value returned by enet_address_set_host()
+// Returns modified _address type instance
+// http://enet.bespin.org/group__Address.html
+// ----------------------------------------------------------------------------
 Function enetAddressSetHost(_address As Integer, _hostName As String)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 22
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetAddressGetHostIp()
+// ---
+// Calls enet_address_get_host_ip(address, _nameLength)
+// where address is ENetAddress converted from ENetAddress type instance _address
+// Returns string set by enet_address_get_host_ip() on success or empty string on failure
+// http://enet.bespin.org/group__Address.html
+// ----------------------------------------------------------------------------
 Function enetAddressGetHostIp(_address As Integer, _nameLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 23
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetAddressGetHost()
+// ---
+// Calls enet_address_get_host(address, _nameLength)
+// where address is ENetAddress converted from ENetAddress type instance _address
+// Returns string set by enet_address_get_host() on success or empty string on failure
+// http://enet.bespin.org/group__Address.html
+// ----------------------------------------------------------------------------
 Function enetAddressGetHost(_address As Integer, _nameLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 24
 EndFunction
 
-Function enetPacketCreate(_data As Integer, _dataLength As Integer, _flags As Integer)
+// ----------------------------------------------------------------------------
+// enetPacketCreate()
+// ---
+// Calls enet_packet_create(data, _dataLength, _flags)
+// where data is value inside given MEMBlock found with _dataMem handle
+// Returns:
+// 		handle to created ENetPacket on success
+//		CBE_ENET_NULL on failure
+// http://enet.bespin.org/group__Packet.html
+// ----------------------------------------------------------------------------
+Function enetPacketCreate(_dataMem As Integer, _dataLength As Integer, _flags As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 25
 EndFunction
 
-Function enetPacketDestroy(_packet As Integer)
+// ----------------------------------------------------------------------------
+// enetPacketDestroy()
+// ---
+// Calls enet_packet_destroy(packet)
+// where packet is ENetPacket found with _packetId
+// _packetId handle becomes invalid after this command
+// http://enet.bespin.org/group__Packet.html
+// ----------------------------------------------------------------------------
+Function enetPacketDestroy(_packetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 26
 EndFunction
 
-Function enetPacketResize(_packet As Integer, _dataLength As Integer)
+// ----------------------------------------------------------------------------
+// enetPacketResize()
+// ---
+// Calls enet_packet_resize(packet, _dataLength)
+// where packet is ENetPacket found with _packetId
+// Returns value returned by enet_packet_resize()
+// http://enet.bespin.org/group__Packet.html
+// ----------------------------------------------------------------------------
+Function enetPacketResize(_packetId As Integer, _dataLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 27
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetCrc32()
+// ---
+// Calls enet_crc32(buffer, _dataLength)
+// where packet is ENetPacket found with _packetId
+// Returns value returned by enet_crc32()
+// http://enet.bespin.org/group__Packet.html
+// ----------------------------------------------------------------------------
 Function enetCrc32(_buffer As Integer, _dataLength As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 28
 EndFunction
 
-
+// ----------------------------------------------------------------------------
+// enetHostCreate()
+// ---
+// Calls enet_host_create(address, _peerCount, _channelLimit, _incomingBandwidth, _outgoingBandwidth)
+// where address is ENetAddress converted from ENetAddress type instance _address
+// Returns:
+// 		handle to created ENetHost on success
+//		CBE_ENET_NULL on failure
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
 Function enetHostCreate(_address As Integer, _peerCount As Integer, _channelLimit As Integer, _incomingBandwidth As Integer, _outgoingBandwidth As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 29
 EndFunction
 
-Function enetHostDestroy(_host As Integer)
+// ----------------------------------------------------------------------------
+// enetHostDestroy()
+// ---
+// Calls enet_host_destroy(host)
+// where host is ENetHost found with _hostId handle
+// _hostId handle becomes invalid after this command
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostDestroy(_hostId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 30
 EndFunction
 
-Function enetHostConnect(_host As Integer, _address As Integer, _channelCount As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// enetHostConnect()
+// ---
+// Calls enet_host_connect(host, address, _channelCount, _data)
+// where host is ENetHost found with _hostId handle and
+// address is ENetAddress converted from ENetAddress type instance _address
+// Returns:
+// 		handle to created ENetPeer on success
+//		CBE_ENET_NULL on failure
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostConnect(_hostId As Integer, _address As Integer, _channelCount As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 31
 EndFunction
 
-Function enetHostCheckEvents(_host As Integer, _event As Integer)
+// ----------------------------------------------------------------------------
+// enetHostCheckEvents()
+// ---
+// Calls enet_host_check_events(host, event)
+// where host is ENetHost found with _hostId handle and
+// event is ENetEvent converted from ENetEvent type instance _event
+// Returns value returned by enet_host_check_events()
+// Returns modified _event type instance
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostCheckEvents(_hostId As Integer, _event As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 32
 EndFunction
 
-Function enetHostService(_host As Integer, _event As Integer, _timeout As Integer)
+// ----------------------------------------------------------------------------
+// enetHostService()
+// ---
+// Calls enet_host_service(host, event, _timeout)
+// where host is ENetHost found with _hostId handle and
+// event is ENetEvent converted from ENetEvent type instance _event
+// Returns value returned by enet_host_service()
+// Returns modified _event type instance
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostService(_hostId As Integer, _event As Integer, _timeout As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 33
 EndFunction
 
-Function enetHostFlush(_host As Integer)
+// ----------------------------------------------------------------------------
+// enetHostFlush()
+// ---
+// Calls enet_host_flush(host)
+// where host is ENetHost found with _hostId handle
+// Returns value returned by enet_host_flush()
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostFlush(_hostId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 34
 EndFunction
 
-Function enetHostBroadcast(_host As Integer, _channelID As Byte, _packet As Integer)
+// ----------------------------------------------------------------------------
+// enetHostBroadcast()
+// ---
+// Calls enet_host_broadcast(host, _channelID, packet)
+// where host is ENetHost found with _hostId handle and
+// and packet is ENetPacket found with _packetId handle
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostBroadcast(_hostId As Integer, _channelID As Byte, _packetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 35
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetHostCompress()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetHostCompress()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 36
 EndFunction
 
-Function enetHostCompressWithRangeCoder(_host As Integer)
+// ----------------------------------------------------------------------------
+// enetHostCompressWithRangeCoder()
+// ---
+// Calls enet_host_compress_with_range_coder(host)
+// where host is ENetHost found with _hostId handle 
+// Returns value returned by enet_host_compress_with_range_coder()
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostCompressWithRangeCoder(_hostId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 37
 EndFunction
 
-Function enetHostChannelLimit(_host As Integer, _channelLimit As Integer)
+// ----------------------------------------------------------------------------
+// enetHostChannelLimit()
+// ---
+// Calls enet_host_channel_limit(host, _channelLimit)
+// where host is ENetHost found with _hostId handle
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostChannelLimit(_hostId As Integer, _channelLimit As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 38
 EndFunction
 
-Function enetHostBandwidthLimit(_host As Integer, _incomingBandwidth As Integer, _outgoingBandwidth As Integer)
+// ----------------------------------------------------------------------------
+// enetHostBandwidthLimit()
+// ---
+// Calls enet_host_bandwidth_limit(host, _incomingBandwidth, _outgoingBandwidth)
+// where host is ENetHost found with _hostId handle
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostBandwidthLimit(_hostId As Integer, _incomingBandwidth As Integer, _outgoingBandwidth As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 39
 EndFunction
 
-Function enetHostBandwidthThrottle(_host As Integer)
+// ----------------------------------------------------------------------------
+// enetHostBandwidthThrottle()
+// ---
+// Calls enet_host_bandwidth_throttle(host)
+// where host is ENetHost found with _hostId handle
+// http://enet.bespin.org/group__host.html
+// ----------------------------------------------------------------------------
+Function enetHostBandwidthThrottle(_hostId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 40
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetHostRandomSeed()
+// ---
+// Calls enet_host_random_seed()
+// Returns value returned by enet_host_random_seed()
+// ----------------------------------------------------------------------------
 Function enetHostRandomSeed()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 41
 EndFunction
 
-
-Function enetPeerSend(_peer As Integer, _channelID As Byte, _packet As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerSend()
+// ---
+// Calls enet_peer_send(peer, _channelID, packet)
+// where peer is ENetPeer found with _peerId handle and
+// and packet is ENetPacket found with _packetId handle
+// Returns value returned by enet_peer_send()
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerSend(_peerId As Integer, _channelID As Byte, _packetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 42
 EndFunction
 
-Function enetPeerReceive(_peer As Integer, _channelID As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerReceive()
+// ---
+// Calls enet_peer_receive(peer, channelID)
+// where peer is ENetPeer found with _peerId handle and
+// and channelID is value pointing to MEMBlock given with _channelMem handle
+// Returns:
+// 		handle to created ENetPacket on success
+//		CBE_ENET_NULL on failure
+// Returns modified MEMBlock given with _channelMem handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerReceive(_peerId As Integer, _channelMem As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 43
 EndFunction
 
-Function enetPeerPing(_peer As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerPing()
+// ---
+// Calls enet_peer_ping(peer)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerPing(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 44
 EndFunction
 
-Function enetPeerPingInterval(_peer As Integer, _interval As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerPingInterval()
+// ---
+// Calls enet_peer_ping_interval(peer, _interval)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerPingInterval(_peerId As Integer, _interval As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 45
 EndFunction
 
-Function enetPeerTimeout(_peer As Integer, _timeoutLimit As Integer, _timeoutMinimum As Integer, _timeoutMaximum As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerTimeout()
+// ---
+// Calls enet_peer_timeout(peer, _timeoutLimit, _timeoutMinimum, _timeoutMaximum)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerTimeout(_peerId As Integer, _timeoutLimit As Integer, _timeoutMinimum As Integer, _timeoutMaximum As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 46
 EndFunction
 
-Function enetPeerReset(_peer As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerReset()
+// ---
+// Calls enet_peer_reset(peer)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerReset(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 47
 EndFunction
 
-Function enetPeerDisconnect(_peer As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerDisconnect()
+// ---
+// Calls enet_peer_disconnect(peer, data)
+// where peer is ENetPeer found with _peerId handle and
+// data is pointing to MEMBlock given with _data handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerDisconnect(_peerId As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 48
 EndFunction
 
-Function enetPeerDisconnectNow(_peer As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerDisconnectNow()
+// ---
+// Calls enet_peer_disconnect_now(peer, data)
+// where peer is ENetPeer found with _peerId handle and
+// data is pointing to MEMBlock given with _data handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerDisconnectNow(_peerId As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 49
 EndFunction
 
-Function enetPeerDisconnectLater(_peer As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerDisconnectLater()
+// ---
+// Calls enet_peer_disconnect_later(peer, data)
+// where peer is ENetPeer found with _peerId handle and
+// data is pointing to MEMBlock given with _data handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerDisconnectLater(_peerId As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 50
 EndFunction
 
-Function enetPeerThrottleConfigure(_peer As Integer, _interval As Integer, _acceleration As Integer, _deceleration As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerThrottleConfigure()
+// ---
+// Calls enet_peer_throttle_configure(peer, _interval, _acceleration, _deceleration)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerThrottleConfigure(_peerId As Integer, _interval As Integer, _acceleration As Integer, _deceleration As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 51
 EndFunction
 
-Function enetPeerThrottle(_peer As Integer, _rtt As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerThrottle()
+// ---
+// Calls enet_peer_throttle(peer, _rtt)
+// where peer is ENetPeer found with _peerId handle
+// Returns value returned by enet_peer_throttle()
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerThrottle(_peerId As Integer, _rtt As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 52
 EndFunction
 
-Function enetPeerResetQueues(_peer As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerResetQueues()
+// ---
+// Calls enet_peer_reset_queues(peer)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerResetQueues(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 53
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerSetupOutgoingCommand()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerSetupOutgoingCommand()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 54
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerQueueOutgoingCommand()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerQueueOutgoingCommand()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 55
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerQueueIncomingCommand()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerQueueIncomingCommand()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 56
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerQueueAcknowledgement()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerQueueAcknowledgement()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 57
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerDispatchIncomingUnreliableCommands()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerDispatchIncomingUnreliableCommands()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 58
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetPeerDispatchIncomingReliableCommands()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetPeerDispatchIncomingReliableCommands()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 59
 EndFunction
 
-Function enetPeerOnConnect(_peer As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerOnConnect()
+// ---
+// Calls enet_peer_on_connect(peer)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerOnConnect(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 60
 EndFunction
 
-Function enetPeerOnDisconnect(_peer As Integer)
+// ----------------------------------------------------------------------------
+// enetPeerOnDisconnect()
+// ---
+// Calls enet_peer_on_disconnect(peer)
+// where peer is ENetPeer found with _peerId handle
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
+Function enetPeerOnDisconnect(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 61
 EndFunction
 
-
+// ----------------------------------------------------------------------------
+// enetRangeCoderCreate()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetRangeCoderCreate()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 62
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetRangeCoderDestroy()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetRangeCoderDestroy()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 63
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetRangeCoderCompress()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetRangeCoderCompress()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 64
 EndFunction
 
+// ----------------------------------------------------------------------------
+// enetRangeCoderDecompress()
+// ---
+// STUB
+// ----------------------------------------------------------------------------
 Function enetRangeCoderDecompress()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 65
 EndFunction
 
-
+// ----------------------------------------------------------------------------
+// enetProtocolCommandSize()
+// ---
+// Calls enet_protocol_command_size(_commandNumber)
+// Returns value returned by enet_protocol_command_size()
+// http://enet.bespin.org/group__peer.html
+// ----------------------------------------------------------------------------
 Function enetProtocolCommandSize(_commandNumber As Byte)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 66
 EndFunction
 
-
-Function ENETSOCKETSETEMPTY(_socketSet As Integer)
+// ----------------------------------------------------------------------------
+// ENETSOCKETSETEMPTY()
+// ---
+// Calls ENET_SOCKETSET_EMPTY(socketSet)
+// where socketSet is found with _socketSetId handle
+// ----------------------------------------------------------------------------
+Function ENETSOCKETSETEMPTY(_socketSetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 67
 EndFunction
 
-Function ENETSOCKETSETADD(_socketSet As Integer, _socket As Integer)
+// ----------------------------------------------------------------------------
+// ENETSOCKETSETADD()
+// ---
+// Calls ENET_SOCKETSET_ADD(socketSet, socket)
+// where socketSet is ENetSocketSet found with _socketSetId handle and
+// socket is ENetSocket found with _socketId
+// ----------------------------------------------------------------------------
+Function ENETSOCKETSETADD(_socketSetId As Integer, _socketId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 68
 EndFunction
 
-Function ENETSOCKETSETREMOVE(_socketSet As Integer, _socket As Integer)
+// ----------------------------------------------------------------------------
+// ENETSOCKETSETREMOVE()
+// ---
+// Calls ENET_SOCKETSET_REMOVE(socketSet, socket)
+// where socketSet is ENetSocketSet found with _socketSetId handle and
+// socket is ENetSocket found with _socketId
+// ----------------------------------------------------------------------------
+Function ENETSOCKETSETREMOVE(_socketSetId As Integer, _socketId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 69
 EndFunction
 
-Function ENETSOCKETSETCHECK(_socketSet As Integer, _socket As Integer)
+// ----------------------------------------------------------------------------
+// ENETSOCKETSETCHECK()
+// ---
+// Calls ENET_SOCKETSET_CHECK(socketSet, socket)
+// where socketSet is ENetSocketSet found with _socketSetId handle and
+// socket is ENetSocket found with _socketId
+// Returns value returned by ENET_SOCKETSET_CHECK()
+// ----------------------------------------------------------------------------
+Function ENETSOCKETSETCHECK(_socketSetId As Integer, _socketId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 70
 EndFunction
 
 
+// ----------------------------------------------------------------------------
+// createSocketSet()
+// ---
+// Creates new ENetSocketSet object
+// Returns handle to created ENetSocketSet
+// ----------------------------------------------------------------------------
 Function createSocketSet()
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 71
 EndFunction
 
-Function deleteSocketSet(_socketSet As Integer)
+// ----------------------------------------------------------------------------
+// deleteSocketSet()
+// ---
+// Frees memory reserved by createSocketSet()
+// _socketSetId is handle used to access ENetSocketSet and is returned by createSocketSet()
+// ----------------------------------------------------------------------------
+Function deleteSocketSet(_socketSetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 72
 EndFunction
 
-
-Function getEnetPacketFlags(_packet As Integer)
+// ----------------------------------------------------------------------------
+// getEnetPacketFlags()
+// ---
+// Returns packet->flags where packet is ENetPacket found with _packetId handle
+// ----------------------------------------------------------------------------
+Function getEnetPacketFlags(_packetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 73
 EndFunction
 
-Function getEnetPacketData(_packet As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// getEnetPacketData()
+// ---
+// Copies packet->data to MEMBlock given with _dataMem handle 
+// where packet is ENetPacket found with _packetId handle
+// ----------------------------------------------------------------------------
+Function getEnetPacketData(_packetId As Integer, _dataMem As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 74
 EndFunction
 
-Function setEnetPacketData(_packet As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// setEnetPacketData()
+// ---
+// Reserves memory for packet->data and copies MEMBlock data given with _dataMem
+// handle to packet->data. If packet->data was already set it frees reserved previously used memory.
+// Also sets packet->dataLength to match MEMBlock's size.
+// packet is ENetPacket found with _packetId handle
+// ----------------------------------------------------------------------------
+Function setEnetPacketData(_packetId As Integer, _dataMem As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 75
 EndFunction
 
-Function getEnetPacketDataLength(_packet As Integer)
+// ----------------------------------------------------------------------------
+// getEnetPacketDataLength()
+// ---
+// Returns packet->dataLength
+// where packet is ENetPacket found with _packetId handle
+// ----------------------------------------------------------------------------
+Function getEnetPacketDataLength(_packetId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 76
 EndFunction
 
-
-Function getEnetPeerAddress(_peer As Integer, _address As Integer)
+// ----------------------------------------------------------------------------
+// getEnetPeerAddress()
+// ---
+// Converts peer->address to _address type instance
+// peer is ENetPeer found with _peerId handle
+// _address is handle to ENetAddress
+// ----------------------------------------------------------------------------
+Function getEnetPeerAddress(_peerId As Integer, _address As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 77
 EndFunction
 
-Function setEnetPeerData(_peer As Integer, _data As Integer)
+// ----------------------------------------------------------------------------
+// setEnetPeerData()
+// ---
+// Reserves memory for peer->data and copies _data integer to peer->data.
+// If peer->data was already set it frees reserved previously used memory.
+// peer is ENetPeer found with _peerId handle
+// ----------------------------------------------------------------------------
+Function setEnetPeerData(_peerId As Integer, _data As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 78
 EndFunction
 
-Function getEnetPeerData(_peer As Integer)
+// ----------------------------------------------------------------------------
+// getEnetPeerData()
+// ---
+// Returns integer that peer->data contains
+// peer is ENetPeer found with _peerId handle
+// ----------------------------------------------------------------------------
+Function getEnetPeerData(_peerId As Integer)
     cbeGroup = CBE_ENET_FUNCTION_GROUP
     cbeFuncId = 79
 EndFunction
