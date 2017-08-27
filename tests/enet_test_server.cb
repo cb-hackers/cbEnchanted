@@ -10,7 +10,7 @@ EndIf
 // A specific host address can be specified by
 // enetAddressSetHost (ConvertToInteger(address), "x.x.x.x")
 address.ENetAddress = New(ENetAddress)
-address\_host = "0.0.0.0"
+address\_host = ENET_HOST_ANY
 address\_port = 1234
 
 // the address To bind the server host To */ 
@@ -33,7 +33,7 @@ Repeat
         If event\_type = ENET_EVENT_TYPE_CONNECT Then
             address.ENetAddress = New(ENetAddress)
             getEnetPeerAddress(event\_peer, ConvertToInteger(address))
-            Print "A new client connected from " + address\_host + ":" + address\_port + "."
+            Print "A new client connected from " + enetAddressGetHostIp(ConvertToInteger(address), 46) + ":" + address\_port + "."
             Delete address
            
             // Store any relevant client information here.

@@ -433,12 +433,8 @@ ENetAddress EnetInterface::typeToENetAddress(int32_t typeId, CBEnchanted *cb)
 	void* typePtr = cb->getTypePtr(typeId);
 
 	ENetAddress address;
-	address.port = Type::getMembersType(typePtr)->getShortField(typePtr, 0);
-
-	string IPStr = Type::getMembersType(typePtr)->getStringField(typePtr, 2).getStdString();
-	if(enet_address_set_host_ip(&address, IPStr.c_str()) < 0) {
-		cb->errors->createFatalError("Failed to convert string " + IPStr + " to IP address.");
-	}
+	address.port = static_cast<enet_uint16>(Type::getMembersType(typePtr)->getShortField(typePtr, 0));
+	address.host = static_cast<enet_uint32>(Type::getMembersType(typePtr)->getIntField(typePtr, 2));
 
 	return address;
 }
@@ -447,12 +443,8 @@ void EnetInterface::ENetAddressToType(const ENetAddress *address, int32_t typeId
 {
 	void* typePtr = cb->getTypePtr(typeId);
 
-	Type::getMembersType(typePtr)->setField(typePtr, 0, address->port);
-	std::string IPStr(46, 0);
-	if(enet_address_get_host_ip(address, &IPStr[0], 46) < 0) {
-		cb->errors->createFatalError("Failed to convert address " + std::to_string(address->host) + " to printable form.");
-	}
-	Type::getMembersType(typePtr)->setField(typePtr, 2, ISString(IPStr));
+	Type::getMembersType(typePtr)->setField(typePtr, 0, static_cast<int16_t>(address->port));
+	Type::getMembersType(typePtr)->setField(typePtr, 2, static_cast<int32_t>(address->host));
 }
 
 ENetBuffer EnetInterface::typeToENetBuffer(int32_t typeId, CBEnchanted *cb)

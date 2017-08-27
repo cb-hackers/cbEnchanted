@@ -12,6 +12,10 @@ Const CBE_ENET_FUNCTION_GROUP = 3437
 // Used to determine invalid socket/packet/host handle
 Const CBE_ENET_NULL           = 0
 
+// Defined in enet.h
+Const ENET_HOST_ANY           = 0
+Const ENET_PORT_ANY           = 0
+
 // ENetPacket flags as defined in enet.h
 Const ENET_PACKET_FLAG_RELIABLE               = 1
 Const ENET_PACKET_FLAG_UNSEQUENCED            = 2
@@ -28,7 +32,7 @@ Const ENET_EVENT_TYPE_RECEIVE                 = 3
 // Imitates ENetAddress struct defined in enet.h
 Type ENetAddress
     Field _port         As Short
-    Field _host         As String // string presentation of ENetAddress.host
+    Field _host         As Integer
 End Type
 
 // Imitates ENetBuffer struct defined in win32.h/unix.h
