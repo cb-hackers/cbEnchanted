@@ -40,7 +40,7 @@ bool CBMap::create(uint32_t width, uint32_t height, uint16_t tileW, uint16_t til
 		layers[i] = new int32_t[width * height];
 		memset(layers[i], 0, width * height * sizeof(int32_t));
 	}
-	tileCount = 64; //Default size. Arrays will be resized if more tiles are used.
+	tileCount = width * height;
 	currentFrame = new float [tileCount];
 	animSlowness = new int32_t [tileCount];
 	animLength = new int32_t [tileCount];
